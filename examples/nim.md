@@ -136,15 +136,21 @@ Sample `POST /crawl` body (rag-crawler-compatible shape):
   "max_depth": null,
   "use_sitemap": false,
   "max_pages": null,
-  "allowed_url_prefixes": [ ... 48 entries above ... ],
   "extract_linked_files": true,
-  "binary_extensions": [".pdf", ".docx", ".pptx", ".txt", ".md", ".rst"],
-  "linked_file_host_allowlist": [
-    "docs.nvidia.com",
-    "images.nvidia.com",
-    "developer.download.nvidia.com",
-    "github.com/NVIDIA/",
-    "raw.githubusercontent.com/NVIDIA/"
+  "allowed_url_prefixes": [ ... 48 entries above ... ],
+  "unblock_url_patterns": ["github.com"],
+  "binary_host_allowlist": [
+    "raw.githubusercontent.com/nvidia",
+    "raw.githubusercontent.com/NVlabs",
+    "raw.githubusercontent.com/Project-MONAI",
+    "raw.githubusercontent.com/rapidsai",
+    "raw.githubusercontent.com/triton-inference-server",
+    "raw.githubusercontent.com/isaac-sim",
+    "raw.githubusercontent.com/isaac-for-healthcare",
+    "raw.githubusercontent.com/nvpro-samples",
+    "raw.githubusercontent.com/nv-tlabs",
+    "raw.githubusercontent.com/OE4T",
+    "raw.githubusercontent.com/NVDLI"
   ]
 }
 ```

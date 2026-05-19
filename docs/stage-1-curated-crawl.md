@@ -81,14 +81,18 @@ list as the allowlist, `max_depth` becomes irrelevant — the crawler can't
 escape the allowlist regardless of depth.
 
 ```jsonc
-// example shape, varies by crawler
+// example shape — fields depend on the crawler's API
 {
   "start_url": "https://docs.example.com/foo/",
   "max_depth": null,
+  "max_pages": null,
+  "extract_linked_files": true,                           // capture linked binaries
+  "use_product_url_map": false,                           // route binaries to this collection only
   "allowed_url_prefixes": [ ... per-product /latest/ or pinned prefixes ... ],
-  "extract_linked_files": true,                            // capture linked binaries
-  "binary_extensions": [".pdf", ".docx", ".pptx", ".txt"], // see scope table below
-  "binary_host_allowlist": ["docs.example.com", "images.example.com"]
+  "unblock_url_patterns": ["github.com"],                 // override default block list
+  "binary_host_allowlist": [                              // permit cross-host downloads from
+    "raw.githubusercontent.com/<vendor-org>"              //   these prefixes for binaries
+  ]
 }
 ```
 
