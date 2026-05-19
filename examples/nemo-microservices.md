@@ -91,6 +91,7 @@ prefix list has exactly one entry:
 {
   "start_url": "https://docs.nvidia.com/nemo/microservices/latest/",
   "collection_name": "nemo_usvcs_curated",
+  "use_product_url_map": false,
   "max_depth": null,
   "use_sitemap": false,
   "max_pages": null,
