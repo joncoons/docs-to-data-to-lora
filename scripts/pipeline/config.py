@@ -8,9 +8,9 @@ from pathlib import Path
 
 
 DEFAULT_ES_HOST = "https://rag-eck-elasticsearch-es-http.runai-rag:9200"
-DEFAULT_NIM_ENDPOINTS = [
+DEFAULT_NIM_ENDPOINTS: tuple[str, ...] = (
     "http://nim-llm-super-120b-bw.runai-rag:8000/v1",
-]
+)
 DEFAULT_CLAUDE_BASE = "https://inference-api.nvidia.com/v1"
 
 
@@ -66,12 +66,22 @@ class Config:
 
 
 def get_k8s_secret(name: str, namespace: str, key: str) -> str:
-    """Fetch a kubernetes secret value, base64-decoded."""
-    result = subprocess.run(
-        ["kubectl", "get", "secret", name, "-n", namespace,
-         "-o", f"jsonpath={{.data.{key}}}"],
-        capture_output=True, text=True, check=True,
-    )
+    """Fetch a kubernetes secret value, base64-decoded.
+
+    Raises RuntimeError with kubectl's stderr if the command fails (e.g.
+    secret missing, wrong namespace, no cluster access).
+    """
+    try:
+        result = subprocess.run(
+            ["kubectl", "get", "secret", name, "-n", namespace,
+             "-o", f"jsonpath={{.data.{key}}}"],
+            capture_output=True, text=True, check=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError(
+            f"kubectl failed fetching secret {name}/{key} in ns {namespace}: "
+            f"{exc.stderr.strip()}"
+        ) from exc
     return base64.b64decode(result.stdout.strip()).decode().strip()
 
 
