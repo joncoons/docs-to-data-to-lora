@@ -42,3 +42,21 @@ def test_knn_search_excludes_seed_url():
     # Confirm the exclude_url is in the must_not filter
     must_not = body["query"]["bool"]["must_not"]
     assert any("https://x.com/seed" in str(m) for m in must_not)
+
+
+def test_knn_search_filter_extra_merges_with_must_not():
+    """Caller can pass filter_extra={"must_not": [...]} without overwriting exclude_url."""
+    from scripts.pipeline.es_client import knn_search
+    es = MagicMock()
+    es.search.return_value = {"hits": {"hits": []}}
+
+    knn_search(es, index="x", vector=[0.1], exclude_url="https://seed.com/p",
+                k=6, num_candidates=50,
+                filter_extra={"must_not": [{"term": {"metadata.bad_field": "bad"}}]})
+
+    body = es.search.call_args.kwargs["body"]
+    must_not = body["query"]["bool"]["must_not"]
+    # Should contain BOTH the exclude_url and the caller's extra must_not
+    assert len(must_not) == 2
+    assert any("https://seed.com/p" in str(m) for m in must_not)
+    assert any("bad_field" in str(m) for m in must_not)

@@ -41,8 +41,17 @@ def scroll_all_chunks(es: Elasticsearch, index: str, page_size: int = 1000) -> I
 def knn_search(es: Elasticsearch, index: str, vector: list[float],
                exclude_url: str, k: int = 6, num_candidates: int = 50,
                filter_extra: dict | None = None) -> list[dict]:
-    """kNN over `vector` field; exclude chunks whose content_url matches exclude_url."""
+    """kNN over `vector` field; exclude chunks whose content_url matches exclude_url.
+
+    `filter_extra` may contain `must`, `filter`, `should`, or `must_not` keys; they
+    are merged into the bool clause. The exclude_url must_not entry is always
+    preserved (caller's must_not entries are appended, not overwriting).
+    """
     must_not = [{"term": {"metadata.content_metadata.content_url": exclude_url}}]
+    extra = dict(filter_extra or {})
+    # If caller passes their own must_not, merge with ours instead of overwriting
+    if "must_not" in extra:
+        must_not.extend(extra.pop("must_not"))
     body = {
         "knn": {
             "field": "vector",
@@ -53,7 +62,7 @@ def knn_search(es: Elasticsearch, index: str, vector: list[float],
         "query": {
             "bool": {
                 "must_not": must_not,
-                **(filter_extra or {}),
+                **extra,
             }
         },
         "_source": ["text", "metadata"],
