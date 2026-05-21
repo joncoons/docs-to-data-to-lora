@@ -55,7 +55,7 @@ def test_no_think_mode_sets_reasoning_effort():
     client._clients = [mock_c]
     client.call("sys", "user")
     kwargs = mock_c.chat.completions.create.call_args.kwargs
-    assert kwargs.get("extra_body", {}).get("reasoning_effort") == "minimal"
+    assert kwargs.get("extra_body", {}).get("reasoning_effort") == "none"
 
 
 def test_strip_think_blocks_explicit_pair():

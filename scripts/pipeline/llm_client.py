@@ -80,7 +80,7 @@ class LLMClient:
                         "max_tokens": max_tokens,
                     }
                     if self.no_think:
-                        kwargs["extra_body"] = {"reasoning_effort": "minimal"}
+                        kwargs["extra_body"] = {"reasoning_effort": "none"}
                     resp = client.chat.completions.create(**kwargs)
                     self._last_call[0] = time.time()
                     return _strip_think_blocks(resp.choices[0].message.content)
