@@ -15,7 +15,7 @@ OUT=/mnt/nvme2/peft/datasets/v2/smoke_nim
 mkdir -p "$OUT"
 
 # --- Stage 0: full corpus prep ---
-python3 scripts/build_v2_dataset.py \
+/home/joncoons/anaconda3/envs/nat/bin/python3 scripts/build_v2_dataset.py \
     --collection nim_curated \
     --output "$OUT" \
     --stage 0
@@ -27,7 +27,7 @@ shuf -n 50 "$OUT/passages.full.jsonl" > "$OUT/passages.jsonl"
 # --- Stages 1a → 4 against the 50-passage subset ---
 for stage in 1a 1b 1c 1.5 2 3 4; do
     echo "=== Smoke test: stage $stage ==="
-    python3 scripts/build_v2_dataset.py \
+    /home/joncoons/anaconda3/envs/nat/bin/python3 scripts/build_v2_dataset.py \
         --collection nim_curated \
         --output "$OUT" \
         --stage "$stage" \
@@ -40,11 +40,11 @@ VAL_COUNT=$(wc -l < "$OUT/validation.jsonl")
 echo "Smoke test complete: $TRAIN_COUNT train, $VAL_COUNT val"
 
 # Sanity: ratio should be ~9:1
-RATIO=$(python3 -c "print(round($TRAIN_COUNT / max($VAL_COUNT, 1), 1))")
+RATIO=$(/home/joncoons/anaconda3/envs/nat/bin/python3 -c "print(round($TRAIN_COUNT / max($VAL_COUNT, 1), 1))")
 echo "train:val ratio = $RATIO  (expected ≈ 9.0)"
 
 # Sanity: validation report passed?
-python3 -c "
+/home/joncoons/anaconda3/envs/nat/bin/python3 -c "
 import json, sys
 r = json.load(open('$OUT/validation_report.json'))
 print(f\"validation pass_rate={r['pass_rate']*100:.1f}% (threshold={r['threshold']*100:.0f}%) passed={r['passed']}\")
