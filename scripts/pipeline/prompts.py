@@ -22,6 +22,8 @@ Rules:
 - All content must come ONLY from the passage — no outside knowledge
 - Ensure every truth assignment satisfying the premises also satisfies the conclusion
 
+Note: 'recommendations' field exists in LogEntailment with default="" for downstream compatibility; not requested here to keep output tight.
+
 Return JSON:
 {{
   "conclusion": "...",
@@ -74,8 +76,8 @@ SYNTHESIS_USER = """\
 Given the following related passages from {domain} documentation,
 generate two high-value questions that require synthesizing information across passages.
 
-- BRIDGING: a question whose complete answer requires combining a fact from passage A
-  with a fact from passage B (e.g. "Given that X requires Y, and Y depends on Z,
+- BRIDGING: a question whose complete answer requires combining facts from two or more
+  of the provided passages (e.g. "Given that X requires Y, and Y depends on Z,
   what must be true when configuring...?")
 - CONTRASTIVE: a question that asks how two related concepts, models, or configurations
   differ (e.g. "How does deploying NIM on Kubernetes differ from bare-metal deployment?")
@@ -120,12 +122,11 @@ Rules:
 Passage:
 {passage}
 
-Output JSON:
+Output JSON (2 or 3 pairs — omit procedural if not applicable):
 {{
   "pairs": [
-    {{"type": "summary",    "question": "...", "answer": "..."}},
-    {{"type": "listicle",   "question": "...", "answer": "..."}},
-    {{"type": "procedural", "question": "...", "answer": "..."}}
+    {{"type": "summary",  "question": "...", "answer": "..."}},
+    {{"type": "listicle", "question": "...", "answer": "..."}}
   ]
 }}"""
 
@@ -161,7 +162,8 @@ Output JSON:
 
 JUDGE_SYSTEM = (
     "You are an impartial grader of question-answer pairs against their source text. "
-    "Return ONLY valid JSON with three boolean fields."
+    "Return ONLY valid JSON with fields: grounded, answer_fidelity, no_hallucination "
+    "(booleans), and reason (string)."
 )
 
 JUDGE_USER = """\
@@ -189,8 +191,14 @@ Output JSON:
 
 # ── Stage 1.5: Data Designer recipe user template (also embedded in YAML) ────
 
+GAPFILL_SYSTEM = (
+    "You are a precise NVIDIA technical assistant. Generate Q+A pairs grounded ONLY "
+    "in the provided documentation chunks. Return ONLY valid JSON — no explanation, "
+    "no markdown fences."
+)
+
 GAPFILL_RECIPE_USER = """\
-Generate 5 question-answer pairs about {product_family} that are answerable
+Generate {pairs_count} question-answer pairs about {product_family} that are answerable
 ONLY from the following retrieved documentation chunks. Vary the question styles
 using these examples as reference:
 {seed_styles}

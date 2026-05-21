@@ -6,7 +6,7 @@ from scripts.pipeline.prompts import (
     INSTRUCTION_SYSTEM, INSTRUCTION_USER,
     QA_EVAL_SYSTEM, QA_EVAL_USER,
     JUDGE_SYSTEM, JUDGE_USER,
-    GAPFILL_RECIPE_USER,
+    GAPFILL_SYSTEM, GAPFILL_RECIPE_USER,
 )
 
 
@@ -56,7 +56,13 @@ def test_gapfill_recipe_user_substitutes_chunks_and_product():
         retrieved_chunks="CHUNK1\nCHUNK2",
         product_family="nim-deploy",
         seed_styles="- example seed",
+        pairs_count=5,
     )
     assert "CHUNK1" in rendered
     assert "nim-deploy" in rendered
     assert "5 question-answer pairs" in rendered
+
+
+def test_gapfill_system_says_no_markdown_fences():
+    from scripts.pipeline.prompts import GAPFILL_SYSTEM
+    assert "no markdown fences" in GAPFILL_SYSTEM.lower()
