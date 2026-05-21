@@ -56,14 +56,27 @@ KVP_SYSTEM = (
 )
 
 KVP_USER = """\
-Given a premise and conclusion from a documentation passage, generate a question-answer pair.
+Given a premise and conclusion from a documentation passage, generate a substantive
+question-answer pair grounded in the source text.
 
-Rules:
-1. The CONCLUSION is the basis for the ANSWER (exactly one clear sentence)
-2. The PREMISE is the basis for the QUESTION (exactly one clear sentence)
-3. The answer must logically solve the question
-4. Both must be derivable ONLY from the source text — no outside knowledge
-5. Rewrite for grammatical clarity and conciseness if needed
+Rules for the QUESTION (one clear sentence, derived from the PREMISE):
+- Must require specific, verifiable knowledge — an env var name, command,
+  parameter, version, configuration value, or product-specific identifier.
+- Avoid yes/no questions and avoid generic "what is X" questions when X is a
+  well-known term; phrase the question so the answer must cite a detail from
+  the source.
+
+Rules for the ANSWER (2-4 sentences, 50-120 tokens):
+- State the core claim that the CONCLUSION conveys.
+- Cite the specific identifier(s), value(s), command(s), or version-specific
+  details from the source text that justify the claim.
+- May add one sentence of immediately-actionable context (when to use, what
+  it interacts with) — but only using facts present in the source.
+- Use complete declarative sentences. Do not begin with "Yes" or "No".
+
+Both Q and A must be derivable ONLY from the source text — no outside knowledge.
+Use the PREMISE and CONCLUSION as seeds; you may rewrite them for grammar and
+specificity, but do not introduce facts not present in the source.
 
 Return JSON:
 {{
