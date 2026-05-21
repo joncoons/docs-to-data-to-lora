@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "es_id_1",
+    "_source": {
+      "text": "The NIM_MODEL_PROFILE env var selects the NVFP4 TP1 engine variant for the Nemotron-3-Nano-30B-A3B model.",
+      "vector": [0.1, 0.2, 0.3, 0.4],
+      "metadata": {
+        "content_metadata": {
+          "content_url": "https://docs.nvidia.com/nim/nemotron-3-nano/latest/profiles.html",
+          "chunk_index": 0,
+          "document_type": "md"
+        },
+        "product_family": "nim-llm",
+        "product_name": "nemotron-3-nano"
+      }
+    }
+  },
+  {
+    "_id": "es_id_2",
+    "_source": {
+      "text": "Each profile hash maps to a specific quantization + parallelism combo. The catalog is queryable via list-model-profiles.",
+      "vector": [0.11, 0.21, 0.31, 0.41],
+      "metadata": {
+        "content_metadata": {
+          "content_url": "https://docs.nvidia.com/nim/nemotron-3-nano/latest/profiles.html",
+          "chunk_index": 1,
+          "document_type": "md"
+        },
+        "product_family": "nim-llm",
+        "product_name": "nemotron-3-nano"
+      }
+    }
+  },
+  {
+    "_id": "es_id_3_pdf",
+    "_source": {
+      "text": "Abstract: We present a method for high-resolution image synthesis with latent diffusion models...",
+      "vector": [0.5, 0.6, 0.7, 0.8],
+      "metadata": {
+        "content_metadata": {
+          "content_url": "https://docs.nvidia.com/nim/medical/maisi/papers/rombach2022.pdf",
+          "chunk_index": 0,
+          "document_type": "pdf"
+        },
+        "product_family": "nim-medical",
+        "product_name": "maisi"
+      }
+    }
+  }
+]
