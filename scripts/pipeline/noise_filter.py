@@ -16,7 +16,7 @@ _BLOCKED_URL_SEGMENTS = (
 _LICENSE_BOILERPLATE_RE = re.compile(
     r"(apache\.org/licenses/LICENSE-2\.0"
     r"|WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND"
-    r"|THIS SOFTWARE IS PROVIDED.*?AS IS"
+    r"|THIS SOFTWARE IS PROVIDED\s+[\"']?AS[- ]IS"
     r"|Redistribution and use in source and binary forms"
     r"|Permission is hereby granted, free of charge"
     r"|under the terms of the GNU"
