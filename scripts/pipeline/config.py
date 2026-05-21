@@ -2,16 +2,29 @@
 from __future__ import annotations
 
 import base64
+import os
 import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 
 
-DEFAULT_ES_HOST = "https://rag-eck-elasticsearch-es-http.runai-rag:9200"
-DEFAULT_NIM_ENDPOINTS: tuple[str, ...] = (
-    "http://nim-llm-super-120b-bw.runai-rag:8000/v1",
+# Defaults assume in-cluster pod DNS. Override via env vars when running from
+# a host that can't resolve cluster service names (e.g., from ubuntu-local-dev,
+# which CAN reach ClusterIPs via k3s iptables routing but cannot resolve names).
+DEFAULT_ES_HOST = os.environ.get(
+    "PIPELINE_ES_HOST",
+    "https://rag-eck-elasticsearch-es-http.runai-rag:9200",
 )
-DEFAULT_CLAUDE_BASE = "https://inference-api.nvidia.com/v1"
+DEFAULT_NIM_ENDPOINTS: tuple[str, ...] = tuple(
+    os.environ.get(
+        "PIPELINE_NIM_ENDPOINTS",
+        "http://nim-llm-super-120b-bw.runai-rag:8000/v1",
+    ).split(",")
+)
+DEFAULT_CLAUDE_BASE = os.environ.get(
+    "PIPELINE_CLAUDE_BASE",
+    "https://inference-api.nvidia.com/v1",
+)
 
 
 @dataclass
