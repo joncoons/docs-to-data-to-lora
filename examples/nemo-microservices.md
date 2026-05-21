@@ -192,3 +192,17 @@ include the standalone portals, exclude the microservices subdirs.
    and `docs.nvidia.com/nemo-framework/...` are both part of "NeMo" but
    live at different paths. Easy to miss if you assume one product = one
    path prefix.
+
+## Stage 2 dataset
+
+Built via the Stage 2 pipeline against the `nemo_usvcs_curated` ES collection.
+Final stats (after pipeline completes — to be filled in post-smoke-test):
+
+- Pre-Curator pair count: TBD
+- Post-Curator pair count: TBD
+- Train/val split: 90 / 10
+- Top product_family by KVP count: TBD
+- Products that received Stage 1.5 gap-fill: TBD
+
+(Stats populated after the end-to-end smoke test against the real ES collection
+in Task 19.)

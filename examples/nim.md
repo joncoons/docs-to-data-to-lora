@@ -247,3 +247,17 @@ curl -sk -u "$ES_USER:$ES_PASS" \
    (`1.0.0`), CalVer (`26.02.0`), and unversioned paths (`early-access`)
    all appear in one sitemap. The classifier in `sitemap_to_inventory.py`
    handles all three.
+
+## Stage 2 dataset
+
+Built via the Stage 2 pipeline against the `nim_curated` ES collection.
+Final stats (after pipeline completes — to be filled in post-smoke-test):
+
+- Pre-Curator pair count: TBD
+- Post-Curator pair count: TBD
+- Train/val split: 90 / 10
+- Top product_family by KVP count: TBD
+- Products that received Stage 1.5 gap-fill: TBD
+
+(Stats populated after the end-to-end smoke test against the real ES collection
+in Task 19.)

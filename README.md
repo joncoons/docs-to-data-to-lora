@@ -152,10 +152,36 @@ To apply this to your own target:
 4. The worked examples are templates — copy the closest one and adjust
    the prefix list.
 
+## Stage 2: Dataset Creation
+
+Methodology and pipeline for converting Stage 1 ES corpora into training-ready
+SFT JSONL via three grounded generation strategies, RAG-augmented gap-fill, and
+an external-judge validation gate.
+
+See [`docs/stage-2-dataset-creation.md`](docs/stage-2-dataset-creation.md) for
+the full walkthrough. Pipeline implementation: `scripts/build_v2_dataset.py`.
+
+The pipeline runs independently per collection and produces a `training.jsonl` +
+`validation.jsonl` pair in NeMo Customizer SFT format (90/10 split, single-turn
+`{prompt, completion, system}`). Two Stage 1 collections → two parallel runs →
+two independent datasets for two product-specific LoRA adapters.
+
+Generation strategies:
+- **Stage 1A — Logical Entailment → KVP**: extract premises and conclusions from
+  each passage; convert to Q+A pairs.
+- **Stage 1B — Semantic Neighborhood Synthesis**: kNN retrieval per passage;
+  generate BRIDGING and CONTRASTIVE questions requiring cross-passage synthesis.
+- **Stage 1C — Instruction Diversity**: top-25% passages by density score;
+  SUMMARY / LISTICLE / PROCEDURAL instruction-following examples.
+- **Stage 1.5 — RAG-grounded gap-fill**: bias analysis by `product_family`;
+  Data Designer recipes grounded in retrieved chunks fill under-represented products.
+- **Stage 4 — External judge**: Claude Sonnet 4.6 (independent of generation)
+  spot-checks 100 pairs per collection; 90% grounding pass threshold.
+
 ## Contributing
 
 Issues and PRs welcome. The current open work is captured in each stage
-doc under "Open work" — Stages 2 and 3 are the active edges.
+doc under "Open work" — Stage 3 is the active edge.
 
 ## License
 
