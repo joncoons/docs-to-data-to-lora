@@ -13,6 +13,7 @@ dependencies = [
     # TODO: install separately, not on PyPI as 'nemo-curator'
     # "nemo-curator>=0.5.0",
     "pyyaml>=6.0",
+    "datasketch>=1.6",
 ]
 
 [project.optional-dependencies]
