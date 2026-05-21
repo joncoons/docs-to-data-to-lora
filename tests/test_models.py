@@ -1,6 +1,7 @@
 """Tests for Pydantic schemas — LogEntailment, QAKeyValuePair, QAEvaluation, etc."""
 from scripts.pipeline.models import (
     LogEntailment,
+    LogEntailmentList,
     QAKeyValuePair,
     QAEvaluation,
     SynthesisPairs,
@@ -85,3 +86,21 @@ def test_kvp_row_serialization():
     )
     j = row.model_dump_json()
     assert '"stage":"1a"' in j
+
+
+def test_log_entailment_list_min_one():
+    """LogEntailmentList rejects empty list."""
+    import pytest
+    from pydantic import ValidationError
+    from scripts.pipeline.models import LogEntailmentList
+    with pytest.raises(ValidationError):
+        LogEntailmentList(entailments=[])
+
+
+def test_log_entailment_list_carries_entries():
+    from scripts.pipeline.models import LogEntailment, LogEntailmentList
+    lel = LogEntailmentList(entailments=[
+        LogEntailment(conclusion="A.", premises=["P1."]),
+        LogEntailment(conclusion="B.", premises=["P2.", "P3."]),
+    ])
+    assert len(lel.entailments) == 2

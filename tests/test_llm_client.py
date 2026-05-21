@@ -56,3 +56,23 @@ def test_no_think_mode_sets_reasoning_effort():
     client.call("sys", "user")
     kwargs = mock_c.chat.completions.create.call_args.kwargs
     assert kwargs.get("extra_body", {}).get("reasoning_effort") == "minimal"
+
+
+def test_strip_think_blocks_explicit_pair():
+    from scripts.pipeline.llm_client import _strip_think_blocks
+    raw = '<think>reasoning here</think>\n\n{"answer": "42"}'
+    assert _strip_think_blocks(raw) == '{"answer": "42"}'
+
+
+def test_strip_think_blocks_prelude_only():
+    """Reasoning model emits prelude that ends with </think> but no opening tag."""
+    from scripts.pipeline.llm_client import _strip_think_blocks
+    raw = 'I need to think about this carefully... </think>\n\n{"answer": "42"}'
+    assert _strip_think_blocks(raw) == '{"answer": "42"}'
+
+
+def test_strip_think_blocks_no_think_tag():
+    """Content without any think tag passes through unchanged."""
+    from scripts.pipeline.llm_client import _strip_think_blocks
+    raw = 'Just a regular answer.'
+    assert _strip_think_blocks(raw) == 'Just a regular answer.'

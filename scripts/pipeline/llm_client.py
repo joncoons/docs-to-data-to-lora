@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import itertools
 import logging
+import re
 import time
 from threading import Semaphore
 from typing import Optional
@@ -10,6 +11,25 @@ from typing import Optional
 from openai import OpenAI
 
 log = logging.getLogger(__name__)
+
+_THINK_BLOCK_RE = re.compile(r"<think>.*?</think>", re.DOTALL)
+_THINK_PRELUDE_RE = re.compile(r"^.*?</think>", re.DOTALL)
+
+
+def _strip_think_blocks(content: str) -> str:
+    """Remove reasoning-model think blocks from LLM output.
+
+    Handles two patterns:
+      1. Explicit pairs: <think>...</think>
+      2. Prelude that starts in think mode (no opening tag): "blah blah </think>\\n\\nactual answer"
+    """
+    if not content:
+        return content
+    # First remove any well-formed pairs
+    content = _THINK_BLOCK_RE.sub("", content)
+    # Then strip any prelude up to and including </think>
+    content = _THINK_PRELUDE_RE.sub("", content)
+    return content.strip()
 
 
 class LLMClient:
@@ -63,7 +83,7 @@ class LLMClient:
                         kwargs["extra_body"] = {"reasoning_effort": "minimal"}
                     resp = client.chat.completions.create(**kwargs)
                     self._last_call[0] = time.time()
-                    return resp.choices[0].message.content
+                    return _strip_think_blocks(resp.choices[0].message.content)
                 except Exception as e:
                     log.warning("LLM call attempt %d failed: %s", attempt + 1, e)
                     if attempt < self.retry_attempts - 1:

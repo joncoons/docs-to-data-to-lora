@@ -68,7 +68,7 @@ def process_passage_1c(passage: Passage, domain: str, llm: LLMClient) -> list[KV
     raw = llm.call(
         INSTRUCTION_SYSTEM,
         INSTRUCTION_USER.format(domain=domain, passage=passage.text),
-        max_tokens=1500,
+        max_tokens=4096,
     )
     if not raw:
         return []

@@ -17,6 +17,17 @@ class LogEntailment(BaseModel):
     recommendations: str = Field(default="", description="Additional suggested actions")
 
 
+class LogEntailmentList(BaseModel):
+    """Multiple logical entailments extracted from a single passage.
+
+    A passage may cover multiple topics, each warranting its own
+    (conclusion, premises) entailment. The original Jan 2025 LE
+    notebook handled this via semantic sub-chunking; we collapse the
+    same intent into a single LLM call returning a list.
+    """
+    entailments: list[LogEntailment] = Field(min_length=1, max_length=10)
+
+
 class QAKeyValuePair(BaseModel):
     """Output of Stage 1A KVP generation: premise→question, conclusion→answer."""
     question: str
@@ -75,6 +86,7 @@ class KVPRow(BaseModel):
     refined: bool = False
     # Optional per-stage extras (any of these may be None):
     premise_index: int | None = None
+    entailment_index: int | None = None   # which entailment within a passage
     qa_type: str | None = None          # for 1b/1c
     instr_type: str | None = None       # for 1c
     target_product_family: str | None = None  # for 1.5

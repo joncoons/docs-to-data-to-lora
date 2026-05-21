@@ -60,6 +60,8 @@ def main() -> int:
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--dry-run", action="store_true",
                     help="Print plan + estimated yields, no LLM calls")
+    ap.add_argument("--max-passages", type=int, default=None,
+                    help="Subsample to N passages after Stage 0 (for smoke testing)")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.INFO,
@@ -86,11 +88,6 @@ def main() -> int:
         endpoints=cfg.nim_endpoints, model=cfg.super120b_model,
         max_workers=cfg.max_workers, min_interval_s=cfg.min_request_interval_s,
         retry_attempts=cfg.retry_attempts, retry_base_delay_s=cfg.retry_base_delay_s,
-    )
-    llm_nothink = LLMClient(
-        endpoints=cfg.nim_endpoints, model=cfg.super120b_model,
-        max_workers=cfg.max_workers, min_interval_s=cfg.min_request_interval_s,
-        retry_attempts=cfg.retry_attempts, retry_base_delay_s=cfg.retry_base_delay_s,
         no_think=True,
     )
 
@@ -113,6 +110,16 @@ def main() -> int:
             progress.mark_done("0")
     else:
         passages = _read_passages(args.output / "passages.jsonl")
+
+    if args.max_passages and args.max_passages < len(passages):
+        import random
+        random.seed(42)
+        passages = random.sample(passages, args.max_passages)
+        log.info("Subsampled to %d passages (--max-passages)", len(passages))
+        # Rewrite passages.jsonl to reflect the subsample
+        with (args.output / "passages.jsonl").open("w") as f:
+            for p in passages:
+                f.write(p.model_dump_json() + "\n")
 
     # --- Stage 1A ---
     if args.stage in ("1a", "all"):
@@ -165,7 +172,7 @@ def main() -> int:
         else:
             existing = stage1a_rows + stage1b_rows + stage1c_rows
             stage1_5_rows = run_stage1_5(passages, existing, es, args.collection,
-                                          llm_nothink, args.output,
+                                          llm, args.output,
                                           threshold_factor=cfg.bias_threshold_factor,
                                           target_factor=cfg.bias_gapfill_target_factor,
                                           top_n_chunks=cfg.gapfill_top_n_chunks,

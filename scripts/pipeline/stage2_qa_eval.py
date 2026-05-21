@@ -47,7 +47,7 @@ def refine_row(row: KVPRow, llm: LLMClient) -> Optional[KVPRow]:
     raw = llm.call(QA_EVAL_SYSTEM,
                    QA_EVAL_USER.format(question=row.question, answer=row.answer,
                                        context=row.context),
-                   max_tokens=512)
+                   max_tokens=2048)
     if not raw:
         return None
     ev = parse_eval_response(raw)

@@ -12,7 +12,7 @@ from pydantic import ValidationError
 from tqdm import tqdm
 
 from scripts.pipeline.llm_client import LLMClient
-from scripts.pipeline.models import KVPRow, LogEntailment, Passage, QAKeyValuePair
+from scripts.pipeline.models import KVPRow, LogEntailment, LogEntailmentList, Passage, QAKeyValuePair
 from scripts.pipeline.prompts import KVP_SYSTEM, KVP_USER, LE_SYSTEM, LE_USER
 
 log = logging.getLogger(__name__)
@@ -39,14 +39,21 @@ def _extract_json_object(raw: str) -> Optional[dict]:
     return None
 
 
-def parse_le_response(raw: str) -> Optional[LogEntailment]:
+def parse_le_response(raw: str) -> Optional[LogEntailmentList]:
+    """Parse LLM response as a LogEntailmentList (multi-entailment)."""
     obj = _extract_json_object(raw)
     if not obj:
         return None
     try:
-        return LogEntailment(**obj)
+        return LogEntailmentList(**obj)
     except ValidationError:
-        return None
+        # Fallback: if the model returned a single-entailment shape
+        # (legacy/training data), wrap it as a list of one.
+        try:
+            single = LogEntailment(**obj)
+            return LogEntailmentList(entailments=[single])
+        except ValidationError:
+            return None
 
 
 def parse_kvp_response(raw: str) -> Optional[QAKeyValuePair]:
@@ -60,39 +67,41 @@ def parse_kvp_response(raw: str) -> Optional[QAKeyValuePair]:
 
 
 def process_passage_1a(passage: Passage, llm: LLMClient) -> list[KVPRow]:
-    """Run LE → KVP on one passage. Returns up to 3 KVP rows."""
+    """Run LE → KVP on one passage. Multiple entailments per passage; up to 3 KVPs per entailment."""
     rows: list[KVPRow] = []
 
-    le_raw = llm.call(LE_SYSTEM, LE_USER.format(text=passage.text), max_tokens=512)
+    le_raw = llm.call(LE_SYSTEM, LE_USER.format(text=passage.text), max_tokens=8192)
     if not le_raw:
         return rows
-    le = parse_le_response(le_raw)
-    if not le:
-        log.debug("Stage 1A: no valid entailment for %s", passage.passage_id)
+    le_list = parse_le_response(le_raw)
+    if not le_list:
+        log.debug("Stage 1A: no valid entailments for %s", passage.passage_id)
         return rows
 
-    for i, premise in enumerate(le.premises[:3]):
-        kvp_raw = llm.call(
-            KVP_SYSTEM,
-            KVP_USER.format(premise=premise, conclusion=le.conclusion, text=passage.text),
-            max_tokens=256,
-        )
-        if not kvp_raw:
-            continue
-        kvp = parse_kvp_response(kvp_raw)
-        if not kvp:
-            continue
-        rows.append(KVPRow(
-            passage_id=passage.passage_id,
-            source_url=passage.url,
-            product_family=passage.product_family,
-            stage="1a",
-            premise_index=i,
-            question=kvp.question.strip(),
-            answer=kvp.answer.strip(),
-            context=passage.text,
-            refined=False,
-        ))
+    for ent_idx, ent in enumerate(le_list.entailments):
+        for prem_idx, premise in enumerate(ent.premises[:3]):
+            kvp_raw = llm.call(
+                KVP_SYSTEM,
+                KVP_USER.format(premise=premise, conclusion=ent.conclusion, text=passage.text),
+                max_tokens=4096,
+            )
+            if not kvp_raw:
+                continue
+            kvp = parse_kvp_response(kvp_raw)
+            if not kvp:
+                continue
+            rows.append(KVPRow(
+                passage_id=passage.passage_id,
+                source_url=passage.url,
+                product_family=passage.product_family,
+                stage="1a",
+                entailment_index=ent_idx,
+                premise_index=prem_idx,
+                question=kvp.question.strip(),
+                answer=kvp.answer.strip(),
+                context=passage.text,
+                refined=False,
+            ))
     return rows
 
 

@@ -150,7 +150,7 @@ def gapfill_one_call(
     raw = llm.call(
         "You are a precise NVIDIA technical assistant. Generate Q+A pairs grounded ONLY in the provided documentation chunks. Return JSON only.",
         prompt,
-        max_tokens=2048,
+        max_tokens=4096,
     )
     if not raw:
         return []

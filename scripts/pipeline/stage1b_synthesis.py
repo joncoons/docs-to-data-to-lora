@@ -89,7 +89,7 @@ def process_passage_1b(
     context = build_neighborhood_context(passage.text, neighbors, max_tokens=max_context_tokens)
     raw = llm.call(SYNTHESIS_SYSTEM,
                    SYNTHESIS_USER.format(domain=domain, neighborhood_context=context),
-                   max_tokens=1024)
+                   max_tokens=4096)
     if not raw:
         return []
 
