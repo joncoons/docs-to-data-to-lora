@@ -1,12 +1,15 @@
 """Tests for orchestrator — wave structure and pair enumeration."""
 from itertools import combinations
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 from scripts.eval.register_evaluator_entities import AdapterRow
 from scripts.eval.run_evaluation_matrix import (
     build_pairwise_jobs,
     build_singleaxis_jobs,
     submit_wave,
+    wait_all,
 )
 
 
@@ -113,3 +116,15 @@ def test_submit_wave_invokes_client_per_job():
 
     assert ids == ["ej-000", "ej-001", "ej-002"]
     assert client.submit_job.call_count == 3
+
+
+def test_wait_all_aborts_after_consecutive_failures():
+    """If a job fails to poll N times in a row, raise RuntimeError."""
+    client = MagicMock()
+    client.get_status.side_effect = ConnectionError("network down")
+
+    with patch("scripts.eval.run_evaluation_matrix.time.sleep"):
+        with pytest.raises(RuntimeError, match="consecutive polls"):
+            wait_all(client, job_ids=["ej-001"],
+                     poll_interval=0.0, max_wait_s=60,
+                     max_consecutive_errors=3)

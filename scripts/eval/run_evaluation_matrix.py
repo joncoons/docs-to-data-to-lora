@@ -82,7 +82,11 @@ def build_pairwise_jobs(adapters: list[AdapterRow],
         for a, b in combinations(rows, 2):
             jobs.append({
                 "config": config_name,
-                "target": f"default/{a.name}",  # primary; pair is in extra
+                # Evaluator job submission requires a `target` field; for
+                # pairwise we conventionally set it to target_a. The actual
+                # pair lives in `extra.target_a` and `extra.target_b` — the
+                # judge config handles the pairwise logic, not this `target`.
+                "target": f"default/{a.name}",
                 "dataset": _DATASET_FOR_COLLECTION[coll],
                 "extra": {
                     "target_a": f"default/{a.name}",
@@ -102,16 +106,34 @@ def submit_wave(client: EvaluatorClient, jobs: list[dict]) -> list[str]:
 
 def wait_all(client: EvaluatorClient, job_ids: list[str],
              poll_interval: float = 30.0,
-             max_wait_s: float = 6 * 3600) -> dict[str, EvalJobStatus]:
+             max_wait_s: float = 6 * 3600,
+             max_consecutive_errors: int = 10) -> dict[str, EvalJobStatus]:
+    """Poll until every job_id is terminal or the deadline expires.
+
+    Per-job consecutive-error counter: if any single job_id fails to poll
+    `max_consecutive_errors` times in a row, abort with RuntimeError so a
+    misconfigured URL / auth doesn't silently burn the entire deadline.
+    A successful poll resets the counter for that job_id.
+    """
     deadline = time.monotonic() + max_wait_s
     pending = set(job_ids)
     final: dict[str, EvalJobStatus] = {}
+    consecutive_errors: dict[str, int] = {jid: 0 for jid in job_ids}
     while pending and time.monotonic() < deadline:
         for jid in list(pending):
             try:
                 s = client.get_status(jid)
+                consecutive_errors[jid] = 0
             except Exception as e:
-                log.warning("poll error on %s: %s", jid, e)
+                consecutive_errors[jid] += 1
+                log.warning("poll error on %s (%d/%d consecutive): %s",
+                            jid, consecutive_errors[jid],
+                            max_consecutive_errors, e)
+                if consecutive_errors[jid] >= max_consecutive_errors:
+                    raise RuntimeError(
+                        f"Job {jid} failed {max_consecutive_errors} "
+                        f"consecutive polls; aborting wait_all"
+                    ) from e
                 continue
             if s in {EvalJobStatus.COMPLETED, EvalJobStatus.FAILED,
                      EvalJobStatus.CANCELLED}:
