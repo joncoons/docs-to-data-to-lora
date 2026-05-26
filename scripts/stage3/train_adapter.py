@@ -7,6 +7,10 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
 from scripts.stage3.customizer_client import CustomizerClient, JobStatus
 from scripts.stage3.models import AdapterSpec
 
