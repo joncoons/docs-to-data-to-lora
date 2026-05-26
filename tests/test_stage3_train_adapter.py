@@ -120,6 +120,37 @@ def test_build_config_rank32_doubles_alpha_and_adapter_dim():
     assert lora["alpha"] == 64
 
 
+def test_template_map_includes_all_three_bases():
+    """_TEMPLATE_FOR_BASE covers 1B (low-param baseline), 3B, and 8B."""
+    assert _TEMPLATE_FOR_BASE["meta/llama-3.2-1b-instruct"] == \
+        "meta/llama-3.2-1b-instruct@v1.0.0+80GB"
+    assert _TEMPLATE_FOR_BASE["meta/llama-3.2-3b-instruct"] == \
+        "meta/llama-3.2-3b-instruct@v1.0.0+80GB"
+    assert _TEMPLATE_FOR_BASE["meta/llama-3.1-8b-instruct"] == \
+        "meta/llama-3.1-8b-instruct@v1.0.0+80GB"
+
+
+def test_build_config_for_1b_base():
+    """1B base resolves to its template and the wire schema stays consistent."""
+    spec = AdapterSpec(
+        adapter_name="lora-nim-llama-3.2-1b-r16",
+        collection="nim_curated",
+        base_model="meta/llama-3.2-1b-instruct",
+        rank=16,
+        alpha=32,
+    )
+    cfg = build_customizer_config(
+        spec,
+        base_template=_TEMPLATE_FOR_BASE["meta/llama-3.2-1b-instruct"],
+        dataset_entity=_DATASET_FOR_COLLECTION["nim_curated"],
+        output_model_entity="default/lora-nim-llama-3.2-1b-r16",
+        description="test",
+    )
+    assert cfg["config"] == "meta/llama-3.2-1b-instruct@v1.0.0+80GB"
+    assert cfg["hyperparameters"]["lora"]["adapter_dim"] == 16
+    assert cfg["hyperparameters"]["lora"]["alpha"] == 32
+
+
 def test_dataset_entity_for_nemo_usvcs():
     """nemo_usvcs_curated collection maps to its own dataset entity."""
     spec = AdapterSpec(

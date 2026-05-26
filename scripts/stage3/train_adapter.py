@@ -24,6 +24,7 @@ _DATASET_FOR_COLLECTION = {
 
 # Map base model slug → NeMo Customizer config template ref.
 _TEMPLATE_FOR_BASE = {
+    "meta/llama-3.2-1b-instruct": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
     "meta/llama-3.2-3b-instruct": "meta/llama-3.2-3b-instruct@v1.0.0+80GB",
     "meta/llama-3.1-8b-instruct": "meta/llama-3.1-8b-instruct@v1.0.0+80GB",
 }
