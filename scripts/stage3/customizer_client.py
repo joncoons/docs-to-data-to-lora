@@ -54,13 +54,13 @@ class CustomizerClient:
 
     def submit_job(self, config: dict) -> str:
         """POST a Customizer job. Returns the job id."""
-        resp = self._http.post("/v1/customizations/jobs", json=config)
+        resp = self._http.post("/v1/customization/jobs", json=config)
         resp.raise_for_status()
         body = resp.json()
         return body["id"]
 
     def get_status(self, job_id: str) -> JobStatus:
-        resp = self._http.get(f"/v1/customizations/jobs/{job_id}")
+        resp = self._http.get(f"/v1/customization/jobs/{job_id}")
         resp.raise_for_status()
         raw_status = resp.json()["status"].lower()
         if raw_status not in _STATUS_MAP:
@@ -68,7 +68,7 @@ class CustomizerClient:
         return _STATUS_MAP[raw_status]
 
     def get_output_path(self, job_id: str) -> Optional[str]:
-        resp = self._http.get(f"/v1/customizations/jobs/{job_id}")
+        resp = self._http.get(f"/v1/customization/jobs/{job_id}")
         resp.raise_for_status()
         body = resp.json()
         return body.get("output", {}).get("path") or body.get("output_path")
