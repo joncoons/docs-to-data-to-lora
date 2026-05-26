@@ -1,0 +1,39 @@
+# Stage 3 Training Session — 2026-05-26
+
+All 12 LoRA adapters trained on NeMo Customizer 25.12 (single Blackwell GPU per job, 2 epochs, batch_size=16, lr=1e-4).
+
+## NIM corpus (4,631 train / 242 val)
+
+| Adapter                       | Job ID                          | train_loss | val_loss | Wall-clock |
+|-------------------------------|---------------------------------|-----------:|---------:|-----------:|
+| lora-nim-llama-3.2-1b-r16     | cust-4ZAeo52JkJuGX9vMQEmNhq     |     1.374  |   1.684  |  ~9 min    |
+| lora-nim-llama-3.2-1b-r32     | cust-ARpE6Wu1A4qbf7FrBdxsa2     |     1.203  |   1.605  |  ~9 min    |
+| lora-nim-llama-3.2-3b-r16     | cust-96dMd4ziS1inhYUG7Q8nBM     |     1.204  |   1.506  | ~12 min    |
+| lora-nim-llama-3.2-3b-r32     | cust-Uhnw7a8S9SVa3QjSzk2HQ7     |     1.062  |   1.442  | ~14 min    |
+| lora-nim-llama-3.1-8b-r16     | cust-At9ZxBfKWpfAzsLXFJdMoq     |     0.967  |   1.311  | ~18 min    |
+| lora-nim-llama-3.1-8b-r32     | cust-CV6exBtzt74XjVtRSvAn8v     |     0.804  |   1.269  | ~18 min    |
+
+## NeMo USvcs corpus (3,957 train / 208 val)
+
+| Adapter                          | Job ID                          | train_loss | val_loss | Wall-clock |
+|----------------------------------|---------------------------------|-----------:|---------:|-----------:|
+| lora-nemo-usvcs-llama-3.2-1b-r16 | cust-2gR8GjjN1mgCih5YtX19Lr     |     0.956  |   1.319  |  ~9 min    |
+| lora-nemo-usvcs-llama-3.2-1b-r32 | cust-DSHGidZHrfYFdyuhA6tSZA     |     0.791  |   1.223  |  ~9 min    |
+| lora-nemo-usvcs-llama-3.2-3b-r16 | cust-6aUDUjdjEJbPm6NbHE9L8W     |     0.815  |   1.157  | ~14 min    |
+| lora-nemo-usvcs-llama-3.2-3b-r32 | cust-A73nqs23ruRX2V8Ff5FfxG     |     0.699  |   1.088  | ~14 min    |
+| lora-nemo-usvcs-llama-3.1-8b-r16 | cust-6nyqXvjP8nP74fpM8UkJnH     |     0.674  |   0.991  | ~16 min    |
+| lora-nemo-usvcs-llama-3.1-8b-r32 | cust-MJPMPL3gnS6jhKwMavExyB     |     0.576  |   0.947  | ~16 min    |
+
+## Storage
+
+All adapters stored in NeMo Data Store:
+- Repo path:    `default/<adapter-name>`
+- Revision:     `<job-id>` (Git tag)
+- Files URL:    `http://nemo-data-store:3000/v1/hf/default/<adapter-name>/resolve/<job-id>/<filename>`
+- Entity ref:   `default/<adapter-name>@<job-id>` (Entity Store)
+
+Each adapter contains both HF PEFT format (adapter_model.safetensors + adapter_config.json) and
+NeMo distcp format (weights/__0_*.distcp + context/), enabling NIM-direct serving or further
+NeMo workflows.
+
+## Total wall-clock: ~110 minutes for all 12 adapters.
