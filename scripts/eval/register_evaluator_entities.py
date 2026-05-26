@@ -1,8 +1,13 @@
-"""Register NeMo Evaluator datasets, targets, and configs for Stage 3 eval.
+"""Register NeMo Evaluator targets and configs for Stage 3 eval.
 
-Pure builder functions are unit-tested; the CLI wires them to the real
-EvaluatorClient and POSTs. Idempotent (re-running checks for existing
-entities).
+Pure builder functions (target/config payloads + build_dataset_payload) are
+unit-tested; the CLI wires the Evaluator builders to the live EvaluatorClient
+and POSTs. Idempotent on re-run (HTTP 409 "already exists" warnings are
+logged and skipped).
+
+Note: datasets are NOT Evaluator entities — they live in entity-store and are
+registered by operational Task 9. build_dataset_payload is exported here so
+the operational task can re-use the canonical payload shape.
 """
 from __future__ import annotations
 
@@ -119,6 +124,15 @@ def build_rag_target(collection: str, rag_url: str) -> dict:
 
 
 def build_dataset_payload(collection: str, files_url: str) -> dict:
+    """Build the JSON payload for an entity-store dataset registration.
+
+    Note: datasets live in NeMo Entity Store (not Evaluator). This payload is
+    POSTed to http://nemo-entity-store:8000/v1/datasets by operational Task 9
+    (after uploading the test_set.jsonl files to NeMo Data Store via the HF
+    Hub API). This script's CLI does NOT register datasets — it only handles
+    Evaluator-owned targets and configs. The builder is exported so the
+    operational task can re-use it.
+    """
     return {
         "name": f"stage3-{collection.replace('_','-')}-test",
         "namespace": "default",
@@ -222,6 +236,37 @@ def load_adapters_from_log(log_path: Path) -> list[AdapterRow]:
     return rows
 
 
+# --- idempotent create helpers ----------------------------------------
+
+def _create_target_idempotent(client: EvaluatorClient, payload: dict,
+                               label: str) -> None:
+    """POST a target; tolerate 409 (already exists), re-raise everything else."""
+    import httpx
+    try:
+        tid = client.create_target(payload)
+        log.info("%s target id=%s name=%s", label, tid, payload["name"])
+    except httpx.HTTPStatusError as e:
+        if e.response.status_code == 409:
+            log.warning("%s target already exists, skipping: %s",
+                        label, payload["name"])
+        else:
+            raise
+
+
+def _create_config_idempotent(client: EvaluatorClient, payload: dict) -> None:
+    """POST a config; tolerate 409 (already exists), re-raise everything else."""
+    import httpx
+    try:
+        cid = client.create_config(payload)
+        log.info("config id=%s name=%s", cid, payload["name"])
+    except httpx.HTTPStatusError as e:
+        if e.response.status_code == 409:
+            log.warning("config already exists, skipping: %s",
+                        payload["name"])
+        else:
+            raise
+
+
 # --- CLI --------------------------------------------------------------
 
 def main() -> int:
@@ -268,39 +313,19 @@ def main() -> int:
         if args.adapter_targets:
             for a in adapters:
                 p = build_adapter_target(a, nim_url=nim_url_for[a.base_model])
-                try:
-                    tid = client.create_target(p)
-                    log.info("adapter target id=%s name=%s", tid, p["name"])
-                except Exception as e:
-                    log.warning("adapter target create failed name=%s: %s",
-                                p["name"], e)
+                _create_target_idempotent(client, p, label="adapter")
         if args.base_targets:
             for base, url in base_url_for.items():
                 p = build_base_target(base, nim_url=url)
-                try:
-                    tid = client.create_target(p)
-                    log.info("base target id=%s name=%s", tid, p["name"])
-                except Exception as e:
-                    log.warning("base target create failed name=%s: %s",
-                                p["name"], e)
+                _create_target_idempotent(client, p, label="base")
         if args.rag_targets:
             for coll in ("nim_curated", "nemo_usvcs_curated"):
                 p = build_rag_target(coll, rag_url=args.rag_url)
-                try:
-                    tid = client.create_target(p)
-                    log.info("rag target id=%s name=%s", tid, p["name"])
-                except Exception as e:
-                    log.warning("rag target create failed name=%s: %s",
-                                p["name"], e)
+                _create_target_idempotent(client, p, label="rag")
         if args.configs:
             for builder in (build_singleaxis_config, build_pairwise_config):
                 p = builder()
-                try:
-                    cid = client.create_config(p)
-                    log.info("config id=%s name=%s", cid, p["name"])
-                except Exception as e:
-                    log.warning("config create failed name=%s: %s",
-                                p["name"], e)
+                _create_config_idempotent(client, p)
     return 0
 
 

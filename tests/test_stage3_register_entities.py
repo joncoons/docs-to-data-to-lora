@@ -112,3 +112,17 @@ def test_adapter_row_from_log_line():
     assert row.job_id == "cust-96dMd4ziS1inhYUG7Q8nBM"
     assert row.base_model == "meta/llama-3.2-3b-instruct"
     assert row.collection == "nim_curated"
+
+
+def test_adapter_row_from_log_line_raises_on_malformed():
+    """Lines without pipe delimiters or missing cells must raise ValueError."""
+    with pytest.raises(ValueError, match="Cannot parse row"):
+        AdapterRow.from_log_line("not a pipe-delimited row at all",
+                                  collection="nim_curated")
+
+
+def test_adapter_row_from_log_line_raises_on_unknown_size():
+    """An adapter name whose size suffix isn't 1B/3B/8B must raise ValueError."""
+    bad = "| lora-nim-llama-9.9-99b-r16 | cust-xyz | 1.0 | 1.0 | ~5 min |"
+    with pytest.raises(ValueError, match="Unknown base size in name"):
+        AdapterRow.from_log_line(bad, collection="nim_curated")
