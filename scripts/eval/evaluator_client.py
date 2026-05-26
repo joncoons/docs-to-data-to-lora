@@ -1,10 +1,13 @@
 """Thin REST wrapper over NeMo Evaluator's /v1/evaluation/* endpoints."""
 from __future__ import annotations
 
+import logging
 import time
 from enum import Enum
 
 import httpx
+
+log = logging.getLogger(__name__)
 
 
 class EvalJobStatus(Enum):
@@ -66,6 +69,7 @@ class EvaluatorClient:
         deadline = time.monotonic() + max_wait_s
         while time.monotonic() < deadline:
             s = self.get_status(job_id)
+            log.info("evaluator job %s status: %s", job_id, s.value)
             if s in _TERMINAL:
                 return s
             time.sleep(poll_interval)

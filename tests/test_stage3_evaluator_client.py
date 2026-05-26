@@ -60,6 +60,8 @@ def test_get_status_normalizes_to_enum():
     ("completed", EvalJobStatus.COMPLETED),
     ("failed",    EvalJobStatus.FAILED),
     ("cancelled", EvalJobStatus.CANCELLED),
+    ("queued",    EvalJobStatus.PENDING),     # alias
+    ("ready",     EvalJobStatus.COMPLETED),   # alias
 ])
 def test_status_enum_mapping(raw, expected):
     client = EvaluatorClient(base_url="http://test:7331")
@@ -95,3 +97,13 @@ def test_get_results_calls_results_endpoint():
         r = client.get_results("ej-001")
     assert r == body
     assert mock_get.call_args.args[0] == "/v1/evaluation/jobs/ej-001/results"
+
+
+def test_wait_until_done_raises_timeout_when_never_terminal():
+    """If the deadline expires before any terminal status, raise TimeoutError."""
+    client = EvaluatorClient(base_url="http://test:7331")
+    with patch.object(client._http, "get",
+                      return_value=_mock_resp({"status": "running"})):
+        with patch("scripts.eval.evaluator_client.time.sleep"):
+            with pytest.raises(TimeoutError, match="did not terminate"):
+                client.wait_until_done("ej-x", poll_interval=0.0, max_wait_s=0.0)
