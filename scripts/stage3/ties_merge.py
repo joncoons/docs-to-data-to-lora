@@ -111,7 +111,8 @@ def ties_merge(adapter_dirs: list[Path], out_dir: Path, trim_ratio: float) -> No
     # Verify identical keys
     key_sets = [set(t.keys()) for t in all_tensors]
     if not all(k == key_sets[0] for k in key_sets):
-        diff = key_sets[0].symmetric_difference(*key_sets[1:])
+        from functools import reduce
+        diff = reduce(lambda a, b: a ^ b, key_sets)
         raise ValueError(
             f"Adapters have mismatched keys; symmetric difference (first 5): {list(diff)[:5]}"
         )
@@ -143,22 +144,34 @@ def ties_merge(adapter_dirs: list[Path], out_dir: Path, trim_ratio: float) -> No
         f"({sum(v.numel() for v in merged.values()):,} params)"
     )
 
-    # Copy aux files (adapter_config, tokenizer, chat_template) from the first adapter
-    aux_files = [
-        "adapter_config.json",
+    # Copy aux files from the first adapter.
+    # adapter_config.json is REQUIRED: NIM_PEFT_SOURCE cannot load the merged
+    # adapter without it — raise hard rather than producing a silently broken dir.
+    REQUIRED_AUX = ["adapter_config.json"]
+    OPTIONAL_AUX = [
         "automodel_peft_config.json",
         "tokenizer.json",
         "tokenizer_config.json",
         "special_tokens_map.json",
         "chat_template.jinja",
     ]
-    for f in aux_files:
+    for f in REQUIRED_AUX:
+        src = adapter_dirs[0] / f
+        if not src.exists():
+            raise FileNotFoundError(
+                f"Required aux file {f!r} missing from first source adapter "
+                f"({adapter_dirs[0]}); a merged adapter without {f} cannot be "
+                f"loaded by NIM_PEFT_SOURCE."
+            )
+        shutil.copy2(src, out_dir / f)
+        print(f"  copied {f}")
+    for f in OPTIONAL_AUX:
         src = adapter_dirs[0] / f
         if src.exists():
             shutil.copy2(src, out_dir / f)
             print(f"  copied {f}")
         else:
-            print(f"  WARN: {f} not present in first adapter")
+            print(f"  (optional aux {f} not present, skipping)")
 
 
 def main() -> int:

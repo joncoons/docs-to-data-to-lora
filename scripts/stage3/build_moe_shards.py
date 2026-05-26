@@ -160,7 +160,9 @@ def create_dataset_repo(name: str) -> None:
     )
     if r.status_code in (200, 201):
         print(f"  created {repo_id}")
-    elif "already created" in r.text:
+    elif r.status_code == 409 or "already created" in r.text:
+        # Gitea returns 409 on duplicate repo; keep the text-sniff as a fallback
+        # in case the API version differs.
         print(f"  {repo_id} already exists")
     else:
         print(f"  create_repo failed [{r.status_code}]: {r.text}")
