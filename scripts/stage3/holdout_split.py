@@ -141,6 +141,86 @@ def _attach_uids(kvps: list[dict]) -> None:
             k["kvp_uid"] = kvp_uid(k.get("passage_id", ""), k.get("question", ""))
 
 
+def _enrich_from_stage2_eval(kvps: list[dict], collection_dir: Path) -> None:
+    """Mutate kvps in-place: attach stage/passage_id/question from stage2_eval.jsonl.
+
+    training.jsonl and validation.jsonl are written in the simplified customizer
+    format {prompt, completion, system} — they lack stage, passage_id, and question.
+    stage2_eval.jsonl is the full-metadata union of all curated KVPs; we join on
+    question == prompt to recover those fields.
+
+    The original customizer dict is stashed in _customizer_row so output files can
+    be re-serialised without metadata fields.
+
+    Rows that already carry stage/passage_id (e.g. in tests) are left unchanged
+    except for the _customizer_row stash, which falls back to a minimal dict built
+    from question/answer if prompt/completion are absent.
+    """
+    # Separate rows that already have metadata vs those needing enrichment
+    needs_enrich = [k for k in kvps if "stage" not in k]
+    already_enriched = [k for k in kvps if "stage" in k]
+
+    # Rows that already have metadata: stash a _customizer_row preserving all
+    # original fields (test fixtures use question/answer/passage_id directly).
+    for k in already_enriched:
+        k["_customizer_row"] = {key: val for key, val in k.items()
+                                if not key.startswith("_")}
+        k.setdefault("question", k.get("prompt", ""))
+        k.setdefault("passage_id", "")
+
+    if not needs_enrich:
+        return
+
+    stage2_path = collection_dir / "stage2_eval.jsonl"
+    if not stage2_path.exists():
+        log.warning("stage2_eval.jsonl not found in %s; stage/passage_id will be 'unknown'",
+                    collection_dir)
+        for k in needs_enrich:
+            k["stage"] = "unknown"
+            k["passage_id"] = ""
+            k["question"] = k.get("prompt", "")
+            k["_customizer_row"] = {
+                "prompt": k["prompt"],
+                "completion": k["completion"],
+                "system": k.get("system", ""),
+            }
+        return
+
+    meta_by_question: dict[str, dict] = {}
+    for raw in _read_jsonl(stage2_path):
+        q = raw.get("question", "")
+        if q:
+            meta_by_question[q] = raw
+
+    missing = 0
+    for k in needs_enrich:
+        # Stash the customizer-format row before enriching
+        k["_customizer_row"] = {
+            "prompt": k["prompt"],
+            "completion": k["completion"],
+            "system": k.get("system", ""),
+        }
+        prompt = k.get("prompt", "")
+        meta = meta_by_question.get(prompt)
+        if meta:
+            k["stage"] = meta["stage"]
+            k["passage_id"] = meta.get("passage_id", "")
+            k["question"] = meta["question"]
+        else:
+            k["stage"] = "unknown"
+            k["passage_id"] = ""
+            k["question"] = prompt
+            missing += 1
+
+    if missing:
+        log.warning("%d KVPs had no match in stage2_eval.jsonl; stage='unknown'", missing)
+
+
+def _to_customizer_rows(kvps: list[dict]) -> list[dict]:
+    """Return each KVP as its original {prompt, completion, system} customizer dict."""
+    return [k["_customizer_row"] for k in kvps]
+
+
 def run_split(
     collection_dir: Path,
     fraction: float = 0.10,
@@ -154,6 +234,8 @@ def run_split(
     if not all_kvps:
         raise FileNotFoundError(f"No training.jsonl / validation.jsonl in {collection_dir}")
 
+    # Enrich with stage/passage_id metadata before uid assignment (needs question field)
+    _enrich_from_stage2_eval(all_kvps, collection_dir)
     _attach_uids(all_kvps)
     log.info("Loaded %d KVPs total (train=%d, val=%d)",
              len(all_kvps), len(train_in), len(val_in))
@@ -180,9 +262,11 @@ def run_split(
     rng.shuffle(new_train)
     rng.shuffle(new_val)
 
-    _write_jsonl(collection_dir / "adapter_train.jsonl", new_train)
-    _write_jsonl(collection_dir / "adapter_val.jsonl", new_val)
-    _write_jsonl(collection_dir / "test_set.jsonl", test_set)
+    # adapter_train / adapter_val must be in customizer {prompt,completion,system} format
+    _write_jsonl(collection_dir / "adapter_train.jsonl", _to_customizer_rows(new_train))
+    _write_jsonl(collection_dir / "adapter_val.jsonl", _to_customizer_rows(new_val))
+    # test_set retains full metadata for eval scripts
+    _write_jsonl(collection_dir / "test_set.jsonl", [k["_customizer_row"] for k in test_set])
     (collection_dir / "test_kvp_uids.json").write_text(
         json.dumps({"seed": seed, "fraction": fraction,
                     "test_kvp_uids": test_uids}, indent=2)
