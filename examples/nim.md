@@ -250,14 +250,52 @@ curl -sk -u "$ES_USER:$ES_PASS" \
 
 ## Stage 2 dataset
 
-Built via the Stage 2 pipeline against the `nim_curated` ES collection.
-Final stats (after pipeline completes — to be filled in post-smoke-test):
+Built via the Stage 2 pipeline against the `nim_curated` ES collection
+(2,086 chunks → 498 passages after Stage 0 grouping + noise filter).
 
-- Pre-Curator pair count: TBD
-- Post-Curator pair count: TBD
-- Train/val split: 90 / 10
-- Top product_family by KVP count: TBD
-- Products that received Stage 1.5 gap-fill: TBD
+**Runtime**: ~13h 14min end-to-end on the in-cluster super-120b NIM.
 
-(Stats populated after the end-to-end smoke test against the real ES collection
-in Task 19.)
+### Yield through each stage
+
+| Stage | KVPs |
+|---|---:|
+| Stage 1A (LE → KVP, multi-entailment) | ~4,750 |
+| Stage 1B (kNN bridging + contrastive) | ~840 |
+| Stage 1C (instruction diversity) | ~470 |
+| Stage 1.5 (gap-fill) | 0 (no under-represented products flagged) |
+| **Pre-Curator total** | **6,057** |
+| After Stage 2 QA-eval refinement | 5,752 (305 dropped as ungrounded) |
+| After exact dedup | 5,697 |
+| After MinHash fuzzy dedup | 5,695 |
+| After length filter (Q ≥ 8 tok, A ≥ 25 tok) | 5,415 |
+| After answer-subset-of-question filter | **5,413** |
+
+### Train / validation split
+
+- **Training**: 4,870 pairs
+- **Validation**: 543 pairs
+- Ratio: 89.97 / 10.03 (target 90 / 10)
+
+### Top product_family by KVP count
+
+| Family | KVPs |
+|---|---:|
+| `NIM` | 4,990 |
+| `unknown` | 762 |
+
+Coarse `product_family` granularity reflects the rag-crawler's
+`CRAWLER_PRODUCT_URL_MAP` setting for this crawl — every NIM doc URL maps to
+the single `NIM` family. Finer per-product analysis would require either
+extending the URL map or a post-hoc classifier.
+
+### Validation gate (Claude Sonnet 4.6, 99-pair stratified sample)
+
+| Criterion | Pass |
+|---|---:|
+| Grounded | 96 / 99 |
+| Answer fidelity | 97 / 99 |
+| No hallucination | 95 / 99 |
+| **All three** | **93 / 99 = 93.9%** ✅ |
+| Threshold | 90% |
+
+**Verdict**: PASSED. 6 pairs flagged for spot-check.

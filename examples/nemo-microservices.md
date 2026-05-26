@@ -195,14 +195,55 @@ include the standalone portals, exclude the microservices subdirs.
 
 ## Stage 2 dataset
 
-Built via the Stage 2 pipeline against the `nemo_usvcs_curated` ES collection.
-Final stats (after pipeline completes — to be filled in post-smoke-test):
+Built via the Stage 2 pipeline against the `nemo_usvcs_curated` ES collection
+(1,289 chunks → 486 passages after Stage 0 grouping + noise filter).
 
-- Pre-Curator pair count: TBD
-- Post-Curator pair count: TBD
-- Train/val split: 90 / 10
-- Top product_family by KVP count: TBD
-- Products that received Stage 1.5 gap-fill: TBD
+**Runtime**: ~12h 10min end-to-end on the in-cluster super-120b NIM.
 
-(Stats populated after the end-to-end smoke test against the real ES collection
-in Task 19.)
+### Yield through each stage
+
+| Stage | KVPs |
+|---|---:|
+| Stage 1A (LE → KVP, multi-entailment) | ~4,790 |
+| Stage 1B (kNN bridging + contrastive) | ~890 |
+| Stage 1C (instruction diversity) | ~330 |
+| Stage 1.5 (gap-fill) | 0 (no under-represented products flagged) |
+| **Pre-Curator total** | **6,009** |
+| After Stage 2 QA-eval refinement | 5,721 (288 dropped as ungrounded) |
+| After exact dedup | 5,017 (-704 — high repetition across endpoint pages) |
+| After MinHash fuzzy dedup | 4,956 |
+| After length filter (Q ≥ 8 tok, A ≥ 25 tok) | 4,636 |
+| After answer-subset-of-question filter | **4,627** |
+
+The large exact-dedup drop (12%, vs ~1% for NIM) reflects the NeMo Microservices
+docs' repeated setup/auth sections across multiple endpoint pages — the synthetic
+Q&A pairs converged on similar wording for those repeated steps.
+
+### Train / validation split
+
+- **Training**: 4,162 pairs
+- **Validation**: 465 pairs
+- Ratio: 89.95 / 10.05 (target 90 / 10)
+
+### Top product_family by KVP count
+
+| Family | KVPs |
+|---|---:|
+| `NeMo Microservices` | 5,696 |
+| `unknown` | 25 |
+
+Single-product crawl: every NeMo Microservices doc URL maps to the
+`NeMo Microservices` family in `CRAWLER_PRODUCT_URL_MAP`. The 25 `unknown`
+chunks are URLs that fell outside the crawler's prefix map.
+
+### Validation gate (Claude Sonnet 4.6, 100-pair stratified sample)
+
+| Criterion | Pass |
+|---|---:|
+| Grounded | 98 / 100 |
+| Answer fidelity | **100 / 100** (perfect) |
+| No hallucination | 97 / 100 |
+| **All three** | **95 / 100 = 95.0%** ✅ |
+| Threshold | 90% |
+
+**Verdict**: PASSED. 5 pairs flagged for spot-check.
