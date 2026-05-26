@@ -97,3 +97,35 @@ def test_run_split_writes_all_outputs(tmp_path):
     passages_in_remaining = {k["passage_id"] for k in train + val}
     assert len(passages_in_remaining) == 20  # all 20 passages still represented
     assert result["test_set_size"] == 4
+
+
+def test_pick_test_kvp_uids_swap_target_with_pid_total_one():
+    """Regression: swap candidates must not deplete their own passage.
+
+    Construct a corpus where the natural swap target (sorted first in the
+    stage pool) has pid_total=1. The fix requires the swap to skip that
+    candidate and select the next one with pid_total > 1 instead.
+
+    Corpus layout:
+      p0: 1 KVP  (p0_q0) — can be sampled initially, triggering a swap
+      p1: 1 KVP  (p1_q0) — sorted before p2 uids; buggy code picks this
+      p2: 2 KVPs (p2_q0, p2_q1) — correct swap target
+
+    With fraction=0.25 and n=1, if p0_q0 is initially sampled it needs a
+    swap (pid_selected[p0]=1 == pid_total[p0]=1). The buggy code finds
+    p1_q0 first (alphabetically); the fixed code skips p1 (pid_total=1)
+    and picks p2_q0 instead.  seed=2 reliably selects p0_q0 initially.
+    """
+    kvps = [
+        {"kvp_uid": "p0_q0", "passage_id": "p0", "stage": "1a"},
+        {"kvp_uid": "p1_q0", "passage_id": "p1", "stage": "1a"},
+        {"kvp_uid": "p2_q0", "passage_id": "p2", "stage": "1a"},
+        {"kvp_uid": "p2_q1", "passage_id": "p2", "stage": "1a"},
+    ]
+    # seed=2 with fraction=0.25 → n=1, p0_q0 initially sampled → swap fires
+    for seed in [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]:
+        picked = pick_test_kvp_uids(kvps, fraction=0.25, seed=seed)
+        assert "p1_q0" not in picked, (
+            f"seed={seed}: p1_q0 selected — would fully deplete passage p1. "
+            f"Swap candidate filter must skip single-KVP passages."
+        )

@@ -86,7 +86,9 @@ def pick_test_kvp_uids(kvps: list[dict], fraction: float, seed: int) -> list[str
             stage = uid_to_stage[uid]
             swap: str | None = None
             for candidate_uid in by_stage_sorted[stage]:
-                if candidate_uid not in picked_set and uid_to_pid[candidate_uid] != pid:
+                if (candidate_uid not in picked_set
+                        and uid_to_pid[candidate_uid] != pid
+                        and pid_total.get(uid_to_pid[candidate_uid], 1) > 1):
                     swap = candidate_uid
                     break
             if swap is not None:
