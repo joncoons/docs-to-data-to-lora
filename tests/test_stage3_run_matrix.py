@@ -1,0 +1,130 @@
+"""Tests for orchestrator — wave structure and pair enumeration."""
+from itertools import combinations
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+from scripts.eval.register_evaluator_entities import AdapterRow
+from scripts.eval.run_evaluation_matrix import (
+    build_pairwise_jobs,
+    build_singleaxis_jobs,
+    submit_wave,
+    wait_all,
+)
+
+
+def _adapter(name, base, coll):
+    return AdapterRow(name=name, base_model=base, job_id="cust-x",
+                       collection=coll)
+
+
+def _all_12():
+    out = []
+    for coll, short_coll in [("nim_curated", "nim"),
+                              ("nemo_usvcs_curated", "nemo-usvcs")]:
+        for base_short, base in [
+            ("llama-3.2-1b", "meta/llama-3.2-1b-instruct"),
+            ("llama-3.2-3b", "meta/llama-3.2-3b-instruct"),
+            ("llama-3.1-8b", "meta/llama-3.1-8b-instruct"),
+        ]:
+            for r in (16, 32):
+                out.append(_adapter(f"lora-{short_coll}-{base_short}-r{r}",
+                                     base, coll))
+    return out
+
+
+def test_singleaxis_jobs_count_is_20():
+    """12 adapters (1 ds each) + 3 bases (2 ds each) + 2 RAG (1 ds each) = 20."""
+    jobs = build_singleaxis_jobs(
+        adapters=_all_12(),
+        config_name="default/stage3-singleaxis-rubric",
+    )
+    assert len(jobs) == 20
+
+
+def test_singleaxis_includes_each_adapter_with_matching_corpus():
+    jobs = build_singleaxis_jobs(
+        adapters=_all_12(),
+        config_name="default/stage3-singleaxis-rubric",
+    )
+    for adapter in _all_12():
+        matches = [j for j in jobs
+                   if j["target"] == f"default/{adapter.name}"]
+        assert len(matches) == 1, f"adapter {adapter.name} not 1-job"
+        ds = matches[0]["dataset"]
+        if adapter.collection == "nim_curated":
+            assert "nim-curated-test" in ds
+        else:
+            assert "nemo-usvcs-curated-test" in ds
+
+
+def test_singleaxis_includes_each_base_on_both_corpora():
+    jobs = build_singleaxis_jobs(
+        adapters=_all_12(),
+        config_name="default/stage3-singleaxis-rubric",
+    )
+    # 3 base targets, each appears in 2 jobs
+    base_jobs = [j for j in jobs if j["target"].startswith("default/base-")]
+    assert len(base_jobs) == 6
+    bases_seen = {j["target"] for j in base_jobs}
+    assert len(bases_seen) == 3
+
+
+def test_singleaxis_includes_each_rag_target_once():
+    jobs = build_singleaxis_jobs(
+        adapters=_all_12(),
+        config_name="default/stage3-singleaxis-rubric",
+    )
+    rag_jobs = [j for j in jobs if j["target"].startswith("default/rag-49b-")]
+    assert len(rag_jobs) == 2
+
+
+def test_pairwise_jobs_count_is_30():
+    """C(6,2)=15 pairs per corpus, 2 corpora = 30 jobs."""
+    jobs = build_pairwise_jobs(
+        adapters=_all_12(),
+        config_name="default/stage3-pairwise-tournament",
+    )
+    assert len(jobs) == 30
+
+
+def test_pairwise_pairs_stay_within_corpus():
+    jobs = build_pairwise_jobs(
+        adapters=_all_12(),
+        config_name="default/stage3-pairwise-tournament",
+    )
+    for j in jobs:
+        a = j["extra"]["target_a"]
+        b = j["extra"]["target_b"]
+        # both adapters belong to the same corpus → same prefix-after-lora-
+        # crude check: "lora-nim-" vs "lora-nemo-usvcs-"
+        assert a.startswith("default/lora-")
+        assert b.startswith("default/lora-")
+        a_kind = "nim" if "-nim-" in a else "nemo-usvcs"
+        b_kind = "nim" if "-nim-" in b else "nemo-usvcs"
+        assert a_kind == b_kind, f"cross-corpus pair: {a} vs {b}"
+
+
+def test_submit_wave_invokes_client_per_job():
+    client = MagicMock()
+    client.submit_job.side_effect = [f"ej-{i:03d}" for i in range(3)]
+    jobs = [{"config": "c", "target": "t1", "dataset": "d"},
+            {"config": "c", "target": "t2", "dataset": "d"},
+            {"config": "c", "target": "t3", "dataset": "d"}]
+
+    ids = submit_wave(client, jobs)
+
+    assert ids == ["ej-000", "ej-001", "ej-002"]
+    assert client.submit_job.call_count == 3
+
+
+def test_wait_all_aborts_after_consecutive_failures():
+    """If a job fails to poll N times in a row, raise RuntimeError."""
+    client = MagicMock()
+    client.get_status.side_effect = ConnectionError("network down")
+
+    with patch("scripts.eval.run_evaluation_matrix.time.sleep"):
+        with pytest.raises(RuntimeError, match="consecutive polls"):
+            wait_all(client, job_ids=["ej-001"],
+                     poll_interval=0.0, max_wait_s=60,
+                     max_consecutive_errors=3)

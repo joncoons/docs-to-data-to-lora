@@ -1,0 +1,94 @@
+# Stage 3 Training Session — 2026-05-26
+
+All 12 LoRA adapters trained on NeMo Customizer 25.12 (single Blackwell GPU per job, 2 epochs, batch_size=16, lr=1e-4).
+
+## NIM corpus (4,631 train / 242 val)
+
+| Adapter                       | Job ID                          | train_loss | val_loss | Wall-clock |
+|-------------------------------|---------------------------------|-----------:|---------:|-----------:|
+| lora-nim-llama-3.2-1b-r16     | cust-4ZAeo52JkJuGX9vMQEmNhq     |     1.374  |   1.684  |  ~9 min    |
+| lora-nim-llama-3.2-1b-r32     | cust-ARpE6Wu1A4qbf7FrBdxsa2     |     1.203  |   1.605  |  ~9 min    |
+| lora-nim-llama-3.2-3b-r16     | cust-96dMd4ziS1inhYUG7Q8nBM     |     1.204  |   1.506  | ~12 min    |
+| lora-nim-llama-3.2-3b-r32     | cust-Uhnw7a8S9SVa3QjSzk2HQ7     |     1.062  |   1.442  | ~14 min    |
+| lora-nim-llama-3.1-8b-r16     | cust-At9ZxBfKWpfAzsLXFJdMoq     |     0.967  |   1.311  | ~18 min    |
+| lora-nim-llama-3.1-8b-r32     | cust-CV6exBtzt74XjVtRSvAn8v     |     0.804  |   1.269  | ~18 min    |
+
+## NeMo USvcs corpus (3,957 train / 208 val)
+
+| Adapter                          | Job ID                          | train_loss | val_loss | Wall-clock |
+|----------------------------------|---------------------------------|-----------:|---------:|-----------:|
+| lora-nemo-usvcs-llama-3.2-1b-r16 | cust-2gR8GjjN1mgCih5YtX19Lr     |     0.956  |   1.319  |  ~9 min    |
+| lora-nemo-usvcs-llama-3.2-1b-r32 | cust-DSHGidZHrfYFdyuhA6tSZA     |     0.791  |   1.223  |  ~9 min    |
+| lora-nemo-usvcs-llama-3.2-3b-r16 | cust-6aUDUjdjEJbPm6NbHE9L8W     |     0.815  |   1.157  | ~14 min    |
+| lora-nemo-usvcs-llama-3.2-3b-r32 | cust-A73nqs23ruRX2V8Ff5FfxG     |     0.699  |   1.088  | ~14 min    |
+| lora-nemo-usvcs-llama-3.1-8b-r16 | cust-6nyqXvjP8nP74fpM8UkJnH     |     0.674  |   0.991  | ~16 min    |
+| lora-nemo-usvcs-llama-3.1-8b-r32 | cust-MJPMPL3gnS6jhKwMavExyB     |     0.576  |   0.947  | ~16 min    |
+
+## Storage
+
+All adapters stored in NeMo Data Store:
+- Repo path:    `default/<adapter-name>`
+- Revision:     `<job-id>` (Git tag)
+- Files URL:    `http://nemo-data-store:3000/v1/hf/default/<adapter-name>/resolve/<job-id>/<filename>`
+- Entity ref:   `default/<adapter-name>@<job-id>` (Entity Store)
+
+Each adapter contains both HF PEFT format (adapter_model.safetensors + adapter_config.json) and
+NeMo distcp format (weights/__0_*.distcp + context/), enabling NIM-direct serving or further
+NeMo workflows.
+
+## Total wall-clock: ~110 minutes for all 12 adapters.
+
+---
+
+# Stage 3 MoE Task 4.6 — Nemotron-3-Nano-30B-A3B adapters (2026-05-26 → 2026-05-27)
+
+MoE LoRA on `nvidia/nemotron-3-nano-30b-a3b@v1.0+96GB-singleGPU`, 2 epochs, batch_size=8,
+lr=1e-4, α=rank, sequence_packing=false (MoE + Blackwell sm_120 constraint),
+warmup_steps=20 (fitted to small datasets: 62-72 optimizer steps with grad_acc=8).
+Each adapter is the TIES merge (trim_ratio=0.2) of two LoRA shards trained on
+balanced halves of the corresponding curated corpus.
+
+**r=32 abandoned**: cust-U9RnGyiJTxYzGS1Kxrv4bD (nim r=32 shard-a) diverged at
+end-of-warmup (loss → 9.0, grad_norm → 1632 at step 18) with α=rank=32, lr=1e-4,
+warmup=20. Same dataset/recipe at r=16 trains cleanly. See memory
+`feedback_nemotron_nano_r32_divergence` for the divergence trace.
+
+## NIM corpus (Round 1, 2026-05-26)
+
+Round 1 produced on 2026-05-26 19:50 prior to the customizer-output NFS deadlock
+incident and the subsequent reboot. Source shard job IDs are no longer in the
+customizer 100-job window (rolled off after the reboot event).
+
+| Adapter                                  | Source job IDs       | train_loss | val_loss | Wall-clock |
+|------------------------------------------|----------------------|-----------:|---------:|-----------:|
+| lora-nim-nemotron-nano-30b-r16           | (rolled off API)     |       n/a  |    n/a   |    n/a     |
+
+On-disk artifact: `/mnt/nvme2/peft/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/`
+(adapter_model.safetensors = 885 MB, mtime 2026-05-26 19:50:42).
+
+## NeMo USvcs corpus (2026-05-27, post-reboot serial r=16 run)
+
+| Shard                                          | Job ID                          | train_loss | val_loss | Wall-clock |
+|------------------------------------------------|---------------------------------|-----------:|---------:|-----------:|
+| lora-nemo-usvcs-nemotron-nano-30b-r16-shard-a  | cust-4dLpWrjfy2GUn14StTnnVY     |    0.488   |   1.042  |  ~87 min   |
+| lora-nemo-usvcs-nemotron-nano-30b-r16-shard-b  | cust-LPb2TVBgLXKJn7mrBNpwLb     |    0.545   |   1.060  |  ~90 min   |
+| **TIES-merged**: lora-nemo-usvcs-nemotron-nano-30b-r16 (trim_ratio=0.2) — `/mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/` |
+
+On-disk artifact: `/mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/`
+(adapter_model.safetensors = 886 MB, mtime 2026-05-27 05:55:37).
+
+## MoE wall-clock summary
+
+- Round 1 nim r=16 (2026-05-26): ~3h (job IDs rolled off; not recoverable)
+- Round 2 nim r=32 a+b attempts (2026-05-27 00:50): wedged in NFS post-training output copy → reboot required
+- Post-reboot recovery (2026-05-27 02:22–05:55): ~3.5h including the warmup-validation discovery,
+  r=32 divergence finding, and the serial r=16 nemo-usvcs run + TIES merge
+- Combined MoE wall-clock for the 2 final r=16 adapters: ~6.5h actual; would have been ~3h on a clean run
+
+## Final r=16 MoE adapter inventory
+
+| Adapter | Path | Size | Source |
+|---|---|---|---|
+| lora-nim-nemotron-nano-30b-r16        | `/mnt/nvme2/peft/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/`        | 885 MB | Round 1 (2026-05-26) |
+| lora-nemo-usvcs-nemotron-nano-30b-r16 | `/mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/` | 886 MB | This run (2026-05-27) |
+
