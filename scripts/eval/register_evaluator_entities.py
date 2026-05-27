@@ -34,6 +34,8 @@ _BASE_FROM_SIZE_SLUG = {
     "3.2-1b": "meta/llama-3.2-1b-instruct",
     "3.2-3b": "meta/llama-3.2-3b-instruct",
     "3.1-8b": "meta/llama-3.1-8b-instruct",
+    # MoE base (Stage 3 Nemotron Nano r=16, see training_session.log)
+    "nemotron-nano-30b": "nvidia/nemotron-3-nano-30b-a3b",
 }
 
 
@@ -45,42 +47,69 @@ class AdapterRow:
     collection: str
 
     @classmethod
-    def from_log_line(cls, line: str, collection: str) -> "AdapterRow":
+    def from_log_line(cls, line: str) -> "AdapterRow":
         """Parse one row of evals/training_session.log into AdapterRow.
 
-        Row shape: `| <name> | <job_id> | <train> | <val> | <wallclock> |`
+        Collection is derived from the adapter name prefix (lora-nim-* vs
+        lora-nemo-usvcs-*), not from the surrounding section header — section
+        headers are ambiguous when the MoE inventory table mixes both corpora
+        under one heading.
+
+        Dense-Llama row shape: `| <name> | <job_id> | <train> | <val> | <wall> |`
+        MoE merged-adapter row shape: `| <name> | <path> | <size> | <source> |`
+        Shard rows (`-shard-a` / `-shard-b` suffix) are skipped — only the
+        merged adapter is a usable eval target.
         """
         cells = [c.strip() for c in line.split("|") if c.strip()]
         if len(cells) < 2:
             raise ValueError(f"Cannot parse row: {line!r}")
-        name, job_id = cells[0], cells[1]
-        # Identify base from adapter name suffix: "...-3.2-1b-r16" → 3.2-1b
+        name, second = cells[0], cells[1]
+        if re.search(r"-shard-[ab]$", name):
+            raise ValueError(f"shard row not registrable: {name!r}")
+        # Derive collection from name prefix.
+        if name.startswith("lora-nim-"):
+            collection = "nim_curated"
+        elif name.startswith("lora-nemo-usvcs-"):
+            collection = "nemo_usvcs_curated"
+        else:
+            raise ValueError(f"Cannot derive collection from name: {name!r}")
+        # MoE merged adapter pattern, e.g. "lora-nim-nemotron-nano-30b-r16".
+        # second cell is a filesystem path; use "ties-merged" sentinel for job_id
+        # because Round 1 source customizer ids are not recoverable.
+        m = re.search(r"-(nemotron-nano-30b)-r\d+$", name)
+        if m:
+            return cls(name=name, base_model=_BASE_FROM_SIZE_SLUG[m.group(1)],
+                       job_id="ties-merged", collection=collection)
+        # Dense-Llama pattern, e.g. "lora-nim-llama-3.2-1b-r16"
         m = re.search(r"-(\d\.\d-\d+b)-r\d+$", name)
         if not m:
             raise ValueError(f"Cannot extract base from name: {name!r}")
         size_slug = m.group(1)
         if size_slug not in _BASE_FROM_SIZE_SLUG:
             raise ValueError(f"Unknown base size in name: {name!r}")
-        base = _BASE_FROM_SIZE_SLUG[size_slug]
-        return cls(name=name, base_model=base, job_id=job_id,
-                   collection=collection)
+        return cls(name=name, base_model=_BASE_FROM_SIZE_SLUG[size_slug],
+                   job_id=second, collection=collection)
 
 
 # --- payload builders --------------------------------------------------
 
+# NeMo Evaluator target schema (validated against current /openapi.json):
+# top-level type must be one of model|cached_outputs|retriever|rag|rows|dataset.
+# We use "model" for all three target kinds (adapter, base, RAG-as-model) with
+# the nested ModelInput.api_endpoint (APIEndpointData) carrying the URL and
+# model_id (=OAI model_name routing). A single LoRA-enabled NIM serves both
+# base and adapter via the model_id routing.
+
 def build_adapter_target(row: AdapterRow, nim_url: str) -> dict:
-    rank = row.name.rsplit("-r", 1)[1]
     return {
         "name": row.name,
         "namespace": "default",
-        "description": (
-            f"Stage 3 adapter — {row.collection} × {row.base_model} r{rank}"
-        ),
         "type": "model",
         "model": {
             "api_endpoint": {
                 "url": f"{nim_url.rstrip('/')}/v1/chat/completions",
                 "model_id": row.name,
+                "format": "nim",
             },
         },
     }
@@ -92,33 +121,41 @@ def build_base_target(base_model: str, nim_url: str) -> dict:
     return {
         "name": f"base-{suffix}",
         "namespace": "default",
-        "description": f"Unmodified base reference — {base_model}",
         "type": "model",
         "model": {
             "api_endpoint": {
                 "url": f"{nim_url.rstrip('/')}/v1/chat/completions",
                 "model_id": base_model,
+                "format": "nim",
             },
         },
     }
 
 
 def build_rag_target(collection: str, rag_url: str) -> dict:
-    # "nim_curated" → "nim-curated"  →  "rag-49b-nim-curated"
+    """RAG target — registered as type=model pointing at rag-server /generate.
+
+    The Evaluator's native RAGTargetInput requires a full pipeline definition
+    (retriever + generator + cached_outputs) that's structurally heavier than
+    we need. Simpler: treat the RAG path as a single model endpoint and let
+    rag-server own the retrieval. Per-request collection scoping requires
+    either:
+      (a) a proxy that translates Evaluator's OAI-style request body to
+          rag-server's Prompt schema and injects collection_names=[<coll>], or
+      (b) two rag-server deployments with different default collections.
+    Decide empirically when the first RAG smoke job runs.
+    """
     short = collection.replace("_", "-")
     return {
         "name": f"rag-49b-{short}",
         "namespace": "default",
-        "description": (
-            f"Nemotron-Super-49B with corpus-scoped RAG against "
-            f"{collection} collection"
-        ),
-        "type": "rag",
-        "rag": {
+        "type": "model",
+        "model": {
             "api_endpoint": {
-                "url": f"{rag_url.rstrip('/')}/api/agent/generate/stream",
+                "url": f"{rag_url.rstrip('/')}/generate",
+                "model_id": f"rag-49b-{short}",  # sentinel; rag-server ignores
+                "format": "nim",
             },
-            "collection_name": collection,
         },
     }
 
@@ -185,7 +222,7 @@ def build_singleaxis_config() -> dict:
         "type": "custom",
         "params": {
             "parallelism": 4,
-            "temperature": 0.0,
+            "temperature": 0.0001,  # Evaluator schema requires temperature > 0; greedy-equivalent
             "max_tokens": 600,
             "extra": {
                 "judge_model": "aws/anthropic/bedrock-claude-sonnet-4-6",
@@ -205,7 +242,7 @@ def build_pairwise_config() -> dict:
         "type": "custom",
         "params": {
             "parallelism": 4,
-            "temperature": 0.0,
+            "temperature": 0.0001,  # Evaluator schema requires temperature > 0; greedy-equivalent
             "max_tokens": 300,
             "extra": {
                 "judge_model": "aws/anthropic/bedrock-claude-sonnet-4-6",
@@ -220,20 +257,23 @@ def build_pairwise_config() -> dict:
 # --- adapter inventory from log ---------------------------------------
 
 def load_adapters_from_log(log_path: Path) -> list[AdapterRow]:
-    """Parse evals/training_session.log into AdapterRow list."""
-    rows: list[AdapterRow] = []
-    current_corpus: str | None = None
+    """Parse evals/training_session.log into AdapterRow list.
+
+    Walks all table rows starting with `| lora-`, derives collection from the
+    name itself, dedupes by name (the merged-adapter row may appear in both a
+    corpus section and the final inventory table).
+    """
+    seen: dict[str, AdapterRow] = {}
     for line in log_path.read_text().splitlines():
-        if "## NIM corpus" in line:
-            current_corpus = "nim_curated"
-        elif "## NeMo USvcs corpus" in line:
-            current_corpus = "nemo_usvcs_curated"
-        elif current_corpus and line.startswith("| lora-"):
-            try:
-                rows.append(AdapterRow.from_log_line(line, current_corpus))
-            except ValueError as e:
-                log.debug("skipping row %r: %s", line, e)
-    return rows
+        if not line.startswith("| lora-"):
+            continue
+        try:
+            row = AdapterRow.from_log_line(line)
+        except ValueError as e:
+            log.debug("skipping row %r: %s", line, e)
+            continue
+        seen.setdefault(row.name, row)
+    return list(seen.values())
 
 
 # --- idempotent create helpers ----------------------------------------
@@ -283,13 +323,18 @@ def main() -> int:
                     help="Register 2 RAG targets")
     ap.add_argument("--configs", action="store_true",
                     help="Register both eval configs (singleaxis + pairwise)")
+    # A single LoRA-enabled NIM per base model serves BOTH base-only inference
+    # (request body model=<base_model>) and LoRA-applied inference (model=<adapter>)
+    # via OpenAI-API model routing. No separate base NIM is needed.
     ap.add_argument("--nim-url-1b", default="http://nim-llama-3.2-1b:8000")
     ap.add_argument("--nim-url-3b", default="http://nim-llama-3.2-3b:8000")
     ap.add_argument("--nim-url-8b", default="http://nim-llama-3.1-8b:8000")
-    ap.add_argument("--base-url-1b", default="http://nim-llama-3.2-1b-base:8000")
-    ap.add_argument("--base-url-3b", default="http://nim-llama-3.2-3b-base:8000")
-    ap.add_argument("--base-url-8b", default="http://nim-llama-3.1-8b-base:8000")
-    ap.add_argument("--rag-url", default="http://rag-agent-toolkit.runai-rag:8000")
+    ap.add_argument("--nim-url-nano", default="http://nim-nemotron-nano:8000",
+                    help="Nano-30B-A3B MoE adapter-serving NIM (r=16 LoRA)")
+    ap.add_argument("--rag-url", default="http://rag-server.runai-rag:8081",
+                    help="rag-server /generate base; was rag-agent-toolkit but "
+                         "switched to bypass the agent for per-request collection "
+                         "scoping (see build_rag_target docstring)")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.INFO,
@@ -302,11 +347,15 @@ def main() -> int:
         "meta/llama-3.2-1b-instruct": args.nim_url_1b,
         "meta/llama-3.2-3b-instruct": args.nim_url_3b,
         "meta/llama-3.1-8b-instruct": args.nim_url_8b,
+        "nvidia/nemotron-3-nano-30b-a3b": args.nim_url_nano,
     }
+    # Base targets reuse the same LoRA-enabled NIMs (model-id routing handles
+    # which inference path runs). Nano is intentionally excluded from the
+    # base-target sweep — only its LoRA variant is in scope per Stage 3.
     base_url_for = {
-        "meta/llama-3.2-1b-instruct": args.base_url_1b,
-        "meta/llama-3.2-3b-instruct": args.base_url_3b,
-        "meta/llama-3.1-8b-instruct": args.base_url_8b,
+        "meta/llama-3.2-1b-instruct": args.nim_url_1b,
+        "meta/llama-3.2-3b-instruct": args.nim_url_3b,
+        "meta/llama-3.1-8b-instruct": args.nim_url_8b,
     }
 
     with EvaluatorClient(args.evaluator_url) as client:

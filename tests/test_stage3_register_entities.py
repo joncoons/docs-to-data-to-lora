@@ -104,25 +104,44 @@ def test_pairwise_config_has_position_swap_and_judge():
 # --- AdapterRow round-trip ------------------------------------------------
 
 def test_adapter_row_from_log_line():
-    """Parse one row of evals/training_session.log into AdapterRow."""
+    """Parse a dense-Llama row of evals/training_session.log into AdapterRow."""
     line = ("| lora-nim-llama-3.2-3b-r16     | cust-96dMd4ziS1inhYUG7Q8nBM     "
             "|     1.204  |   1.506  | ~12 min    |")
-    row = AdapterRow.from_log_line(line, collection="nim_curated")
+    row = AdapterRow.from_log_line(line)
     assert row.name == "lora-nim-llama-3.2-3b-r16"
     assert row.job_id == "cust-96dMd4ziS1inhYUG7Q8nBM"
     assert row.base_model == "meta/llama-3.2-3b-instruct"
     assert row.collection == "nim_curated"
 
 
+def test_adapter_row_from_log_line_moe_nano():
+    """Parse a MoE merged-adapter row (Final r=16 MoE adapter inventory)."""
+    line = ("| lora-nemo-usvcs-nemotron-nano-30b-r16 | "
+            "`/mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/` "
+            "| 886 MB | This run (2026-05-27) |")
+    row = AdapterRow.from_log_line(line)
+    assert row.name == "lora-nemo-usvcs-nemotron-nano-30b-r16"
+    assert row.job_id == "ties-merged"
+    assert row.base_model == "nvidia/nemotron-3-nano-30b-a3b"
+    assert row.collection == "nemo_usvcs_curated"
+
+
+def test_adapter_row_from_log_line_skips_shard_rows():
+    """Shard rows (-shard-a / -shard-b) are not registrable eval targets."""
+    line = ("| lora-nemo-usvcs-nemotron-nano-30b-r16-shard-a  | "
+            "cust-4dLpWrjfy2GUn14StTnnVY     |    0.488   |   1.042  |  ~87 min   |")
+    with pytest.raises(ValueError, match="shard row not registrable"):
+        AdapterRow.from_log_line(line)
+
+
 def test_adapter_row_from_log_line_raises_on_malformed():
     """Lines without pipe delimiters or missing cells must raise ValueError."""
     with pytest.raises(ValueError, match="Cannot parse row"):
-        AdapterRow.from_log_line("not a pipe-delimited row at all",
-                                  collection="nim_curated")
+        AdapterRow.from_log_line("not a pipe-delimited row at all")
 
 
 def test_adapter_row_from_log_line_raises_on_unknown_size():
-    """An adapter name whose size suffix isn't 1B/3B/8B must raise ValueError."""
+    """An adapter name whose size suffix isn't 1B/3B/8B/Nano must raise ValueError."""
     bad = "| lora-nim-llama-9.9-99b-r16 | cust-xyz | 1.0 | 1.0 | ~5 min |"
     with pytest.raises(ValueError, match="Unknown base size in name"):
-        AdapterRow.from_log_line(bad, collection="nim_curated")
+        AdapterRow.from_log_line(bad)
