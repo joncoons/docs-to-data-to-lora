@@ -111,6 +111,49 @@ This unblocks Stage 3 Task 4.6 without taking on the Customizer source patch, wh
 prioritized as a future-work item if MoE training becomes part of routine workflow on this
 cluster.
 
+## Final methodology (2026-05-27, post-reboot)
+
+After the original NFS wedge required a node reboot and the resumed run surfaced two
+further issues, the Stage 3 MoE training plan converged on the following recipe. **Use
+this as the canonical Nemotron-3-Nano-30B-A3B MoE LoRA workflow on this hardware**; the
+parallel interleave from [`INTERLEAVED_GPU_SCHEDULING.md`](INTERLEAVED_GPU_SCHEDULING.md)
+is the dense-Llama default but is unsafe here.
+
+**Recipe:**
+
+| Knob | Value | Rationale |
+|---|---|---|
+| ranks | **r=16 only** | r=32 with α=rank=32 diverged at end-of-warmup (loss → 9, grad_norm → 1632 at step 18 of `cust-U9RnGyiJTxYzGS1Kxrv4bD`). 2× trainable params + compressed warmup = unstable. |
+| α | rank (α/r = 1.0) | Validated for nim r=16. α/r=2.0 also diverges (2026-05-19 incident). |
+| lr | 1e-4 | Validated for r=16. If r=32 ever needed, drop to 5e-5 and re-validate. |
+| warmup_steps | **20** uniform | Customizer 25.12 enforces `warmup_steps < lr_decay_steps`. Stage 3 MoE shards yield 62-72 optimizer steps over 2 epochs with grad_acc=8. Was 100 (silently clipped before this validation tightened). |
+| batch_size | 8 | MoE default; not 16 like dense Llama. |
+| epochs | 2 | |
+| sequence_packing_enabled | false | MoE + Blackwell sm_120 constraint. |
+| template | `nvidia/nemotron-3-nano-30b-a3b@v1.0+96GB-singleGPU` | Avoids the FSDP-MoE NCCL gather wedge from the older DP2/EP2 template. |
+
+**Submission pattern:**
+
+- **Fully serial**, one shard at a time, one GPU at a time.
+  - Do **not** dual-lane (r=16 + r=32 on two GPUs) — there is no r=32 lane.
+  - Do **not** parallel-shard within a rank (shard-a + shard-b at the same time) —
+    concurrent 0.9-1.6 GB NFS post-training writes still risk the wedge even at r=16.
+- After both shards reach `status=completed` and the EntityHandler upload finishes,
+  TIES-merge a + b with `trim_ratio=0.2`.
+- Canonical driver: [`moe_serial_r16_orchestrator.py`](moe_serial_r16_orchestrator.py).
+
+**Wall-clock**: ~90 min per shard × 2 shards = ~3h per corpus, plus ~30s TIES merge.
+
+**Verifying success — don't trust `job.status` alone:**
+
+- The Customizer list endpoint (`GET /v1/customization/jobs`) returns
+  `train_loss=null val_loss=null` even for completed jobs; the per-job endpoint
+  (`GET /v1/customization/jobs/{id}`) returns the actual loss values.
+- A worker pod can sit in container state `1/1 Running` indefinitely after the
+  training process has exited with a `ConfigurationException` at second 0. Customizer
+  takes minutes to reconcile this into `job.status=failed`. Confirm by greping pod
+  logs for `ConfigurationException` or `step [0-9]`.
+
 ## Related memory references
 
 - `[[project_customizer_workspace_dir_scratch]]` — the prior v3 fix (workspace_dir → /scratch)

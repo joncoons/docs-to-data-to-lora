@@ -68,7 +68,10 @@ def build_customizer_config_moe(
     Key MoE-specific hyperparameters (validated methodology):
       - α = rank (α/r = 1.0) — dense default α=2r diverges at end-of-warmup
       - batch_size = 8 (not 16 as in dense path)
-      - warmup_steps = 100 (not 30 as in dense path)
+      - warmup_steps = 20 — Customizer 25.12 enforces
+        warmup_steps < lr_decay_steps = epochs * (N/batch_size) // grad_acc(8).
+        Stage 3 MoE shards yield 62 (nemo-usvcs) or 72 (nim) optimizer steps
+        over 2 epochs, so 20 is the largest uniform value that fits with margin.
       - sequence_packing_enabled = false (MoE + Blackwell sm_120 constraint)
     """
     return {
@@ -79,7 +82,7 @@ def build_customizer_config_moe(
         "hyperparameters": {
             "finetuning_type": "lora",
             "training_type": "sft",
-            "warmup_steps": 100,          # MoE: 100 (dense: 30)
+            "warmup_steps": 20,
             "seed": 42,
             "max_steps": -1,
             "optimizer": "adamw_with_cosine_annealing",
