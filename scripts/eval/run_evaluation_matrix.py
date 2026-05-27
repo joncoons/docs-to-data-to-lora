@@ -1,4 +1,5 @@
-"""Orchestrate Wave A (20 single-axis) + Wave B (30 pairwise) Evaluator jobs."""
+"""Orchestrate Wave A (single-axis), Wave B (LoRA-vs-LoRA pairwise), and
+Wave C (49B-RAG vs LoRA pairwise) Evaluator jobs."""
 from __future__ import annotations
 
 import argparse
@@ -27,6 +28,10 @@ _DATASET_FOR_COLLECTION = {
     "nemo_usvcs_curated":   "default/stage3-nemo-usvcs-curated-test",
 }
 
+# Bases that are NOT in the no-LoRA base-target sweep (Stage 3 spec: Nano is
+# LoRA-only because no non-LoRA Nano baseline was requested).
+_BASES_WITHOUT_BASE_TARGET = {"nvidia/nemotron-3-nano-30b-a3b"}
+
 
 def _base_target_name(base_model: str) -> str:
     """meta/llama-3.2-3b-instruct → default/base-llama-3.2-3b-instruct"""
@@ -40,19 +45,24 @@ def _rag_target_name(collection: str) -> str:
 
 def build_singleaxis_jobs(adapters: list[AdapterRow],
                           config_name: str) -> list[dict]:
-    """Return list of 20 single-axis job payloads."""
+    """Return list of single-axis job payloads.
+
+    For the canonical Stage 3 inventory (14 adapters across 4 bases, 2 corpora):
+      - 14 adapter jobs (one per adapter, evaluated on its corpus's test set)
+      -  6 base jobs   (3 bases that have base targets × 2 corpora)
+      -  2 RAG jobs    (49B-RAG × 2 corpora)
+      = 22 jobs total
+    """
     jobs: list[dict] = []
-    # 12 adapter jobs (each on its corpus dataset)
     for a in adapters:
         jobs.append({
             "config": config_name,
             "target": f"default/{a.name}",
             "dataset": _DATASET_FOR_COLLECTION[a.collection],
         })
-    # 3 base targets × 2 corpora = 6 jobs
     seen_bases: set[str] = set()
     for a in adapters:
-        if a.base_model in seen_bases:
+        if a.base_model in seen_bases or a.base_model in _BASES_WITHOUT_BASE_TARGET:
             continue
         seen_bases.add(a.base_model)
         for coll in ("nim_curated", "nemo_usvcs_curated"):
@@ -61,7 +71,6 @@ def build_singleaxis_jobs(adapters: list[AdapterRow],
                 "target": _base_target_name(a.base_model),
                 "dataset": _DATASET_FOR_COLLECTION[coll],
             })
-    # 2 RAG jobs
     for coll in ("nim_curated", "nemo_usvcs_curated"):
         jobs.append({
             "config": config_name,
@@ -73,7 +82,11 @@ def build_singleaxis_jobs(adapters: list[AdapterRow],
 
 def build_pairwise_jobs(adapters: list[AdapterRow],
                         config_name: str) -> list[dict]:
-    """Return list of 30 pairwise job payloads (15 per corpus)."""
+    """Wave B — LoRA-vs-LoRA pairwise within each corpus.
+
+    With 7 LoRAs per corpus (3 Llama r=16 + 3 Llama r=32 + 1 Nano r=16),
+    that's 7C2=21 pairs per corpus × 2 corpora = 42 jobs.
+    """
     by_corpus: dict[str, list[AdapterRow]] = {}
     for a in adapters:
         by_corpus.setdefault(a.collection, []).append(a)
@@ -93,6 +106,30 @@ def build_pairwise_jobs(adapters: list[AdapterRow],
                     "target_b": f"default/{b.name}",
                 },
             })
+    return jobs
+
+
+def build_49b_pairwise_jobs(adapters: list[AdapterRow],
+                            config_name: str) -> list[dict]:
+    """Wave C — 49B-RAG vs every LoRA adapter on the same corpus.
+
+    Per Stage 3 spec, only LoRA-enabled targets are in scope for the 49B
+    comparison (non-LoRA bases excluded). With 7 LoRAs per corpus × 2
+    corpora = 14 jobs.
+    """
+    jobs: list[dict] = []
+    for a in adapters:
+        rag_target = _rag_target_name(a.collection)
+        adapter_target = f"default/{a.name}"
+        jobs.append({
+            "config": config_name,
+            "target": rag_target,  # nominal anchor (see pairwise note above)
+            "dataset": _DATASET_FOR_COLLECTION[a.collection],
+            "extra": {
+                "target_a": rag_target,
+                "target_b": adapter_target,
+            },
+        })
     return jobs
 
 
@@ -153,7 +190,7 @@ def main() -> int:
                     default=_REPO_ROOT / "evals" / "training_session.log")
     ap.add_argument("--out", type=Path,
                     default=_REPO_ROOT / "evals" / "evaluator_job_ids.json")
-    ap.add_argument("--wave", choices=["A", "B", "both"], default="both")
+    ap.add_argument("--wave", choices=["A", "B", "C", "all"], default="all")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.INFO,
@@ -167,7 +204,7 @@ def main() -> int:
         out_map = json.loads(args.out.read_text())
 
     with EvaluatorClient(args.evaluator_url) as client:
-        if args.wave in ("A", "both"):
+        if args.wave in ("A", "all"):
             sa_jobs = build_singleaxis_jobs(
                 adapters, "default/stage3-singleaxis-rubric"
             )
@@ -179,7 +216,7 @@ def main() -> int:
             wait_all(client, sa_ids)
             log.info("Wave A complete")
 
-        if args.wave in ("B", "both"):
+        if args.wave in ("B", "all"):
             pw_jobs = build_pairwise_jobs(
                 adapters, "default/stage3-pairwise-tournament"
             )
@@ -190,6 +227,18 @@ def main() -> int:
             log.info("Wave B submitted; polling for terminal state...")
             wait_all(client, pw_ids)
             log.info("Wave B complete")
+
+        if args.wave in ("C", "all"):
+            c_jobs = build_49b_pairwise_jobs(
+                adapters, "default/stage3-pairwise-tournament"
+            )
+            log.info("submitting Wave C (49B-RAG vs LoRA): %d jobs", len(c_jobs))
+            c_ids = submit_wave(client, c_jobs)
+            out_map["wave_c"] = list(zip(c_ids, c_jobs))
+            args.out.write_text(json.dumps(out_map, indent=2))
+            log.info("Wave C submitted; polling for terminal state...")
+            wait_all(client, c_ids)
+            log.info("Wave C complete")
     return 0
 
 
