@@ -216,6 +216,28 @@ Run one Job per source collection, such as `nim_curated` and
 `nemo_usvcs_curated`, so recrawl retries and delta updates can be tracked as
 separate pipeline child runs.
 
+## Seventh K8s Template: Stage 1A Entailment Shards
+
+Stage 1A entailment extraction is the first implemented sharded LLM Job. It
+reads Stage 0 `passages.jsonl`, assigns passages to indexed pods by stable
+`passage_id` hash, calls the configured OpenAI-compatible NIM endpoint, and
+writes per-shard KVP rows plus `entailments` provenance sidecars.
+
+Artifacts:
+
+```text
+deploy/stage1a-entailment-shards/
+  Containerfile
+  README.md
+  job.yaml
+```
+
+The Job writes shard-specific outputs such as
+`stage1a_le.shard-00000-of-00008.jsonl` and
+`provenance/entailments.shard-00000-of-00008.jsonl`. A follow-on aggregation Job
+should concatenate shard outputs into the monolithic filenames expected by the
+remaining local pipeline stages.
+
 ## K8s Resource Guidance
 
 | Workload | CPU | Memory | GPU | Storage |
@@ -254,9 +276,10 @@ Do not put NodePorts, passwords, or host-specific paths in scripts.
 4. Evaluation matrix orchestration Job. Implemented in `deploy/evaluation-matrix/`.
 5. Dataset registration Job. Implemented in `deploy/dataset-registration/`.
 6. Stage 0 corpus/provenance Job. Implemented in `deploy/stage0-corpus-prep/`.
-7. Stage 1 generation shard Jobs.
-8. Gap analysis Job and Data Designer submission.
-9. Curator service integration.
+7. Stage 1A entailment shard Job. Implemented in `deploy/stage1a-entailment-shards/`.
+8. Stage 1B/1C generation shard Jobs.
+9. Gap analysis Job and Data Designer submission.
+10. Curator service integration.
 
 This order gives immediate operational value while avoiding a large rewrite of
 the source-grounded dataset pipeline.

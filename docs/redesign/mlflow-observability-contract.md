@@ -15,6 +15,7 @@ Use one MLflow parent run per durable dataset/model build.
 ```text
 parent run: <collection>/<build-or-adapter-name>
   child: stage0-corpus-prep
+  child: stage1a-entailment-shard(s)
   child: dataset-lineage
   child: data-designer-gapfill
   child: customizer-training
@@ -99,6 +100,43 @@ Artifacts:
 | `manifests/crawl_run.json` | Crawl/run manifest |
 | `provenance/source_revisions.jsonl` | Source revision sidecar |
 | `provenance/source_chunks.jsonl` | Source chunk sidecar |
+
+## Stage 1A Entailment Extraction
+
+Stage 1A is repository-owned because it turns source passages into logical
+entailments and source-grounded KVP rows. In Kubernetes, each shard should emit
+its own observability files; an aggregation Job can later emit combined metrics
+for the full collection.
+
+Tags:
+
+| Tag | Example |
+|---|---|
+| `pipeline.stage` | `stage1a-le-kvp` |
+| `source_collection` | `nim_curated` |
+| `shard_label` | `shard-00000-of-00008` |
+| `llm_model` | `nvidia/nemotron-3-super-120b-a12b` |
+
+Metrics:
+
+| Metric | Meaning |
+|---|---|
+| `stage1a.passages.input.count` | Total Stage 0 passages visible to the shard |
+| `stage1a.passages.selected.count` | Passages assigned to this shard |
+| `stage1a.rows.count` | KVP rows emitted by the shard |
+| `stage1a.entailments.count` | Distinct entailment IDs emitted |
+| `stage1a.source_revisions.count` | Distinct source revisions referenced |
+| `stage1a.source_chunks.count` | Distinct source chunks referenced |
+| `stage1a.shard.index` | Numeric shard index |
+| `stage1a.shard.count` | Total shard count |
+
+Artifacts:
+
+| Artifact | Source |
+|---|---|
+| `stage1a_le.<shard>.jsonl` | Stage 1A shard KVP rows |
+| `provenance/entailments.<shard>.jsonl` | Entailment provenance sidecar |
+| `passages.jsonl` | Stage 0 input passage artifact reference |
 
 ## Dataset Lineage
 
@@ -297,8 +335,9 @@ Artifacts:
 ## Implementation Order
 
 1. Add Stage 0 corpus prep observability files. Implemented in `deploy/stage0-corpus-prep/`.
-2. Add dataset registration observability files and MLflow export contract. Implemented for the registration Job in `deploy/dataset-registration/`.
-3. Add result collection and MLflow export for Evaluator job results.
-4. Add Customizer exporter reconciliation tags when training is refactored.
-5. Add Data Designer gapfill job IDs and generated-sample lineage.
-6. Add TIES/adapter inspection observability JSON files.
+2. Add Stage 1A entailment shard observability files. Implemented in `deploy/stage1a-entailment-shards/`.
+3. Add dataset registration observability files and MLflow export contract. Implemented for the registration Job in `deploy/dataset-registration/`.
+4. Add result collection and MLflow export for Evaluator job results.
+5. Add Customizer exporter reconciliation tags when training is refactored.
+6. Add Data Designer gapfill job IDs and generated-sample lineage.
+7. Add TIES/adapter inspection observability JSON files.
