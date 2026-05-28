@@ -1,0 +1,25 @@
+# CPU-oriented image for TIES merging LoRA adapter safetensors.
+#
+# Build example:
+#   docker build -f deploy/ties-merge/Containerfile -t docs-to-data-to-lora/ties-merge:latest .
+#
+# Runtime does not install packages. Torch/safetensors are baked into the image.
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir \
+    --index-url https://download.pytorch.org/whl/cpu \
+    torch \
+    && pip install --no-cache-dir safetensors
+
+WORKDIR /app
+COPY scripts /app/scripts
+
+ENTRYPOINT ["python", "scripts/stage3/ties_merge.py"]

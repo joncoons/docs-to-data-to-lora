@@ -96,9 +96,9 @@ class AdapterRow:
 # NeMo Evaluator target schema (validated against /openapi.json): top-level
 # type=model with nested ModelInput.api_endpoint (url + model_id + format).
 #
-# Every Stage 3 target points at the eval-oai-proxy (deploy/rag-oai-proxy/),
-# which routes by model_id to the correct upstream NIM, strips <think>
-# reasoning blocks before returning, and logs per-request usage to stdout.
+# Every Stage 3 target should point at native NeMo NIM Proxy. Payload or
+# response adaptation should be handled by Evaluator target/configuration or
+# Evaluator interceptors before introducing a custom proxy.
 #
 # Target naming convention (post-2026-05-27 redesign):
 #   - LoRA adapters:  lora-{corpus}-{base_short}-r{rank}   (unchanged)
@@ -125,7 +125,7 @@ def build_adapter_target(row: AdapterRow, proxy_url: str) -> dict:
             "api_endpoint": {
                 "url": f"{proxy_url.rstrip('/')}/v1/chat/completions",
                 "model_id": row.name,
-                "format": "openai",
+                "format": "nim",
             },
         },
     }
@@ -141,14 +141,14 @@ def build_base_target(base_model: str, proxy_url: str) -> dict:
             "api_endpoint": {
                 "url": f"{proxy_url.rstrip('/')}/v1/chat/completions",
                 "model_id": target_name,
-                "format": "openai",
+                "format": "nim",
             },
         },
     }
 
 
 def build_49b_target(proxy_url: str) -> dict:
-    """The Nemotron-Super-49B RAG comparator. Registered as a base-style target;
+    """The Nemotron-Super-49B comparator. Registered as a model target;
     corpus pairing is handled by which -with-context dataset it's evaluated on,
     not by duplicating the target."""
     return build_base_target(_NEMOTRON_SUPER_49B_BASE, proxy_url)
@@ -363,13 +363,12 @@ def main() -> int:
     ap.add_argument("--base-targets", action="store_true",
                     help="Register the 3 dense Llama base reference targets")
     ap.add_argument("--rag-target", action="store_true",
-                    help="Register the single Nemotron-Super-49B-v1.5 RAG-comparator target")
+                    help="Register the single Nemotron-Super-49B-v1.5 comparator target")
     ap.add_argument("--configs", action="store_true",
                     help="Register both eval configs (singleaxis + pairwise)")
-    ap.add_argument("--proxy-url", default="http://rag-oai-proxy.runai-rag:8080",
-                    help="eval-oai-proxy base URL. All Stage 3 targets point here; "
-                         "the proxy routes by model_id to the upstream NIM and "
-                         "strips <think> reasoning blocks from responses.")
+    ap.add_argument("--proxy-url", default="http://nemo-nim-proxy:8000",
+                    help="NeMo NIM Proxy base URL. All Stage 3 Evaluator model "
+                         "targets point at this proxy's /v1/chat/completions endpoint.")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.INFO,

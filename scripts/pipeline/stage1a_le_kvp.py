@@ -13,6 +13,14 @@ from tqdm import tqdm
 
 from scripts.pipeline.llm_client import LLMClient
 from scripts.pipeline.models import KVPRow, LogEntailment, LogEntailmentList, Passage, QAKeyValuePair
+from scripts.pipeline.provenance import (
+    entailment_id_for_passage,
+    entailments_from_kvp_rows,
+    passage_source_chunk_ids,
+    passage_source_revision_id,
+    sha256_text,
+)
+from scripts.pipeline.provenance_io import write_jsonl
 from scripts.pipeline.prompts import KVP_SYSTEM, KVP_USER, LE_SYSTEM, LE_USER
 
 log = logging.getLogger(__name__)
@@ -78,7 +86,19 @@ def process_passage_1a(passage: Passage, llm: LLMClient) -> list[KVPRow]:
         log.debug("Stage 1A: no valid entailments for %s", passage.passage_id)
         return rows
 
+    extractor_model = getattr(llm, "model", None)
+    if not isinstance(extractor_model, str):
+        extractor_model = None
+    extractor_temperature = getattr(llm, "temperature", None)
+    if not isinstance(extractor_temperature, (int, float)):
+        extractor_temperature = None
+
     for ent_idx, ent in enumerate(le_list.entailments):
+        ent_id = entailment_id_for_passage(
+            passage, ent_idx, ent.conclusion, ent.premises
+        )
+        source_revision_id = passage_source_revision_id(passage)
+        source_chunk_ids = passage_source_chunk_ids(passage)
         for prem_idx, premise in enumerate(ent.premises[:3]):
             kvp_raw = llm.call(
                 KVP_SYSTEM,
@@ -97,6 +117,15 @@ def process_passage_1a(passage: Passage, llm: LLMClient) -> list[KVPRow]:
                 stage="1a",
                 entailment_index=ent_idx,
                 premise_index=prem_idx,
+                sample_id=None,
+                entailment_id=ent_id,
+                entailment_claim=ent.conclusion,
+                entailment_premises=ent.premises,
+                source_revision_ids=[source_revision_id],
+                source_chunk_ids=source_chunk_ids,
+                extractor_model=extractor_model,
+                extractor_prompt_hash=sha256_text(LE_SYSTEM + "\n" + LE_USER),
+                extractor_temperature=extractor_temperature,
                 question=kvp.question.strip(),
                 answer=kvp.answer.strip(),
                 context=passage.text,
@@ -118,5 +147,9 @@ def run_stage1a(passages: list[Passage], llm: LLMClient, output_dir: Path,
     with out_file.open("w") as f:
         for row in all_rows:
             f.write(row.model_dump_json() + "\n")
+    write_jsonl(
+        output_dir / "provenance" / "entailments.jsonl",
+        entailments_from_kvp_rows(all_rows),
+    )
     log.info("Stage 1A: %d KVPs → %s", len(all_rows), out_file)
     return all_rows

@@ -1,10 +1,22 @@
 """ES client wrapper: scroll + kNN."""
 from collections.abc import Iterable
+from typing import Any
 
-from elasticsearch import Elasticsearch
+try:
+    from elasticsearch import Elasticsearch
+except ModuleNotFoundError:  # pragma: no cover - exercised only in minimal test envs
+    Elasticsearch = Any  # type: ignore[misc, assignment]
+    _MISSING_ELASTICSEARCH = True
+else:
+    _MISSING_ELASTICSEARCH = False
 
 
 def make_es_client(host: str, password: str) -> Elasticsearch:
+    if _MISSING_ELASTICSEARCH:
+        raise RuntimeError(
+            "The 'elasticsearch' package is required for live ES access. "
+            "Install the project dependencies before running pipeline stages against ES."
+        )
     return Elasticsearch(
         host,
         basic_auth=("elastic", password),

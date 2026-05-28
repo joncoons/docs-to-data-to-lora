@@ -11,6 +11,7 @@ from tqdm import tqdm
 
 from scripts.pipeline.llm_client import LLMClient
 from scripts.pipeline.models import KVPRow, Passage
+from scripts.pipeline.provenance import passage_source_chunk_ids, passage_source_revision_id
 from scripts.pipeline.prompts import INSTRUCTION_SYSTEM, INSTRUCTION_USER
 
 log = logging.getLogger(__name__)
@@ -74,6 +75,8 @@ def process_passage_1c(passage: Passage, domain: str, llm: LLMClient) -> list[KV
         return []
     pairs = parse_instruction_response(raw)
     rows: list[KVPRow] = []
+    source_revision_id = passage_source_revision_id(passage)
+    source_chunk_ids = passage_source_chunk_ids(passage)
     for p in pairs:
         if not p.get("question") or not p.get("answer"):
             continue
@@ -89,6 +92,8 @@ def process_passage_1c(passage: Passage, domain: str, llm: LLMClient) -> list[KV
             question=p["question"].strip(),
             answer=p["answer"].strip(),
             context=passage.text,
+            source_revision_ids=[source_revision_id],
+            source_chunk_ids=source_chunk_ids,
             refined=False,
         ))
     return rows

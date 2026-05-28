@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://docs-to-data-to-lora.local/schemas/provenance/dataset_version_manifest.schema.json",
+  "title": "DatasetVersionManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dataset_version_id",
+    "dataset_name",
+    "dataset_role",
+    "created_at",
+    "inputs",
+    "outputs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "provenance.v1"
+    },
+    "dataset_version_id": {
+      "type": "string",
+      "pattern": "^dsv_[A-Za-z0-9_.:-]+$"
+    },
+    "dataset_name": {
+      "type": "string"
+    },
+    "dataset_role": {
+      "type": "string",
+      "enum": ["source_entailed", "synthetic_gapfill", "blended", "evaluation"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "crawl_run_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "delta_manifest_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "gap_manifest_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "data_designer_job_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "parent_dataset_version_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      }
+    },
+    "curation": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "curator_job_id": {
+          "type": ["string", "null"]
+        },
+        "curator_config_hash": {
+          "type": ["string", "null"],
+          "pattern": "^(sha256:[a-fA-F0-9]{64})?$"
+        }
+      }
+    },
+    "split": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "type": ["string", "null"]
+        },
+        "seed": {
+          "type": ["integer", "null"]
+        },
+        "train_count": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "validation_count": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "test_count": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["samples_uri"],
+      "properties": {
+        "samples_uri": {
+          "type": "string"
+        },
+        "training_uri": {
+          "type": ["string", "null"]
+        },
+        "validation_uri": {
+          "type": ["string", "null"]
+        },
+        "test_uri": {
+          "type": ["string", "null"]
+        },
+        "hashes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^sha256:[a-fA-F0-9]{64}$"
+          }
+        }
+      }
+    },
+    "nemo_registration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "type": ["string", "null"]
+        },
+        "dataset_name": {
+          "type": ["string", "null"]
+        },
+        "files_url": {
+          "type": ["string", "null"]
+        },
+        "version_id": {
+          "type": ["string", "null"]
+        },
+        "version_tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      }
+    }
+  }
+}

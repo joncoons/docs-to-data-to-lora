@@ -8,15 +8,17 @@ import re
 import statistics
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
-from elasticsearch import Elasticsearch
 from tqdm import tqdm
 
 from scripts.pipeline.es_client import knn_search
 from scripts.pipeline.llm_client import LLMClient
 from scripts.pipeline.models import KVPRow, Passage
+from scripts.pipeline.provenance import stable_id
 from scripts.pipeline.prompts import GAPFILL_RECIPE_USER
+
+Elasticsearch = Any
 
 log = logging.getLogger(__name__)
 
@@ -165,6 +167,7 @@ def gapfill_one_call(
             product_family=product_family,
             stage="1.5",
             target_product_family=product_family,
+            sample_id=stable_id("sample", "1.5", product_family, p["question"], p["answer"]),
             question=p["question"].strip(),
             answer=p["answer"].strip(),
             context=retrieved_chunks[:5000],

@@ -6,16 +6,18 @@ import logging
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import tiktoken
-from elasticsearch import Elasticsearch
 from tqdm import tqdm
 
 from scripts.pipeline.es_client import knn_search
 from scripts.pipeline.llm_client import LLMClient
 from scripts.pipeline.models import KVPRow, Passage
+from scripts.pipeline.provenance import passage_source_chunk_ids, passage_source_revision_id
 from scripts.pipeline.prompts import SYNTHESIS_SYSTEM, SYNTHESIS_USER
+
+Elasticsearch = Any
 
 log = logging.getLogger(__name__)
 _enc = tiktoken.get_encoding("cl100k_base")
@@ -95,6 +97,8 @@ def process_passage_1b(
 
     pairs = parse_synthesis_response(raw)
     rows: list[KVPRow] = []
+    source_revision_id = passage_source_revision_id(passage)
+    source_chunk_ids = passage_source_chunk_ids(passage)
     for p in pairs:
         if not p.get("question") or not p.get("answer"):
             continue
@@ -110,6 +114,8 @@ def process_passage_1b(
             question=p["question"].strip(),
             answer=p["answer"].strip(),
             context=context,
+            source_revision_ids=[source_revision_id],
+            source_chunk_ids=source_chunk_ids,
             neighbor_urls=neighbor_urls,
             refined=False,
         ))

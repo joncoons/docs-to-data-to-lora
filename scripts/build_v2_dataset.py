@@ -27,6 +27,8 @@ from scripts.pipeline.es_client import make_es_client
 from scripts.pipeline.llm_client import LLMClient
 from scripts.pipeline.models import KVPRow, Passage
 from scripts.pipeline.progress import Progress
+from scripts.pipeline.provenance import dataset_samples_from_kvp_rows
+from scripts.pipeline.provenance_io import write_jsonl
 from scripts.pipeline.stage0_corpus_prep import run_stage0
 from scripts.pipeline.stage1a_le_kvp import run_stage1a
 from scripts.pipeline.stage1b_synthesis import run_stage1b
@@ -220,6 +222,18 @@ def main() -> int:
                        sample_size=cfg.judge_sample_size,
                        threshold=cfg.judge_pass_threshold)
             progress.mark_done("4")
+
+    sample_rows = stage2_rows or all_pre_eval
+    if sample_rows:
+        write_jsonl(
+            args.output / "provenance" / "dataset_samples.jsonl",
+            dataset_samples_from_kvp_rows(sample_rows, system_prompt=system_prompt),
+        )
+        log.info(
+            "Provenance: %d dataset samples → %s",
+            len(sample_rows),
+            args.output / "provenance" / "dataset_samples.jsonl",
+        )
 
     log.info("Done. Output dir: %s", args.output)
     return 0

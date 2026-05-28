@@ -72,6 +72,8 @@ class Passage(BaseModel):
     product_family: str
     product_name: str
     doc_kind: Literal["html", "pdf"]
+    source_revision_id: str | None = None
+    source_chunk_ids: list[str] | None = None
 
 
 class KVPRow(BaseModel):
@@ -92,3 +94,14 @@ class KVPRow(BaseModel):
     target_product_family: str | None = None  # for 1.5
     retrieved_urls: list[str] | None = None   # for 1.5
     neighbor_urls: list[str] | None = None    # for 1b
+    # Provenance sidecar fields. These are optional so older JSONL outputs still
+    # load and the Customizer-facing shape remains unchanged downstream.
+    sample_id: str | None = None
+    entailment_id: str | None = None
+    entailment_claim: str | None = None
+    entailment_premises: list[str] | None = None
+    source_revision_ids: list[str] | None = None
+    source_chunk_ids: list[str] | None = None
+    extractor_model: str | None = None
+    extractor_prompt_hash: str | None = None
+    extractor_temperature: float | None = None

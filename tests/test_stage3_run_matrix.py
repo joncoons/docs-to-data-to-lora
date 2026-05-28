@@ -6,6 +6,7 @@ import pytest
 
 from scripts.eval.register_evaluator_entities import AdapterRow
 from scripts.eval.run_evaluation_matrix import (
+    build_49b_pairwise_jobs,
     build_pairwise_jobs,
     build_singleaxis_jobs,
     submit_wave,
@@ -33,13 +34,16 @@ def _all_12():
     return out
 
 
-def test_singleaxis_jobs_count_is_20():
-    """12 adapters (1 ds each) + 3 bases (2 ds each) + 2 RAG (1 ds each) = 20."""
+def test_singleaxis_jobs_count_is_18():
+    """12 adapters (1 ds each) + 3 bases (2 ds each) = 18.
+
+    The 49B comparator is not a Wave A RAG target; it appears in Wave C pairwise.
+    """
     jobs = build_singleaxis_jobs(
         adapters=_all_12(),
         config_name="default/stage3-singleaxis-rubric",
     )
-    assert len(jobs) == 20
+    assert len(jobs) == 18
 
 
 def test_singleaxis_includes_each_adapter_with_matching_corpus():
@@ -64,19 +68,33 @@ def test_singleaxis_includes_each_base_on_both_corpora():
         config_name="default/stage3-singleaxis-rubric",
     )
     # 3 base targets, each appears in 2 jobs
-    base_jobs = [j for j in jobs if j["target"].startswith("default/base-")]
+    base_jobs = [j for j in jobs if j["target"] in {
+        "default/llama-3.2-1b-instruct",
+        "default/llama-3.2-3b-instruct",
+        "default/llama-3.1-8b-instruct",
+    }]
     assert len(base_jobs) == 6
     bases_seen = {j["target"] for j in base_jobs}
     assert len(bases_seen) == 3
 
 
-def test_singleaxis_includes_each_rag_target_once():
+def test_singleaxis_excludes_49b_comparator():
     jobs = build_singleaxis_jobs(
         adapters=_all_12(),
         config_name="default/stage3-singleaxis-rubric",
     )
-    rag_jobs = [j for j in jobs if j["target"].startswith("default/rag-49b-")]
-    assert len(rag_jobs) == 2
+    assert all("llama-3.3-nemotron-super-49b" not in j["target"] for j in jobs)
+
+
+def test_49b_pairwise_jobs_compare_49b_against_each_adapter():
+    jobs = build_49b_pairwise_jobs(
+        adapters=_all_12(),
+        config_name="default/stage3-pairwise-tournament",
+    )
+    assert len(jobs) == 12
+    assert all(j["target"] == "default/llama-3.3-nemotron-super-49b-v1.5" for j in jobs)
+    assert all(j["extra"]["target_a"] == "default/llama-3.3-nemotron-super-49b-v1.5" for j in jobs)
+    assert all(j["extra"]["target_b"].startswith("default/lora-") for j in jobs)
 
 
 def test_pairwise_jobs_count_is_30():

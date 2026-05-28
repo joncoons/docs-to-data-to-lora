@@ -1,0 +1,48 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: inspect-adapter-nemo-usvcs-nano-r16
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: adapter-inspection
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: adapter-inspection
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: adapter-inspection
+          image: <registry>/docs-to-data-to-lora/adapter-inspection:latest
+          imagePullPolicy: IfNotPresent
+          args:
+            - /adapters/lora-nemo-usvcs-nemotron-nano-30b-r16
+            - --json
+            - --output-json
+            - /reports/lora-nemo-usvcs-nemotron-nano-30b-r16-inspection.json
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+          volumeMounts:
+            - name: adapter-store
+              mountPath: /adapters
+              readOnly: true
+            - name: inspection-reports
+              mountPath: /reports
+      volumes:
+        - name: adapter-store
+          persistentVolumeClaim:
+            claimName: peft-checkpoints
+        - name: inspection-reports
+          persistentVolumeClaim:
+            claimName: peft-reports

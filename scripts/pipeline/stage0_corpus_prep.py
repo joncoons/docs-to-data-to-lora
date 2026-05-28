@@ -5,14 +5,17 @@ import json
 import logging
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
-from elasticsearch import Elasticsearch
 from tqdm import tqdm
 
 from scripts.pipeline.es_client import scroll_all_chunks
 from scripts.pipeline.models import Passage
 from scripts.pipeline.noise_filter import count_tokens, is_noise
+from scripts.pipeline.provenance import attach_source_provenance, build_crawl_run, utc_now
+from scripts.pipeline.provenance_io import write_json, write_jsonl
+
+Elasticsearch = Any
 
 log = logging.getLogger(__name__)
 
@@ -155,6 +158,28 @@ def run_stage0(es: Elasticsearch, index: str, output_dir: Path,
     passages = build_passages(chunks, min_passage_tokens=min_passage_tokens)
     log.info("Stage 0: %d passages after grouping + noise filter", len(passages))
 
+    started_at = utc_now()
+    completed_at = started_at
+    crawl_run = build_crawl_run(
+        index=index,
+        started_at=started_at,
+        completed_at=completed_at,
+        chunk_count=len(chunks),
+        passage_count=len(passages),
+        min_passage_tokens=min_passage_tokens,
+    )
+    passages, source_revisions, source_chunks = attach_source_provenance(
+        passages,
+        crawl_run_id=crawl_run.crawl_run_id,
+        retrieved_at=started_at,
+        chunker_config={
+            "name": "stage0-url-grouping",
+            "version": "v1",
+            "min_passage_tokens": min_passage_tokens,
+            "extraction_method": "es-scroll-url-grouping",
+        },
+    )
+
     seed_vectors: dict[str, list[float]] = {}
     for p in passages:
         # Find any chunk with a vector
@@ -167,5 +192,10 @@ def run_stage0(es: Elasticsearch, index: str, output_dir: Path,
         for p in passages:
             f.write(p.model_dump_json() + "\n")
     log.info("Stage 0: written %s", out_file)
+
+    write_json(output_dir / "manifests" / "crawl_run.json", crawl_run)
+    write_jsonl(output_dir / "provenance" / "source_revisions.jsonl", source_revisions)
+    write_jsonl(output_dir / "provenance" / "source_chunks.jsonl", source_chunks)
+    log.info("Stage 0: written provenance sidecars under %s", output_dir / "provenance")
 
     return passages, seed_vectors

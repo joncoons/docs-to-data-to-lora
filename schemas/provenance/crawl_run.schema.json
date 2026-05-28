@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://docs-to-data-to-lora.local/schemas/provenance/crawl_run.schema.json",
+  "title": "CrawlRun",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "crawl_run_id",
+    "started_at",
+    "status",
+    "recrawl_reason",
+    "crawler",
+    "scope",
+    "outputs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "provenance.v1"
+    },
+    "crawl_run_id": {
+      "type": "string",
+      "pattern": "^crawlrun_[A-Za-z0-9_.:-]+$"
+    },
+    "previous_crawl_run_id": {
+      "type": ["string", "null"]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["running", "completed", "failed", "partial"]
+    },
+    "recrawl_reason": {
+      "type": "string",
+      "enum": ["initial", "scheduled", "manual", "hotfix", "backfill", "test"]
+    },
+    "crawler": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "git_commit", "config_hash"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "git_commit": {
+          "type": "string"
+        },
+        "config_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-fA-F0-9]{64}$"
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seed_url_set_hash", "allowed_url_prefixes"],
+      "properties": {
+        "seed_url_set_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-fA-F0-9]{64}$"
+        },
+        "allowed_url_prefixes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "excluded_url_patterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "binary_host_allowlist": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_revisions_uri"],
+      "properties": {
+        "source_revisions_uri": {
+          "type": "string"
+        },
+        "source_chunks_uri": {
+          "type": ["string", "null"]
+        },
+        "delta_manifest_uri": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
