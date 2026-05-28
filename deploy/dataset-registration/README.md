@@ -1,0 +1,102 @@
+# Dataset Registration Kubernetes Job
+
+This Job registers Stage 3 datasets in NeMo Data Store and NeMo Entity Store.
+It is the first dataset-lineage control point in the K8s-native showcase.
+
+The Job registers, per collection:
+
+- `stage3-<collection>` training/validation dataset for NeMo Customizer
+- `stage3-<collection>-test` bare held-out evaluation dataset
+- `stage3-<collection>-test-with-context` context-baked Evaluator dataset
+
+It also emits MLflow-ready observability JSON files. The Job does not install
+the MLflow client or log directly to MLflow.
+
+## Build Image
+
+```bash
+docker build \
+  -f deploy/dataset-registration/Containerfile \
+  -t <registry>/docs-to-data-to-lora/dataset-registration:latest .
+
+docker push <registry>/docs-to-data-to-lora/dataset-registration:latest
+```
+
+Update `deploy/dataset-registration/job.yaml` with that image.
+
+## Inputs
+
+The template expects the dataset artifact PVC mounted at `/datasets`:
+
+```text
+/datasets/
+  nim_curated/
+    training.jsonl
+    validation.jsonl
+    test_set.jsonl
+    test_set_with_context.jsonl
+    provenance/
+    manifests/
+  nemo_usvcs_curated/
+    ...
+```
+
+`provenance/` and `manifests/` are optional but should be present in the durable
+showcase path. When present, their files are included in the observability
+artifact manifest.
+
+## Secrets
+
+Create the Data Store Git/API credential Secret:
+
+```bash
+kubectl create secret generic nemo-data-store-git \
+  -n nemo-peft \
+  --from-literal=DATA_STORE_USER='<username>' \
+  --from-literal=DATA_STORE_PASSWORD='<password>'
+```
+
+## Service Configuration
+
+The Job uses cluster-local service URLs:
+
+```text
+ENTITY_STORE_URL=http://nemo-entity-store:8000
+DATA_STORE_URL=http://nemo-data-store:3000
+DATA_STORE_GIT_BASE=http://nemo-data-store:3000
+DATA_STORE_HF_ENDPOINT=http://nemo-data-store:3000/v1/hf
+```
+
+Adjust these to match the deployed Service names and ports.
+
+## Observability Output
+
+The Job writes:
+
+```text
+/outputs/observability/dataset-registration/
+  run_context.json
+  metrics.json
+  artifacts_manifest.json
+  service_refs.json
+```
+
+These files are designed for a later MLflow export Job. They include dataset
+row counts, file checksums, NeMo Data Store URIs, Entity Store refs, optional
+dataset version IDs, and provenance sidecar references.
+
+## Local Dry Run
+
+```bash
+python scripts/eval/upload_test_datasets.py \
+  --base-dir /mnt/nvme2/peft/datasets/v2 \
+  --collections nim_curated nemo_usvcs_curated \
+  --include-train \
+  --include-test \
+  --include-context-test \
+  --observability-dir /tmp/dataset-registration-observability \
+  --dry-run
+```
+
+Dry run validates files and writes observability output without calling NeMo
+services or pushing to Data Store.

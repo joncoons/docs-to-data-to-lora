@@ -256,7 +256,7 @@ Artifacts:
 
 ## Implementation Order
 
-1. Add dataset registration observability files and MLflow export contract.
+1. Add dataset registration observability files and MLflow export contract. Implemented for the registration Job in `deploy/dataset-registration/`.
 2. Add result collection and MLflow export for Evaluator job results.
 3. Add Customizer exporter reconciliation tags when training is refactored.
 4. Add Data Designer gapfill job IDs and generated-sample lineage.

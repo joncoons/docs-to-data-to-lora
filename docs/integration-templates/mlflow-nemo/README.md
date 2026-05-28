@@ -18,7 +18,7 @@ The current repository already has most of the NeMo-side operations:
 | `scripts/build_v2_dataset.py` | Builds Stage 2 `training.jsonl` and `validation.jsonl` | Input step for a tracked MLflow run |
 | `scripts/stage3/train_adapter.py` | Builds and submits NeMo Customizer LoRA jobs | Called by the MLflow orchestrator |
 | `scripts/stage3/build_moe_shards.py` | Creates shard datasets in NeMo Data Store and Entity Store | Reused for MoE adapter dataset registration |
-| `scripts/eval/upload_test_datasets.py` | Uploads held-out test sets to NeMo Data Store and registers Entity Store datasets | Reused for evaluation dataset lineage |
+| `scripts/eval/upload_test_datasets.py` | Registers training/test datasets in NeMo Data Store and Entity Store, with observability JSON | Reused for dataset lineage and later MLflow export |
 | `scripts/eval/register_evaluator_entities.py` | Builds Evaluator target/config payloads and dataset payload shape | Source of canonical Evaluator and dataset metadata |
 | `scripts/eval/run_evaluation_matrix.py` | Submits Evaluator jobs for adapter/base/49B-comparator comparisons | Called after Customizer jobs complete |
 

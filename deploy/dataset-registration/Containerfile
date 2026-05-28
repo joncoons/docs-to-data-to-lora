@@ -1,0 +1,19 @@
+# Lightweight image for registering Stage 3 datasets in NeMo Data Store and Entity Store.
+#
+# Build example:
+#   docker build -f deploy/dataset-registration/Containerfile -t docs-to-data-to-lora/dataset-registration:latest .
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir httpx
+
+WORKDIR /app
+COPY scripts/eval /app/scripts/eval
+
+ENTRYPOINT ["python", "scripts/eval/upload_test_datasets.py"]
