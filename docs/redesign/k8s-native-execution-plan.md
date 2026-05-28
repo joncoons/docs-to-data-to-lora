@@ -120,6 +120,27 @@ The image is intentionally torch-free and does not need GPU resources. Warnings
 exit successfully by default so the pipeline can preserve the inspection report
 and continue to live-load validation; use `--fail-on-warn` for strict pipelines.
 
+## Third K8s Template: Evaluator Registration
+
+Evaluator registration is the first control-plane Job. It registers Stage 3
+Evaluator targets and configs idempotently, using native NIM Proxy model targets
+with `format: nim`. The Job consumes the training-session adapter inventory from
+a ConfigMap and keeps service URLs in environment variables instead of source
+code.
+
+Artifacts:
+
+```text
+deploy/evaluator-registration/
+  Containerfile
+  README.md
+  job.yaml
+```
+
+This Job does not register datasets. Dataset bytes and identities belong to NeMo
+Data Store and NeMo Entity Store, which should be handled by a separate dataset
+registration Job.
+
 ## K8s Resource Guidance
 
 | Workload | CPU | Memory | GPU | Storage |
@@ -152,9 +173,9 @@ Do not put NodePorts, passwords, or host-specific paths in scripts.
 
 ## Recommended Conversion Order
 
-1. TIES merge Job.
-2. Adapter inspection Job.
-3. Evaluator target/config registration Job.
+1. TIES merge Job. Implemented in `deploy/ties-merge/`.
+2. Adapter inspection Job. Implemented in `deploy/adapter-inspection/`.
+3. Evaluator target/config registration Job. Implemented in `deploy/evaluator-registration/`.
 4. Evaluation matrix orchestration Job.
 5. Dataset registration Job.
 6. Stage 0 corpus/provenance Job.

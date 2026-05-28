@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import re
 import sys
 from dataclasses import dataclass
@@ -26,6 +27,15 @@ if str(_REPO_ROOT) not in sys.path:
 from scripts.eval.evaluator_client import EvaluatorClient  # noqa: E402
 
 log = logging.getLogger(__name__)
+
+DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:8000")
+DEFAULT_NIM_PROXY_URL = os.getenv("NIM_PROXY_URL", "http://nemo-nim-proxy:8000")
+DEFAULT_TRAINING_SESSION_LOG = Path(
+    os.getenv(
+        "TRAINING_SESSION_LOG",
+        str(_REPO_ROOT / "evals" / "training_session.log"),
+    )
+)
 
 
 # --- adapter metadata --------------------------------------------------
@@ -354,25 +364,41 @@ def _create_config_idempotent(client: EvaluatorClient, payload: dict) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--evaluator-url",
-                    default="http://192.168.1.187:30913")
-    ap.add_argument("--log-path", type=Path,
-                    default=_REPO_ROOT / "evals" / "training_session.log")
+    ap.add_argument("--evaluator-url", default=DEFAULT_EVALUATOR_URL,
+                    help="NeMo Evaluator base URL. Defaults to EVALUATOR_URL or "
+                         "http://nemo-evaluator:8000.")
+    ap.add_argument("--evaluator-api-key", default=os.getenv("EVALUATOR_API_KEY"),
+                    help="Optional Evaluator bearer token. Defaults to EVALUATOR_API_KEY.")
+    ap.add_argument("--log-path", type=Path, default=DEFAULT_TRAINING_SESSION_LOG,
+                    help="Training-session inventory log. Defaults to TRAINING_SESSION_LOG "
+                         "or evals/training_session.log.")
     ap.add_argument("--adapter-targets", action="store_true",
                     help="Register the 14 LoRA adapter targets (12 Llama + 2 Nano r=16)")
     ap.add_argument("--base-targets", action="store_true",
                     help="Register the 3 dense Llama base reference targets")
-    ap.add_argument("--rag-target", action="store_true",
+    ap.add_argument("--49b-target", "--rag-target", dest="target_49b", action="store_true",
                     help="Register the single Nemotron-Super-49B-v1.5 comparator target")
     ap.add_argument("--configs", action="store_true",
                     help="Register both eval configs (singleaxis + pairwise)")
-    ap.add_argument("--proxy-url", default="http://nemo-nim-proxy:8000",
-                    help="NeMo NIM Proxy base URL. All Stage 3 Evaluator model "
-                         "targets point at this proxy's /v1/chat/completions endpoint.")
+    ap.add_argument("--all", action="store_true",
+                    help="Register adapter targets, base targets, 49B comparator, and configs")
+    ap.add_argument("--proxy-url", default=DEFAULT_NIM_PROXY_URL,
+                    help="NeMo NIM Proxy base URL. Defaults to NIM_PROXY_URL or "
+                         "http://nemo-nim-proxy:8000. All Stage 3 Evaluator "
+                         "model targets point at this proxy's /v1/chat/completions endpoint.")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(message)s")
+
+    register_adapter_targets = args.all or args.adapter_targets
+    register_base_targets = args.all or args.base_targets
+    register_49b_target = args.all or args.target_49b
+    register_configs = args.all or args.configs
+    if not any((register_adapter_targets, register_base_targets,
+                register_49b_target, register_configs)):
+        log.warning("no registration flags selected; use --all or an individual flag")
+        return 0
 
     adapters = load_adapters_from_log(args.log_path)
     log.info("loaded %d adapters from %s", len(adapters), args.log_path)
@@ -386,19 +412,19 @@ def main() -> int:
         "meta/llama-3.1-8b-instruct",
     ]
 
-    with EvaluatorClient(args.evaluator_url) as client:
-        if args.adapter_targets:
+    with EvaluatorClient(args.evaluator_url, api_key=args.evaluator_api_key) as client:
+        if register_adapter_targets:
             for a in adapters:
                 p = build_adapter_target(a, proxy_url=args.proxy_url)
                 _create_target_idempotent(client, p, label="adapter")
-        if args.base_targets:
+        if register_base_targets:
             for base in _BASE_TARGETS:
                 p = build_base_target(base, proxy_url=args.proxy_url)
                 _create_target_idempotent(client, p, label="base")
-        if args.rag_target:
+        if register_49b_target:
             p = build_49b_target(proxy_url=args.proxy_url)
-            _create_target_idempotent(client, p, label="49b-rag")
-        if args.configs:
+            _create_target_idempotent(client, p, label="49b")
+        if register_configs:
             for builder in (build_singleaxis_config, build_pairwise_config):
                 p = builder()
                 _create_config_idempotent(client, p)

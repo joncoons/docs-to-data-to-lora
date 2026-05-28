@@ -4,8 +4,11 @@ These tests intentionally cover the native NIM Proxy model-target path. The
 Claude-generated rag-oai-proxy/RAG target path is legacy and should not be the
 default showcase path.
 """
+import sys
+
 import pytest
 
+import scripts.eval.register_evaluator_entities as ree
 from scripts.eval.register_evaluator_entities import (
     AdapterRow,
     build_49b_target,
@@ -144,3 +147,64 @@ def test_adapter_row_from_log_line_raises_on_unknown_size():
     bad = "| lora-nim-llama-9.9-99b-r16 | cust-xyz | 1.0 | 1.0 | ~5 min |"
     with pytest.raises(ValueError, match="Unknown base size in name"):
         AdapterRow.from_log_line(bad)
+
+
+def test_main_all_registers_targets_and_configs_via_nim_proxy(tmp_path, monkeypatch):
+    log_path = tmp_path / "training_session.log"
+    log_path.write_text(
+        "| lora-nim-llama-3.2-3b-r16 | cust-abc | 1.0 | 1.0 | ~5 min |\n"
+    )
+    created_targets = []
+    created_configs = []
+
+    class DummyClient:
+        def __init__(self, base_url, api_key=None):
+            assert base_url == "http://evaluator.test"
+            assert api_key == "secret-token"
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return None
+
+        def create_target(self, payload):
+            created_targets.append(payload)
+            return f"target-{len(created_targets)}"
+
+        def create_config(self, payload):
+            created_configs.append(payload)
+            return f"config-{len(created_configs)}"
+
+    monkeypatch.setattr(ree, "EvaluatorClient", DummyClient)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "register_evaluator_entities.py",
+            "--all",
+            "--evaluator-url",
+            "http://evaluator.test",
+            "--evaluator-api-key",
+            "secret-token",
+            "--proxy-url",
+            "http://nim-proxy.test",
+            "--log-path",
+            str(log_path),
+        ],
+    )
+
+    assert ree.main() == 0
+
+    # One adapter target from the fixture log, three dense base targets,
+    # and the 49B comparator.
+    assert len(created_targets) == 5
+    assert len(created_configs) == 2
+    assert {cfg["name"] for cfg in created_configs} == {
+        "stage3-singleaxis-rubric",
+        "stage3-pairwise-tournament",
+    }
+    for target in created_targets:
+        endpoint = target["model"]["api_endpoint"]
+        assert endpoint["url"] == "http://nim-proxy.test/v1/chat/completions"
+        assert endpoint["format"] == "nim"
