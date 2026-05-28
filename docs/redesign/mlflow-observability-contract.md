@@ -156,9 +156,10 @@ Artifacts:
 
 Dataset finalization closes the lineage gap before registration. It writes
 `manifests/dataset_version_manifest.json` from split files and provenance
-sidecars, then registration publishes the files to NeMo Data Store and registers
-Entity Store dataset refs. Log these as MLflow params/tags/artifacts and include
-back-references in Entity Store metadata when the deployed schema allows it.
+sidecars, then registration publishes the split files plus recognized lineage
+sidecars to NeMo Data Store and registers Entity Store dataset refs. Log these
+as MLflow params/tags/artifacts and include back-references in Entity Store
+metadata when the deployed schema allows it.
 
 Tags:
 
@@ -188,6 +189,7 @@ Metrics:
 | `dataset.samples.synthetic.count` | Data Designer/generated samples |
 | `dataset.samples.grounded.count` | Source-grounded samples |
 | `dataset.synthetic_ratio` | Synthetic samples / total samples |
+| `dataset.lineage_files.uploaded.count` | Lineage files uploaded with dataset bytes |
 | `dataset.source_system.<name>.samples` | Samples by upstream source producer or synthetic producer |
 | `dataset.source_kind.<name>.samples` | Samples by upstream source kind |
 | `dataset.modality.<name>.samples` | Samples by source modality |
@@ -200,7 +202,7 @@ Artifacts:
 
 | Artifact | Source |
 |---|---|
-| `provenance/crawl_run.json` | Crawl/run manifest |
+| `manifests/crawl_run.json` | Crawl/run manifest |
 | `provenance/source_revisions.jsonl` | Source revision sidecar |
 | `provenance/source_chunks.jsonl` | Source chunk sidecar |
 | `provenance/entailments.jsonl` | Extracted entailments |
@@ -211,6 +213,10 @@ Artifacts:
 | `dataset/training.manifest.json` | Rows, bytes, checksum |
 | `dataset/validation.manifest.json` | Rows, bytes, checksum |
 | `dataset/test.manifest.json` | Rows, bytes, checksum |
+
+Registration observability should mark uploaded split files as
+`uploaded_dataset_file`, uploaded lineage sidecars as `uploaded_lineage_file`,
+and include the uploaded lineage file list in `service_refs.json`.
 
 ## Data Designer
 

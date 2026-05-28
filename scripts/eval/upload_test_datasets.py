@@ -55,6 +55,59 @@ class DatasetFile:
 
 
 @dataclass(frozen=True)
+class LineageFile:
+    source: Path
+    repo_path: str
+    artifact_kind: str
+    required: bool = False
+
+
+LINEAGE_FILE_CANDIDATES = (
+    LineageFile(
+        Path("manifests/dataset_version_manifest.json"),
+        "manifests/dataset_version_manifest.json",
+        "dataset_version_manifest",
+        required=True,
+    ),
+    LineageFile(
+        Path("manifests/crawl_run.json"),
+        "manifests/crawl_run.json",
+        "crawl_run_manifest",
+    ),
+    LineageFile(
+        Path("provenance/source_revisions.jsonl"),
+        "provenance/source_revisions.jsonl",
+        "source_revisions",
+    ),
+    LineageFile(
+        Path("provenance/source_chunks.jsonl"),
+        "provenance/source_chunks.jsonl",
+        "source_chunks",
+    ),
+    LineageFile(
+        Path("provenance/entailments.jsonl"),
+        "provenance/entailments.jsonl",
+        "entailments",
+    ),
+    LineageFile(
+        Path("provenance/dataset_samples.jsonl"),
+        "provenance/dataset_samples.jsonl",
+        "dataset_samples",
+    ),
+    LineageFile(
+        Path("provenance/delta_manifest.json"),
+        "provenance/delta_manifest.json",
+        "delta_manifest",
+    ),
+    LineageFile(
+        Path("provenance/gap_manifest.json"),
+        "provenance/gap_manifest.json",
+        "gap_manifest",
+    ),
+)
+
+
+@dataclass(frozen=True)
 class DatasetSpec:
     name: str
     collection: str
@@ -321,6 +374,30 @@ def load_dataset_version_manifest(source_dir: Path) -> dict[str, Any]:
     return {}
 
 
+def discover_lineage_files(source_dir: Path) -> list[LineageFile]:
+    files: list[LineageFile] = []
+    for candidate in LINEAGE_FILE_CANDIDATES:
+        source = source_dir / candidate.source
+        if source.exists():
+            files.append(
+                LineageFile(
+                    source=source,
+                    repo_path=candidate.repo_path,
+                    artifact_kind=candidate.artifact_kind,
+                    required=candidate.required,
+                )
+            )
+    return files
+
+
+def missing_required_lineage_files(source_dir: Path) -> list[Path]:
+    return [
+        source_dir / candidate.source
+        for candidate in LINEAGE_FILE_CANDIDATES
+        if candidate.required and not (source_dir / candidate.source).exists()
+    ]
+
+
 def build_description(
     spec: DatasetSpec,
     row_counts: dict[str, int],
@@ -377,8 +454,15 @@ def build_entity_store_payload(
     }
 
 
-def validate_spec_files(spec: DatasetSpec) -> list[Path]:
-    return [item.source for item in spec.files if not item.source.exists()]
+def validate_spec_files(
+    spec: DatasetSpec,
+    *,
+    require_lineage: bool = False,
+) -> list[Path]:
+    missing = [item.source for item in spec.files if not item.source.exists()]
+    if require_lineage:
+        missing.extend(missing_required_lineage_files(spec.source_dir))
+    return missing
 
 
 def run_cmd(
@@ -414,9 +498,15 @@ def create_dataset_repo(spec: DatasetSpec, config: ServiceConfig) -> str:
     )
 
 
-def push_dataset_files(spec: DatasetSpec, config: ServiceConfig) -> dict[str, Any]:
+def push_dataset_files(
+    spec: DatasetSpec,
+    config: ServiceConfig,
+    *,
+    include_lineage: bool = True,
+) -> dict[str, Any]:
     repo_id = f"{config.namespace}/{spec.name}"
     clone_url = f"{config.authenticated_git_base.rstrip('/')}/{repo_id}.git"
+    lineage_files = discover_lineage_files(spec.source_dir) if include_lineage else []
     with tempfile.TemporaryDirectory() as td:
         td_path = Path(td)
         run_cmd(["git", "clone", clone_url, str(td_path / "repo")])
@@ -425,23 +515,42 @@ def push_dataset_files(spec: DatasetSpec, config: ServiceConfig) -> dict[str, An
             dst = repo / item.repo_path
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(item.source, dst)
+        for item in lineage_files:
+            dst = repo / item.repo_path
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(item.source, dst)
         run_cmd(["git", "config", "user.email", config.git_user_email], cwd=repo)
         run_cmd(["git", "config", "user.name", config.git_user_name], cwd=repo)
-        run_cmd(["git", "add", *[item.repo_path for item in spec.files]], cwd=repo)
+        repo_paths = [item.repo_path for item in spec.files]
+        repo_paths.extend(item.repo_path for item in lineage_files)
+        run_cmd(["git", "add", *repo_paths], cwd=repo)
         row_counts = {item.split: count_jsonl_rows(item.source) for item in spec.files}
         row_text = ", ".join(f"{split}={count}" for split, count in sorted(row_counts.items()))
         commit = run_cmd(
-            ["git", "commit", "-m", f"register {spec.name}: {row_text}"],
+            [
+                "git",
+                "commit",
+                "-m",
+                f"register {spec.name}: {row_text}; lineage={len(lineage_files)}",
+            ],
             cwd=repo,
             allow_fail=True,
         )
         if commit.returncode != 0:
             if b"nothing to commit" in commit.stdout or b"nothing to commit" in commit.stderr:
-                return {"git_status": "unchanged", "row_counts": row_counts}
+                return {
+                    "git_status": "unchanged",
+                    "row_counts": row_counts,
+                    "lineage_files": [item.repo_path for item in lineage_files],
+                }
             sys.stderr.write(commit.stderr.decode())
             raise subprocess.CalledProcessError(commit.returncode, commit.args)
         run_cmd(["git", "push", "origin", "main"], cwd=repo)
-    return {"git_status": "pushed", "row_counts": row_counts}
+    return {
+        "git_status": "pushed",
+        "row_counts": row_counts,
+        "lineage_files": [item.repo_path for item in lineage_files],
+    }
 
 
 def register_in_entity_store(payload: dict[str, Any], config: ServiceConfig) -> str:
@@ -484,13 +593,16 @@ def build_observability_documents(
 
     for spec, result in zip(specs, results):
         metric_prefix = f"dataset.{safe_metric_name(spec.name)}"
+        uploaded_lineage_files = set(result.get("lineage_files") or [])
+        metrics[f"{metric_prefix}.lineage_files.uploaded.count"] = len(uploaded_lineage_files)
         for item in spec.files:
             manifest = file_manifest(item.source, repo_path=item.repo_path)
             manifest.update({
                 "dataset": spec.name,
                 "collection": spec.collection,
                 "split": item.split,
-                "artifact_kind": "dataset_file",
+                "artifact_kind": "uploaded_dataset_file",
+                "uploaded_to_data_store": True,
             })
             artifact_entries.append(manifest)
             if "rows" in manifest:
@@ -499,10 +611,12 @@ def build_observability_documents(
 
         provenance = discover_provenance_artifacts(spec.source_dir)
         for artifact in provenance:
+            uploaded = artifact["artifact_path"] in uploaded_lineage_files
             artifact.update({
                 "dataset": spec.name,
                 "collection": spec.collection,
-                "artifact_kind": "provenance_or_report",
+                "artifact_kind": "uploaded_lineage_file" if uploaded else "provenance_or_report",
+                "uploaded_to_data_store": uploaded,
             })
             artifact_entries.append(artifact)
             if "rows" in artifact:
@@ -554,6 +668,7 @@ def build_observability_documents(
             "files_url": f"hf://datasets/{config.namespace}/{spec.name}",
             "hf_endpoint": config.data_store_hf_endpoint,
             "dataset_version_id": dataset_version.get("dataset_version_id"),
+            "lineage_files": sorted(uploaded_lineage_files),
             "source_composition": source_composition,
             "repo_status": result.get("repo_status"),
             "git_status": result.get("git_status"),
@@ -607,13 +722,15 @@ def register_dataset_spec(
     config: ServiceConfig,
     pipeline_run_id: str | None,
     mlflow_parent_run_id: str | None,
+    *,
+    require_lineage: bool = True,
 ) -> dict[str, Any]:
-    missing = validate_spec_files(spec)
+    missing = validate_spec_files(spec, require_lineage=require_lineage)
     if missing:
         missing_text = ", ".join(str(p) for p in missing)
         raise FileNotFoundError(f"{spec.name} missing source files: {missing_text}")
     repo_status = create_dataset_repo(spec, config)
-    push_result = push_dataset_files(spec, config)
+    push_result = push_dataset_files(spec, config, include_lineage=True)
     dataset_version = load_dataset_version_manifest(spec.source_dir)
     payload = build_entity_store_payload(
         spec,
@@ -631,6 +748,7 @@ def register_dataset_spec(
         "git_status": push_result["git_status"],
         "entity_status": entity_status,
         "row_counts": push_result["row_counts"],
+        "lineage_files": push_result["lineage_files"],
         "entity_payload": payload,
     }
 
@@ -658,6 +776,11 @@ def parse_args() -> argparse.Namespace:
         "--dry-run",
         action="store_true",
         help="Build specs and observability only; do not call NeMo services",
+    )
+    ap.add_argument(
+        "--allow-missing-lineage",
+        action="store_true",
+        help="Warn instead of failing when dataset_version_manifest.json is absent",
     )
     return ap.parse_args()
 
@@ -690,12 +813,23 @@ def main() -> int:
     results: list[dict[str, Any]] = []
     for spec in specs:
         print(f"=== {spec.name} ({spec.collection}, {spec.dataset_role}) ===")
-        missing = validate_spec_files(spec)
+        missing = validate_spec_files(
+            spec,
+            require_lineage=not args.allow_missing_lineage,
+        )
         if missing:
             print(f"FATAL: missing source files: {', '.join(str(p) for p in missing)}")
             return 1
+        if args.allow_missing_lineage:
+            missing_lineage = missing_required_lineage_files(spec.source_dir)
+            if missing_lineage:
+                print(
+                    "WARNING: missing lineage files: "
+                    + ", ".join(str(p) for p in missing_lineage)
+                )
         if args.dry_run:
             row_counts = {item.split: count_jsonl_rows(item.source) for item in spec.files}
+            lineage_files = [item.repo_path for item in discover_lineage_files(spec.source_dir)]
             results.append({
                 "dataset": spec.name,
                 "collection": spec.collection,
@@ -703,14 +837,16 @@ def main() -> int:
                 "git_status": "dry-run",
                 "entity_status": "dry-run",
                 "row_counts": row_counts,
+                "lineage_files": lineage_files,
             })
-            print(f"  dry-run row counts: {row_counts}")
+            print(f"  dry-run row counts: {row_counts}; lineage files: {len(lineage_files)}")
             continue
         result = register_dataset_spec(
             spec,
             config,
             pipeline_run_id=args.pipeline_run_id,
             mlflow_parent_run_id=args.mlflow_parent_run_id,
+            require_lineage=not args.allow_missing_lineage,
         )
         results.append(result)
         print(

@@ -186,6 +186,7 @@ Tasks:
 - Extend Stage 1A to emit `entailments.jsonl`. Implemented, with K8s shard outputs, observability, and source-system/source-kind/modality lineage propagation from Stage 0 passages.
 - Extend sample generation to emit `dataset_samples.jsonl`. Implemented, with per-sample source composition fields available to dataset registration observability.
 - Add dataset finalization to emit deterministic `dataset_version_manifest.json`. Implemented with source composition metrics, artifact checksums, observability files, and a K8s Job template under `deploy/dataset-finalization/`.
+- Extend dataset registration to require the finalized manifest by default and upload recognized lineage sidecars to Data Store alongside split JSONLs. Implemented with MLflow-ready lineage upload metrics and artifact classifications.
 - Preserve current `training.jsonl` and `validation.jsonl` outputs for compatibility.
 - Add schema validation tests.
 

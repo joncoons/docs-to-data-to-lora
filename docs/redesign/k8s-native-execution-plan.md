@@ -192,9 +192,11 @@ deploy/dataset-registration/
 ```
 
 The Job registers the Stage 3 training dataset, bare held-out test dataset, and
-context-baked test dataset for each collection. It emits `run_context.json`,
-`metrics.json`, `artifacts_manifest.json`, and `service_refs.json` for later
-MLflow export.
+context-baked test dataset for each collection. It requires
+`manifests/dataset_version_manifest.json` by default, uploads recognized
+lineage sidecars into each Data Store dataset repository, and emits
+`run_context.json`, `metrics.json`, `artifacts_manifest.json`, and
+`service_refs.json` for later MLflow export.
 
 ## Sixth K8s Template: Dataset Finalization
 

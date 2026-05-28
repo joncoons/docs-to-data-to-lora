@@ -1,11 +1,17 @@
 import json
+import subprocess
+from pathlib import Path
 
+from scripts.eval import upload_test_datasets as upload
 from scripts.eval.upload_test_datasets import (
     ServiceConfig,
     build_entity_store_payload,
     build_observability_documents,
     default_dataset_specs,
+    discover_lineage_files,
     inject_basic_auth,
+    push_dataset_files,
+    validate_spec_files,
     write_observability_documents,
 )
 
@@ -74,14 +80,92 @@ def test_build_entity_store_payload_includes_lineage_in_description(tmp_path):
     assert "mlflow_parent_run_id=mlflow-run-abc" in payload["description"]
 
 
+def test_validate_spec_files_requires_dataset_version_manifest(tmp_path):
+    coll = tmp_path / "nim_curated"
+    coll.mkdir()
+    (coll / "training.jsonl").write_text('{"a": 1}\n')
+    (coll / "validation.jsonl").write_text('{"a": 2}\n')
+    spec = default_dataset_specs(
+        tmp_path,
+        ["nim_curated"],
+        include_train=True,
+        include_test=False,
+        include_context_test=False,
+    )[0]
+
+    assert validate_spec_files(spec, require_lineage=False) == []
+
+    missing = validate_spec_files(spec, require_lineage=True)
+
+    assert missing == [coll / "manifests" / "dataset_version_manifest.json"]
+
+
+def test_discover_lineage_files_finds_finalized_manifest_and_sidecars(tmp_path):
+    coll = tmp_path / "nim_curated"
+    (coll / "manifests").mkdir(parents=True)
+    (coll / "provenance").mkdir()
+    (coll / "manifests" / "dataset_version_manifest.json").write_text("{}")
+    (coll / "provenance" / "source_chunks.jsonl").write_text('{"id": "c1"}\n')
+    (coll / "provenance" / "dataset_samples.jsonl").write_text('{"id": "s1"}\n')
+
+    lineage_files = discover_lineage_files(coll)
+
+    assert [item.repo_path for item in lineage_files] == [
+        "manifests/dataset_version_manifest.json",
+        "provenance/source_chunks.jsonl",
+        "provenance/dataset_samples.jsonl",
+    ]
+
+
+def test_push_dataset_files_includes_lineage_artifacts(tmp_path, monkeypatch):
+    coll = tmp_path / "nim_curated"
+    (coll / "manifests").mkdir(parents=True)
+    (coll / "provenance").mkdir()
+    (coll / "training.jsonl").write_text('{"a": 1}\n')
+    (coll / "validation.jsonl").write_text('{"a": 2}\n')
+    (coll / "manifests" / "dataset_version_manifest.json").write_text("{}")
+    (coll / "provenance" / "dataset_samples.jsonl").write_text('{"id": "s1"}\n')
+    spec = default_dataset_specs(
+        tmp_path,
+        ["nim_curated"],
+        include_train=True,
+        include_test=False,
+        include_context_test=False,
+    )[0]
+    commands = []
+
+    def fake_run_cmd(args, cwd=None, allow_fail=False):
+        commands.append(args)
+        if args[:2] == ["git", "clone"]:
+            requested_repo = Path(args[-1])
+            requested_repo.mkdir(parents=True)
+        return subprocess.CompletedProcess(args, 0, stdout=b"", stderr=b"")
+
+    monkeypatch.setattr(upload, "run_cmd", fake_run_cmd)
+
+    result = push_dataset_files(spec, _config())
+
+    assert result["lineage_files"] == [
+        "manifests/dataset_version_manifest.json",
+        "provenance/dataset_samples.jsonl",
+    ]
+    git_add = [args for args in commands if args[:2] == ["git", "add"]][0]
+    assert "training.jsonl" in git_add
+    assert "validation.jsonl" in git_add
+    assert "manifests/dataset_version_manifest.json" in git_add
+    assert "provenance/dataset_samples.jsonl" in git_add
+
+
 def test_build_observability_documents_records_metrics_and_refs(tmp_path):
     coll = tmp_path / "nim_curated"
     coll.mkdir()
     (coll / "training.jsonl").write_text('{"a": 1}\n{"a": 2}\n')
     (coll / "validation.jsonl").write_text('{"a": 3}\n')
+    manifests = coll / "manifests"
+    manifests.mkdir()
     provenance = coll / "provenance"
     provenance.mkdir()
-    (provenance / "dataset_version_manifest.json").write_text(json.dumps({
+    (manifests / "dataset_version_manifest.json").write_text(json.dumps({
         "dataset_version_id": "dsv_nim_001",
     }))
     dataset_samples = [
@@ -139,6 +223,10 @@ def test_build_observability_documents_records_metrics_and_refs(tmp_path):
         "repo_status": "created",
         "git_status": "pushed",
         "entity_status": "created",
+        "lineage_files": [
+            "manifests/dataset_version_manifest.json",
+            "provenance/dataset_samples.jsonl",
+        ],
     }]
 
     docs = build_observability_documents(
@@ -157,6 +245,7 @@ def test_build_observability_documents_records_metrics_and_refs(tmp_path):
     assert metrics["datasets.count"] == 1
     assert metrics["dataset.stage3_nim_curated.rows.training"] == 2
     assert metrics["dataset.stage3_nim_curated.rows.validation"] == 1
+    assert metrics["dataset.stage3_nim_curated.lineage_files.uploaded.count"] == 2
     assert metrics["dataset.stage3_nim_curated.samples.provenance.count"] == 3
     assert metrics["dataset.stage3_nim_curated.sources.count"] == 3
     assert metrics["dataset.stage3_nim_curated.source_revisions.count"] == 2
@@ -171,8 +260,23 @@ def test_build_observability_documents_records_metrics_and_refs(tmp_path):
     assert metrics["dataset.stage3_nim_curated.source_kind.web_page.samples"] == 1
     assert metrics["dataset.stage3_nim_curated.modality.text.samples"] == 2
     assert metrics["dataset.stage3_nim_curated.modality.image.samples"] == 1
+    artifacts = {
+        item.get("artifact_path") or item.get("repo_path"): item
+        for item in docs["artifacts_manifest.json"]["artifacts"]
+    }
+    assert artifacts["training.jsonl"]["artifact_kind"] == "uploaded_dataset_file"
+    assert artifacts["training.jsonl"]["uploaded_to_data_store"] is True
+    assert (
+        artifacts["manifests/dataset_version_manifest.json"]["artifact_kind"]
+        == "uploaded_lineage_file"
+    )
+    assert artifacts["provenance/dataset_samples.jsonl"]["uploaded_to_data_store"] is True
     assert service_refs["datasets"][0]["dataset_version_id"] == "dsv_nim_001"
     assert service_refs["datasets"][0]["entity_ref"] == "default/stage3-nim-curated"
+    assert service_refs["datasets"][0]["lineage_files"] == [
+        "manifests/dataset_version_manifest.json",
+        "provenance/dataset_samples.jsonl",
+    ]
     assert service_refs["datasets"][0]["source_composition"]["source_revision_count"] == 2
 
 

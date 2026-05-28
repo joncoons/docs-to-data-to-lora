@@ -41,9 +41,11 @@ The template expects the dataset artifact PVC mounted at `/datasets`:
     ...
 ```
 
-`provenance/` and `manifests/` are optional but should be present in the durable
-showcase path. When present, their files are included in the observability
-artifact manifest.
+`manifests/dataset_version_manifest.json` is required by default. The Job
+uploads it and recognized lineage sidecars from `manifests/` and `provenance/`
+to the NeMo Data Store dataset repository alongside the split JSONL files. Use
+`--allow-missing-lineage` only for legacy or ad hoc dry runs that have not yet
+passed through dataset finalization.
 
 ## Secrets
 
@@ -82,11 +84,12 @@ The Job writes:
 ```
 
 These files are designed for a later MLflow export Job. They include dataset
-row counts, file checksums, NeMo Data Store URIs, Entity Store refs, optional
-dataset version IDs, and provenance sidecar references. When
-`provenance/dataset_samples.jsonl` is present, registration also emits source
-composition metrics for source systems, source kinds, modalities, distinct
-source revisions/chunks, entailments, and synthetic versus grounded samples.
+row counts, file checksums, NeMo Data Store URIs, Entity Store refs, dataset
+version IDs, uploaded lineage file lists, and provenance sidecar references.
+When `provenance/dataset_samples.jsonl` is present, registration also emits
+source composition metrics for source systems, source kinds, modalities,
+distinct source revisions/chunks, entailments, and synthetic versus grounded
+samples.
 
 ## Local Dry Run
 
@@ -102,4 +105,5 @@ python scripts/eval/upload_test_datasets.py \
 ```
 
 Dry run validates files and writes observability output without calling NeMo
-services or pushing to Data Store.
+services or pushing to Data Store. It still requires the finalized dataset
+manifest unless `--allow-missing-lineage` is supplied.
