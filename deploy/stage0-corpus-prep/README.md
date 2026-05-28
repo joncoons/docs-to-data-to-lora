@@ -71,8 +71,9 @@ The Job does not install the MLflow client. It writes the standard repository
 observability files so a later MLflow export Job can log metrics and artifacts.
 The emitted metrics include ES hit counts, extracted chunk counts, passage
 counts, source revision/chunk counts, token totals, doc-kind/product-family
-breakdowns, and URL registry coverage metrics when a registry is supplied. The
-registry artifact is also listed in `artifacts_manifest.json`.
+breakdowns, ES provenance coverage metrics, and URL registry coverage metrics
+when a registry is supplied. The registry artifact is also listed in
+`artifacts_manifest.json`.
 
 ## Local Run
 

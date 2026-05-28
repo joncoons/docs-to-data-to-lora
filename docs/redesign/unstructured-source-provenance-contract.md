@@ -60,8 +60,22 @@ stamps source-agnostic provenance for any text chunk produced through
 HTTP, registry, and crawl metadata, but the ES writer also accepts non-web
 metadata for future capture/captioning/summarization adapters.
 
-The current crawler URL registry remains a webcrawl adapter artifact. It now
+Stage 0 now consumes the ES provenance contract directly. It prefers upstream
+`source_revision_id` and `source_chunk_id` values from `metadata.provenance`,
+`metadata.content_metadata`, or `metadata.source` before deriving local fallback
+IDs. When a retained passage maps to one ES chunk, Stage 0 keeps the upstream
+`source_chunk_id`; when web HTML chunks are grouped into a larger passage, Stage
+0 emits a deterministic aggregate chunk ID and preserves all upstream chunk IDs
+and provenance records in `source_chunks.jsonl` metadata.
+
+The current crawler URL registry remains a webcrawl adapter artifact. It
 normalizes legacy bare hashes to `sha256:<hex>` and records common source
-revision fields where available, but downstream stages should treat
-`metadata.provenance` and `source_revision_id` as the durable cross-source join
-points.
+revision fields where available, but downstream stages should treat ES
+`metadata.provenance`, `source_revision_id`, and `source_chunk_id` as the
+durable cross-source join points. The registry is now fallback/enrichment for
+webcrawl HTTP metadata, historical hashes, and registry coverage metrics.
+
+The legacy `Passage.doc_kind` field still only allows `html` or `pdf`; Stage 0
+uses the `pdf` value as the per-chunk grouping mode for captured documents,
+dense image captions, audio transcripts, and video summaries until the passage
+model grows a source-agnostic kind field.

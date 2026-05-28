@@ -89,8 +89,11 @@ Metrics:
 | `stage0.urls.count` | Distinct source URLs retained |
 | `stage0.tokens.total` | Passage token total |
 | `stage0.tokens.mean` | Mean passage token count |
-| `stage0.doc_kind.html` | HTML passage count |
-| `stage0.doc_kind.pdf` | PDF/binary passage count |
+| `stage0.doc_kind.html` | HTML/grouped-web passage count |
+| `stage0.doc_kind.pdf` | Per-chunk source text count, including PDF/binary, captured document, image caption, audio transcript, and video summary text |
+| `stage0.es_provenance.chunks.count` | Extracted ES chunks carrying source-agnostic provenance or upstream IDs |
+| `stage0.es_provenance.source_revisions.count` | Distinct upstream source revision IDs observed in ES metadata |
+| `stage0.es_provenance.source_chunks.count` | Distinct upstream source chunk IDs observed in ES metadata |
 | `stage0.url_registry.records.count` | URL registry records loaded |
 | `stage0.url_registry.matched_urls.count` | Retained Stage 0 URLs with a registry match |
 | `stage0.url_registry.unmatched_urls.count` | Retained Stage 0 URLs missing a registry match |

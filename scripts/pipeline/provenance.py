@@ -112,7 +112,9 @@ class CrawlRun(ProvenanceModel):
     started_at: str
     completed_at: str | None = None
     status: Literal["running", "completed", "failed", "partial"] = "completed"
-    recrawl_reason: Literal["initial", "scheduled", "manual", "hotfix", "backfill", "test"] = "initial"
+    recrawl_reason: Literal[
+        "initial", "scheduled", "manual", "hotfix", "backfill", "test"
+    ] = "initial"
     crawler: dict[str, Any]
     scope: dict[str, Any]
     outputs: dict[str, Any]
@@ -127,7 +129,9 @@ class SourceRevision(ProvenanceModel):
     canonical_url: str
     final_url: str | None = None
     retrieved_at: str
-    status: Literal["active", "unchanged", "changed", "deleted", "redirected", "failed", "excluded"] = "active"
+    status: Literal[
+        "active", "unchanged", "changed", "deleted", "redirected", "failed", "excluded"
+    ] = "active"
     http: dict[str, Any] = Field(default_factory=dict)
     hashes: dict[str, str | None]
     content: dict[str, Any] = Field(default_factory=dict)
@@ -167,8 +171,13 @@ class Entailment(ProvenanceModel):
 class DatasetSample(ProvenanceModel):
     schema_version: Literal["provenance.v1"] = SCHEMA_VERSION
     sample_id: str
-    origin: Literal["source_entailed", "synthetic_gapfill", "human_reviewed", "imported_baseline"]
-    task_type: Literal["qa", "summary", "listicle", "procedural", "bridging", "contrastive", "rag_eval", "other"]
+    origin: Literal[
+        "source_entailed", "synthetic_gapfill", "human_reviewed", "imported_baseline"
+    ]
+    task_type: Literal[
+        "qa", "summary", "listicle", "procedural", "bridging",
+        "contrastive", "rag_eval", "other"
+    ]
     prompt: str
     completion: str
     system: str | None = None
@@ -215,7 +224,133 @@ def _source_revision_metadata(source_meta: dict[str, Any]) -> dict[str, Any]:
     es_meta = source_meta.get("es") or {}
     if es_meta:
         metadata["elasticsearch"] = es_meta
+    es_chunks = source_meta.get("es_chunks") or []
+    upstream_revision_ids = sorted({
+        revision_id
+        for chunk in es_chunks
+        for revision_id in [_upstream_source_revision_id(chunk)]
+        if revision_id
+    })
+    upstream_chunk_ids = sorted({
+        chunk_id
+        for chunk in es_chunks
+        for chunk_id in [_upstream_source_chunk_id(chunk)]
+        if chunk_id
+    })
+    if upstream_revision_ids or upstream_chunk_ids:
+        metadata["upstream"] = _compact_dict({
+            "source_revision_ids": upstream_revision_ids,
+            "source_chunk_ids": upstream_chunk_ids,
+            "source_provenance_kind": "es_metadata_provenance",
+        })
     return metadata
+
+
+def _first_nonempty(*values: Any) -> Any:
+    for value in values:
+        if value is not None and value != "":
+            return value
+    return None
+
+
+def _as_dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _upstream_source_revision_id(chunk: dict[str, Any]) -> str | None:
+    content_metadata = _as_dict(chunk.get("content_metadata"))
+    source_metadata = _as_dict(chunk.get("source"))
+    provenance = _as_dict(chunk.get("provenance"))
+    candidate = _first_nonempty(
+        content_metadata.get("source_revision_id"),
+        source_metadata.get("source_revision_id"),
+        provenance.get("source_revision_id"),
+    )
+    return candidate if isinstance(candidate, str) and candidate.startswith("srcrev_") else None
+
+
+def _upstream_source_chunk_id(chunk: dict[str, Any]) -> str | None:
+    content_metadata = _as_dict(chunk.get("content_metadata"))
+    source_metadata = _as_dict(chunk.get("source"))
+    provenance = _as_dict(chunk.get("provenance"))
+    candidate = _first_nonempty(
+        content_metadata.get("source_chunk_id"),
+        source_metadata.get("source_chunk_id"),
+        provenance.get("source_chunk_id"),
+    )
+    return candidate if isinstance(candidate, str) and candidate.startswith("chunk_") else None
+
+
+def _single_upstream_revision_id(source_meta: dict[str, Any]) -> str | None:
+    revision_ids = {
+        revision_id
+        for chunk in source_meta.get("es_chunks", [])
+        for revision_id in [_upstream_source_revision_id(chunk)]
+        if revision_id
+    }
+    if len(revision_ids) == 1:
+        return next(iter(revision_ids))
+    return None
+
+
+def _chunks_for_passage(source_meta: dict[str, Any], passage: Passage) -> list[dict[str, Any]]:
+    chunks_by_external_id = {
+        chunk.get("external_chunk_id"): chunk
+        for chunk in source_meta.get("es_chunks", [])
+        if chunk.get("external_chunk_id")
+    }
+    return [chunks_by_external_id[cid] for cid in passage.chunk_ids if cid in chunks_by_external_id]
+
+
+def _single_upstream_chunk_id(chunks: list[dict[str, Any]], passage: Passage) -> str | None:
+    if len(chunks) != 1 or len(passage.chunk_ids) != 1:
+        return None
+    return _upstream_source_chunk_id(chunks[0])
+
+
+def _provenance_http(
+    registry: dict[str, Any],
+    content_metadata: dict[str, Any],
+    provenance: dict[str, Any],
+) -> dict[str, Any]:
+    http = _as_dict(provenance.get("http"))
+    return {
+        "status_code": _first_nonempty(
+            registry.get("status_code"),
+            http.get("status_code"),
+            content_metadata.get("http_status_code"),
+        ),
+        "etag": _first_nonempty(
+            registry.get("etag"),
+            http.get("etag"),
+            content_metadata.get("http_etag"),
+        ),
+        "last_modified": _first_nonempty(
+            registry.get("last_modified"),
+            http.get("last_modified"),
+            content_metadata.get("http_last_modified"),
+        ),
+        "content_type": _first_nonempty(
+            registry.get("content_type"),
+            http.get("content_type"),
+            content_metadata.get("content_type"),
+        ),
+        "cache_control": registry.get("cache_control"),
+    }
+
+
+def _raw_sha256(
+    registry: dict[str, Any],
+    content_metadata: dict[str, Any],
+    provenance: dict[str, Any],
+) -> str | None:
+    hashes = _as_dict(provenance.get("hashes"))
+    return normalize_sha256_hash(_first_nonempty(
+        registry.get("content_hash"),
+        hashes.get("raw_sha256"),
+        content_metadata.get("raw_sha256"),
+        content_metadata.get("source_content_hash"),
+    ))
 
 
 def _heading_path(content_metadata: dict[str, Any]) -> list[str]:
@@ -312,37 +447,53 @@ def attach_source_provenance(
     revision_id_by_url: dict[str, str] = {}
     for url in sorted(text_by_url):
         normalized_text = "\n\n".join(text_by_url[url])
-        revision_id = source_revision_id_for_text(url, normalized_text)
-        revision_id_by_url[url] = revision_id
-        first = first_by_url[url]
         source_meta = source_metadata_by_url.get(url, {})
         registry = source_meta.get("url_registry") or {}
         es_meta = source_meta.get("es") or {}
-        content_metadata = es_meta.get("content_metadata") or {}
-        source_metadata = es_meta.get("source") or {}
-        final_url = registry.get("redirect_to") or registry.get("final_url") or url
+        content_metadata = _as_dict(es_meta.get("content_metadata"))
+        source_metadata = _as_dict(es_meta.get("source"))
+        upstream_provenance = _as_dict(es_meta.get("provenance"))
+        revision_id = _single_upstream_revision_id(source_meta) or source_revision_id_for_text(
+            url, normalized_text
+        )
+        revision_id_by_url[url] = revision_id
+        first = first_by_url[url]
+        final_url = _first_nonempty(
+            registry.get("redirect_to"),
+            registry.get("final_url"),
+            content_metadata.get("final_uri"),
+            upstream_provenance.get("final_uri"),
+            url,
+        )
         is_redirect = isinstance(final_url, str) and final_url.rstrip("/") != url.rstrip("/")
+        retrieved_value = _first_nonempty(
+            registry.get("last_ingested"),
+            registry.get("last_seen"),
+            content_metadata.get("retrieved_at"),
+            content_metadata.get("captured_at"),
+            content_metadata.get("processed_at"),
+            upstream_provenance.get("observed_at"),
+            retrieved_at,
+        )
         revisions.append(SourceRevision(
             source_revision_id=revision_id,
             crawl_run_id=crawl_run_id,
-            canonical_url=url,
-            final_url=final_url,
-            retrieved_at=registry.get("last_ingested") or registry.get("last_seen") or retrieved_at,
+            canonical_url=str(_first_nonempty(
+                content_metadata.get("canonical_uri"),
+                upstream_provenance.get("canonical_uri"),
+                url,
+            )),
+            final_url=str(final_url) if final_url else None,
+            retrieved_at=str(retrieved_value),
             status="redirected" if is_redirect else "active",
-            http={
-                "status_code": registry.get("status_code"),
-                "etag": registry.get("etag"),
-                "last_modified": registry.get("last_modified"),
-                "content_type": registry.get("content_type"),
-                "cache_control": registry.get("cache_control"),
-            },
+            http=_provenance_http(registry, content_metadata, upstream_provenance),
             hashes={
-                "raw_sha256": normalize_sha256_hash(registry.get("content_hash")),
+                "raw_sha256": _raw_sha256(registry, content_metadata, upstream_provenance),
                 "normalized_sha256": sha256_text(normalized_text),
             },
             content={
-                "raw_uri": None,
-                "normalized_uri": None,
+                "raw_uri": content_metadata.get("raw_uri"),
+                "normalized_uri": content_metadata.get("normalized_uri"),
                 "language": content_metadata.get("language"),
                 "title": content_metadata.get("page_title") or content_metadata.get("heading"),
             },
@@ -355,7 +506,23 @@ def attach_source_provenance(
                 "section_h1": content_metadata.get("section_h1"),
                 "section_path": content_metadata.get("section_path"),
                 "heading": content_metadata.get("heading"),
-                "source_system": content_metadata.get("source_system"),
+                "source_system": _first_nonempty(
+                    content_metadata.get("source_system"),
+                    source_metadata.get("source_system"),
+                    upstream_provenance.get("source_system"),
+                ),
+                "source_kind": _first_nonempty(
+                    content_metadata.get("source_kind"),
+                    source_metadata.get("source_kind"),
+                    upstream_provenance.get("source_kind"),
+                ),
+                "modality": _first_nonempty(
+                    content_metadata.get("modality"),
+                    source_metadata.get("modality"),
+                    upstream_provenance.get("modality"),
+                ),
+                "parser_version": content_metadata.get("parser_version"),
+                "chunker_version": content_metadata.get("chunker_version"),
                 "source_id": source_metadata.get("source_id"),
                 "source_type": source_metadata.get("source_type"),
             },
@@ -366,12 +533,33 @@ def attach_source_provenance(
     source_chunks: list[SourceChunk] = []
     for passage in passages:
         revision_id = revision_id_by_url[passage.url]
-        chunk_id = source_chunk_id_for_text(revision_id, passage.passage_id, passage.text)
         source_meta = source_metadata_by_url.get(passage.url, {})
         registry = source_meta.get("url_registry") or {}
-        es_meta = source_meta.get("es") or {}
-        content_metadata = es_meta.get("content_metadata") or {}
-        source_metadata = es_meta.get("source") or {}
+        matching_chunks = _chunks_for_passage(source_meta, passage)
+        first_chunk = matching_chunks[0] if matching_chunks else {}
+        content_metadata = _as_dict(first_chunk.get("content_metadata"))
+        source_metadata = _as_dict(first_chunk.get("source"))
+        upstream_provenance = _as_dict(first_chunk.get("provenance"))
+        chunk_id = _single_upstream_chunk_id(matching_chunks, passage) or source_chunk_id_for_text(
+            revision_id, passage.passage_id, passage.text
+        )
+        upstream_revision_ids = sorted({
+            revision_id_value
+            for chunk in matching_chunks
+            for revision_id_value in [_upstream_source_revision_id(chunk)]
+            if revision_id_value
+        })
+        upstream_chunk_ids = sorted({
+            chunk_id_value
+            for chunk in matching_chunks
+            for chunk_id_value in [_upstream_source_chunk_id(chunk)]
+            if chunk_id_value
+        })
+        upstream_provenance_records = [
+            chunk.get("provenance")
+            for chunk in matching_chunks
+            if chunk.get("provenance")
+        ]
         updated.append(passage.model_copy(update={
             "source_revision_id": revision_id,
             "source_chunk_ids": [chunk_id],
@@ -406,6 +594,24 @@ def attach_source_provenance(
                 "content_metadata": content_metadata,
                 "source": source_metadata,
                 "url_registry": _registry_metadata(registry),
+                "upstream_source_revision_ids": upstream_revision_ids,
+                "upstream_source_chunk_ids": upstream_chunk_ids,
+                "upstream_provenance": upstream_provenance_records,
+                "source_system": _first_nonempty(
+                    content_metadata.get("source_system"),
+                    source_metadata.get("source_system"),
+                    upstream_provenance.get("source_system"),
+                ),
+                "source_kind": _first_nonempty(
+                    content_metadata.get("source_kind"),
+                    source_metadata.get("source_kind"),
+                    upstream_provenance.get("source_kind"),
+                ),
+                "modality": _first_nonempty(
+                    content_metadata.get("modality"),
+                    source_metadata.get("modality"),
+                    upstream_provenance.get("modality"),
+                ),
             },
         ))
 

@@ -65,8 +65,35 @@ def _env_int(name: str, default: int) -> int:
 DEFAULT_MIN_PASSAGE_TOKENS = _env_int("MIN_PASSAGE_TOKENS", 60)
 
 
-def classify_doc_kind(url: str, doc_type: str) -> Literal["html", "pdf"]:
-    """URL extension is authoritative; doc_type is informational."""
+def classify_doc_kind(
+    url: str,
+    doc_type: str,
+    *,
+    source_system: str | None = None,
+    modality: str | None = None,
+    source_kind: str | None = None,
+) -> Literal["html", "pdf"]:
+    """Return Stage 0 grouping mode while preserving legacy html/pdf labels.
+
+    Non-web source text, such as OCR, image captions, and video summaries, is
+    kept per ES chunk. The legacy Passage model only has html/pdf labels, so
+    `pdf` means per-chunk source text here, not strictly a PDF file.
+    """
+    source_system_l = (source_system or "").lower()
+    modality_l = (modality or "").lower()
+    source_kind_l = (source_kind or "").lower()
+    if modality_l in {"document", "image", "audio", "video"}:
+        return "pdf"
+    if source_system_l in {
+        "document_capture",
+        "image_dense_caption",
+        "audio_transcript",
+        "video_summary",
+    }:
+        return "pdf"
+    if source_kind_l in {"downloaded_asset", "dense_caption", "video_summary_text"}:
+        return "pdf"
+
     url_lower = url.lower().split("?")[0].split("#")[0]
     if any(url_lower.endswith(ext) for ext in _BINARY_EXTENSIONS):
         return "pdf"
@@ -78,11 +105,31 @@ def extract_chunk_dict(hit: dict) -> dict | None:
     src = hit.get("_source", {})
     meta = src.get("metadata", {})
     cm = meta.get("content_metadata", {})
+    source_meta = meta.get("source", {})
+    provenance = meta.get("provenance") or cm.get("provenance") or {}
 
-    url = cm.get("content_url") or meta.get("source", {}).get("source_name", "")
+    url = (
+        cm.get("content_url")
+        or cm.get("canonical_uri")
+        or provenance.get("canonical_uri")
+        or source_meta.get("source_name")
+        or ""
+    )
     text = (src.get("text") or "").strip()
     if not url or not text:
         return None
+
+    source_system = (
+        cm.get("source_system")
+        or source_meta.get("source_system")
+        or provenance.get("source_system")
+    )
+    source_kind = (
+        cm.get("source_kind")
+        or source_meta.get("source_kind")
+        or provenance.get("source_kind")
+    )
+    modality = cm.get("modality") or source_meta.get("modality") or provenance.get("modality")
 
     return {
         "_id": hit["_id"],
@@ -94,8 +141,12 @@ def extract_chunk_dict(hit: dict) -> dict | None:
         "product_family": meta.get("product_family") or cm.get("product_family") or "unknown",
         "product_name": meta.get("product_name") or cm.get("product_name") or "unknown",
         "content_metadata": cm,
-        "source_metadata": meta.get("source", {}),
-        "date_created": meta.get("date_created"),
+        "source_metadata": source_meta,
+        "provenance": provenance,
+        "source_system": source_system,
+        "source_kind": source_kind,
+        "modality": modality,
+        "date_created": meta.get("date_created") or source_meta.get("date_created"),
     }
 
 
@@ -134,7 +185,13 @@ def build_passages(chunks: list[dict], min_passage_tokens: int = 60) -> list[Pas
             normalized.append(c)
 
     for c in normalized:
-        c["doc_kind"] = classify_doc_kind(c["url"], c.get("doc_type", "text"))
+        c["doc_kind"] = classify_doc_kind(
+            c["url"],
+            c.get("doc_type", "text"),
+            source_system=c.get("source_system"),
+            modality=c.get("modality"),
+            source_kind=c.get("source_kind"),
+        )
 
     html_chunks = [c for c in normalized if c["doc_kind"] == "html"]
     pdf_chunks = [c for c in normalized if c["doc_kind"] == "pdf"]
@@ -252,23 +309,88 @@ def build_source_metadata_by_url(
     metadata_by_url: dict[str, dict[str, Any]] = {}
     for chunk in sorted(chunks, key=lambda c: (c.get("url", ""), c.get("chunk_index") or 0)):
         url = chunk.get("url")
-        if not url or url in metadata_by_url:
+        if not url:
             continue
-        entry: dict[str, Any] = {}
+        entry = metadata_by_url.setdefault(url, {"es_chunks": []})
         content_metadata = chunk.get("content_metadata") or {}
         source_metadata = chunk.get("source_metadata") or {}
-        if content_metadata or source_metadata or chunk.get("date_created"):
+        provenance = chunk.get("provenance") or {}
+        chunk_meta = {
+            "external_chunk_id": chunk.get("_id"),
+            "chunk_index": chunk.get("chunk_index"),
+            "content_metadata": content_metadata,
+            "source": source_metadata,
+            "provenance": provenance,
+            "date_created": chunk.get("date_created"),
+        }
+        entry["es_chunks"].append(chunk_meta)
+        has_source_metadata = (
+            content_metadata
+            or source_metadata
+            or provenance
+            or chunk.get("date_created")
+        )
+        if "es" not in entry and has_source_metadata:
             entry["es"] = {
                 "content_metadata": content_metadata,
                 "source": source_metadata,
+                "provenance": provenance,
                 "date_created": chunk.get("date_created"),
             }
         registry = lookup_url_registry(url_registry_lookup, url)
         if registry:
             entry["url_registry"] = registry
-        if entry:
-            metadata_by_url[url] = entry
-    return metadata_by_url
+    return {url: entry for url, entry in metadata_by_url.items() if entry}
+
+
+def _source_revision_id_from_chunk(chunk: dict[str, Any]) -> str | None:
+    content_metadata = chunk.get("content_metadata") or {}
+    source_metadata = chunk.get("source") or {}
+    provenance = chunk.get("provenance") or {}
+    candidate = (
+        content_metadata.get("source_revision_id")
+        or source_metadata.get("source_revision_id")
+        or provenance.get("source_revision_id")
+    )
+    return candidate if isinstance(candidate, str) and candidate.startswith("srcrev_") else None
+
+
+def _source_chunk_id_from_chunk(chunk: dict[str, Any]) -> str | None:
+    content_metadata = chunk.get("content_metadata") or {}
+    source_metadata = chunk.get("source") or {}
+    provenance = chunk.get("provenance") or {}
+    candidate = (
+        content_metadata.get("source_chunk_id")
+        or source_metadata.get("source_chunk_id")
+        or provenance.get("source_chunk_id")
+    )
+    return candidate if isinstance(candidate, str) and candidate.startswith("chunk_") else None
+
+
+def build_es_provenance_metrics(chunks: list[dict]) -> dict[str, int]:
+    chunk_count = 0
+    revision_ids: set[str] = set()
+    chunk_ids: set[str] = set()
+    for chunk in chunks:
+        chunk_meta = {
+            "content_metadata": chunk.get("content_metadata") or {},
+            "source": chunk.get("source_metadata") or {},
+            "provenance": chunk.get("provenance") or {},
+        }
+        revision_id = _source_revision_id_from_chunk(chunk_meta)
+        chunk_id = _source_chunk_id_from_chunk(chunk_meta)
+        if chunk_meta["provenance"] or revision_id or chunk_id:
+            chunk_count += 1
+        if revision_id:
+            revision_ids.add(revision_id)
+        if chunk_id:
+            chunk_ids.add(chunk_id)
+
+    return {
+        "chunk_count": chunk_count,
+        "source_revision_count": len(revision_ids),
+        "source_chunk_count": len(chunk_ids),
+    }
 
 
 def build_url_registry_metrics(
@@ -347,6 +469,7 @@ def build_stage0_observability_documents(
     crawl_run_id: str,
     url_registry_path: Path | None = None,
     url_registry_metrics: dict[str, int] | None = None,
+    es_provenance_metrics: dict[str, int] | None = None,
     pipeline_run_id: str | None = None,
     mlflow_tracking_uri: str | None = None,
     mlflow_experiment_name: str | None = None,
@@ -357,6 +480,7 @@ def build_stage0_observability_documents(
     doc_kind_counts = Counter(p.doc_kind for p in passages)
     product_family_counts = Counter(p.product_family or "unknown" for p in passages)
     registry_metrics = url_registry_metrics or {}
+    es_metrics = es_provenance_metrics or {}
     metrics: dict[str, int | float] = {
         "stage0.raw_hits.count": raw_hit_count,
         "stage0.chunks.extracted": extracted_chunk_count,
@@ -365,9 +489,14 @@ def build_stage0_observability_documents(
         "stage0.source_chunks.count": len(source_chunks),
         "stage0.urls.count": len({p.url for p in passages}),
         "stage0.tokens.total": sum(token_counts),
-        "stage0.tokens.mean": round(sum(token_counts) / len(token_counts), 2) if token_counts else 0,
+        "stage0.tokens.mean": (
+            round(sum(token_counts) / len(token_counts), 2) if token_counts else 0
+        ),
         "stage0.doc_kind.html": doc_kind_counts.get("html", 0),
         "stage0.doc_kind.pdf": doc_kind_counts.get("pdf", 0),
+        "stage0.es_provenance.chunks.count": es_metrics.get("chunk_count", 0),
+        "stage0.es_provenance.source_revisions.count": es_metrics.get("source_revision_count", 0),
+        "stage0.es_provenance.source_chunks.count": es_metrics.get("source_chunk_count", 0),
         "stage0.url_registry.records.count": registry_metrics.get("record_count", 0),
         "stage0.url_registry.matched_urls.count": registry_metrics.get("matched_url_count", 0),
         "stage0.url_registry.unmatched_urls.count": registry_metrics.get("unmatched_url_count", 0),
@@ -484,6 +613,7 @@ def run_stage0(
             url_registry_path,
         )
     source_metadata_by_url = build_source_metadata_by_url(chunks, url_registry_lookup)
+    es_provenance_metrics = build_es_provenance_metrics(chunks)
 
     passages = build_passages(chunks, min_passage_tokens=min_passage_tokens)
     log.info("Stage 0: %d passages after grouping + noise filter", len(passages))
@@ -561,6 +691,7 @@ def run_stage0(
             crawl_run_id=crawl_run.crawl_run_id,
             url_registry_path=url_registry_path,
             url_registry_metrics=url_registry_metrics,
+            es_provenance_metrics=es_provenance_metrics,
             pipeline_run_id=pipeline_run_id,
             mlflow_tracking_uri=mlflow_tracking_uri,
             mlflow_experiment_name=mlflow_experiment_name,
