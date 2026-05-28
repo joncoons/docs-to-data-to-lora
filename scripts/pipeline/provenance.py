@@ -71,6 +71,18 @@ def passage_source_chunk_ids(passage: Passage) -> list[str]:
     return [source_chunk_id_for_text(revision_id, passage.passage_id, passage.text)]
 
 
+def passage_source_systems(passage: Passage) -> list[str]:
+    return list(passage.source_systems or [])
+
+
+def passage_source_kinds(passage: Passage) -> list[str]:
+    return list(passage.source_kinds or [])
+
+
+def passage_modalities(passage: Passage) -> list[str]:
+    return list(passage.modalities or [])
+
+
 def entailment_id_for_passage(
     passage: Passage,
     entailment_index: int,
@@ -279,6 +291,27 @@ def _upstream_source_chunk_id(chunk: dict[str, Any]) -> str | None:
         provenance.get("source_chunk_id"),
     )
     return candidate if isinstance(candidate, str) and candidate.startswith("chunk_") else None
+
+
+def _source_dimension_from_chunk(chunk: dict[str, Any], key: str) -> str | None:
+    content_metadata = _as_dict(chunk.get("content_metadata"))
+    source_metadata = _as_dict(chunk.get("source"))
+    provenance = _as_dict(chunk.get("provenance"))
+    value = _first_nonempty(
+        content_metadata.get(key),
+        source_metadata.get(key),
+        provenance.get(key),
+    )
+    return str(value) if value is not None and value != "" else None
+
+
+def _source_dimension_values(chunks: list[dict[str, Any]], key: str) -> list[str]:
+    return sorted({
+        value
+        for chunk in chunks
+        for value in [_source_dimension_from_chunk(chunk, key)]
+        if value
+    })
 
 
 def _single_upstream_revision_id(source_meta: dict[str, Any]) -> str | None:
@@ -560,9 +593,15 @@ def attach_source_provenance(
             for chunk in matching_chunks
             if chunk.get("provenance")
         ]
+        source_systems = _source_dimension_values(matching_chunks, "source_system")
+        source_kinds = _source_dimension_values(matching_chunks, "source_kind")
+        modalities = _source_dimension_values(matching_chunks, "modality")
         updated.append(passage.model_copy(update={
             "source_revision_id": revision_id,
             "source_chunk_ids": [chunk_id],
+            "source_systems": source_systems or None,
+            "source_kinds": source_kinds or None,
+            "modalities": modalities or None,
         }))
         source_chunks.append(SourceChunk(
             chunk_id=chunk_id,
@@ -597,6 +636,9 @@ def attach_source_provenance(
                 "upstream_source_revision_ids": upstream_revision_ids,
                 "upstream_source_chunk_ids": upstream_chunk_ids,
                 "upstream_provenance": upstream_provenance_records,
+                "source_systems": source_systems,
+                "source_kinds": source_kinds,
+                "modalities": modalities,
                 "source_system": _first_nonempty(
                     content_metadata.get("source_system"),
                     source_metadata.get("source_system"),
@@ -657,6 +699,9 @@ def entailments_from_kvp_rows(rows: list[KVPRow]) -> list[Entailment]:
                 "passage_id": row.passage_id,
                 "source_url": row.source_url,
                 "product_family": row.product_family,
+                "source_systems": row.source_systems or [],
+                "source_kinds": row.source_kinds or [],
+                "modalities": row.modalities or [],
             },
         ))
     return list(seen.values())
@@ -675,6 +720,9 @@ def dataset_sample_from_kvp_row(row: KVPRow, system_prompt: str | None = None) -
         "entailment_ids": [row.entailment_id] if row.entailment_id else [],
         "source_revision_ids": row.source_revision_ids or [],
         "source_chunk_ids": row.source_chunk_ids or [],
+        "source_systems": row.source_systems or [],
+        "source_kinds": row.source_kinds or [],
+        "modalities": row.modalities or [],
         "gap_id": stable_id("gap", row.target_product_family or row.product_family)
         if row.stage == "1.5" else None,
         "data_designer_job_id": "legacy_direct_llm_gapfill" if row.stage == "1.5" else None,
@@ -697,6 +745,9 @@ def dataset_sample_from_kvp_row(row: KVPRow, system_prompt: str | None = None) -
             "stage": row.stage,
             "source_url": row.source_url,
             "product_family": row.product_family,
+            "source_systems": row.source_systems or [],
+            "source_kinds": row.source_kinds or [],
+            "modalities": row.modalities or [],
             "refined": row.refined,
             "qa_type": row.qa_type,
             "instr_type": row.instr_type,

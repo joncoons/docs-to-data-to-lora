@@ -74,6 +74,9 @@ class Passage(BaseModel):
     doc_kind: Literal["html", "pdf"]
     source_revision_id: str | None = None
     source_chunk_ids: list[str] | None = None
+    source_systems: list[str] | None = None
+    source_kinds: list[str] | None = None
+    modalities: list[str] | None = None
 
 
 class KVPRow(BaseModel):
@@ -102,6 +105,9 @@ class KVPRow(BaseModel):
     entailment_premises: list[str] | None = None
     source_revision_ids: list[str] | None = None
     source_chunk_ids: list[str] | None = None
+    source_systems: list[str] | None = None
+    source_kinds: list[str] | None = None
+    modalities: list[str] | None = None
     extractor_model: str | None = None
     extractor_prompt_hash: str | None = None
     extractor_temperature: float | None = None

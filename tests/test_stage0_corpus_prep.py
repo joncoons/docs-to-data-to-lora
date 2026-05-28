@@ -266,6 +266,11 @@ def test_run_stage0_prefers_es_source_agnostic_provenance(tmp_path, monkeypatch)
     assert {p.source_revision_id for p in passages} == {"srcrev_image_1", "srcrev_video_1"}
     assert {p.source_chunk_ids[0] for p in passages} == {"chunk_image_1", "chunk_video_1"}
     assert {p.doc_kind for p in passages} == {"pdf"}
+    assert {tuple(p.source_systems or []) for p in passages} == {
+        ("image_dense_caption",),
+        ("video_summary",),
+    }
+    assert {tuple(p.modalities or []) for p in passages} == {("image",), ("video",)}
 
     image_revision = next(
         item for item in source_revisions if item["source_revision_id"] == "srcrev_image_1"
@@ -345,6 +350,9 @@ def test_run_stage0_groups_web_chunks_but_preserves_upstream_ids(tmp_path, monke
     assert passages[0].doc_kind == "html"
     assert passages[0].source_revision_id == "srcrev_web_1"
     assert passages[0].source_chunk_ids[0] not in {"chunk_web_0", "chunk_web_1"}
+    assert passages[0].source_systems == ["web_crawl"]
+    assert passages[0].source_kinds == ["web_page"]
+    assert passages[0].modalities == ["text"]
 
     assert source_revisions[0]["source_revision_id"] == "srcrev_web_1"
     assert source_revisions[0]["metadata"]["upstream"]["source_chunk_ids"] == [

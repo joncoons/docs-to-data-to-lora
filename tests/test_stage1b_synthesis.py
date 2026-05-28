@@ -39,6 +39,9 @@ def test_process_passage_1b_returns_two_rows():
         text="seed text " * 30, token_count=60,
         chunk_ids=["1"], product_family="nim", product_name="nim-llm",
         doc_kind="html",
+        source_systems=["web_crawl"],
+        source_kinds=["web_page"],
+        modalities=["text"],
     )
     seed_vec = [0.1, 0.2, 0.3]
     es = MagicMock()
@@ -64,4 +67,7 @@ def test_process_passage_1b_returns_two_rows():
     assert rows[0].qa_type == "bridging"
     assert rows[1].qa_type == "contrastive"
     assert all(r.stage == "1b" for r in rows)
+    assert all(r.source_systems == ["web_crawl"] for r in rows)
+    assert all(r.source_kinds == ["web_page"] for r in rows)
+    assert all(r.modalities == ["text"] for r in rows)
     assert all("https://x.com/n1" in (r.neighbor_urls or []) for r in rows)

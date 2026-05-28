@@ -183,8 +183,8 @@ Tasks:
 - Extend Stage 0 to emit `source_revisions.jsonl` and `source_chunks.jsonl`. Implemented, with K8s Job observability, native ES provenance consumption for source-agnostic revision/chunk IDs, and optional crawler URL registry fallback/enrichment for source-content hashes, HTTP metadata, and registry coverage metrics.
 - Vendor an editable webcrawler integration copy under `external/rag-crawler`. Implemented, with source-agnostic ES provenance helpers for web, document, image, audio, and video text sources.
 - Add K8s-native webcrawler deployment and crawl Job/CronJob templates. Implemented under `deploy/webcrawler`, using PVCs, ConfigMap/Secret wiring, and an internal ClusterIP service.
-- Extend Stage 1A to emit `entailments.jsonl`. Implemented, with K8s shard outputs and observability.
-- Extend sample generation to emit `dataset_samples.jsonl`.
+- Extend Stage 1A to emit `entailments.jsonl`. Implemented, with K8s shard outputs, observability, and source-system/source-kind/modality lineage propagation from Stage 0 passages.
+- Extend sample generation to emit `dataset_samples.jsonl`. Implemented, with per-sample source composition fields available to dataset registration observability.
 - Preserve current `training.jsonl` and `validation.jsonl` outputs for compatibility.
 - Add schema validation tests.
 

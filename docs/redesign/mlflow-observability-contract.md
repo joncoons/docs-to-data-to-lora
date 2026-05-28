@@ -138,6 +138,9 @@ Metrics:
 | `stage1a.entailments.count` | Distinct entailment IDs emitted |
 | `stage1a.source_revisions.count` | Distinct source revisions referenced |
 | `stage1a.source_chunks.count` | Distinct source chunks referenced |
+| `stage1a.source_system.<name>.rows` | Rows by upstream source producer, such as `web_crawl` or `image_dense_caption` |
+| `stage1a.source_kind.<name>.rows` | Rows by upstream source kind, such as `web_page` or `dense_caption` |
+| `stage1a.modality.<name>.rows` | Rows by source modality, such as `text`, `document`, `image`, `audio`, or `video` |
 | `stage1a.shard.index` | Numeric shard index |
 | `stage1a.shard.count` | Total shard count |
 
@@ -175,13 +178,17 @@ Metrics:
 | `dataset.rows.training` | Training rows |
 | `dataset.rows.validation` | Validation rows |
 | `dataset.rows.test` | Test rows |
-| `dataset.sources.count` | Distinct source URLs |
-| `dataset.source_revisions.count` | Distinct source revisions |
-| `dataset.source_chunks.count` | Distinct source chunks |
-| `dataset.entailments.count` | Extracted logical entailments |
+| `dataset.samples.provenance.count` | Samples found in `provenance/dataset_samples.jsonl` |
+| `dataset.sources.count` | Distinct source URLs in sample lineage |
+| `dataset.source_revisions.count` | Distinct source revisions in sample lineage |
+| `dataset.source_chunks.count` | Distinct source chunks in sample lineage |
+| `dataset.entailments.count` | Extracted logical entailments in sample lineage |
 | `dataset.samples.synthetic.count` | Data Designer/generated samples |
 | `dataset.samples.grounded.count` | Source-grounded samples |
 | `dataset.synthetic_ratio` | Synthetic samples / total samples |
+| `dataset.source_system.<name>.samples` | Samples by upstream source producer or synthetic producer |
+| `dataset.source_kind.<name>.samples` | Samples by upstream source kind |
+| `dataset.modality.<name>.samples` | Samples by source modality |
 | `dataset.delta.added_chunks` | Added chunks since previous crawl |
 | `dataset.delta.changed_chunks` | Changed chunks since previous crawl |
 | `dataset.delta.deleted_chunks` | Deleted chunks since previous crawl |

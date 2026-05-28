@@ -3,7 +3,9 @@
 This Indexed Job runs Stage 1A logical entailment extraction over the Stage 0
 `passages.jsonl` output. It calls an OpenAI-compatible NIM endpoint, expands
 logical entailments into source-grounded KVP rows, writes per-shard provenance,
-and emits MLflow-ready observability files.
+and emits MLflow-ready observability files. The KVP rows preserve Stage 0
+source composition fields (`source_systems`, `source_kinds`, and `modalities`)
+so downstream dataset lineage can be summarized by acquisition path.
 
 The template uses stable hash sharding by `passage_id`. That keeps shard
 assignment stable when recrawls append or update unrelated passages.

@@ -83,7 +83,10 @@ The Job writes:
 
 These files are designed for a later MLflow export Job. They include dataset
 row counts, file checksums, NeMo Data Store URIs, Entity Store refs, optional
-dataset version IDs, and provenance sidecar references.
+dataset version IDs, and provenance sidecar references. When
+`provenance/dataset_samples.jsonl` is present, registration also emits source
+composition metrics for source systems, source kinds, modalities, distinct
+source revisions/chunks, entailments, and synthetic versus grounded samples.
 
 ## Local Dry Run
 

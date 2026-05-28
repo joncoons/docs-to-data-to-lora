@@ -31,8 +31,11 @@ from scripts.pipeline.models import (  # noqa: E402
 from scripts.pipeline.provenance import (  # noqa: E402
     entailment_id_for_passage,
     entailments_from_kvp_rows,
+    passage_modalities,
     passage_source_chunk_ids,
+    passage_source_kinds,
     passage_source_revision_id,
+    passage_source_systems,
     sha256_text,
     utc_now,
 )
@@ -152,6 +155,9 @@ def process_passage_1a(passage: Passage, llm: LLMClient) -> list[KVPRow]:
         )
         source_revision_id = passage_source_revision_id(passage)
         source_chunk_ids = passage_source_chunk_ids(passage)
+        source_systems = passage_source_systems(passage)
+        source_kinds = passage_source_kinds(passage)
+        modalities = passage_modalities(passage)
         for prem_idx, premise in enumerate(ent.premises[:3]):
             kvp_raw = llm.call(
                 KVP_SYSTEM,
@@ -176,6 +182,9 @@ def process_passage_1a(passage: Passage, llm: LLMClient) -> list[KVPRow]:
                 entailment_premises=ent.premises,
                 source_revision_ids=[source_revision_id],
                 source_chunk_ids=source_chunk_ids,
+                source_systems=source_systems or None,
+                source_kinds=source_kinds or None,
+                modalities=modalities or None,
                 extractor_model=extractor_model,
                 extractor_prompt_hash=sha256_text(LE_SYSTEM + "\n" + LE_USER),
                 extractor_temperature=extractor_temperature,
@@ -292,6 +301,13 @@ def file_manifest(path: Path, artifact_path: str, artifact_kind: str) -> dict[st
     return manifest
 
 
+def _row_values_or_unknown(row: KVPRow, field_name: str) -> list[str]:
+    values = getattr(row, field_name) or []
+    if not values:
+        return ["unknown"]
+    return [str(value) for value in values if str(value)] or ["unknown"]
+
+
 def build_stage1a_observability_documents(
     *,
     input_passages_path: Path,
@@ -312,6 +328,15 @@ def build_stage1a_observability_documents(
     mlflow_parent_run_id: str | None,
 ) -> dict[str, dict[str, Any]]:
     product_family_counts = Counter(row.product_family or "unknown" for row in rows)
+    source_system_counts = Counter(
+        value for row in rows for value in _row_values_or_unknown(row, "source_systems")
+    )
+    source_kind_counts = Counter(
+        value for row in rows for value in _row_values_or_unknown(row, "source_kinds")
+    )
+    modality_counts = Counter(
+        value for row in rows for value in _row_values_or_unknown(row, "modalities")
+    )
     source_revision_ids = {
         source_revision_id
         for row in rows
@@ -337,6 +362,12 @@ def build_stage1a_observability_documents(
     }
     for product_family, count in sorted(product_family_counts.items()):
         metrics[f"stage1a.product_family.{safe_metric_name(product_family)}.rows"] = count
+    for source_system, count in sorted(source_system_counts.items()):
+        metrics[f"stage1a.source_system.{safe_metric_name(source_system)}.rows"] = count
+    for source_kind, count in sorted(source_kind_counts.items()):
+        metrics[f"stage1a.source_kind.{safe_metric_name(source_kind)}.rows"] = count
+    for modality, count in sorted(modality_counts.items()):
+        metrics[f"stage1a.modality.{safe_metric_name(modality)}.rows"] = count
 
     artifacts = [
         file_manifest(input_passages_path, "passages.jsonl", "input_passages"),

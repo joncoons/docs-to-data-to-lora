@@ -22,6 +22,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -159,6 +160,74 @@ def load_json_if_exists(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}
     return json.loads(path.read_text())
+
+
+def load_jsonl_if_exists(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def _list_values(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [str(item) for item in value if str(item)]
+    if isinstance(value, str) and value:
+        return [value]
+    return []
+
+
+def _lineage_values(record: dict[str, Any], key: str) -> list[str]:
+    lineage = record.get("lineage") if isinstance(record.get("lineage"), dict) else {}
+    metadata = record.get("metadata") if isinstance(record.get("metadata"), dict) else {}
+    return _list_values(lineage.get(key)) or _list_values(metadata.get(key))
+
+
+def build_source_composition_summary(source_dir: Path) -> dict[str, Any]:
+    rows = load_jsonl_if_exists(source_dir / "provenance" / "dataset_samples.jsonl")
+    source_urls: set[str] = set()
+    source_revision_ids: set[str] = set()
+    source_chunk_ids: set[str] = set()
+    entailment_ids: set[str] = set()
+    source_system_counts: Counter[str] = Counter()
+    source_kind_counts: Counter[str] = Counter()
+    modality_counts: Counter[str] = Counter()
+    origin_counts: Counter[str] = Counter()
+
+    for row in rows:
+        origin = str(row.get("origin") or "unknown")
+        origin_counts[origin] += 1
+        metadata = row.get("metadata") if isinstance(row.get("metadata"), dict) else {}
+        source_url = metadata.get("source_url")
+        if source_url:
+            source_urls.add(str(source_url))
+        source_revision_ids.update(_lineage_values(row, "source_revision_ids"))
+        source_chunk_ids.update(_lineage_values(row, "source_chunk_ids"))
+        entailment_ids.update(_lineage_values(row, "entailment_ids"))
+        systems = _lineage_values(row, "source_systems") or ["unknown"]
+        kinds = _lineage_values(row, "source_kinds") or ["unknown"]
+        modalities = _lineage_values(row, "modalities") or ["unknown"]
+        source_system_counts.update(systems)
+        source_kind_counts.update(kinds)
+        modality_counts.update(modalities)
+
+    synthetic = origin_counts.get("synthetic_gapfill", 0)
+    grounded = origin_counts.get("source_entailed", 0)
+    total = len(rows)
+    return {
+        "sample_count": total,
+        "source_url_count": len(source_urls),
+        "source_revision_count": len(source_revision_ids),
+        "source_chunk_count": len(source_chunk_ids),
+        "entailment_count": len(entailment_ids),
+        "synthetic_sample_count": synthetic,
+        "grounded_sample_count": grounded,
+        "synthetic_ratio": round(synthetic / total, 6) if total else 0,
+        "source_system_counts": dict(sorted(source_system_counts.items())),
+        "source_kind_counts": dict(sorted(source_kind_counts.items())),
+        "modality_counts": dict(sorted(modality_counts.items())),
+    }
 
 
 def default_dataset_specs(
@@ -441,6 +510,42 @@ def build_observability_documents(
                 metrics[metric_name] = artifact["rows"]
 
         dataset_version = load_dataset_version_manifest(spec.source_dir)
+        source_composition = build_source_composition_summary(spec.source_dir)
+        if source_composition["sample_count"]:
+            metrics[f"{metric_prefix}.samples.provenance.count"] = source_composition[
+                "sample_count"
+            ]
+            metrics[f"{metric_prefix}.sources.count"] = source_composition["source_url_count"]
+            metrics[f"{metric_prefix}.source_revisions.count"] = source_composition[
+                "source_revision_count"
+            ]
+            metrics[f"{metric_prefix}.source_chunks.count"] = source_composition[
+                "source_chunk_count"
+            ]
+            metrics[f"{metric_prefix}.entailments.count"] = source_composition[
+                "entailment_count"
+            ]
+            metrics[f"{metric_prefix}.samples.synthetic.count"] = source_composition[
+                "synthetic_sample_count"
+            ]
+            metrics[f"{metric_prefix}.samples.grounded.count"] = source_composition[
+                "grounded_sample_count"
+            ]
+            metrics[f"{metric_prefix}.synthetic_ratio"] = source_composition["synthetic_ratio"]
+            for source_system, count in source_composition["source_system_counts"].items():
+                metric_name = (
+                    f"{metric_prefix}.source_system."
+                    f"{safe_metric_name(source_system)}.samples"
+                )
+                metrics[metric_name] = count
+            for source_kind, count in source_composition["source_kind_counts"].items():
+                metric_name = (
+                    f"{metric_prefix}.source_kind.{safe_metric_name(source_kind)}.samples"
+                )
+                metrics[metric_name] = count
+            for modality, count in source_composition["modality_counts"].items():
+                metric_name = f"{metric_prefix}.modality.{safe_metric_name(modality)}.samples"
+                metrics[metric_name] = count
         dataset_refs.append({
             "dataset": spec.name,
             "collection": spec.collection,
@@ -449,6 +554,7 @@ def build_observability_documents(
             "files_url": f"hf://datasets/{config.namespace}/{spec.name}",
             "hf_endpoint": config.data_store_hf_endpoint,
             "dataset_version_id": dataset_version.get("dataset_version_id"),
+            "source_composition": source_composition,
             "repo_status": result.get("repo_status"),
             "git_status": result.get("git_status"),
             "entity_status": result.get("entity_status"),

@@ -51,7 +51,11 @@ def test_parse_instruction_response_three_types():
 
 
 def test_process_passage_1c_emits_rows():
-    passage = _make_passage(token_count=500)
+    passage = _make_passage(token_count=500).model_copy(update={
+        "source_systems": ["document_capture"],
+        "source_kinds": ["downloaded_asset"],
+        "modalities": ["document"],
+    })
     llm = MagicMock()
     llm.call.return_value = json.dumps({"pairs": [
         {"type": "summary",  "question": "S?", "answer": "Sa."},
@@ -60,4 +64,7 @@ def test_process_passage_1c_emits_rows():
     rows = process_passage_1c(passage, "NVIDIA NIM", llm)
     assert len(rows) == 2
     assert all(r.stage == "1c" for r in rows)
+    assert all(r.source_systems == ["document_capture"] for r in rows)
+    assert all(r.source_kinds == ["downloaded_asset"] for r in rows)
+    assert all(r.modalities == ["document"] for r in rows)
     assert {r.instr_type for r in rows} == {"summary", "listicle"}

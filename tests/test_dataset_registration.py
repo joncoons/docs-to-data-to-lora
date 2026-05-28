@@ -84,6 +84,50 @@ def test_build_observability_documents_records_metrics_and_refs(tmp_path):
     (provenance / "dataset_version_manifest.json").write_text(json.dumps({
         "dataset_version_id": "dsv_nim_001",
     }))
+    dataset_samples = [
+        {
+            "origin": "source_entailed",
+            "lineage": {
+                "entailment_ids": ["ent_web"],
+                "source_revision_ids": ["srcrev_web"],
+                "source_chunk_ids": ["chunk_web"],
+                "source_systems": ["web_crawl"],
+                "source_kinds": ["web_page"],
+                "modalities": ["text"],
+            },
+            "metadata": {
+                "source_url": "https://docs.example.com/web",
+            },
+        },
+        {
+            "origin": "source_entailed",
+            "lineage": {
+                "entailment_ids": ["ent_image"],
+                "source_revision_ids": ["srcrev_image"],
+                "source_chunk_ids": ["chunk_image"],
+                "source_systems": ["image_dense_caption"],
+                "source_kinds": ["dense_caption"],
+                "modalities": ["image"],
+            },
+            "metadata": {
+                "source_url": "s3://captures/image.png",
+            },
+        },
+        {
+            "origin": "synthetic_gapfill",
+            "lineage": {
+                "source_systems": ["data_designer"],
+                "source_kinds": ["synthetic_gapfill"],
+                "modalities": ["text"],
+            },
+            "metadata": {
+                "source_url": "<synthetic>",
+            },
+        },
+    ]
+    (provenance / "dataset_samples.jsonl").write_text(
+        "".join(json.dumps(row) + "\n" for row in dataset_samples)
+    )
     specs = default_dataset_specs(
         tmp_path,
         ["nim_curated"],
@@ -113,8 +157,23 @@ def test_build_observability_documents_records_metrics_and_refs(tmp_path):
     assert metrics["datasets.count"] == 1
     assert metrics["dataset.stage3_nim_curated.rows.training"] == 2
     assert metrics["dataset.stage3_nim_curated.rows.validation"] == 1
+    assert metrics["dataset.stage3_nim_curated.samples.provenance.count"] == 3
+    assert metrics["dataset.stage3_nim_curated.sources.count"] == 3
+    assert metrics["dataset.stage3_nim_curated.source_revisions.count"] == 2
+    assert metrics["dataset.stage3_nim_curated.source_chunks.count"] == 2
+    assert metrics["dataset.stage3_nim_curated.entailments.count"] == 2
+    assert metrics["dataset.stage3_nim_curated.samples.synthetic.count"] == 1
+    assert metrics["dataset.stage3_nim_curated.samples.grounded.count"] == 2
+    assert metrics["dataset.stage3_nim_curated.synthetic_ratio"] == 0.333333
+    assert metrics["dataset.stage3_nim_curated.source_system.web_crawl.samples"] == 1
+    assert metrics["dataset.stage3_nim_curated.source_system.image_dense_caption.samples"] == 1
+    assert metrics["dataset.stage3_nim_curated.source_system.data_designer.samples"] == 1
+    assert metrics["dataset.stage3_nim_curated.source_kind.web_page.samples"] == 1
+    assert metrics["dataset.stage3_nim_curated.modality.text.samples"] == 2
+    assert metrics["dataset.stage3_nim_curated.modality.image.samples"] == 1
     assert service_refs["datasets"][0]["dataset_version_id"] == "dsv_nim_001"
     assert service_refs["datasets"][0]["entity_ref"] == "default/stage3-nim-curated"
+    assert service_refs["datasets"][0]["source_composition"]["source_revision_count"] == 2
 
 
 def test_write_observability_documents_creates_json_files(tmp_path):

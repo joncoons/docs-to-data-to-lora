@@ -21,6 +21,9 @@ def test_run_stage1a_writes_entailment_sidecar(tmp_output_dir):
         product_family="nim",
         product_name="nim-llm",
         doc_kind="html",
+        source_systems=["web_crawl"],
+        source_kinds=["web_page"],
+        modalities=["text"],
     )
     llm = MagicMock()
     llm.call.side_effect = [
@@ -43,6 +46,10 @@ def test_run_stage1a_writes_entailment_sidecar(tmp_output_dir):
     assert len(records) == 1
     assert records[0]["entailment_id"] == rows[0].entailment_id
     assert records[0]["evidence"][0]["chunk_id"].startswith("chunk_")
+    assert records[0]["metadata"]["source_systems"] == ["web_crawl"]
+    assert rows[0].source_systems == ["web_crawl"]
+    assert rows[0].source_kinds == ["web_page"]
+    assert rows[0].modalities == ["text"]
 
 
 
@@ -56,6 +63,9 @@ def test_run_stage1a_writes_sharded_sidecar_and_observability(tmp_output_dir):
         product_family="nim",
         product_name="nim-llm",
         doc_kind="html",
+        source_systems=["web_crawl"],
+        source_kinds=["web_page"],
+        modalities=["text"],
     )
     input_path = tmp_output_dir / "passages.jsonl"
     input_path.write_text(passage.model_dump_json() + "\n")
@@ -118,6 +128,9 @@ def test_run_stage1a_writes_sharded_sidecar_and_observability(tmp_output_dir):
     assert metrics["stage1a.passages.selected.count"] == 1
     assert metrics["stage1a.rows.count"] == 1
     assert metrics["stage1a.entailments.count"] == 1
+    assert metrics["stage1a.source_system.web_crawl.rows"] == 1
+    assert metrics["stage1a.source_kind.web_page.rows"] == 1
+    assert metrics["stage1a.modality.text.rows"] == 1
     assert run_context["shard"]["label"] == "shard-00000-of-00002"
     assert service_refs["services"]["llm"]["model"] == "test-model"
     assert {item["artifact_kind"] for item in artifacts["artifacts"]} == {

@@ -87,11 +87,16 @@ def test_dataset_sample_source_and_synthetic_lineage():
         context="ctx",
         source_revision_ids=["srcrev_abc"],
         source_chunk_ids=["chunk_abc"],
+        source_systems=["web_crawl"],
+        source_kinds=["web_page"],
+        modalities=["text"],
     )
     source_sample = dataset_sample_from_kvp_row(source_row, system_prompt="system")
     assert source_sample.origin == "source_entailed"
     assert source_sample.task_type == "bridging"
     assert source_sample.lineage["source_chunk_ids"] == ["chunk_abc"]
+    assert source_sample.lineage["source_systems"] == ["web_crawl"]
+    assert source_sample.metadata["modalities"] == ["text"]
     assert source_sample.system == "system"
 
     synthetic_row = KVPRow(
