@@ -196,13 +196,37 @@ context-baked test dataset for each collection. It emits `run_context.json`,
 `metrics.json`, `artifacts_manifest.json`, and `service_refs.json` for later
 MLflow export.
 
-## Sixth K8s Template: Stage 0 Corpus Prep
+## Sixth K8s Template: Webcrawler
 
-Stage 0 corpus prep is the first implemented source-pipeline Job. It scrolls the
-Elasticsearch crawl/vector index, optionally joins the crawler URL registry,
-reconstructs URL-grouped passages, emits `source_revisions.jsonl` and
-`source_chunks.jsonl`, and writes MLflow-ready observability files for
-crawl/passages/source provenance.
+The webcrawler is now represented as a first-class K8s source-acquisition
+component. It builds from the in-repo `external/rag-crawler` copy, exposes a
+ClusterIP FastAPI service for crawl/status APIs, stores crawler registries and
+downloaded source assets on PVCs, and provides Job/CronJob templates for
+per-collection crawls.
+
+Artifacts:
+
+```text
+deploy/webcrawler/
+  Containerfile
+  README.md
+  deployment.yaml
+  crawl-job.yaml
+  crawl-cronjob.yaml
+```
+
+Use the Deployment for ad hoc crawl requests, domain config management, and
+status inspection. Use the Job/CronJob templates for deterministic source
+collection refreshes that feed Stage 0. The service remains internal by default;
+all external dependencies are configured through ConfigMap/Secret/PVC bindings.
+
+## Seventh K8s Template: Stage 0 Corpus Prep
+
+Stage 0 corpus prep is the first implemented source-pipeline Job after source
+acquisition. It scrolls the Elasticsearch crawl/vector index, optionally joins
+the crawler URL registry, reconstructs URL-grouped passages, emits
+`source_revisions.jsonl` and `source_chunks.jsonl`, and writes MLflow-ready
+observability files for crawl/passages/source provenance.
 
 Artifacts:
 
@@ -219,7 +243,7 @@ separate pipeline child runs. Mount the crawler registry export as read-only and
 pass `--url-registry /crawler-registry/<collection>_url_registry.json` when the
 registry is available.
 
-## Seventh K8s Template: Stage 1A Entailment Shards
+## Eighth K8s Template: Stage 1A Entailment Shards
 
 Stage 1A entailment extraction is the first implemented sharded LLM Job. It
 reads Stage 0 `passages.jsonl`, assigns passages to indexed pods by stable

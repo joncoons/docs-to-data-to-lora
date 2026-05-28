@@ -1,0 +1,35 @@
+# K8s image for the in-repo webcrawler integration copy.
+#
+# Build example:
+#   docker build -f deploy/webcrawler/Containerfile -t docs-to-data-to-lora/webcrawler:latest .
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app/src \
+    CHROMIUM_BIN=/usr/bin/chromium \
+    SE_CACHE_PATH=/tmp/.selenium \
+    CRAWLER_REGISTRY_DIR=/crawler-registry \
+    CRAWLER_CONFIGS_DIR=/crawler-configs \
+    CRAWLER_EXPORT_DIR=/crawl-exports \
+    CRAWLER_PDF_REPO_DIR=/source-assets/pdf-repo \
+    CRAWLER_DOCS_REPO_DIR=/source-assets/docs-repo \
+    CRAWLER_AUDIO_REPO_DIR=/source-assets/audio-repo \
+    CRAWLER_VIDEO_REPO_DIR=/source-assets/video-repo
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        chromium \
+        chromium-driver \
+        ca-certificates \
+        curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY external/rag-crawler/pyproject.toml /app/pyproject.toml
+COPY external/rag-crawler/src /app/src
+
+RUN pip install --no-cache-dir -e .
+
+EXPOSE 8085
+
+CMD ["uvicorn", "crawler.server:app", "--host", "0.0.0.0", "--port", "8085", "--workers", "1"]

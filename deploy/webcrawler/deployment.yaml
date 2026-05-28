@@ -1,0 +1,150 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webcrawler-config
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: webcrawler
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+data:
+  CRAWLER_EMBED_URL: "http://nemoretriever-embedding-ms:8000/v1/embeddings"
+  CRAWLER_EMBED_MODEL: "nvidia/nv-embedqa-e5-v5"
+  CRAWLER_EMBED_DIMENSIONS: "2048"
+  CRAWLER_EMBED_BATCH_SIZE: "32"
+  CRAWLER_EMBED_CONCURRENCY: "4"
+  CRAWLER_ES_URL: "https://rag-eck-elasticsearch-es-http.runai-rag:9200"
+  CRAWLER_ES_USER: "elastic"
+  CRAWLER_ES_CA_CERT: "/etc/ssl/eck/ca.crt"
+  CRAWLER_ES_BULK_BATCH_SIZE: "200"
+  CRAWLER_INGESTOR_URL: "http://ingestor-server.runai-rag.svc.cluster.local:8082"
+  ENABLE_REDIS_BACKEND: "true"
+  REDIS_HOST: "rag-redis-master.runai-rag.svc.cluster.local"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  REDIS_STATUS_TTL_SECONDS: "172800"
+  CRAWLER_REGISTRY_DIR: "/crawler-registry"
+  CRAWLER_CONFIGS_DIR: "/crawler-configs"
+  CRAWLER_EXPORT_DIR: "/crawl-exports"
+  CRAWLER_PDF_REPO_DIR: "/source-assets/pdf-repo"
+  CRAWLER_DOCS_REPO_DIR: "/source-assets/docs-repo"
+  CRAWLER_AUDIO_REPO_DIR: "/source-assets/audio-repo"
+  CRAWLER_VIDEO_REPO_DIR: "/source-assets/video-repo"
+  CHROMIUM_BIN: "/usr/bin/chromium"
+  SE_CACHE_PATH: "/tmp/.selenium"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webcrawler
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: webcrawler
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: webcrawler
+  ports:
+    - name: http
+      port: 8085
+      targetPort: http
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webcrawler
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: webcrawler
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: webcrawler
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: webcrawler
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+    spec:
+      containers:
+        - name: webcrawler
+          image: <registry>/docs-to-data-to-lora/webcrawler:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: webcrawler-config
+          env:
+            - name: CRAWLER_ES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: pipeline-elasticsearch
+                  key: PIPELINE_ES_PASSWORD
+          ports:
+            - name: http
+              containerPort: 8085
+          resources:
+            requests:
+              cpu: "500m"
+              memory: 1Gi
+            limits:
+              cpu: "4"
+              memory: 8Gi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: eck-ca
+              mountPath: /etc/ssl/eck
+              readOnly: true
+            - name: crawler-registry
+              mountPath: /crawler-registry
+            - name: crawler-configs
+              mountPath: /crawler-configs
+            - name: crawl-exports
+              mountPath: /crawl-exports
+            - name: source-assets
+              mountPath: /source-assets
+            - name: chromium-shm
+              mountPath: /dev/shm
+            - name: selenium-cache
+              mountPath: /tmp/.selenium
+      volumes:
+        - name: eck-ca
+          configMap:
+            name: eck-es-ca-cert
+            optional: true
+        - name: crawler-registry
+          persistentVolumeClaim:
+            claimName: crawler-registry
+        - name: crawler-configs
+          persistentVolumeClaim:
+            claimName: crawler-configs
+        - name: crawl-exports
+          persistentVolumeClaim:
+            claimName: crawler-exports
+        - name: source-assets
+          persistentVolumeClaim:
+            claimName: crawler-source-assets
+        - name: chromium-shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+        - name: selenium-cache
+          emptyDir: {}

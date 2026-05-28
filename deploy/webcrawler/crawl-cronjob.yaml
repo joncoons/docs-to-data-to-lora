@@ -1,0 +1,99 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webcrawler-crawl-request-nim-curated-scheduled
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: webcrawler-crawl
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+data:
+  request.json: |
+    {
+      "start_url": "https://docs.nvidia.com/nim/",
+      "collection_name": "nim_curated",
+      "use_product_url_map": false,
+      "max_depth": null,
+      "max_pages": null,
+      "extract_linked_files": true,
+      "allowed_url_prefixes": [
+        "https://docs.nvidia.com/nim/"
+      ]
+    }
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: webcrawler-crawl-nim-curated-weekly
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: webcrawler-crawl
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+spec:
+  schedule: "0 5 * * 0"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: webcrawler-crawl
+            app.kubernetes.io/part-of: docs-to-data-to-lora
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: submit-and-wait
+              image: curlimages/curl:8.10.1
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: CRAWLER_URL
+                  value: "http://webcrawler:8085"
+                - name: POLL_SECONDS
+                  value: "30"
+              command:
+                - /bin/sh
+                - -ec
+                - |
+                  response="$(curl -fsS -X POST "${CRAWLER_URL}/crawl" \
+                    -H 'Content-Type: application/json' \
+                    --data-binary @/crawl-request/request.json)"
+                  task_id="$(printf '%s' "$response" \
+                    | sed -n 's/.*"task_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
+                  if [ -z "$task_id" ]; then
+                    echo "Could not parse task_id from response: $response" >&2
+                    exit 1
+                  fi
+                  echo "Started crawl task ${task_id}"
+                  while true; do
+                    status="$(curl -fsS "${CRAWLER_URL}/status?task_id=${task_id}")"
+                    state="$(printf '%s' "$status" \
+                      | sed -n 's/.*"state"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
+                    echo "task=${task_id} state=${state}"
+                    case "$state" in
+                      FINISHED)
+                        printf '%s\n' "$status"
+                        exit 0
+                        ;;
+                      FAILURE)
+                        printf '%s\n' "$status" >&2
+                        exit 1
+                        ;;
+                      UNKNOWN|"")
+                        printf '%s\n' "$status" >&2
+                        exit 1
+                        ;;
+                    esac
+                    sleep "${POLL_SECONDS}"
+                  done
+              volumeMounts:
+                - name: crawl-request
+                  mountPath: /crawl-request
+                  readOnly: true
+          volumes:
+            - name: crawl-request
+              configMap:
+                name: webcrawler-crawl-request-nim-curated-scheduled
