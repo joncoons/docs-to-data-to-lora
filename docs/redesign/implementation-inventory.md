@@ -65,7 +65,7 @@ Custom code should connect these layers, not replace the platform services.
 | Path | Classification | Notes | Target Action |
 |---|---|---|---|
 | `scripts/build_v2_dataset.py` | Keep, refactor | Useful orchestrator, but currently mixes execution, state, output format, and stage ownership. | Convert to a thin pipeline driver that writes provenance ledgers and delegates native services where appropriate. |
-| `scripts/pipeline/stage0_corpus_prep.py` | Keep, refactor | Corpus reconstruction is intentional. | Emit `source_revision` and `source_chunk` records. Add delta-aware inputs. |
+| `scripts/pipeline/stage0_corpus_prep.py` | Keep, refactor | Corpus reconstruction is intentional and now emits source provenance plus Job observability. | Run through `deploy/stage0-corpus-prep/`; next add delta-aware previous-crawl inputs. |
 | `scripts/pipeline/stage1a_le_kvp.py` | Keep, refactor | Logical entailment extraction is core custom value. | Emit `entailment` records before deriving KVP rows. Require evidence chunk IDs/spans. |
 | `scripts/pipeline/stage1b_synthesis.py` | Keep, refactor | Cross-passage synthesis can remain custom if evidence is tracked. | Treat as source-grounded synthesis with multi-chunk evidence lineage. |
 | `scripts/pipeline/stage1c_instruction.py` | Keep, refactor | Instruction diversity is useful if grounded. | Add entailment/sample lineage and task taxonomy. |
@@ -180,7 +180,7 @@ Tasks:
 
 - Add Python provenance models corresponding to `schemas/provenance`.
 - Add deterministic ID/hash helpers.
-- Extend Stage 0 to emit `source_revisions.jsonl` and `source_chunks.jsonl`.
+- Extend Stage 0 to emit `source_revisions.jsonl` and `source_chunks.jsonl`. Implemented, with K8s Job observability.
 - Extend Stage 1A to emit `entailments.jsonl`.
 - Extend sample generation to emit `dataset_samples.jsonl`.
 - Preserve current `training.jsonl` and `validation.jsonl` outputs for compatibility.

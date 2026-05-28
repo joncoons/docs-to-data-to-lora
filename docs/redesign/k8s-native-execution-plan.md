@@ -170,9 +170,10 @@ observability JSON files for dataset lineage, Data Designer gapfill, TIES merge,
 adapter inspection, and K8s control-plane Jobs. See
 `docs/redesign/mlflow-observability-contract.md`.
 
-Dataset registration is the next key observability step because it links the
-provenance sidecars, dataset version manifest, NeMo Data Store URI, Entity Store
-reference, and eventual Customizer/Evaluator jobs.
+Dataset registration links the provenance sidecars, dataset version manifest,
+NeMo Data Store URI, Entity Store reference, and eventual Customizer/Evaluator
+jobs. Stage 0 corpus prep now emits the first upstream observability records for
+crawl/passages/source provenance.
 
 ## Fifth K8s Template: Dataset Registration
 
@@ -194,6 +195,26 @@ The Job registers the Stage 3 training dataset, bare held-out test dataset, and
 context-baked test dataset for each collection. It emits `run_context.json`,
 `metrics.json`, `artifacts_manifest.json`, and `service_refs.json` for later
 MLflow export.
+
+## Sixth K8s Template: Stage 0 Corpus Prep
+
+Stage 0 corpus prep is the first implemented source-pipeline Job. It scrolls the
+Elasticsearch crawl/vector index, reconstructs URL-grouped passages, emits
+`source_revisions.jsonl` and `source_chunks.jsonl`, and writes MLflow-ready
+observability files for crawl/passages/source provenance.
+
+Artifacts:
+
+```text
+deploy/stage0-corpus-prep/
+  Containerfile
+  README.md
+  job.yaml
+```
+
+Run one Job per source collection, such as `nim_curated` and
+`nemo_usvcs_curated`, so recrawl retries and delta updates can be tracked as
+separate pipeline child runs.
 
 ## K8s Resource Guidance
 
@@ -232,7 +253,7 @@ Do not put NodePorts, passwords, or host-specific paths in scripts.
 3. Evaluator target/config registration Job. Implemented in `deploy/evaluator-registration/`.
 4. Evaluation matrix orchestration Job. Implemented in `deploy/evaluation-matrix/`.
 5. Dataset registration Job. Implemented in `deploy/dataset-registration/`.
-6. Stage 0 corpus/provenance Job.
+6. Stage 0 corpus/provenance Job. Implemented in `deploy/stage0-corpus-prep/`.
 7. Stage 1 generation shard Jobs.
 8. Gap analysis Job and Data Designer submission.
 9. Curator service integration.

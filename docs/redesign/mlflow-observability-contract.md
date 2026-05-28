@@ -14,6 +14,7 @@ Use one MLflow parent run per durable dataset/model build.
 
 ```text
 parent run: <collection>/<build-or-adapter-name>
+  child: stage0-corpus-prep
   child: dataset-lineage
   child: data-designer-gapfill
   child: customizer-training
@@ -59,6 +60,45 @@ Standard environment variables:
 | `OBSERVABILITY_DIR` | Output directory for structured JSON files |
 | `PIPELINE_RUN_ID` | Stable pipeline/build identifier |
 | `DATASET_VERSION_ID` | Stable dataset version from provenance manifests |
+
+## Stage 0 Corpus Prep
+
+Stage 0 is repository-owned because it reconstructs source-grounded passages
+from the crawl/vector index. It should emit observability files before any
+entailment extraction or dataset registration happens.
+
+Tags:
+
+| Tag | Example |
+|---|---|
+| `pipeline.stage` | `stage0-corpus-prep` |
+| `source_collection` | `nim_curated` |
+| `crawl_run_id` | stable crawl run ID |
+| `es_index` | `nim_curated` |
+
+Metrics:
+
+| Metric | Meaning |
+|---|---|
+| `stage0.raw_hits.count` | ES hits read from the crawl/vector index |
+| `stage0.chunks.extracted` | Chunks with usable URL/text fields |
+| `stage0.passages.count` | Reconstructed passages after filtering |
+| `stage0.source_revisions.count` | Source revision records emitted |
+| `stage0.source_chunks.count` | Source chunk records emitted |
+| `stage0.urls.count` | Distinct source URLs retained |
+| `stage0.tokens.total` | Passage token total |
+| `stage0.tokens.mean` | Mean passage token count |
+| `stage0.doc_kind.html` | HTML passage count |
+| `stage0.doc_kind.pdf` | PDF/binary passage count |
+
+Artifacts:
+
+| Artifact | Source |
+|---|---|
+| `passages.jsonl` | Stage 0 passage output |
+| `manifests/crawl_run.json` | Crawl/run manifest |
+| `provenance/source_revisions.jsonl` | Source revision sidecar |
+| `provenance/source_chunks.jsonl` | Source chunk sidecar |
 
 ## Dataset Lineage
 
@@ -256,8 +296,9 @@ Artifacts:
 
 ## Implementation Order
 
-1. Add dataset registration observability files and MLflow export contract. Implemented for the registration Job in `deploy/dataset-registration/`.
-2. Add result collection and MLflow export for Evaluator job results.
-3. Add Customizer exporter reconciliation tags when training is refactored.
-4. Add Data Designer gapfill job IDs and generated-sample lineage.
-5. Add TIES/adapter inspection observability JSON files.
+1. Add Stage 0 corpus prep observability files. Implemented in `deploy/stage0-corpus-prep/`.
+2. Add dataset registration observability files and MLflow export contract. Implemented for the registration Job in `deploy/dataset-registration/`.
+3. Add result collection and MLflow export for Evaluator job results.
+4. Add Customizer exporter reconciliation tags when training is refactored.
+5. Add Data Designer gapfill job IDs and generated-sample lineage.
+6. Add TIES/adapter inspection observability JSON files.

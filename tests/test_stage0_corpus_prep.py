@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from scripts.pipeline import stage0_corpus_prep as stage0
 from scripts.pipeline.stage0_corpus_prep import (
     classify_doc_kind, group_html_chunks_by_url, build_passages,
 )
@@ -60,3 +61,50 @@ def test_build_passages_carries_product_family(sample_chunks):
     families = {p.product_family for p in passages}
     assert "nim-llm" in families
     assert "nim-medical" in families
+
+
+def test_run_stage0_writes_provenance_and_observability(tmp_path, sample_chunks, monkeypatch):
+    monkeypatch.setattr(stage0, "scroll_all_chunks", lambda es, index: iter(sample_chunks))
+
+    output_dir = tmp_path / "dataset"
+    observability_dir = tmp_path / "observability"
+    passages, seed_vectors = stage0.run_stage0(
+        object(),
+        "nim_curated",
+        output_dir,
+        min_passage_tokens=10,
+        es_host="http://elasticsearch:9200",
+        observability_dir=observability_dir,
+        pipeline_run_id="pipeline-run-1",
+        mlflow_tracking_uri="http://mlflow:5000",
+        mlflow_experiment_name="docs-to-data-to-lora",
+        mlflow_parent_run_id="parent-run-1",
+    )
+
+    assert (output_dir / "passages.jsonl").exists()
+    assert (output_dir / "manifests" / "crawl_run.json").exists()
+    assert (output_dir / "provenance" / "source_revisions.jsonl").exists()
+    assert (output_dir / "provenance" / "source_chunks.jsonl").exists()
+    assert len(passages) == 2
+    assert set(seed_vectors) == {p.passage_id for p in passages}
+
+    run_context = json.loads((observability_dir / "run_context.json").read_text())
+    metrics = json.loads((observability_dir / "metrics.json").read_text())
+    artifacts = json.loads((observability_dir / "artifacts_manifest.json").read_text())
+    service_refs = json.loads((observability_dir / "service_refs.json").read_text())
+
+    assert run_context["pipeline_stage"] == "stage0-corpus-prep"
+    assert run_context["pipeline_run_id"] == "pipeline-run-1"
+    assert run_context["mlflow"]["tracking_uri"] == "http://mlflow:5000"
+    assert metrics["stage0.raw_hits.count"] == 3
+    assert metrics["stage0.chunks.extracted"] == 3
+    assert metrics["stage0.passages.count"] == 2
+    assert metrics["stage0.doc_kind.html"] == 1
+    assert metrics["stage0.doc_kind.pdf"] == 1
+    assert service_refs["services"]["elasticsearch"]["index"] == "nim_curated"
+
+    artifact_paths = {item["artifact_path"] for item in artifacts["artifacts"]}
+    assert "passages.jsonl" in artifact_paths
+    assert "manifests/crawl_run.json" in artifact_paths
+    assert "provenance/source_revisions.jsonl" in artifact_paths
+    assert "provenance/source_chunks.jsonl" in artifact_paths

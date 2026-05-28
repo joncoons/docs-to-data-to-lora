@@ -11,7 +11,7 @@ else:
     _MISSING_ELASTICSEARCH = False
 
 
-def make_es_client(host: str, password: str) -> Elasticsearch:
+def make_es_client(host: str, password: str, user: str = "elastic") -> Elasticsearch:
     if _MISSING_ELASTICSEARCH:
         raise RuntimeError(
             "The 'elasticsearch' package is required for live ES access. "
@@ -19,7 +19,7 @@ def make_es_client(host: str, password: str) -> Elasticsearch:
         )
     return Elasticsearch(
         host,
-        basic_auth=("elastic", password),
+        basic_auth=(user, password),
         verify_certs=False,
         ssl_show_warn=False,
         request_timeout=60,
