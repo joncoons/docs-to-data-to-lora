@@ -21,23 +21,23 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from scripts.pipeline.claude_client import ClaudeJudge
-from scripts.pipeline.config import Config, get_claude_api_key, get_es_password
-from scripts.pipeline.es_client import make_es_client
-from scripts.pipeline.finalize_dataset import finalize_dataset
-from scripts.pipeline.llm_client import LLMClient
-from scripts.pipeline.models import KVPRow, Passage
-from scripts.pipeline.progress import Progress
-from scripts.pipeline.provenance import dataset_samples_from_kvp_rows
-from scripts.pipeline.provenance_io import write_jsonl
-from scripts.pipeline.stage0_corpus_prep import run_stage0
-from scripts.pipeline.stage1a_le_kvp import run_stage1a
-from scripts.pipeline.stage1b_synthesis import run_stage1b
-from scripts.pipeline.stage1c_instruction import run_stage1c
-from scripts.pipeline.stage1_5_gapfill import run_stage1_5
-from scripts.pipeline.stage2_qa_eval import run_stage2
-from scripts.pipeline.stage3_curator import run_stage3
-from scripts.pipeline.stage4_validation import run_stage4
+from scripts.pipeline.claude_client import ClaudeJudge  # noqa: E402
+from scripts.pipeline.config import Config, get_claude_api_key, get_es_password  # noqa: E402
+from scripts.pipeline.es_client import make_es_client  # noqa: E402
+from scripts.pipeline.finalize_dataset import finalize_dataset  # noqa: E402
+from scripts.pipeline.llm_client import LLMClient  # noqa: E402
+from scripts.pipeline.models import KVPRow, Passage  # noqa: E402
+from scripts.pipeline.progress import Progress  # noqa: E402
+from scripts.pipeline.provenance import dataset_samples_from_kvp_rows  # noqa: E402
+from scripts.pipeline.provenance_io import write_jsonl  # noqa: E402
+from scripts.pipeline.stage0_corpus_prep import run_stage0  # noqa: E402
+from scripts.pipeline.stage1a_le_kvp import run_stage1a  # noqa: E402
+from scripts.pipeline.stage1b_synthesis import run_stage1b  # noqa: E402
+from scripts.pipeline.stage1c_instruction import run_stage1c  # noqa: E402
+from scripts.pipeline.stage1_5_gapfill import run_stage1_5  # noqa: E402
+from scripts.pipeline.stage2_qa_eval import run_stage2  # noqa: E402
+from scripts.pipeline.stage3_curator import run_stage3  # noqa: E402
+from scripts.pipeline.stage4_validation import run_stage4  # noqa: E402
 
 
 def _read_jsonl_rows(path: Path) -> list[KVPRow]:
@@ -63,6 +63,10 @@ def main() -> int:
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--dry-run", action="store_true",
                     help="Print plan + estimated yields, no LLM calls")
+    ap.add_argument("--stage1-5-mode", choices=["manifest", "legacy-direct"],
+                    default="manifest",
+                    help="Stage 1.5 default writes gap_manifest/Data Designer inputs; "
+                         "legacy-direct preserves the older direct LLM generator")
     ap.add_argument("--max-passages", type=int, default=None,
                     help="Subsample to N passages after Stage 0 (for smoke testing)")
     args = ap.parse_args()
@@ -180,7 +184,10 @@ def main() -> int:
                                           target_factor=cfg.bias_gapfill_target_factor,
                                           top_n_chunks=cfg.gapfill_top_n_chunks,
                                           pairs_per_call=cfg.gapfill_pairs_per_call,
-                                          max_attempt_factor=cfg.gapfill_max_attempt_factor)
+                                          max_attempt_factor=cfg.gapfill_max_attempt_factor,
+                                          legacy_direct=(
+                                              args.stage1_5_mode == "legacy-direct"
+                                          ))
             progress.mark_done("1.5")
     else:
         stage1_5_rows = _read_jsonl_rows(args.output / "stage1_5_gapfill.jsonl")

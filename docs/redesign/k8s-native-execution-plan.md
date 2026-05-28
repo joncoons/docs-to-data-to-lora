@@ -39,7 +39,7 @@ as Kubernetes Jobs or NeMo/NIM services.
 | `scripts/pipeline/stage1a_le_kvp.py` | K8s Job shard | Parallel LLM calls over passages. | Shard by passage file partitions. |
 | `scripts/pipeline/stage1b_synthesis.py` | K8s Job shard | Parallel kNN + LLM calls. | Needs ES/network access and rate limits. |
 | `scripts/pipeline/stage1c_instruction.py` | K8s Job shard | Parallel LLM calls. | Shard by selected passage partitions. |
-| `scripts/pipeline/stage1_5_gapfill.py` | Split | Coverage analysis is K8s Job; generation should be NeMo Data Designer. | Direct LLM gap-fill becomes legacy fallback. |
+| `scripts/pipeline/stage1_5_gapfill.py` | Split | Coverage analysis is K8s Job; generation should be NeMo Data Designer. | Default path now emits `provenance/gap_manifest.json` plus `data_designer/gapfill_requests.jsonl`; direct LLM generation is `legacy-direct`. |
 | `scripts/pipeline/stage2_qa_eval.py` | K8s Job shard | Batch refinement/quality gate. | Later may become Evaluator-backed dataset-quality job. |
 | `scripts/pipeline/stage3_curator.py` | NeMo service | Generic dedup/quality belongs in NeMo Curator. | Keep Python version as local fallback only. |
 | `scripts/pipeline/stage4_validation.py` | K8s Job or NeMo Evaluator | Current external judge gate can run as a Job. | Longer term, express through Evaluator where practical. |
@@ -329,7 +329,7 @@ Do not put NodePorts, passwords, or host-specific paths in scripts.
 7. Stage 0 corpus/provenance Job. Implemented in `deploy/stage0-corpus-prep/`.
 8. Stage 1A entailment shard Job. Implemented in `deploy/stage1a-entailment-shards/`.
 9. Stage 1B/1C generation shard Jobs.
-10. Gap analysis Job and Data Designer submission.
+10. Gap analysis Job and Data Designer submission. Gap manifest/Data Designer seed planning is implemented in `scripts/pipeline/stage1_5_gapfill.py`; K8s templates and native submission remain next.
 11. Curator service integration.
 
 This order gives immediate operational value while avoiding a large rewrite of

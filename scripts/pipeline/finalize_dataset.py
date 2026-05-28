@@ -59,6 +59,8 @@ ARTIFACT_CANDIDATES = (
     "provenance/dataset_samples.jsonl",
     "provenance/delta_manifest.json",
     "provenance/gap_manifest.json",
+    "data_designer/request_manifest.json",
+    "data_designer/gapfill_requests.jsonl",
     "bias_report.json",
     "validation_report.json",
 )

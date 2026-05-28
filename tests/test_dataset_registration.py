@@ -104,9 +104,12 @@ def test_discover_lineage_files_finds_finalized_manifest_and_sidecars(tmp_path):
     coll = tmp_path / "nim_curated"
     (coll / "manifests").mkdir(parents=True)
     (coll / "provenance").mkdir()
+    (coll / "data_designer").mkdir()
     (coll / "manifests" / "dataset_version_manifest.json").write_text("{}")
     (coll / "provenance" / "source_chunks.jsonl").write_text('{"id": "c1"}\n')
     (coll / "provenance" / "dataset_samples.jsonl").write_text('{"id": "s1"}\n')
+    (coll / "data_designer" / "request_manifest.json").write_text("{}")
+    (coll / "data_designer" / "gapfill_requests.jsonl").write_text('{"gap_id": "g1"}\n')
 
     lineage_files = discover_lineage_files(coll)
 
@@ -114,6 +117,8 @@ def test_discover_lineage_files_finds_finalized_manifest_and_sidecars(tmp_path):
         "manifests/dataset_version_manifest.json",
         "provenance/source_chunks.jsonl",
         "provenance/dataset_samples.jsonl",
+        "data_designer/request_manifest.json",
+        "data_designer/gapfill_requests.jsonl",
     ]
 
 

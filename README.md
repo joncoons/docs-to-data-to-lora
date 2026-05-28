@@ -174,8 +174,9 @@ Generation strategies:
   generate BRIDGING and CONTRASTIVE questions requiring cross-passage synthesis.
 - **Stage 1C — Instruction Diversity**: top-25% passages by density score;
   SUMMARY / LISTICLE / PROCEDURAL instruction-following examples.
-- **Stage 1.5 — RAG-grounded gap-fill**: bias analysis by `product_family`;
-  Data Designer recipes grounded in retrieved chunks fill under-represented products.
+- **Stage 1.5 — Gap analysis + Data Designer handoff**: bias analysis by
+  `product_family`; emit `gap_manifest.json` and Data Designer seed records for
+  native synthetic generation of under-represented products.
 - **Stage 4 — External judge**: Claude Sonnet 4.6 (independent of generation)
   spot-checks 100 pairs per collection; 90% grounding pass threshold.
 

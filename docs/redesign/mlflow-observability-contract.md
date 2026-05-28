@@ -243,7 +243,9 @@ Artifacts:
 
 | Artifact | Source |
 |---|---|
-| `data_designer/request.json` | Exact generation request |
+| `data_designer/request_manifest.json` | Planned Data Designer handoff summary |
+| `data_designer/gapfill_requests.jsonl` | Per-gap seed records with retrieved chunks and generation briefs |
+| `data_designer/request.json` | Exact submitted generation request |
 | `data_designer/result_manifest.json` | Returned job/result metadata |
 | `data_designer/generated_samples.jsonl` | Generated samples with source gap refs |
 

@@ -196,11 +196,11 @@ Goal: make Data Designer the actual synthetic generation path.
 
 Tasks:
 
-- Split `stage1_5_gapfill.py` into coverage analysis and synthetic execution.
-- Emit `gap_manifest.json` from coverage analysis.
-- Parameterize Data Designer recipes from gap records.
-- Store Data Designer job IDs and generated sample lineage.
-- Keep direct LLM gap-fill only under legacy/fallback.
+- Split `stage1_5_gapfill.py` into coverage analysis and synthetic execution. Implemented: the default path emits analysis artifacts and defers generation; `--stage1-5-mode legacy-direct` preserves the older direct generator.
+- Emit `gap_manifest.json` from coverage analysis. Implemented under `provenance/gap_manifest.json`.
+- Parameterize Data Designer recipes from gap records. Implemented with `data_designer/gapfill_requests.jsonl` seed records and recipe fields for gap ID, pair count, retrieved chunks, and generation brief.
+- Store Data Designer job IDs and generated sample lineage. Pending native submission/result collection.
+- Keep direct LLM gap-fill only under legacy/fallback. Implemented.
 
 ### Phase 3: Native NeMo Curator
 

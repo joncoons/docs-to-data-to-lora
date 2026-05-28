@@ -322,7 +322,7 @@ Same schema as Stage 1A, with:
 
 ---
 
-## Stage 1.5: Bias Analysis + Data Designer Gap-Fill
+## Stage 1.5: Bias Analysis + Data Designer Handoff
 
 ### Bias analysis
 
@@ -343,7 +343,12 @@ The bias signal comes from the `product_family` / `product_name` metadata that
 `CRAWLER_PRODUCT_URL_MAP` already attaches to every chunk during ingest — there
 are no hand-curated keyword lists involved.
 
-Output file: `/mnt/nvme2/peft/datasets/v2/<collection>/bias_report.json`
+Output files:
+
+- `/mnt/nvme2/peft/datasets/v2/<collection>/bias_report.json`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/provenance/gap_manifest.json`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/data_designer/gapfill_requests.jsonl`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/data_designer/request_manifest.json`
 
 ```json
 {
@@ -364,24 +369,26 @@ Output file: `/mnt/nvme2/peft/datasets/v2/<collection>/bias_report.json`
 
 ### Gap-fill via NeMo Data Designer
 
-For each under-represented product `T`:
+Stage 1.5 now stops at a native handoff boundary by default. For each
+under-represented product `T` it writes a gap record and a Data Designer seed
+record instead of directly calling an LLM:
 
-1. **ES retrieval (same collection only)**: hybrid query combining BM25 on
-   `product_family == T` AND kNN over a target-density vector (mean of T's chunk
-   vectors), top-20 chunks. Cap at ~1,500 tokens combined; rank-blend if
-   oversize.
-2. **Data Designer recipe** (one recipe per collection, parametrized by topic):
-   - Input fields: `retrieved_chunks` (text), `product_family` (string),
-     `seed_question_styles` (list of 3 styles from existing KVPs for T to prime
-     variation)
-   - Template uses Jinja2 `{{ retrieved_chunks }}`, `{{ product_family }}`,
-     `{{ seed_question_styles[0] }}`, etc.
-   - LLM: super-120b via OpenAI-compatible endpoint with `reasoning_effort:
-     "minimal"` (no-think mode — see below)
-   - Output: 5 Q+A pairs per call, all derivable from `retrieved_chunks` only.
-3. **Target**: bring each under-represented product up to ≥ `median × 0.8`.
-   Compute pairs-needed; issue N Data Designer recipe calls until target met OR
-   `max_attempts = 3 × pairs_needed`.
+1. **Gap manifest**: `provenance/gap_manifest.json` records `gap_id`, coverage
+   dimension, observed count, target count, severity, seed entailment IDs, seed
+   chunk IDs, and a generation brief.
+2. **ES retrieval (same collection only)**: retrieve top documentation chunks
+   for `product_family == T` and embed the retrieved text plus source URLs into
+   `data_designer/gapfill_requests.jsonl`.
+3. **Data Designer recipe**: one recipe per collection consumes the seed record
+   fields: `gap_id`, `retrieved_chunks`, `product_family`, `pairs_count`,
+   `seed_styles`, and `generation_brief`.
+4. **Target**: bring each under-represented product up to ≥ `median × 0.8`.
+   Stage 1.5 computes pairs-needed and number of requested seed records; the
+   native Data Designer submission/result-collection Job owns generation.
+
+Use `python scripts/build_v2_dataset.py ... --stage1-5-mode legacy-direct` only
+when you intentionally want the older direct LLM fallback to emit synthetic rows
+locally.
 
 ### No-think mode and the May 2026 Jinja2 failure mode
 
@@ -419,9 +426,17 @@ fallback loses some synthesis nuance but keeps the pipeline deterministic.
 
 ### Output schema
 
-File: `/mnt/nvme2/peft/datasets/v2/<collection>/stage1_5_gapfill.jsonl`
+Default handoff files:
 
-Same schema as Stage 1A, with:
+- `provenance/gap_manifest.json` follows `schemas/provenance/gap_manifest.schema.json`.
+- `data_designer/gapfill_requests.jsonl` contains one seed record per gap, with
+  retrieved chunks, source URLs, seed IDs, and requested pair counts.
+- `stage1_5_gapfill.jsonl` is written empty to make resume behavior explicit:
+  synthetic rows are expected from the later Data Designer result path.
+
+Legacy direct mode still writes `/mnt/nvme2/peft/datasets/v2/<collection>/stage1_5_gapfill.jsonl`
+with the Stage 1A-compatible row schema:
+
 - `stage: "1.5"`
 - `target_product_family: "..."`
 - `retrieved_urls: [...]`

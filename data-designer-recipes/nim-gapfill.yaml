@@ -1,13 +1,22 @@
 name: nim-gapfill
 description: RAG-grounded Q+A synthesis for under-represented NIM products
 fields:
+  - name: gap_id
+    type: string
+    source: input
   - name: retrieved_chunks
     type: text
     source: input
   - name: product_family
     type: string
     source: input
+  - name: pairs_count
+    type: integer
+    source: input
   - name: seed_styles
+    type: text
+    source: input
+  - name: generation_brief
     type: text
     source: input
 
@@ -23,9 +32,12 @@ prompts:
       You are a precise NVIDIA NIM technical assistant. Generate Q+A pairs
       grounded ONLY in the provided documentation chunks. Return JSON only.
     user: |
-      Generate 5 question-answer pairs about {{ product_family }} that are answerable
-      ONLY from the following retrieved documentation chunks. Vary the question styles
-      using these examples as reference:
+      Gap ID: {{ gap_id }}
+      Brief: {{ generation_brief }}
+
+      Generate {{ pairs_count }} question-answer pairs about {{ product_family }} that are
+      answerable ONLY from the following retrieved documentation chunks. Vary the
+      question styles using these examples as reference:
       {{ seed_styles }}
 
       Documentation chunks:

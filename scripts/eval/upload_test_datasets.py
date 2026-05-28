@@ -104,6 +104,16 @@ LINEAGE_FILE_CANDIDATES = (
         "provenance/gap_manifest.json",
         "gap_manifest",
     ),
+    LineageFile(
+        Path("data_designer/request_manifest.json"),
+        "data_designer/request_manifest.json",
+        "data_designer_request_manifest",
+    ),
+    LineageFile(
+        Path("data_designer/gapfill_requests.jsonl"),
+        "data_designer/gapfill_requests.jsonl",
+        "data_designer_gapfill_requests",
+    ),
 )
 
 
@@ -350,6 +360,8 @@ def discover_provenance_artifacts(source_dir: Path) -> list[dict[str, Any]]:
         source_dir / "provenance" / "dataset_samples.jsonl",
         source_dir / "provenance" / "delta_manifest.json",
         source_dir / "provenance" / "gap_manifest.json",
+        source_dir / "data_designer" / "request_manifest.json",
+        source_dir / "data_designer" / "gapfill_requests.jsonl",
         source_dir / "bias_report.json",
         source_dir / "validation_report.json",
     ]
