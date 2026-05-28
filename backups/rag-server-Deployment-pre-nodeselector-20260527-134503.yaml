@@ -1,0 +1,311 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+    meta.helm.sh/release-name: rag
+    meta.helm.sh/release-namespace: runai-rag
+    runai-calculated-status: ErrImageNeverPull
+    runai-current-allocated-gpus: "0"
+    runai-current-allocated-gpus-memory: "0"
+    runai-current-requested-gpus: "0"
+    runai-current-requested-gpus-memory: "0"
+    runai-pending-pods: "0"
+    runai-podgroup-requested-gpus: "0"
+    runai-podgroup-requested-gpus-memory: "0"
+    runai-running-pods: "1"
+    runai-total-requested-gpus: "0"
+    runai-total-requested-gpus-memory: "0"
+    runai-used-nodes: ubuntu2
+  creationTimestamp: "2026-03-25T09:19:25Z"
+  generation: 19
+  labels:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: nvidia-blueprint-rag
+    app.kubernetes.io/version: v2.4.0
+    helm.sh/chart: nvidia-blueprint-rag-v2.4.0
+  name: rag-server
+  namespace: runai-rag
+  resourceVersion: "27002860"
+  uid: cc98350a-d178-4e48-9af8-37e9cef0c559
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: rag-server
+      app.kubernetes.io/instance: rag
+      app.kubernetes.io/name: nvidia-blueprint-rag
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2026-03-25T04:21:35-05:00"
+      labels:
+        app.kubernetes.io/component: rag-server
+        app.kubernetes.io/instance: rag
+        app.kubernetes.io/name: nvidia-blueprint-rag
+    spec:
+      containers:
+      - command:
+        - uvicorn
+        - nvidia_rag.rag_server.server:app
+        - --port
+        - "8081"
+        - --host
+        - 0.0.0.0
+        - --workers
+        - "8"
+        env:
+        - name: APP_EMBEDDINGS_DIMENSIONS
+          value: "2048"
+        - name: APP_EMBEDDINGS_MODELNAME
+          value: nvidia/llama-3.2-nv-embedqa-1b-v2
+        - name: APP_EMBEDDINGS_SERVERURL
+          value: nemoretriever-embedding-ms:8000/v1
+        - name: APP_FILTEREXPRESSIONGENERATOR_MODELNAME
+          value: nvidia/llama-3.3-nemotron-super-49b-v1.5
+        - name: APP_FILTEREXPRESSIONGENERATOR_SERVERURL
+          value: nim-llm:8000
+        - name: APP_LLM_MODELNAME
+          value: nvidia/llama-3.3-nemotron-super-49b-v1.5
+        - name: APP_LLM_SERVERURL
+          value: nim-llm:8000
+        - name: APP_QUERYREWRITER_MODELNAME
+          value: nvidia/llama-3.3-nemotron-super-49b-v1.5
+        - name: APP_QUERYREWRITER_SERVERURL
+          value: nim-llm:8000
+        - name: APP_RANKING_MODELNAME
+          value: nvidia/llama-3.2-nv-rerankqa-1b-v2
+        - name: APP_RANKING_SERVERURL
+          value: nemoretriever-ranking-ms:8000
+        - name: APP_RETRIEVER_SCORETHRESHOLD
+          value: "0.25"
+        - name: APP_RETRIEVER_TOPK
+          value: "10"
+        - name: APP_TAVILY_ENABLED
+          value: "true"
+        - name: APP_TEXTSPLITTER_CHUNKOVERLAP
+          value: "200"
+        - name: APP_TEXTSPLITTER_CHUNKSIZE
+          value: "2000"
+        - name: APP_TRACING_ENABLED
+          value: "False"
+        - name: APP_TRACING_OTLPGRPCENDPOINT
+          value: grpc://rag-opentelemetry-collector:4317
+        - name: APP_TRACING_OTLPHTTPENDPOINT
+          value: http://rag-opentelemetry-collector:4318/v1/traces
+        - name: APP_VECTORSTORE_APIKEY
+        - name: APP_VECTORSTORE_APIKEY_ID
+        - name: APP_VECTORSTORE_APIKEY_SECRET
+        - name: APP_VECTORSTORE_DENSE_WEIGHT
+          value: "0.5"
+        - name: APP_VECTORSTORE_EF
+          value: "100"
+        - name: APP_VECTORSTORE_ENABLEGPUSEARCH
+          value: "False"
+        - name: APP_VECTORSTORE_INDEXTYPE
+          value: GPU_CAGRA
+        - name: APP_VECTORSTORE_NAME
+          value: elasticsearch
+        - name: APP_VECTORSTORE_PASSWORD
+          value: kPESNwjiHJDPVgOTMoSlr4WF
+        - name: APP_VECTORSTORE_RANKER_TYPE
+          value: rrf
+        - name: APP_VECTORSTORE_SEARCHTYPE
+          value: dense
+        - name: APP_VECTORSTORE_SPARSE_WEIGHT
+          value: "0.5"
+        - name: APP_VECTORSTORE_SSL_ENABLED
+          value: "true"
+        - name: APP_VECTORSTORE_URL
+          value: https://rag-eck-elasticsearch-es-http:9200
+        - name: APP_VECTORSTORE_USERNAME
+          value: elastic
+        - name: APP_VECTORSTORE_VERIFY_CERTS
+          value: "false"
+        - name: APP_VLM_MAX_TOKENS
+          value: "8192"
+        - name: APP_VLM_MAX_TOTAL_IMAGES
+          value: "5"
+        - name: APP_VLM_MODELNAME
+          value: nvidia/nemotron-nano-12b-v2-vl
+        - name: APP_VLM_SERVERURL
+          value: http://nim-vlm:8000/v1
+        - name: APP_VLM_TEMPERATURE
+          value: "0.1"
+        - name: APP_VLM_TOP_P
+          value: "1.0"
+        - name: COLLECTION_NAME
+          value: nvidia
+        - name: CONTEXT_RELEVANCE_THRESHOLD
+          value: "1"
+        - name: CONVERSATION_HISTORY
+          value: "10"
+        - name: ENABLE_CITATIONS
+          value: "True"
+        - name: ENABLE_FILTER_GENERATOR
+          value: "False"
+        - name: ENABLE_GUARDRAILS
+          value: "False"
+        - name: ENABLE_MULTITURN
+          value: "True"
+        - name: ENABLE_NEMOTRON_3_NANO_THINKING
+          value: "true"
+        - name: ENABLE_QUERYREWRITER
+          value: "False"
+        - name: ENABLE_QUERY_DECOMPOSITION
+          value: "false"
+        - name: ENABLE_REFLECTION
+          value: "false"
+        - name: ENABLE_RERANKER
+          value: "True"
+        - name: ENABLE_SOURCE_METADATA
+          value: "true"
+        - name: ENABLE_VLM_INFERENCE
+          value: "true"
+        - name: EXAMPLE_PATH
+          value: ./nvidia_rag/rag_server
+        - name: FILTER_THINK_TOKENS
+          value: "true"
+        - name: LLM_MAX_TOKENS
+          value: "32768"
+        - name: LLM_TEMPERATURE
+          value: "0"
+        - name: LLM_TOP_P
+          value: "1.0"
+        - name: LOGLEVEL
+          value: INFO
+        - name: MAX_RECURSION_DEPTH
+          value: "3"
+        - name: MAX_REFLECTION_LOOP
+          value: "3"
+        - name: MINIO_ACCESSKEY
+          value: minioadmin
+        - name: MINIO_ENDPOINT
+          value: rag-minio:9000
+        - name: MINIO_SECRETKEY
+          value: minioadmin
+        - name: MULTITURN_RETRIEVER_SIMPLE
+          value: "False"
+        - name: NEMO_GUARDRAILS_URL
+          value: nemo-guardrails:7331
+        - name: PROMETHEUS_MULTIPROC_DIR
+          value: /tmp-data/prom_data
+        - name: PROMPT_CONFIG_FILE
+          value: /prompt.yaml
+        - name: REDIS_DB
+          value: "0"
+        - name: REDIS_HOST
+          value: rag-redis-master
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REFLECTION_LLM
+          value: nvidia/llama-3.3-nemotron-super-49b-v1.5
+        - name: REFLECTION_LLM_SERVERURL
+          value: nim-llm:8000
+        - name: REQUESTS_CA_BUNDLE
+          value: /etc/ssl/eck/ca.crt
+        - name: RERANKER_CONFIDENCE_THRESHOLD
+          value: "0.0"
+        - name: RESPONSE_GROUNDEDNESS_THRESHOLD
+          value: "1"
+        - name: SSL_CERT_FILE
+          value: /etc/ssl/eck/ca.crt
+        - name: VECTOR_DB_TOPK
+          value: "100"
+        - name: VLM_TO_LLM_FALLBACK
+          value: "true"
+        - name: NVIDIA_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: NVIDIA_API_KEY
+              name: ngc-api
+        - name: TAVILY_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: TAVILY_API_KEY
+              name: tavily-api-key
+              optional: true
+        image: rag-server-local:latest
+        imagePullPolicy: Never
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: nvidia-blueprint-rag
+        ports:
+        - containerPort: 8081
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            memory: 64Gi
+          requests:
+            memory: 8Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /prompt.yaml
+          name: prompt-volume
+          subPath: prompt.yaml
+        - mountPath: /etc/ssl/eck
+          name: eck-ca
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: ngc-secret
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: rag-server
+      serviceAccountName: rag-server
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 365
+          name: rag-server-prompt
+        name: prompt-volume
+      - configMap:
+          defaultMode: 420
+          name: eck-es-ca-cert
+        name: eck-ca
+status:
+  conditions:
+  - lastTransitionTime: "2026-03-25T09:19:25Z"
+    lastUpdateTime: "2026-03-25T09:21:53Z"
+    message: ReplicaSet "rag-server-6bdd44c79d" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2026-05-12T21:02:15Z"
+    lastUpdateTime: "2026-05-12T21:02:15Z"
+    message: Deployment does not have minimum availability.
+    reason: MinimumReplicasUnavailable
+    status: "False"
+    type: Available
+  observedGeneration: 19
+  replicas: 1
+  unavailableReplicas: 1
+  updatedReplicas: 1

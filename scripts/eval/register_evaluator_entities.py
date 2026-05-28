@@ -93,71 +93,65 @@ class AdapterRow:
 
 # --- payload builders --------------------------------------------------
 
-# NeMo Evaluator target schema (validated against current /openapi.json):
-# top-level type must be one of model|cached_outputs|retriever|rag|rows|dataset.
-# We use "model" for all three target kinds (adapter, base, RAG-as-model) with
-# the nested ModelInput.api_endpoint (APIEndpointData) carrying the URL and
-# model_id (=OAI model_name routing). A single LoRA-enabled NIM serves both
-# base and adapter via the model_id routing.
+# NeMo Evaluator target schema (validated against /openapi.json): top-level
+# type=model with nested ModelInput.api_endpoint (url + model_id + format).
+#
+# Every Stage 3 target points at the eval-oai-proxy (deploy/rag-oai-proxy/),
+# which routes by model_id to the correct upstream NIM, strips <think>
+# reasoning blocks before returning, and logs per-request usage to stdout.
+#
+# Target naming convention (post-2026-05-27 redesign):
+#   - LoRA adapters:  lora-{corpus}-{base_short}-r{rank}   (unchanged)
+#   - Base models:    bare base-model identifier, org/ stripped, e.g.
+#                       "llama-3.2-1b-instruct"
+#                       "llama-3.3-nemotron-super-49b-v1.5"
+#   - 49B is just another base target — corpus disambiguation lives in the
+#     *dataset* (-with-context variants per corpus), not in the target name.
 
-def build_adapter_target(row: AdapterRow, nim_url: str) -> dict:
+_NEMOTRON_SUPER_49B_BASE = "nvidia/llama-3.3-nemotron-super-49b-v1.5"
+
+
+def _base_target_name(base_model: str) -> str:
+    """Strip org/ prefix — slashes aren't allowed in Evaluator entity names."""
+    return base_model.split("/", 1)[1]
+
+
+def build_adapter_target(row: AdapterRow, proxy_url: str) -> dict:
     return {
         "name": row.name,
         "namespace": "default",
         "type": "model",
         "model": {
             "api_endpoint": {
-                "url": f"{nim_url.rstrip('/')}/v1/chat/completions",
+                "url": f"{proxy_url.rstrip('/')}/v1/chat/completions",
                 "model_id": row.name,
-                "format": "nim",
+                "format": "openai",
             },
         },
     }
 
 
-def build_base_target(base_model: str, nim_url: str) -> dict:
-    # "meta/llama-3.2-3b-instruct" → "base-llama-3.2-3b-instruct"
-    suffix = base_model.split("/", 1)[1]
+def build_base_target(base_model: str, proxy_url: str) -> dict:
+    target_name = _base_target_name(base_model)
     return {
-        "name": f"base-{suffix}",
+        "name": target_name,
         "namespace": "default",
         "type": "model",
         "model": {
             "api_endpoint": {
-                "url": f"{nim_url.rstrip('/')}/v1/chat/completions",
-                "model_id": base_model,
-                "format": "nim",
+                "url": f"{proxy_url.rstrip('/')}/v1/chat/completions",
+                "model_id": target_name,
+                "format": "openai",
             },
         },
     }
 
 
-def build_rag_target(collection: str, rag_url: str) -> dict:
-    """RAG target — registered as type=model pointing at rag-server /generate.
-
-    The Evaluator's native RAGTargetInput requires a full pipeline definition
-    (retriever + generator + cached_outputs) that's structurally heavier than
-    we need. Simpler: treat the RAG path as a single model endpoint and let
-    rag-server own the retrieval. Per-request collection scoping requires
-    either:
-      (a) a proxy that translates Evaluator's OAI-style request body to
-          rag-server's Prompt schema and injects collection_names=[<coll>], or
-      (b) two rag-server deployments with different default collections.
-    Decide empirically when the first RAG smoke job runs.
-    """
-    short = collection.replace("_", "-")
-    return {
-        "name": f"rag-49b-{short}",
-        "namespace": "default",
-        "type": "model",
-        "model": {
-            "api_endpoint": {
-                "url": f"{rag_url.rstrip('/')}/generate",
-                "model_id": f"rag-49b-{short}",  # sentinel; rag-server ignores
-                "format": "nim",
-            },
-        },
-    }
+def build_49b_target(proxy_url: str) -> dict:
+    """The Nemotron-Super-49B RAG comparator. Registered as a base-style target;
+    corpus pairing is handled by which -with-context dataset it's evaluated on,
+    not by duplicating the target."""
+    return build_base_target(_NEMOTRON_SUPER_49B_BASE, proxy_url)
 
 
 def build_dataset_payload(collection: str, files_url: str) -> dict:
@@ -214,21 +208,70 @@ Return JSON: {{"winner": "A"|"B"|"TIE", "reason": str}}.
 """
 
 
+# RAGAS input_template: maps our test-row + model-sample fields to the schema
+# RAGAS's EvaluationDataset.from_list expects. Renders to a JSON object using
+# Jinja's `tojson` filter to safely escape strings (newlines, quotes).
+#
+# Field mapping rationale:
+#   user_input         ← `prompt` (full baked prompt; question is at the end)
+#   retrieved_contexts ← `[prompt]` (single-element list containing the full
+#                        baked prompt — chunks are inside it. Question text is
+#                        harmless noise for grounding judging.)
+#   response           ← `response` (model output from sample)
+#   reference          ← `completion` (ground-truth answer)
+_RAGAS_INPUT_TEMPLATE = (
+    '{\n'
+    '  "user_input":         {{ prompt | tojson }},\n'
+    '  "retrieved_contexts": [{{ prompt | tojson }}],\n'
+    '  "response":           {{ response | tojson }},\n'
+    '  "reference":          {{ completion | tojson }}\n'
+    '}'
+)
+
+_JUDGE_MODEL_REF = "default/claude-sonnet-4-6-judge"
+
+
+def _ragas_metric(metric_type: str) -> dict:
+    """Build one RAGAS metric config entry for the rubric tasks block."""
+    return {
+        "type": metric_type,
+        "params": {
+            "judge": {"model": _JUDGE_MODEL_REF},
+            "input_template": _RAGAS_INPUT_TEMPLATE,
+        },
+    }
+
+
 def build_singleaxis_config() -> dict:
+    """Stage 3 single-axis RAGAS rubric: Faithfulness + ResponseRelevancy + AnswerAccuracy.
+
+    These three are the canonical RAG-eval subset (the prior nim-sft-final
+    experiment used a near-identical set: faithfulness, answer_relevancy,
+    context_precision). All scored by Claude Sonnet via NVIDIA Inference API
+    (model entity: default/claude-sonnet-4-6-judge).
+    """
     return {
         "name": "stage3-singleaxis-rubric",
         "namespace": "default",
-        "description": "Stage 3 single-axis 4-criteria rubric, Claude Sonnet judge",
+        "description": (
+            "Stage 3 single-axis RAGAS — Faithfulness + ResponseRelevancy + "
+            "AnswerAccuracy, Claude Sonnet 4.6 judge"
+        ),
         "type": "custom",
         "params": {
-            "parallelism": 4,
-            "temperature": 0.0001,  # Evaluator schema requires temperature > 0; greedy-equivalent
-            "max_tokens": 600,
-            "extra": {
-                "judge_model": "aws/anthropic/bedrock-claude-sonnet-4-6",
-                "judge_endpoint": "https://inference-api.nvidia.com/v1/chat/completions",
-                "inference_prompt": _INFERENCE_PROMPT,
-                "rubric_prompt": _RUBRIC_PROMPT,
+            "parallelism":  4,
+            "temperature":  0.0001,
+            "max_tokens":   8192,
+        },
+        "tasks": {
+            "ragas_rubric": {
+                "type": "chat-completion",
+                "params": {"template": "{{prompt}}"},
+                "metrics": {
+                    "faithfulness":       _ragas_metric("faithfulness"),
+                    "response_relevancy": _ragas_metric("response_relevancy"),
+                    "answer_accuracy":    _ragas_metric("answer_accuracy"),
+                },
             },
         },
     }
@@ -243,7 +286,7 @@ def build_pairwise_config() -> dict:
         "params": {
             "parallelism": 4,
             "temperature": 0.0001,  # Evaluator schema requires temperature > 0; greedy-equivalent
-            "max_tokens": 300,
+            "max_tokens": 8192,     # target inference budget; reasoning models (49B) need room for <think> + answer
             "extra": {
                 "judge_model": "aws/anthropic/bedrock-claude-sonnet-4-6",
                 "judge_endpoint": "https://inference-api.nvidia.com/v1/chat/completions",
@@ -316,25 +359,17 @@ def main() -> int:
     ap.add_argument("--log-path", type=Path,
                     default=_REPO_ROOT / "evals" / "training_session.log")
     ap.add_argument("--adapter-targets", action="store_true",
-                    help="Register 12 adapter targets")
+                    help="Register the 14 LoRA adapter targets (12 Llama + 2 Nano r=16)")
     ap.add_argument("--base-targets", action="store_true",
-                    help="Register 3 base reference targets")
-    ap.add_argument("--rag-targets", action="store_true",
-                    help="Register 2 RAG targets")
+                    help="Register the 3 dense Llama base reference targets")
+    ap.add_argument("--rag-target", action="store_true",
+                    help="Register the single Nemotron-Super-49B-v1.5 RAG-comparator target")
     ap.add_argument("--configs", action="store_true",
                     help="Register both eval configs (singleaxis + pairwise)")
-    # A single LoRA-enabled NIM per base model serves BOTH base-only inference
-    # (request body model=<base_model>) and LoRA-applied inference (model=<adapter>)
-    # via OpenAI-API model routing. No separate base NIM is needed.
-    ap.add_argument("--nim-url-1b", default="http://nim-llama-3.2-1b:8000")
-    ap.add_argument("--nim-url-3b", default="http://nim-llama-3.2-3b:8000")
-    ap.add_argument("--nim-url-8b", default="http://nim-llama-3.1-8b:8000")
-    ap.add_argument("--nim-url-nano", default="http://nim-nemotron-nano:8000",
-                    help="Nano-30B-A3B MoE adapter-serving NIM (r=16 LoRA)")
-    ap.add_argument("--rag-url", default="http://rag-server.runai-rag:8081",
-                    help="rag-server /generate base; was rag-agent-toolkit but "
-                         "switched to bypass the agent for per-request collection "
-                         "scoping (see build_rag_target docstring)")
+    ap.add_argument("--proxy-url", default="http://rag-oai-proxy.runai-rag:8080",
+                    help="eval-oai-proxy base URL. All Stage 3 targets point here; "
+                         "the proxy routes by model_id to the upstream NIM and "
+                         "strips <think> reasoning blocks from responses.")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.INFO,
@@ -343,34 +378,27 @@ def main() -> int:
     adapters = load_adapters_from_log(args.log_path)
     log.info("loaded %d adapters from %s", len(adapters), args.log_path)
 
-    nim_url_for = {
-        "meta/llama-3.2-1b-instruct": args.nim_url_1b,
-        "meta/llama-3.2-3b-instruct": args.nim_url_3b,
-        "meta/llama-3.1-8b-instruct": args.nim_url_8b,
-        "nvidia/nemotron-3-nano-30b-a3b": args.nim_url_nano,
-    }
-    # Base targets reuse the same LoRA-enabled NIMs (model-id routing handles
-    # which inference path runs). Nano is intentionally excluded from the
-    # base-target sweep — only its LoRA variant is in scope per Stage 3.
-    base_url_for = {
-        "meta/llama-3.2-1b-instruct": args.nim_url_1b,
-        "meta/llama-3.2-3b-instruct": args.nim_url_3b,
-        "meta/llama-3.1-8b-instruct": args.nim_url_8b,
-    }
+    # Bases that get a no-LoRA reference target in the matrix. Nano is excluded
+    # (only its LoRA variants are in Stage 3 scope); 49B is registered via the
+    # separate build_49b_target helper to keep its naming explicit.
+    _BASE_TARGETS = [
+        "meta/llama-3.2-1b-instruct",
+        "meta/llama-3.2-3b-instruct",
+        "meta/llama-3.1-8b-instruct",
+    ]
 
     with EvaluatorClient(args.evaluator_url) as client:
         if args.adapter_targets:
             for a in adapters:
-                p = build_adapter_target(a, nim_url=nim_url_for[a.base_model])
+                p = build_adapter_target(a, proxy_url=args.proxy_url)
                 _create_target_idempotent(client, p, label="adapter")
         if args.base_targets:
-            for base, url in base_url_for.items():
-                p = build_base_target(base, nim_url=url)
+            for base in _BASE_TARGETS:
+                p = build_base_target(base, proxy_url=args.proxy_url)
                 _create_target_idempotent(client, p, label="base")
-        if args.rag_targets:
-            for coll in ("nim_curated", "nemo_usvcs_curated"):
-                p = build_rag_target(coll, rag_url=args.rag_url)
-                _create_target_idempotent(client, p, label="rag")
+        if args.rag_target:
+            p = build_49b_target(proxy_url=args.proxy_url)
+            _create_target_idempotent(client, p, label="49b-rag")
         if args.configs:
             for builder in (build_singleaxis_config, build_pairwise_config):
                 p = builder()

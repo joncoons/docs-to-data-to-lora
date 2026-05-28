@@ -23,35 +23,39 @@ from scripts.eval.register_evaluator_entities import (  # noqa: E402
 log = logging.getLogger(__name__)
 
 
+# Test datasets are the context-baked variants (per bake_context_into_testset.py).
+# Each row's prompt has retrieved chunks pre-prepended, so every Evaluator call
+# sees identical (context + question) input regardless of which target answers.
 _DATASET_FOR_COLLECTION = {
-    "nim_curated":          "default/stage3-nim-curated-test",
-    "nemo_usvcs_curated":   "default/stage3-nemo-usvcs-curated-test",
+    "nim_curated":          "default/stage3-nim-curated-test-with-context",
+    "nemo_usvcs_curated":   "default/stage3-nemo-usvcs-curated-test-with-context",
 }
 
-# Bases that are NOT in the no-LoRA base-target sweep (Stage 3 spec: Nano is
-# LoRA-only because no non-LoRA Nano baseline was requested).
-_BASES_WITHOUT_BASE_TARGET = {"nvidia/nemotron-3-nano-30b-a3b"}
+# Bases that are NOT in the Wave A no-LoRA base-target sweep (Stage 3 spec:
+# Nano is LoRA-only; 49B is a separate RAG-comparator target — see Wave C).
+_BASES_NOT_IN_WAVE_A_BASE_SWEEP = {
+    "nvidia/nemotron-3-nano-30b-a3b",
+    "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+}
+
+_NEMOTRON_SUPER_49B_TARGET = "default/llama-3.3-nemotron-super-49b-v1.5"
 
 
 def _base_target_name(base_model: str) -> str:
-    """meta/llama-3.2-3b-instruct → default/base-llama-3.2-3b-instruct"""
-    return f"default/base-{base_model.split('/',1)[1]}"
-
-
-def _rag_target_name(collection: str) -> str:
-    short = collection.replace("_", "-")
-    return f"default/rag-49b-{short}"
+    """meta/llama-3.2-3b-instruct → default/llama-3.2-3b-instruct"""
+    return f"default/{base_model.split('/', 1)[1]}"
 
 
 def build_singleaxis_jobs(adapters: list[AdapterRow],
                           config_name: str) -> list[dict]:
-    """Return list of single-axis job payloads.
+    """Wave A single-axis: every LoRA + every dense Llama base, scored on the
+    matching-corpus -with-context test set. 49B is intentionally excluded from
+    single-axis per the 2026-05-27 redesign (it only appears in Wave C pairwise).
 
-    For the canonical Stage 3 inventory (14 adapters across 4 bases, 2 corpora):
-      - 14 adapter jobs (one per adapter, evaluated on its corpus's test set)
-      -  6 base jobs   (3 bases that have base targets × 2 corpora)
-      -  2 RAG jobs    (49B-RAG × 2 corpora)
-      = 22 jobs total
+    For the Stage 3 inventory (14 adapters across 4 bases, 2 corpora):
+      - 14 adapter jobs (one per adapter, paired with its corpus's test set)
+      -  6 base jobs   (3 dense Llama bases × 2 corpora)
+      = 20 jobs total
     """
     jobs: list[dict] = []
     for a in adapters:
@@ -62,7 +66,7 @@ def build_singleaxis_jobs(adapters: list[AdapterRow],
         })
     seen_bases: set[str] = set()
     for a in adapters:
-        if a.base_model in seen_bases or a.base_model in _BASES_WITHOUT_BASE_TARGET:
+        if a.base_model in seen_bases or a.base_model in _BASES_NOT_IN_WAVE_A_BASE_SWEEP:
             continue
         seen_bases.add(a.base_model)
         for coll in ("nim_curated", "nemo_usvcs_curated"):
@@ -71,12 +75,6 @@ def build_singleaxis_jobs(adapters: list[AdapterRow],
                 "target": _base_target_name(a.base_model),
                 "dataset": _DATASET_FOR_COLLECTION[coll],
             })
-    for coll in ("nim_curated", "nemo_usvcs_curated"):
-        jobs.append({
-            "config": config_name,
-            "target": _rag_target_name(coll),
-            "dataset": _DATASET_FOR_COLLECTION[coll],
-        })
     return jobs
 
 
@@ -84,8 +82,8 @@ def build_pairwise_jobs(adapters: list[AdapterRow],
                         config_name: str) -> list[dict]:
     """Wave B — LoRA-vs-LoRA pairwise within each corpus.
 
-    With 7 LoRAs per corpus (3 Llama r=16 + 3 Llama r=32 + 1 Nano r=16),
-    that's 7C2=21 pairs per corpus × 2 corpora = 42 jobs.
+    7 LoRAs per corpus (3 Llama r=16 + 3 Llama r=32 + 1 Nano r=16) →
+    7C2 = 21 pairs per corpus × 2 corpora = 42 jobs.
     """
     by_corpus: dict[str, list[AdapterRow]] = {}
     for a in adapters:
@@ -111,22 +109,24 @@ def build_pairwise_jobs(adapters: list[AdapterRow],
 
 def build_49b_pairwise_jobs(adapters: list[AdapterRow],
                             config_name: str) -> list[dict]:
-    """Wave C — 49B-RAG vs every LoRA adapter on the same corpus.
+    """Wave C — single 49B target vs every LoRA adapter, paired with the
+    LoRA's matching-corpus -with-context test set.
 
-    Per Stage 3 spec, only LoRA-enabled targets are in scope for the 49B
-    comparison (non-LoRA bases excluded). With 7 LoRAs per corpus × 2
-    corpora = 14 jobs.
+    Corpus disambiguation lives in the *dataset*, not the target: both Wave C
+    rows use the same Nemotron-Super-49B-v1.5 target, but each is paired with
+    the test set corresponding to the LoRA's training corpus.
+
+    14 LoRAs × 1 target each (matching dataset by corpus) = 14 jobs.
     """
     jobs: list[dict] = []
     for a in adapters:
-        rag_target = _rag_target_name(a.collection)
         adapter_target = f"default/{a.name}"
         jobs.append({
             "config": config_name,
-            "target": rag_target,  # nominal anchor (see pairwise note above)
+            "target": _NEMOTRON_SUPER_49B_TARGET,  # nominal anchor (see pairwise note above)
             "dataset": _DATASET_FOR_COLLECTION[a.collection],
             "extra": {
-                "target_a": rag_target,
+                "target_a": _NEMOTRON_SUPER_49B_TARGET,
                 "target_b": adapter_target,
             },
         })

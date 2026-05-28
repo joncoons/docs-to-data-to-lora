@@ -1,0 +1,83 @@
+apiVersion: apps.nvidia.com/v1alpha1
+kind: NIMService
+metadata:
+  annotations:
+    meta.helm.sh/release-name: rag
+    meta.helm.sh/release-namespace: runai-rag
+  creationTimestamp: "2026-03-25T09:19:26Z"
+  finalizers:
+  - finalizer.nimservice.apps.nvidia.com
+  generation: 17
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: nim-llm
+  namespace: runai-rag
+  resourceVersion: "18010530"
+  uid: 1d663c99-2ae3-4622-aa38-cb0e82973134
+spec:
+  annotations:
+    run.ai/gpu-memory: 90000M
+  authSecret: ngc-api
+  env:
+  - name: NIM_HTTP_API_PORT
+    value: "8000"
+  - name: NIM_TRITON_LOG_VERBOSE
+    value: "1"
+  - name: NIM_SERVED_MODEL_NAME
+    value: nvidia/nemotron-3-super-120b-a12b
+  - name: NIM_MODEL_PROFILE
+    value: 3b37a659a22c9390abe7b16aeb29c301c2e9c0e12e5b0fa76171681df31930e0
+  expose:
+    ingress:
+      spec: {}
+    service:
+      grpcPort: 8001
+      name: http
+      port: 8000
+      type: ClusterIP
+  image:
+    pullPolicy: IfNotPresent
+    pullSecrets:
+    - ngc-secret
+    repository: nvcr.io/nim/nvidia/nemotron-3-super-120b-a12b
+    tag: 2.0.3
+  livenessProbe: {}
+  metrics:
+    serviceMonitor: {}
+  nodeSelector:
+    kubernetes.io/hostname: ubuntu-local-dev
+  readinessProbe: {}
+  replicas: 1
+  resources:
+    limits:
+      nvidia.com/gpu: "1"
+    requests:
+      nvidia.com/gpu: "1"
+  scale:
+    hpa:
+      maxReplicas: 0
+      minReplicas: 1
+  startupProbe: {}
+  storage:
+    nimCache:
+      name: nim-llm-cache
+    pvc: {}
+    sharedMemorySizeLimit: 16Gi
+status:
+  conditions:
+  - lastTransitionTime: "2026-04-27T19:23:37Z"
+    message: |
+      deployment "nim-llm" successfully rolled out
+    reason: Ready
+    status: "True"
+    type: Ready
+  - lastTransitionTime: "2026-03-25T20:07:41Z"
+    message: ""
+    reason: Ready
+    status: "False"
+    type: Failed
+  model:
+    clusterEndpoint: 10.43.11.191:8000
+    externalEndpoint: ""
+    name: nvidia/nemotron-3-super-120b-a12b
+  state: Ready

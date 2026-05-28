@@ -60,6 +60,7 @@ docs-to-data-to-lora/
 │   ├── stage-1-curated-crawl.md           ← methodology + crawl logic
 │   ├── stage-2-dataset-creation.md        ← entailment + augmentation (WIP)
 │   ├── stage-3-peft-training.md           ← LoRA SFT pipeline (WIP)
+│   ├── integration-templates/              ← MLflow/NeMo orchestration plans
 │   └── integrations/                      ← optional Stage 1 enhancements
 │       ├── README.md                      (decision table — when to use which)
 │       ├── 01-semantic-chunking.md        (element-aware chunker for HTML/MD/PDF)
@@ -177,6 +178,15 @@ Generation strategies:
   Data Designer recipes grounded in retrieved chunks fill under-represented products.
 - **Stage 4 — External judge**: Claude Sonnet 4.6 (independent of generation)
   spot-checks 100 pairs per collection; 90% grounding pass threshold.
+
+## Integration templates
+
+For teams that want MLflow to orchestrate and audit the NeMo Microservices
+lifecycle, see
+[`docs/integration-templates/mlflow-nemo`](docs/integration-templates/mlflow-nemo/).
+The template keeps NeMo Data Store, Entity Store, Customizer, and Evaluator as
+the execution plane while MLflow records lineage, IDs, metrics, and promotion
+state.
 
 ## Contributing
 

@@ -34,15 +34,33 @@ GITEA_USER = "datastore_admin"
 GITEA_PASS = "nemo-peft-ds"
 
 COLLECTIONS = [
+    # Originals (bare questions, no retrieved context).
     {
         "src":        Path("/mnt/nvme2/peft/datasets/v2/nim_curated/test_set.jsonl"),
         "dataset":    "stage3-nim-curated-test",
         "collection": "nim_curated",
+        "context":    False,
     },
     {
         "src":        Path("/mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated/test_set.jsonl"),
         "dataset":    "stage3-nemo-usvcs-curated-test",
         "collection": "nemo_usvcs_curated",
+        "context":    False,
+    },
+    # Context-baked variants (output of bake_context_into_testset.py).
+    # vdb_top_k=25, rerank_top_k=5, soft cutoff at sigmoid score >= 0.5.
+    # Each row's prompt is `Context:\n[1] <url>\n<chunk>\n...\n\nQuestion: <q>`.
+    {
+        "src":        Path("/mnt/nvme2/peft/datasets/v2/nim_curated/test_set_with_context.jsonl"),
+        "dataset":    "stage3-nim-curated-test-with-context",
+        "collection": "nim_curated",
+        "context":    True,
+    },
+    {
+        "src":        Path("/mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated/test_set_with_context.jsonl"),
+        "dataset":    "stage3-nemo-usvcs-curated-test-with-context",
+        "collection": "nemo_usvcs_curated",
+        "context":    True,
     },
 ]
 
@@ -101,14 +119,24 @@ def push_test_file(name: str, src: Path) -> None:
     print(f"  pushed {repo_id}: test.jsonl ({n_rows} rows)")
 
 
-def register_in_entity_store(name: str, collection: str, n_rows: int) -> None:
+def register_in_entity_store(name: str, collection: str, n_rows: int,
+                              context_baked: bool = False) -> None:
+    if context_baked:
+        desc = (
+            f"Stage 3 held-out test set for {collection} ({n_rows} rows). "
+            f"Retrieval-baked variant: each row's prompt has top-5 reranked "
+            f"chunks (vdb_top_k=25, sigmoid>=0.5) prepended as Context. "
+            f"Produced by bake_context_into_testset.py."
+        )
+    else:
+        desc = (
+            f"Stage 3 held-out test set for {collection} ({n_rows} rows, "
+            f"10% KVP holdout, seed 42; bare questions; from holdout_split.py)"
+        )
     payload = {
         "name": name,
         "namespace": DATASET_NAMESPACE,
-        "description": (
-            f"Stage 3 held-out test set for {collection} "
-            f"({n_rows} rows, 10% KVP holdout, seed 42; from holdout_split.py)"
-        ),
+        "description": desc,
         "format": "hf",
         "files_url": f"hf://datasets/{DATASET_NAMESPACE}/{name}",
         "hf_endpoint": "http://nemo-data-store:3000/v1/hf",
@@ -139,7 +167,8 @@ def main() -> int:
         push_test_file(spec["dataset"], src)
         with src.open() as f:
             n_rows = sum(1 for _ in f)
-        register_in_entity_store(spec["dataset"], spec["collection"], n_rows)
+        register_in_entity_store(spec["dataset"], spec["collection"], n_rows,
+                                  context_baked=spec.get("context", False))
         print()
     return 0
 

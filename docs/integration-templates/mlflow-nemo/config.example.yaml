@@ -1,0 +1,83 @@
+# Example configuration for the MLflow + NeMo orchestration template.
+# Copy values into your deployment-specific config; do not commit secrets.
+
+mlflow:
+  tracking_uri: "http://mlflow.example.com:5000"
+  experiment_name: "docs-to-data-to-lora"
+  artifact_root: null
+
+nemo:
+  workspace: "default"
+  project: "docs-to-data-to-lora"
+  customizer_url: "http://192.168.1.187:30910"
+  entity_store_url: "http://192.168.1.187:30911"
+  data_store_url: "http://192.168.1.187:30912"
+  evaluator_url: "http://192.168.1.187:30913"
+  data_store_internal_hf_endpoint: "http://nemo-data-store:3000/v1/hf"
+
+data_store_auth:
+  # Prefer environment variables in implementation.
+  username_env: "NEMO_DATA_STORE_USER"
+  password_env: "NEMO_DATA_STORE_PASSWORD"
+
+collections:
+  nim_curated:
+    corpus_short: "nim"
+    stage2_dir: "/mnt/nvme2/peft/datasets/v2/nim_curated"
+    train_dataset_name: "stage3-nim-curated"
+    test_dataset_name: "stage3-nim-curated-test"
+    evaluator_dataset_ref: "default/stage3-nim-curated-test"
+
+  nemo_usvcs_curated:
+    corpus_short: "nemo-usvcs"
+    stage2_dir: "/mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated"
+    train_dataset_name: "stage3-nemo-usvcs-curated"
+    test_dataset_name: "stage3-nemo-usvcs-curated-test"
+    evaluator_dataset_ref: "default/stage3-nemo-usvcs-curated-test"
+
+base_models:
+  meta/llama-3.2-1b-instruct:
+    customizer_template: "meta/llama-3.2-1b-instruct@v1.0.0+80GB"
+    allow_base_target: true
+
+  meta/llama-3.2-3b-instruct:
+    customizer_template: "meta/llama-3.2-3b-instruct@v1.0.0+80GB"
+    allow_base_target: true
+
+  meta/llama-3.1-8b-instruct:
+    customizer_template: "meta/llama-3.1-8b-instruct@v1.0.0+80GB"
+    allow_base_target: true
+
+training_defaults:
+  epochs: 2
+  batch_size: 16
+  learning_rate: 0.0001
+  warmup_steps: 30
+  seed: 42
+  optimizer: "adamw_with_cosine_annealing"
+  sequence_packing_enabled: false
+  ranks:
+    - 16
+    - 32
+
+evaluation:
+  register_targets: true
+  register_configs: true
+  run_singleaxis: true
+  run_pairwise_lora: true
+  run_pairwise_rag: true
+  config_singleaxis: "default/stage3-singleaxis-rubric"
+  config_pairwise: "default/stage3-pairwise-rubric"
+
+promotion:
+  enabled: false
+  min_accuracy_mean: 4.0
+  min_faithfulness_mean: 4.0
+  min_win_rate_vs_base: 0.55
+  require_eval_complete: true
+
+polling:
+  customizer_interval_s: 30
+  customizer_timeout_s: 14400
+  evaluator_interval_s: 30
+  evaluator_timeout_s: 21600
