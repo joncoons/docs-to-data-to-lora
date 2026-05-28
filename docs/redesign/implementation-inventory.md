@@ -135,7 +135,7 @@ row-level provenance lives in registered files, not only custom_fields
 | `deploy/rag-oai-proxy/*` | Quarantine/replace native | Explicitly identified as Claude-generated workaround. | Replace showcase path with Evaluator targets pointing at NIM Proxy. Keep only as temporary fallback. |
 | `scripts/eval/register_evaluator_entities.py` | Keep | Builder functions now register native NIM Proxy model targets and configs. | Run as the K8s control-plane Job in `deploy/evaluator-registration/`; keep custom proxy path legacy only. |
 | `scripts/eval/evaluator_client.py` | Replace native/fallback | Thin REST wrapper. | Prefer NeMo Evaluator SDK/CLI. Keep as fallback if needed. |
-| `scripts/eval/run_evaluation_matrix.py` | Keep, refactor | Evaluation matrix is useful showcase logic. | Keep matrix planning; submit through native Evaluator client/configs. |
+| `scripts/eval/run_evaluation_matrix.py` | Keep | Evaluation matrix is useful showcase logic and now has K8s-friendly submission/polling controls. | Run through `deploy/evaluation-matrix/`; add result collection as the next separate Job. |
 | `scripts/eval/bake_context_into_testset.py` | Split | Context-baking is useful for controlled comparisons, but not a replacement for RAG targets. | Keep as baseline mode. Add native RAG target mode via Evaluator. |
 | `scripts/eval/adapter_sync.py` | Replace native where possible | Sidecar sync assumes path-based LoRA serving. | Prefer NIM LoRA/NIM Operator/NIM Proxy patterns. Keep only for local deployment constraints. |
 

@@ -141,6 +141,26 @@ This Job does not register datasets. Dataset bytes and identities belong to NeMo
 Data Store and NeMo Entity Store, which should be handled by a separate dataset
 registration Job.
 
+## Fourth K8s Template: Evaluation Matrix
+
+Evaluation matrix orchestration is the first execution Job that submits NeMo
+Evaluator jobs. It assumes registration has already created targets and configs,
+then submits Wave A single-axis jobs, Wave B LoRA-vs-LoRA jobs, and Wave C 49B
+comparator jobs. It writes submitted Evaluator job IDs to a PVC-backed JSON file
+for result collection and auditability.
+
+Artifacts:
+
+```text
+deploy/evaluation-matrix/
+  Containerfile
+  README.md
+  job.yaml
+```
+
+The Job can either poll each wave to terminal state or run with `--submit-only`
+when a separate controller/result-collection Job should own polling.
+
 ## K8s Resource Guidance
 
 | Workload | CPU | Memory | GPU | Storage |
@@ -176,7 +196,7 @@ Do not put NodePorts, passwords, or host-specific paths in scripts.
 1. TIES merge Job. Implemented in `deploy/ties-merge/`.
 2. Adapter inspection Job. Implemented in `deploy/adapter-inspection/`.
 3. Evaluator target/config registration Job. Implemented in `deploy/evaluator-registration/`.
-4. Evaluation matrix orchestration Job.
+4. Evaluation matrix orchestration Job. Implemented in `deploy/evaluation-matrix/`.
 5. Dataset registration Job.
 6. Stage 0 corpus/provenance Job.
 7. Stage 1 generation shard Jobs.

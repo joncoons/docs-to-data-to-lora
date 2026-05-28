@@ -1,16 +1,20 @@
 """Tests for orchestrator — wave structure and pair enumeration."""
+import json
+import sys
 from itertools import combinations
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from scripts.eval.register_evaluator_entities import AdapterRow
+import scripts.eval.run_evaluation_matrix as rem
 from scripts.eval.run_evaluation_matrix import (
     build_49b_pairwise_jobs,
     build_pairwise_jobs,
     build_singleaxis_jobs,
     submit_wave,
     wait_all,
+    write_job_map,
 )
 
 
@@ -146,3 +150,68 @@ def test_wait_all_aborts_after_consecutive_failures():
             wait_all(client, job_ids=["ej-001"],
                      poll_interval=0.0, max_wait_s=60,
                      max_consecutive_errors=3)
+
+
+def test_write_job_map_creates_parent_directory(tmp_path):
+    out = tmp_path / "evals" / "evaluator_job_ids.json"
+    payload = {"wave_a": [["job-1", {"target": "default/model"}]]}
+
+    write_job_map(out, payload)
+
+    assert json.loads(out.read_text()) == payload
+
+
+def test_main_submit_only_writes_all_wave_ids_without_polling(tmp_path, monkeypatch):
+    log_path = tmp_path / "training_session.log"
+    log_path.write_text(
+        "| lora-nim-llama-3.2-3b-r16 | cust-abc | 1.0 | 1.0 | ~5 min |\n"
+    )
+    out = tmp_path / "outputs" / "evaluator_job_ids.json"
+    submitted = []
+
+    class DummyClient:
+        def __init__(self, base_url, api_key=None):
+            assert base_url == "http://evaluator.test"
+            assert api_key == "secret-token"
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return None
+
+        def submit_job(self, payload):
+            submitted.append(payload)
+            return f"job-{len(submitted)}"
+
+    wait_mock = MagicMock()
+    monkeypatch.setattr(rem, "EvaluatorClient", DummyClient)
+    monkeypatch.setattr(rem, "wait_all", wait_mock)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_evaluation_matrix.py",
+            "--evaluator-url",
+            "http://evaluator.test",
+            "--evaluator-api-key",
+            "secret-token",
+            "--log-path",
+            str(log_path),
+            "--out",
+            str(out),
+            "--wave",
+            "all",
+            "--submit-only",
+        ],
+    )
+
+    assert rem.main() == 0
+
+    assert wait_mock.call_count == 0
+    assert len(submitted) == 4
+    data = json.loads(out.read_text())
+    assert set(data) == {"wave_a", "wave_b", "wave_c"}
+    assert len(data["wave_a"]) == 3
+    assert data["wave_b"] == []
+    assert len(data["wave_c"]) == 1

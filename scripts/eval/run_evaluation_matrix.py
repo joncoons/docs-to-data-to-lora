@@ -1,10 +1,11 @@
 """Orchestrate Wave A (single-axis), Wave B (LoRA-vs-LoRA pairwise), and
-Wave C (49B-RAG vs LoRA pairwise) Evaluator jobs."""
+Wave C (49B vs LoRA pairwise) Evaluator jobs."""
 from __future__ import annotations
 
 import argparse
 import json
 import logging
+import os
 import sys
 import time
 from itertools import combinations
@@ -22,6 +23,20 @@ from scripts.eval.register_evaluator_entities import (  # noqa: E402
 
 log = logging.getLogger(__name__)
 
+DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:8000")
+DEFAULT_TRAINING_SESSION_LOG = Path(
+    os.getenv(
+        "TRAINING_SESSION_LOG",
+        str(_REPO_ROOT / "evals" / "training_session.log"),
+    )
+)
+DEFAULT_EVALUATOR_JOB_IDS_OUT = Path(
+    os.getenv(
+        "EVALUATOR_JOB_IDS_OUT",
+        str(_REPO_ROOT / "evals" / "evaluator_job_ids.json"),
+    )
+)
+
 
 # Test datasets are the context-baked variants (per bake_context_into_testset.py).
 # Each row's prompt has retrieved chunks pre-prepended, so every Evaluator call
@@ -32,7 +47,7 @@ _DATASET_FOR_COLLECTION = {
 }
 
 # Bases that are NOT in the Wave A no-LoRA base-target sweep (Stage 3 spec:
-# Nano is LoRA-only; 49B is a separate RAG-comparator target — see Wave C).
+# Nano is LoRA-only; 49B is a separate comparator target — see Wave C).
 _BASES_NOT_IN_WAVE_A_BASE_SWEEP = {
     "nvidia/nemotron-3-nano-30b-a3b",
     "nvidia/llama-3.3-nemotron-super-49b-v1.5",
@@ -141,6 +156,11 @@ def submit_wave(client: EvaluatorClient, jobs: list[dict]) -> list[str]:
     return job_ids
 
 
+def write_job_map(path: Path, out_map: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(out_map, indent=2) + "\n")
+
+
 def wait_all(client: EvaluatorClient, job_ids: list[str],
              poll_interval: float = 30.0,
              max_wait_s: float = 6 * 3600,
@@ -185,12 +205,26 @@ def wait_all(client: EvaluatorClient, job_ids: list[str],
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--evaluator-url", default="http://192.168.1.187:30913")
-    ap.add_argument("--log-path", type=Path,
-                    default=_REPO_ROOT / "evals" / "training_session.log")
-    ap.add_argument("--out", type=Path,
-                    default=_REPO_ROOT / "evals" / "evaluator_job_ids.json")
+    ap.add_argument("--evaluator-url", default=DEFAULT_EVALUATOR_URL,
+                    help="NeMo Evaluator base URL. Defaults to EVALUATOR_URL or "
+                         "http://nemo-evaluator:8000.")
+    ap.add_argument("--evaluator-api-key", default=os.getenv("EVALUATOR_API_KEY"),
+                    help="Optional Evaluator bearer token. Defaults to EVALUATOR_API_KEY.")
+    ap.add_argument("--log-path", type=Path, default=DEFAULT_TRAINING_SESSION_LOG,
+                    help="Training-session inventory log. Defaults to TRAINING_SESSION_LOG "
+                         "or evals/training_session.log.")
+    ap.add_argument("--out", type=Path, default=DEFAULT_EVALUATOR_JOB_IDS_OUT,
+                    help="Path for submitted Evaluator job IDs. Defaults to "
+                         "EVALUATOR_JOB_IDS_OUT or evals/evaluator_job_ids.json.")
     ap.add_argument("--wave", choices=["A", "B", "C", "all"], default="all")
+    ap.add_argument("--submit-only", action="store_true",
+                    help="Submit jobs and write IDs without polling for terminal status.")
+    ap.add_argument("--poll-interval", type=float, default=30.0,
+                    help="Seconds between Evaluator status polls when not using --submit-only.")
+    ap.add_argument("--max-wait-s", type=float, default=6 * 3600,
+                    help="Maximum seconds to wait per wave when polling.")
+    ap.add_argument("--max-consecutive-errors", type=int, default=10,
+                    help="Abort after this many consecutive poll errors for one job.")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.INFO,
@@ -203,42 +237,45 @@ def main() -> int:
     if args.out.exists():
         out_map = json.loads(args.out.read_text())
 
-    with EvaluatorClient(args.evaluator_url) as client:
+    def submit_and_maybe_wait(wave_key: str, label: str, jobs: list[dict]) -> None:
+        log.info("submitting %s: %d jobs", label, len(jobs))
+        job_ids = submit_wave(client, jobs)
+        out_map[wave_key] = list(zip(job_ids, jobs))
+        write_job_map(args.out, out_map)
+        if args.submit_only:
+            log.info("%s submitted; skipping poll due to --submit-only", label)
+            return
+        log.info("%s submitted; polling for terminal state...", label)
+        wait_all(
+            client,
+            job_ids,
+            poll_interval=args.poll_interval,
+            max_wait_s=args.max_wait_s,
+            max_consecutive_errors=args.max_consecutive_errors,
+        )
+        log.info("%s complete", label)
+
+    with EvaluatorClient(args.evaluator_url, api_key=args.evaluator_api_key) as client:
         if args.wave in ("A", "all"):
-            sa_jobs = build_singleaxis_jobs(
-                adapters, "default/stage3-singleaxis-rubric"
+            submit_and_maybe_wait(
+                "wave_a",
+                "Wave A",
+                build_singleaxis_jobs(adapters, "default/stage3-singleaxis-rubric"),
             )
-            log.info("submitting Wave A: %d jobs", len(sa_jobs))
-            sa_ids = submit_wave(client, sa_jobs)
-            out_map["wave_a"] = list(zip(sa_ids, sa_jobs))
-            args.out.write_text(json.dumps(out_map, indent=2))
-            log.info("Wave A submitted; polling for terminal state...")
-            wait_all(client, sa_ids)
-            log.info("Wave A complete")
 
         if args.wave in ("B", "all"):
-            pw_jobs = build_pairwise_jobs(
-                adapters, "default/stage3-pairwise-tournament"
+            submit_and_maybe_wait(
+                "wave_b",
+                "Wave B",
+                build_pairwise_jobs(adapters, "default/stage3-pairwise-tournament"),
             )
-            log.info("submitting Wave B: %d jobs", len(pw_jobs))
-            pw_ids = submit_wave(client, pw_jobs)
-            out_map["wave_b"] = list(zip(pw_ids, pw_jobs))
-            args.out.write_text(json.dumps(out_map, indent=2))
-            log.info("Wave B submitted; polling for terminal state...")
-            wait_all(client, pw_ids)
-            log.info("Wave B complete")
 
         if args.wave in ("C", "all"):
-            c_jobs = build_49b_pairwise_jobs(
-                adapters, "default/stage3-pairwise-tournament"
+            submit_and_maybe_wait(
+                "wave_c",
+                "Wave C (49B vs LoRA)",
+                build_49b_pairwise_jobs(adapters, "default/stage3-pairwise-tournament"),
             )
-            log.info("submitting Wave C (49B-RAG vs LoRA): %d jobs", len(c_jobs))
-            c_ids = submit_wave(client, c_jobs)
-            out_map["wave_c"] = list(zip(c_ids, c_jobs))
-            args.out.write_text(json.dumps(out_map, indent=2))
-            log.info("Wave C submitted; polling for terminal state...")
-            wait_all(client, c_ids)
-            log.info("Wave C complete")
     return 0
 
 
