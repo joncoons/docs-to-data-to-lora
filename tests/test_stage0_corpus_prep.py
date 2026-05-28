@@ -108,3 +108,95 @@ def test_run_stage0_writes_provenance_and_observability(tmp_path, sample_chunks,
     assert "manifests/crawl_run.json" in artifact_paths
     assert "provenance/source_revisions.jsonl" in artifact_paths
     assert "provenance/source_chunks.jsonl" in artifact_paths
+
+def _read_jsonl(path: Path) -> list[dict]:
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def test_url_registry_hash_normalization_and_matching(tmp_path):
+    registry_path = tmp_path / "url_registry.json"
+    bare_hash = "A" * 64
+    registry_path.write_text(json.dumps({
+        "https://docs.example.com/page/": {
+            "collection": "nim_curated",
+            "content_hash": bare_hash,
+            "last_seen": "2026-05-19T17:50:09+00:00",
+            "status_code": 200,
+        }
+    }))
+
+    lookup, records = stage0.load_url_registry(registry_path)
+    match = stage0.lookup_url_registry(lookup, "https://docs.example.com/page/#install")
+
+    assert len(records) == 1
+    assert match is not None
+    assert stage0.normalize_sha256_hash(match["content_hash"]) == "sha256:" + bare_hash.lower()
+
+
+def test_run_stage0_enriches_provenance_from_url_registry(tmp_path, sample_chunks, monkeypatch):
+    monkeypatch.setattr(stage0, "scroll_all_chunks", lambda es, index: iter(sample_chunks))
+
+    html_url = "https://docs.nvidia.com/nim/nemotron-3-nano/latest/profiles.html"
+    bare_hash = "b" * 64
+    registry_path = tmp_path / "url_registry.json"
+    registry_path.write_text(json.dumps({
+        html_url: {
+            "collection": "nim_curated",
+            "content_hash": bare_hash,
+            "etag": "\"abc\"",
+            "last_modified": "Mon, 23 Mar 2026 19:24:22 GMT",
+            "last_seen": "2026-05-19T17:50:09+00:00",
+            "last_ingested": "2026-05-19T17:45:15+00:00",
+            "status_code": 200,
+            "linked_hrefs": ["https://docs.nvidia.com/nim/"],
+        }
+    }))
+
+    output_dir = tmp_path / "dataset"
+    observability_dir = tmp_path / "observability"
+    stage0.run_stage0(
+        object(),
+        "nim_curated",
+        output_dir,
+        min_passage_tokens=10,
+        es_host="http://elasticsearch:9200",
+        observability_dir=observability_dir,
+        url_registry_path=registry_path,
+        pipeline_run_id="pipeline-run-1",
+    )
+
+    crawl_run = json.loads((output_dir / "manifests" / "crawl_run.json").read_text())
+    source_revisions = _read_jsonl(output_dir / "provenance" / "source_revisions.jsonl")
+    source_chunks = _read_jsonl(output_dir / "provenance" / "source_chunks.jsonl")
+    metrics = json.loads((observability_dir / "metrics.json").read_text())
+    run_context = json.loads((observability_dir / "run_context.json").read_text())
+    artifacts = json.loads((observability_dir / "artifacts_manifest.json").read_text())
+
+    html_revision = next(item for item in source_revisions if item["canonical_url"] == html_url)
+    assert html_revision["retrieved_at"] == "2026-05-19T17:45:15+00:00"
+    assert html_revision["http"]["status_code"] == 200
+    assert html_revision["http"]["etag"] == "\"abc\""
+    assert html_revision["hashes"]["raw_sha256"] == "sha256:" + bare_hash
+    assert html_revision["hashes"]["normalized_sha256"].startswith("sha256:")
+    assert html_revision["metadata"]["url_registry"]["linked_href_count"] == 1
+    assert (
+        html_revision["metadata"]["url_registry"]["content_hash_kind"]
+        == "crawler_source_content_hash"
+    )
+    assert html_revision["metadata"]["elasticsearch"]["content_metadata"]["chunk_index"] == 0
+
+    html_chunk = next(item for item in source_chunks if item["metadata"]["source_url"] == html_url)
+    assert html_chunk["metadata"]["url_registry"]["registry_url"] == html_url
+    assert html_chunk["metadata"]["content_metadata"]["document_type"] == "md"
+
+    assert crawl_run["scope"]["url_registry_uri"] == str(registry_path)
+    assert crawl_run["metrics"]["url_registry_record_count"] == 1
+    assert crawl_run["metrics"]["url_registry_matched_url_count"] == 1
+    assert metrics["stage0.url_registry.records.count"] == 1
+    assert metrics["stage0.url_registry.matched_urls.count"] == 1
+    assert metrics["stage0.url_registry.unmatched_urls.count"] == 1
+    assert metrics["stage0.url_registry.content_hash.count"] == 1
+    assert metrics["stage0.url_registry.etag.count"] == 1
+    assert metrics["stage0.url_registry.last_modified.count"] == 1
+    assert run_context["inputs"]["url_registry_path"] == str(registry_path)
+    assert "url_registry.json" in {item["artifact_path"] for item in artifacts["artifacts"]}

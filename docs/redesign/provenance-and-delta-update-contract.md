@@ -75,13 +75,25 @@ Required fields are defined in
 
 Key requirements:
 
-- Keep both raw and normalized hashes.
+- Keep both raw and normalized hashes. `raw_sha256` should represent the
+  crawler-observed source content hash. `normalized_sha256` should represent the
+  Stage 0 reconstructed/normalized text used downstream for entailments.
+- Normalize crawler hash variants to `sha256:<hex>`; existing HTML registry
+  records already use that form, while inline text and binary crawler paths may
+  currently emit bare hex digests.
 - Preserve HTTP freshness metadata when available: ETag, Last-Modified, cache
   control, and final URL after redirects.
 - Link to the previous revision for the same canonical URL.
 - Track whether the revision is active, unchanged, changed, deleted, redirected,
   failed, or excluded.
 - Store a pointer to raw content and normalized content when retained.
+
+Current Stage 0 can enrich source revisions from `<collection>_url_registry.json`
+when the registry is supplied. The durable target is to stamp the same minimum
+fields directly into every Elasticsearch chunk at crawl/ingest time: crawl run
+ID, source revision ID, canonical/final URL, retrieved timestamp, HTTP status,
+ETag, Last-Modified, source content hash, parser/chunker versions, text hash,
+and chunk offsets when available.
 
 ### source_chunk
 

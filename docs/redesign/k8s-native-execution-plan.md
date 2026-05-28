@@ -199,9 +199,10 @@ MLflow export.
 ## Sixth K8s Template: Stage 0 Corpus Prep
 
 Stage 0 corpus prep is the first implemented source-pipeline Job. It scrolls the
-Elasticsearch crawl/vector index, reconstructs URL-grouped passages, emits
-`source_revisions.jsonl` and `source_chunks.jsonl`, and writes MLflow-ready
-observability files for crawl/passages/source provenance.
+Elasticsearch crawl/vector index, optionally joins the crawler URL registry,
+reconstructs URL-grouped passages, emits `source_revisions.jsonl` and
+`source_chunks.jsonl`, and writes MLflow-ready observability files for
+crawl/passages/source provenance.
 
 Artifacts:
 
@@ -214,7 +215,9 @@ deploy/stage0-corpus-prep/
 
 Run one Job per source collection, such as `nim_curated` and
 `nemo_usvcs_curated`, so recrawl retries and delta updates can be tracked as
-separate pipeline child runs.
+separate pipeline child runs. Mount the crawler registry export as read-only and
+pass `--url-registry /crawler-registry/<collection>_url_registry.json` when the
+registry is available.
 
 ## Seventh K8s Template: Stage 1A Entailment Shards
 

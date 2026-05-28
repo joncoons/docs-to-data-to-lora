@@ -29,6 +29,22 @@ def sha256_json(value: Any) -> str:
     return sha256_text(canonical_json(value))
 
 
+def normalize_sha256_hash(value: Any) -> str | None:
+    """Normalize crawler hash variants to the schema's sha256:<hex> form."""
+    if not isinstance(value, str):
+        return None
+    raw = value.strip()
+    if raw.startswith("sha256:"):
+        digest = raw[len("sha256:"):]
+    else:
+        digest = raw
+    if len(digest) != 64:
+        return None
+    if not all(ch in "0123456789abcdefABCDEF" for ch in digest):
+        return None
+    return f"sha256:{digest.lower()}"
+
+
 def stable_id(prefix: str, *parts: Any, length: int = 24) -> str:
     digest = hashlib.sha256(canonical_json(parts).encode("utf-8")).hexdigest()
     return f"{prefix}_{digest[:length]}"
@@ -117,6 +133,7 @@ class SourceRevision(ProvenanceModel):
     content: dict[str, Any] = Field(default_factory=dict)
     classification: dict[str, Any] = Field(default_factory=dict)
     error: dict[str, Any] | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class SourceChunk(ProvenanceModel):
@@ -160,6 +177,61 @@ class DatasetSample(ProvenanceModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
+def _compact_dict(value: dict[str, Any]) -> dict[str, Any]:
+    return {k: v for k, v in value.items() if v is not None}
+
+
+def _registry_link_count(registry: dict[str, Any]) -> int | None:
+    linked_hrefs = registry.get("linked_hrefs")
+    if isinstance(linked_hrefs, list):
+        return len(linked_hrefs)
+    return None
+
+
+def _registry_metadata(registry: dict[str, Any]) -> dict[str, Any]:
+    if not registry:
+        return {}
+    return _compact_dict({
+        "registry_url": registry.get("registry_url"),
+        "collection": registry.get("collection"),
+        "last_seen": registry.get("last_seen"),
+        "last_ingested": registry.get("last_ingested"),
+        "content_hash": registry.get("content_hash"),
+        "content_hash_kind": (
+            "crawler_source_content_hash" if registry.get("content_hash") else None
+        ),
+        "linked_href_count": _registry_link_count(registry),
+        "redirect_to": registry.get("redirect_to") or registry.get("final_url"),
+    })
+
+
+def _source_revision_metadata(source_meta: dict[str, Any]) -> dict[str, Any]:
+    if not source_meta:
+        return {}
+    metadata: dict[str, Any] = {}
+    registry = _registry_metadata(source_meta.get("url_registry") or {})
+    if registry:
+        metadata["url_registry"] = registry
+    es_meta = source_meta.get("es") or {}
+    if es_meta:
+        metadata["elasticsearch"] = es_meta
+    return metadata
+
+
+def _heading_path(content_metadata: dict[str, Any]) -> list[str]:
+    section_path = content_metadata.get("section_path")
+    if isinstance(section_path, list):
+        return [str(part).strip() for part in section_path if str(part).strip()]
+    if isinstance(section_path, str) and section_path.strip():
+        if ">" in section_path:
+            return [part.strip() for part in section_path.split(">") if part.strip()]
+        return [section_path.strip()]
+    heading = content_metadata.get("heading") or content_metadata.get("section_h1")
+    if isinstance(heading, str) and heading.strip():
+        return [heading.strip()]
+    return []
+
+
 def build_crawl_run(
     *,
     index: str,
@@ -168,13 +240,25 @@ def build_crawl_run(
     chunk_count: int,
     passage_count: int,
     min_passage_tokens: int,
+    url_registry_path: str | None = None,
+    url_registry_record_count: int = 0,
+    url_registry_matched_url_count: int = 0,
 ) -> CrawlRun:
     config = {
         "index": index,
         "min_passage_tokens": min_passage_tokens,
         "chunker": "stage0-url-grouping",
+        "url_registry_path": url_registry_path,
     }
     crawl_run_id = stable_id("crawlrun", index, started_at)
+    scope: dict[str, Any] = {
+        "seed_url_set_hash": sha256_json({"index": index}),
+        "allowed_url_prefixes": [],
+        "excluded_url_patterns": [],
+        "binary_host_allowlist": [],
+    }
+    if url_registry_path:
+        scope["url_registry_uri"] = url_registry_path
     return CrawlRun(
         crawl_run_id=crawl_run_id,
         started_at=started_at,
@@ -185,12 +269,7 @@ def build_crawl_run(
             "git_commit": "unknown",
             "config_hash": sha256_json(config),
         },
-        scope={
-            "seed_url_set_hash": sha256_json({"index": index}),
-            "allowed_url_prefixes": [],
-            "excluded_url_patterns": [],
-            "binary_host_allowlist": [],
-        },
+        scope=scope,
         outputs={
             "source_revisions_uri": "provenance/source_revisions.jsonl",
             "source_chunks_uri": "provenance/source_chunks.jsonl",
@@ -199,6 +278,8 @@ def build_crawl_run(
         metrics={
             "raw_chunk_count": chunk_count,
             "passage_count": passage_count,
+            "url_registry_record_count": url_registry_record_count,
+            "url_registry_matched_url_count": url_registry_matched_url_count,
         },
     )
 
@@ -209,9 +290,11 @@ def attach_source_provenance(
     crawl_run_id: str,
     retrieved_at: str,
     chunker_config: dict[str, Any] | None = None,
+    source_metadata_by_url: dict[str, dict[str, Any]] | None = None,
 ) -> tuple[list[Passage], list[SourceRevision], list[SourceChunk]]:
     """Return passage copies with source IDs plus source revision/chunk ledgers."""
     chunker_config = chunker_config or {"name": "stage0-url-grouping", "version": "v1"}
+    source_metadata_by_url = source_metadata_by_url or {}
     chunker = {
         "name": chunker_config.get("name", "stage0-url-grouping"),
         "version": chunker_config.get("version", "v1"),
@@ -232,28 +315,51 @@ def attach_source_provenance(
         revision_id = source_revision_id_for_text(url, normalized_text)
         revision_id_by_url[url] = revision_id
         first = first_by_url[url]
+        source_meta = source_metadata_by_url.get(url, {})
+        registry = source_meta.get("url_registry") or {}
+        es_meta = source_meta.get("es") or {}
+        content_metadata = es_meta.get("content_metadata") or {}
+        source_metadata = es_meta.get("source") or {}
+        final_url = registry.get("redirect_to") or registry.get("final_url") or url
+        is_redirect = isinstance(final_url, str) and final_url.rstrip("/") != url.rstrip("/")
         revisions.append(SourceRevision(
             source_revision_id=revision_id,
             crawl_run_id=crawl_run_id,
             canonical_url=url,
-            final_url=url,
-            retrieved_at=retrieved_at,
+            final_url=final_url,
+            retrieved_at=registry.get("last_ingested") or registry.get("last_seen") or retrieved_at,
+            status="redirected" if is_redirect else "active",
+            http={
+                "status_code": registry.get("status_code"),
+                "etag": registry.get("etag"),
+                "last_modified": registry.get("last_modified"),
+                "content_type": registry.get("content_type"),
+                "cache_control": registry.get("cache_control"),
+            },
             hashes={
-                "raw_sha256": None,
+                "raw_sha256": normalize_sha256_hash(registry.get("content_hash")),
                 "normalized_sha256": sha256_text(normalized_text),
             },
             content={
                 "raw_uri": None,
                 "normalized_uri": None,
-                "language": None,
-                "title": None,
+                "language": content_metadata.get("language"),
+                "title": content_metadata.get("page_title") or content_metadata.get("heading"),
             },
             classification={
                 "product_family": first.product_family,
                 "product_name": first.product_name,
-                "version": None,
+                "version": content_metadata.get("version"),
                 "doc_kind": first.doc_kind,
+                "document_type": content_metadata.get("document_type"),
+                "section_h1": content_metadata.get("section_h1"),
+                "section_path": content_metadata.get("section_path"),
+                "heading": content_metadata.get("heading"),
+                "source_system": content_metadata.get("source_system"),
+                "source_id": source_metadata.get("source_id"),
+                "source_type": source_metadata.get("source_type"),
             },
+            metadata=_source_revision_metadata(source_meta),
         ))
 
     updated: list[Passage] = []
@@ -261,6 +367,11 @@ def attach_source_provenance(
     for passage in passages:
         revision_id = revision_id_by_url[passage.url]
         chunk_id = source_chunk_id_for_text(revision_id, passage.passage_id, passage.text)
+        source_meta = source_metadata_by_url.get(passage.url, {})
+        registry = source_meta.get("url_registry") or {}
+        es_meta = source_meta.get("es") or {}
+        content_metadata = es_meta.get("content_metadata") or {}
+        source_metadata = es_meta.get("source") or {}
         updated.append(passage.model_copy(update={
             "source_revision_id": revision_id,
             "source_chunk_ids": [chunk_id],
@@ -270,15 +381,15 @@ def attach_source_provenance(
             source_revision_id=revision_id,
             chunker=chunker,
             anchors={
-                "heading_path": [],
-                "dom_path": None,
-                "markdown_anchor": None,
-                "page_number": None,
-                "parser_element_id": None,
+                "heading_path": _heading_path(content_metadata),
+                "dom_path": content_metadata.get("dom_path"),
+                "markdown_anchor": content_metadata.get("markdown_anchor"),
+                "page_number": content_metadata.get("page_number"),
+                "parser_element_id": content_metadata.get("parser_element_id"),
             },
             spans={
-                "byte_start": None,
-                "byte_end": None,
+                "byte_start": content_metadata.get("byte_start"),
+                "byte_end": content_metadata.get("byte_end"),
                 "char_start": 0,
                 "char_end": len(passage.text),
             },
@@ -292,6 +403,9 @@ def attach_source_provenance(
                 "product_family": passage.product_family,
                 "product_name": passage.product_name,
                 "doc_kind": passage.doc_kind,
+                "content_metadata": content_metadata,
+                "source": source_metadata,
+                "url_registry": _registry_metadata(registry),
             },
         ))
 

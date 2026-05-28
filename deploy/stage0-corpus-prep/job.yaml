@@ -46,6 +46,8 @@ spec:
             - /datasets/nim_curated
             - --observability-dir
             - /observability/stage0-corpus-prep/nim_curated
+            - --url-registry
+            - /crawler-registry/nim_curated_url_registry.json
             - --min-passage-tokens
             - "60"
           resources:
@@ -60,6 +62,9 @@ spec:
               mountPath: /datasets
             - name: observability-output
               mountPath: /observability
+            - name: crawler-registry
+              mountPath: /crawler-registry
+              readOnly: true
       volumes:
         - name: dataset-artifacts
           persistentVolumeClaim:
@@ -67,3 +72,6 @@ spec:
         - name: observability-output
           persistentVolumeClaim:
             claimName: pipeline-observability
+        - name: crawler-registry
+          persistentVolumeClaim:
+            claimName: crawler-registry

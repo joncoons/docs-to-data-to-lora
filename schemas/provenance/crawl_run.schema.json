@@ -90,6 +90,9 @@
             "type": "string"
           },
           "default": []
+        },
+        "url_registry_uri": {
+          "type": ["string", "null"]
         }
       }
     },

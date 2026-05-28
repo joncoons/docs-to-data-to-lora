@@ -118,6 +118,10 @@
     "error": {
       "type": ["object", "null"],
       "additionalProperties": true
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
     }
   }
 }

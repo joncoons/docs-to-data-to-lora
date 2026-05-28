@@ -10,6 +10,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 from typing import Any, Literal
+from urllib.parse import urlsplit, urlunsplit
 
 from tqdm import tqdm
 
@@ -20,7 +21,12 @@ if str(_REPO_ROOT) not in sys.path:
 from scripts.pipeline.es_client import make_es_client, scroll_all_chunks  # noqa: E402
 from scripts.pipeline.models import Passage  # noqa: E402
 from scripts.pipeline.noise_filter import count_tokens, is_noise  # noqa: E402
-from scripts.pipeline.provenance import attach_source_provenance, build_crawl_run, utc_now  # noqa: E402
+from scripts.pipeline.provenance import (  # noqa: E402
+    attach_source_provenance,
+    build_crawl_run,
+    normalize_sha256_hash,
+    utc_now,
+)
 from scripts.pipeline.provenance_io import write_json, write_jsonl  # noqa: E402
 
 Elasticsearch = Any
@@ -38,6 +44,12 @@ DEFAULT_OUTPUT_DIR = Path(os.getenv("OUTPUT_DIR", "/outputs"))
 DEFAULT_OBSERVABILITY_DIR = Path(
     os.getenv("OBSERVABILITY_DIR", "/outputs/observability/stage0-corpus-prep")
 )
+_DEFAULT_URL_REGISTRY_RAW = (
+    os.getenv("URL_REGISTRY_PATH")
+    or os.getenv("PIPELINE_URL_REGISTRY_PATH")
+    or os.getenv("PIPELINE_URL_REGISTRY")
+)
+DEFAULT_URL_REGISTRY_PATH = Path(_DEFAULT_URL_REGISTRY_RAW) if _DEFAULT_URL_REGISTRY_RAW else None
 
 
 def _env_int(name: str, default: int) -> int:
@@ -81,6 +93,9 @@ def extract_chunk_dict(hit: dict) -> dict | None:
         "doc_type": cm.get("document_type", "text"),
         "product_family": meta.get("product_family") or cm.get("product_family") or "unknown",
         "product_name": meta.get("product_name") or cm.get("product_name") or "unknown",
+        "content_metadata": cm,
+        "source_metadata": meta.get("source", {}),
+        "date_created": meta.get("date_created"),
     }
 
 
@@ -160,6 +175,126 @@ def build_passages(chunks: list[dict], min_passage_tokens: int = 60) -> list[Pas
     return passages
 
 
+def _url_registry_lookup_keys(url: Any) -> list[str]:
+    if not isinstance(url, str) or not url.strip():
+        return []
+    raw = url.strip()
+    keys: list[str] = []
+
+    def add(candidate: str) -> None:
+        if candidate and candidate not in keys:
+            keys.append(candidate)
+
+    add(raw)
+    try:
+        parts = urlsplit(raw)
+    except ValueError:
+        return keys
+    path = parts.path
+    normalized = urlunsplit((parts.scheme, parts.netloc, path, parts.query, ""))
+    add(normalized)
+    if path and path != "/" and path.endswith("/"):
+        add(urlunsplit((parts.scheme, parts.netloc, path.rstrip("/"), parts.query, "")))
+    return keys
+
+
+def load_url_registry(path: Path | None) -> tuple[dict[str, dict[str, Any]], list[dict[str, Any]]]:
+    if path is None:
+        return {}, []
+    with path.open() as f:
+        payload = json.load(f)
+
+    items: list[tuple[str | None, dict[str, Any]]] = []
+    if isinstance(payload, dict):
+        items = [(str(url), record) for url, record in payload.items() if isinstance(record, dict)]
+    elif isinstance(payload, list):
+        items = [(record.get("url"), record) for record in payload if isinstance(record, dict)]
+    else:
+        raise ValueError(f"URL registry must be a dict or list, got {type(payload).__name__}")
+
+    lookup: dict[str, dict[str, Any]] = {}
+    records: list[dict[str, Any]] = []
+    for url, record in items:
+        entry = dict(record)
+        registry_url = entry.get("registry_url") or entry.get("url") or url
+        if not registry_url:
+            continue
+        entry["registry_url"] = registry_url
+        records.append(entry)
+        candidates = {
+            registry_url,
+            url,
+            entry.get("url"),
+            entry.get("canonical_url"),
+            entry.get("final_url"),
+            entry.get("redirect_to"),
+        }
+        for candidate in candidates:
+            for key in _url_registry_lookup_keys(candidate):
+                lookup.setdefault(key, entry)
+    return lookup, records
+
+
+def lookup_url_registry(
+    url_registry_lookup: dict[str, dict[str, Any]],
+    url: str,
+) -> dict[str, Any] | None:
+    for key in _url_registry_lookup_keys(url):
+        if key in url_registry_lookup:
+            return url_registry_lookup[key]
+    return None
+
+
+def build_source_metadata_by_url(
+    chunks: list[dict],
+    url_registry_lookup: dict[str, dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    metadata_by_url: dict[str, dict[str, Any]] = {}
+    for chunk in sorted(chunks, key=lambda c: (c.get("url", ""), c.get("chunk_index") or 0)):
+        url = chunk.get("url")
+        if not url or url in metadata_by_url:
+            continue
+        entry: dict[str, Any] = {}
+        content_metadata = chunk.get("content_metadata") or {}
+        source_metadata = chunk.get("source_metadata") or {}
+        if content_metadata or source_metadata or chunk.get("date_created"):
+            entry["es"] = {
+                "content_metadata": content_metadata,
+                "source": source_metadata,
+                "date_created": chunk.get("date_created"),
+            }
+        registry = lookup_url_registry(url_registry_lookup, url)
+        if registry:
+            entry["url_registry"] = registry
+        if entry:
+            metadata_by_url[url] = entry
+    return metadata_by_url
+
+
+def build_url_registry_metrics(
+    records: list[dict[str, Any]],
+    matched_source_urls: set[str],
+    source_urls: set[str],
+) -> dict[str, int]:
+    if not records:
+        unmatched_source_urls = 0
+    else:
+        unmatched_source_urls = len(source_urls - matched_source_urls)
+    return {
+        "record_count": len(records),
+        "matched_url_count": len(matched_source_urls),
+        "unmatched_url_count": unmatched_source_urls,
+        "content_hash_count": sum(
+            1 for record in records if normalize_sha256_hash(record.get("content_hash"))
+        ),
+        "etag_count": sum(1 for record in records if record.get("etag")),
+        "last_modified_count": sum(1 for record in records if record.get("last_modified")),
+        "redirect_count": sum(
+            1 for record in records if record.get("redirect_to") or record.get("final_url")
+        ),
+    }
+
+
 def safe_metric_name(value: str) -> str:
     cleaned = "".join(ch.lower() if ch.isalnum() else "_" for ch in value)
     return "_".join(part for part in cleaned.split("_") if part) or "unknown"
@@ -210,15 +345,18 @@ def build_stage0_observability_documents(
     source_chunks: list[Any],
     artifact_paths: list[Path],
     crawl_run_id: str,
-    pipeline_run_id: str | None,
-    mlflow_tracking_uri: str | None,
-    mlflow_experiment_name: str | None,
-    mlflow_parent_run_id: str | None,
+    url_registry_path: Path | None = None,
+    url_registry_metrics: dict[str, int] | None = None,
+    pipeline_run_id: str | None = None,
+    mlflow_tracking_uri: str | None = None,
+    mlflow_experiment_name: str | None = None,
+    mlflow_parent_run_id: str | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Build MLflow-ready observability files without requiring the MLflow client."""
     token_counts = [p.token_count for p in passages]
     doc_kind_counts = Counter(p.doc_kind for p in passages)
     product_family_counts = Counter(p.product_family or "unknown" for p in passages)
+    registry_metrics = url_registry_metrics or {}
     metrics: dict[str, int | float] = {
         "stage0.raw_hits.count": raw_hit_count,
         "stage0.chunks.extracted": extracted_chunk_count,
@@ -230,6 +368,13 @@ def build_stage0_observability_documents(
         "stage0.tokens.mean": round(sum(token_counts) / len(token_counts), 2) if token_counts else 0,
         "stage0.doc_kind.html": doc_kind_counts.get("html", 0),
         "stage0.doc_kind.pdf": doc_kind_counts.get("pdf", 0),
+        "stage0.url_registry.records.count": registry_metrics.get("record_count", 0),
+        "stage0.url_registry.matched_urls.count": registry_metrics.get("matched_url_count", 0),
+        "stage0.url_registry.unmatched_urls.count": registry_metrics.get("unmatched_url_count", 0),
+        "stage0.url_registry.content_hash.count": registry_metrics.get("content_hash_count", 0),
+        "stage0.url_registry.etag.count": registry_metrics.get("etag_count", 0),
+        "stage0.url_registry.last_modified.count": registry_metrics.get("last_modified_count", 0),
+        "stage0.url_registry.redirects.count": registry_metrics.get("redirect_count", 0),
     }
     for product_family, count in sorted(product_family_counts.items()):
         metrics[f"stage0.product_family.{safe_metric_name(product_family)}.passages"] = count
@@ -250,6 +395,9 @@ def build_stage0_observability_documents(
         "parameters": {
             "min_passage_tokens": min_passage_tokens,
         },
+        "inputs": {
+            "url_registry_path": str(url_registry_path) if url_registry_path else None,
+        },
         "mlflow": {
             "tracking_uri": mlflow_tracking_uri,
             "experiment_name": mlflow_experiment_name,
@@ -262,6 +410,9 @@ def build_stage0_observability_documents(
             "elasticsearch": {
                 "host": es_host,
                 "index": index,
+            },
+            "url_registry": {
+                "path": str(url_registry_path) if url_registry_path else None,
             },
         },
         "provenance": {
@@ -296,6 +447,7 @@ def run_stage0(
     *,
     es_host: str | None = None,
     observability_dir: Path | None = None,
+    url_registry_path: Path | None = None,
     pipeline_run_id: str | None = None,
     mlflow_tracking_uri: str | None = None,
     mlflow_experiment_name: str | None = None,
@@ -324,8 +476,29 @@ def run_stage0(
             chunks.append(d)
     log.info("Stage 0: %d chunks after extraction", len(chunks))
 
+    url_registry_lookup, url_registry_records = load_url_registry(url_registry_path)
+    if url_registry_path is not None:
+        log.info(
+            "Stage 0: loaded %d URL registry records from %s",
+            len(url_registry_records),
+            url_registry_path,
+        )
+    source_metadata_by_url = build_source_metadata_by_url(chunks, url_registry_lookup)
+
     passages = build_passages(chunks, min_passage_tokens=min_passage_tokens)
     log.info("Stage 0: %d passages after grouping + noise filter", len(passages))
+
+    source_urls = {p.url for p in passages}
+    matched_source_urls = {
+        url
+        for url in source_urls
+        if (source_metadata_by_url.get(url) or {}).get("url_registry")
+    }
+    url_registry_metrics = build_url_registry_metrics(
+        url_registry_records,
+        matched_source_urls,
+        source_urls,
+    )
 
     completed_at = utc_now()
     crawl_run = build_crawl_run(
@@ -335,6 +508,9 @@ def run_stage0(
         chunk_count=len(chunks),
         passage_count=len(passages),
         min_passage_tokens=min_passage_tokens,
+        url_registry_path=str(url_registry_path) if url_registry_path else None,
+        url_registry_record_count=url_registry_metrics["record_count"],
+        url_registry_matched_url_count=url_registry_metrics["matched_url_count"],
     )
     passages, source_revisions, source_chunks = attach_source_provenance(
         passages,
@@ -346,6 +522,7 @@ def run_stage0(
             "min_passage_tokens": min_passage_tokens,
             "extraction_method": "es-scroll-url-grouping",
         },
+        source_metadata_by_url=source_metadata_by_url,
     )
 
     seed_vectors: dict[str, list[float]] = {}
@@ -365,6 +542,10 @@ def run_stage0(
     write_jsonl(source_chunks_file, source_chunks)
     log.info("Stage 0: written provenance sidecars under %s", output_dir / "provenance")
 
+    artifact_paths = [out_file, crawl_run_file, source_revisions_file, source_chunks_file]
+    if url_registry_path is not None and url_registry_path.exists():
+        artifact_paths.append(url_registry_path)
+
     if observability_dir is not None:
         docs = build_stage0_observability_documents(
             index=index,
@@ -376,8 +557,10 @@ def run_stage0(
             passages=passages,
             source_revisions=source_revisions,
             source_chunks=source_chunks,
-            artifact_paths=[out_file, crawl_run_file, source_revisions_file, source_chunks_file],
+            artifact_paths=artifact_paths,
             crawl_run_id=crawl_run.crawl_run_id,
+            url_registry_path=url_registry_path,
+            url_registry_metrics=url_registry_metrics,
             pipeline_run_id=pipeline_run_id,
             mlflow_tracking_uri=mlflow_tracking_uri,
             mlflow_experiment_name=mlflow_experiment_name,
@@ -404,6 +587,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--es-user", default=DEFAULT_ES_USER)
     ap.add_argument("--es-password", default=DEFAULT_ES_PASSWORD)
     ap.add_argument("--observability-dir", type=Path, default=DEFAULT_OBSERVABILITY_DIR)
+    ap.add_argument("--url-registry", type=Path, default=DEFAULT_URL_REGISTRY_PATH)
     ap.add_argument("--pipeline-run-id", default=os.getenv("PIPELINE_RUN_ID"))
     ap.add_argument("--mlflow-tracking-uri", default=os.getenv("MLFLOW_TRACKING_URI"))
     ap.add_argument("--mlflow-experiment-name", default=os.getenv("MLFLOW_EXPERIMENT_NAME"))
@@ -430,6 +614,7 @@ def main(argv: list[str] | None = None) -> int:
         min_passage_tokens=args.min_passage_tokens,
         es_host=args.es_host,
         observability_dir=args.observability_dir,
+        url_registry_path=args.url_registry,
         pipeline_run_id=args.pipeline_run_id,
         mlflow_tracking_uri=args.mlflow_tracking_uri,
         mlflow_experiment_name=args.mlflow_experiment_name,

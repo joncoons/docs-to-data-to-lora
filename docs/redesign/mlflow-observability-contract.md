@@ -91,6 +91,13 @@ Metrics:
 | `stage0.tokens.mean` | Mean passage token count |
 | `stage0.doc_kind.html` | HTML passage count |
 | `stage0.doc_kind.pdf` | PDF/binary passage count |
+| `stage0.url_registry.records.count` | URL registry records loaded |
+| `stage0.url_registry.matched_urls.count` | Retained Stage 0 URLs with a registry match |
+| `stage0.url_registry.unmatched_urls.count` | Retained Stage 0 URLs missing a registry match |
+| `stage0.url_registry.content_hash.count` | Registry records with a valid source content hash |
+| `stage0.url_registry.etag.count` | Registry records with an ETag |
+| `stage0.url_registry.last_modified.count` | Registry records with Last-Modified metadata |
+| `stage0.url_registry.redirects.count` | Registry records that indicate redirect/final URL metadata |
 
 Artifacts:
 
@@ -100,6 +107,7 @@ Artifacts:
 | `manifests/crawl_run.json` | Crawl/run manifest |
 | `provenance/source_revisions.jsonl` | Source revision sidecar |
 | `provenance/source_chunks.jsonl` | Source chunk sidecar |
+| `<collection>_url_registry.json` | Optional crawler URL registry input artifact |
 
 ## Stage 1A Entailment Extraction
 

@@ -1,9 +1,9 @@
 # Stage 0 Corpus Prep Kubernetes Job
 
 This Job reconstructs Stage 0 passages from the Elasticsearch crawl/vector
-index, writes provenance sidecars, and emits MLflow-ready observability JSON.
-It is the first K8s-native source pipeline step before Stage 1 entailment
-extraction.
+index, optionally enriches provenance from the crawler URL registry, writes
+provenance sidecars, and emits MLflow-ready observability JSON. It is the
+first K8s-native source pipeline step before Stage 1 entailment extraction.
 
 For each collection, the Job writes:
 
@@ -56,19 +56,23 @@ The template is for `nim_curated`:
 --index nim_curated
 --output-dir /datasets/nim_curated
 --observability-dir /observability/stage0-corpus-prep/nim_curated
+--url-registry /crawler-registry/nim_curated_url_registry.json
 ```
 
 Create a second Job or patch these values for `nemo_usvcs_curated`. Keeping one
 collection per Job makes recrawl deltas, retries, and MLflow child runs easier
-to audit.
+to audit. The `crawler-registry` PVC name in `job.yaml` is a placeholder for the
+volume that contains `<collection>_url_registry.json`; patch it to the crawler
+export PVC used in the cluster.
 
 ## Observability
 
 The Job does not install the MLflow client. It writes the standard repository
 observability files so a later MLflow export Job can log metrics and artifacts.
 The emitted metrics include ES hit counts, extracted chunk counts, passage
-counts, source revision/chunk counts, token totals, and doc-kind/product-family
-breakdowns.
+counts, source revision/chunk counts, token totals, doc-kind/product-family
+breakdowns, and URL registry coverage metrics when a registry is supplied. The
+registry artifact is also listed in `artifacts_manifest.json`.
 
 ## Local Run
 
@@ -78,5 +82,6 @@ python scripts/pipeline/stage0_corpus_prep.py \
   --index nim_curated \
   --es-host https://rag-eck-elasticsearch-es-http.runai-rag:9200 \
   --output-dir /tmp/nim_curated \
-  --observability-dir /tmp/stage0-observability/nim_curated
+  --observability-dir /tmp/stage0-observability/nim_curated \
+  --url-registry /mnt/nvme2/crawler-registry/nim_curated_url_registry.json
 ```
