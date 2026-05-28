@@ -20,7 +20,7 @@ The current repository already has most of the NeMo-side operations:
 | `scripts/stage3/build_moe_shards.py` | Creates shard datasets in NeMo Data Store and Entity Store | Reused for MoE adapter dataset registration |
 | `scripts/eval/upload_test_datasets.py` | Uploads held-out test sets to NeMo Data Store and registers Entity Store datasets | Reused for evaluation dataset lineage |
 | `scripts/eval/register_evaluator_entities.py` | Builds Evaluator target/config payloads and dataset payload shape | Source of canonical Evaluator and dataset metadata |
-| `scripts/eval/run_evaluation_matrix.py` | Submits Evaluator jobs for adapter/base/RAG comparisons | Called after Customizer jobs complete |
+| `scripts/eval/run_evaluation_matrix.py` | Submits Evaluator jobs for adapter/base/49B-comparator comparisons | Called after Customizer jobs complete |
 
 ## Directory Contents
 
@@ -28,6 +28,7 @@ The current repository already has most of the NeMo-side operations:
 |---|---|
 | [integration-plan.md](integration-plan.md) | End-to-end architecture, phases, and ownership boundaries |
 | [metadata-contract.md](metadata-contract.md) | Required MLflow params, tags, artifacts, and NeMo IDs |
+| [../../redesign/mlflow-observability-contract.md](../../redesign/mlflow-observability-contract.md) | Redesigned K8s-era observability contract for dataset lineage, NeMo exports, and result artifacts |
 | [mlflow-orchestrator-template.md](mlflow-orchestrator-template.md) | Python orchestration skeleton and run layout |
 | [config.example.yaml](config.example.yaml) | Environment-specific config skeleton |
 
@@ -53,11 +54,11 @@ MLflow parent run
 
 MLflow should record:
 
-- the dataset files and checksums produced by Stage 2,
+- the dataset files, provenance manifests, version IDs, and checksums produced by Stage 2,
 - the NeMo Data Store `hf://datasets/...` URI,
 - the NeMo Entity Store `namespace/name` dataset reference,
 - the Customizer job ID and output model entity,
-- the Evaluator job IDs and exported metrics,
+- the Evaluator job IDs, exported MLflow run IDs when available, and normalized metrics,
 - the adapter artifact location or promotion target.
 
 NeMo should remain authoritative for:

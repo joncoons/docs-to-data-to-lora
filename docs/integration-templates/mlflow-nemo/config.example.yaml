@@ -2,17 +2,17 @@
 # Copy values into your deployment-specific config; do not commit secrets.
 
 mlflow:
-  tracking_uri: "http://mlflow.example.com:5000"
+  tracking_uri: "http://mlflow:5000"
   experiment_name: "docs-to-data-to-lora"
   artifact_root: null
 
 nemo:
   workspace: "default"
   project: "docs-to-data-to-lora"
-  customizer_url: "http://192.168.1.187:30910"
-  entity_store_url: "http://192.168.1.187:30911"
-  data_store_url: "http://192.168.1.187:30912"
-  evaluator_url: "http://192.168.1.187:30913"
+  customizer_url: "http://nemo-customizer:8000"
+  entity_store_url: "http://nemo-entity-store:8000"
+  data_store_url: "http://nemo-data-store:3000"
+  evaluator_url: "http://nemo-evaluator:8000"
   data_store_internal_hf_endpoint: "http://nemo-data-store:3000/v1/hf"
 
 data_store_auth:
@@ -65,9 +65,9 @@ evaluation:
   register_configs: true
   run_singleaxis: true
   run_pairwise_lora: true
-  run_pairwise_rag: true
+  run_pairwise_49b: true
   config_singleaxis: "default/stage3-singleaxis-rubric"
-  config_pairwise: "default/stage3-pairwise-rubric"
+  config_pairwise: "default/stage3-pairwise-tournament"
 
 promotion:
   enabled: false

@@ -62,6 +62,9 @@ Tags:
 | `nemo_entity_store_ref` | `default/stage3-nim-curated` |
 | `dataset_format` | `hf` |
 | `source_collection` | `nim_curated` |
+| `dataset_version_id` | stable ID from `dataset_version_manifest.json` |
+| `crawl_run_id` | stable crawl run ID |
+| `delta_manifest_id` | stable delta manifest ID, if applicable |
 
 Params:
 
@@ -72,6 +75,10 @@ Params:
 | `rows.test` | `540` |
 | `split.seed` | `42` |
 | `split.train_ratio` | `0.90` |
+| `source_revisions.count` | `128` |
+| `source_chunks.count` | `1024` |
+| `entailments.count` | `4096` |
+| `samples.synthetic.count` | `320` |
 
 Artifacts:
 
@@ -80,6 +87,13 @@ Artifacts:
 | `dataset/training.manifest.json` | File name, rows, byte size, checksum |
 | `dataset/validation.manifest.json` | File name, rows, byte size, checksum |
 | `dataset/test.manifest.json` | Optional test-set manifest |
+| `provenance/dataset_version_manifest.json` | Dataset version, source counts, sample counts, checksums |
+| `provenance/dataset_samples.jsonl` | Per-sample lineage to entailments/source chunks |
+| `provenance/entailments.jsonl` | Logical entailments extracted from crawled docs |
+| `provenance/source_revisions.jsonl` | URL revision fingerprints |
+| `provenance/source_chunks.jsonl` | Chunk fingerprints and offsets |
+| `provenance/delta_manifest.json` | Re-crawl delta summary, if present |
+| `provenance/gap_manifest.json` | Gap/bias selections for Data Designer, if present |
 | `dataset/bias_report.json` | Stage 2 bias report, if present |
 | `dataset/validation_report.json` | Stage 2 validation report, if present |
 
@@ -125,7 +139,7 @@ Tags:
 | Tag | Example |
 |---|---|
 | `nemo_evaluator_dataset` | `default/stage3-nim-curated-test` |
-| `eval_scope` | `singleaxis,pairwise,rag` |
+| `eval_scope` | `singleaxis,pairwise,49b` |
 
 Artifacts:
 
@@ -134,6 +148,7 @@ Artifacts:
 | `evaluator/jobs.json` | List of submitted Evaluator job payloads and IDs |
 | `evaluator/results/<job_id>.json` | Raw Evaluator result response |
 | `evaluator/summary.json` | Normalized aggregate metrics |
+| `evaluator/export_refs.json` | Native Evaluator MLflow export run IDs, when available |
 
 Metrics:
 
@@ -144,7 +159,7 @@ Metrics:
 | `eval.faithfulness.mean` | `4.71` |
 | `eval.clarity.mean` | `4.83` |
 | `eval.win_rate_vs_base` | `0.68` |
-| `eval.win_rate_vs_rag` | `0.54` |
+| `eval.win_rate_vs_49b` | `0.54` |
 
 ## NeMo Resource Back-References
 
@@ -158,6 +173,8 @@ When a NeMo schema allows free-form metadata, include these fields:
 | `mlflow_parent_run_name` | `<collection>/<base-short>/r<rank>` |
 | `adapter_name` | Adapter name |
 | `source_collection` | ES collection name |
+| `dataset_version_id` | Stable dataset version ID |
+| `mlflow_parent_run_id` | Parent run for dataset/model build |
 
 For Entity Store datasets, include the MLflow run ID in `description` if no
 structured custom field is available in the deployed schema.

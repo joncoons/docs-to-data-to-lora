@@ -13,6 +13,7 @@ as Kubernetes Jobs or NeMo/NIM services.
 - Dataset bytes should move through NeMo Data Store.
 - Dataset/model identities should move through NeMo Entity Store.
 - Secrets must come from Kubernetes Secrets, not source code.
+- Jobs should emit structured observability files that can be exported to MLflow.
 - Local scripts should be dry-run/debug entry points, not the only production
   execution path.
 
@@ -160,6 +161,18 @@ deploy/evaluation-matrix/
 
 The Job can either poll each wave to terminal state or run with `--submit-only`
 when a separate controller/result-collection Job should own polling.
+
+## MLflow Observability
+
+MLflow should be the audit plane, not the owner of NeMo resources. Use native
+Customizer and Evaluator MLflow export when available, and emit repository-owned
+observability JSON files for dataset lineage, Data Designer gapfill, TIES merge,
+adapter inspection, and K8s control-plane Jobs. See
+`docs/redesign/mlflow-observability-contract.md`.
+
+Dataset registration is the next key observability step because it links the
+provenance sidecars, dataset version manifest, NeMo Data Store URI, Entity Store
+reference, and eventual Customizer/Evaluator jobs.
 
 ## K8s Resource Guidance
 

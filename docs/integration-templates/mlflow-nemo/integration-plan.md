@@ -8,7 +8,7 @@ promotion state, and NeMo Microservices perform the actual work:
 - NeMo Data Store stores dataset files.
 - NeMo Entity Store registers datasets and model entities.
 - NeMo Customizer trains LoRA adapters.
-- NeMo Evaluator scores adapters, bases, and RAG baselines.
+- NeMo Evaluator scores adapters, bases, and the 49B comparator target.
 - MLflow links every step with a stable run graph.
 
 ## Control Plane Boundary
@@ -41,7 +41,7 @@ Steps:
 4. Register or patch the NeMo Entity Store dataset.
 5. Start or update an MLflow child run named `dataset-registration`.
 6. Log dataset checksums, row counts, source collection, Data Store URI, and
-   Entity Store dataset reference.
+   Entity Store dataset reference, provenance manifests, and dataset version ID.
 
 Recommended NeMo dataset names:
 
@@ -107,7 +107,7 @@ Input:
 - adapter inventory,
 - test dataset entity refs,
 - Evaluator targets and configs,
-- optional RAG baseline endpoint.
+- 49B comparator target.
 
 Steps:
 
@@ -119,8 +119,8 @@ Steps:
 4. Log every Evaluator job ID as an MLflow artifact or tag group.
 5. Poll jobs until terminal.
 6. Fetch results and log normalized metrics into MLflow.
-7. If using the NeMo Evaluator MLflow exporter, record the exporter invocation
-   ID or run ID on the wrapper run.
+7. If using the NeMo Evaluator MLflow exporter, record the exported run ID on
+   the wrapper run so service-native and repository-native observability can be reconciled.
 
 Minimum metrics to normalize:
 
@@ -131,14 +131,14 @@ Minimum metrics to normalize:
 | `eval.faithfulness.mean` | Mean rubric faithfulness |
 | `eval.clarity.mean` | Mean rubric clarity |
 | `eval.win_rate_vs_base` | Pairwise win rate over no-LoRA base |
-| `eval.win_rate_vs_rag` | Pairwise win rate over RAG baseline |
+| `eval.win_rate_vs_49b` | Pairwise win rate over the 49B comparator |
 
 ## Phase 4: Promotion
 
 Promotion is optional in the first pass. When added, keep it explicit:
 
 1. Define acceptance thresholds in config.
-2. Compare metrics against the no-LoRA base and RAG baseline.
+2. Compare metrics against the no-LoRA base and 49B comparator.
 3. Mark the MLflow run with one of:
    - `promotion_status=candidate`
    - `promotion_status=approved`
