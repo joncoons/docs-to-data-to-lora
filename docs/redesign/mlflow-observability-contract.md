@@ -152,17 +152,19 @@ Artifacts:
 | `provenance/entailments.<shard>.jsonl` | Entailment provenance sidecar |
 | `passages.jsonl` | Stage 0 input passage artifact reference |
 
-## Dataset Lineage
+## Dataset Finalization And Registration
 
-Dataset registration is the main place to close the lineage gap. Log these as
-MLflow params/tags/artifacts and include back-references in Entity Store metadata
-when the deployed schema allows it.
+Dataset finalization closes the lineage gap before registration. It writes
+`manifests/dataset_version_manifest.json` from split files and provenance
+sidecars, then registration publishes the files to NeMo Data Store and registers
+Entity Store dataset refs. Log these as MLflow params/tags/artifacts and include
+back-references in Entity Store metadata when the deployed schema allows it.
 
 Tags:
 
 | Tag | Example |
 |---|---|
-| `pipeline.stage` | `dataset-registration` |
+| `pipeline.stage` | `dataset-finalization` or `dataset-registration` |
 | `source_collection` | `nim_curated` |
 | `dataset_entity` | `default/stage3-nim-curated` |
 | `nemo_data_store_uri` | `hf://datasets/default/stage3-nim-curated` |
@@ -203,7 +205,7 @@ Artifacts:
 | `provenance/source_chunks.jsonl` | Source chunk sidecar |
 | `provenance/entailments.jsonl` | Extracted entailments |
 | `provenance/dataset_samples.jsonl` | Final sample lineage |
-| `provenance/dataset_version_manifest.json` | Dataset version summary |
+| `manifests/dataset_version_manifest.json` | Dataset version summary |
 | `provenance/delta_manifest.json` | Re-crawl delta summary |
 | `provenance/gap_manifest.json` | Gap/bias selection for Data Designer |
 | `dataset/training.manifest.json` | Rows, bytes, checksum |
@@ -354,7 +356,7 @@ Artifacts:
 
 1. Add Stage 0 corpus prep observability files. Implemented in `deploy/stage0-corpus-prep/`.
 2. Add Stage 1A entailment shard observability files. Implemented in `deploy/stage1a-entailment-shards/`.
-3. Add dataset registration observability files and MLflow export contract. Implemented for the registration Job in `deploy/dataset-registration/`.
+3. Add dataset finalization and registration observability files. Implemented in `deploy/dataset-finalization/` and `deploy/dataset-registration/`.
 4. Add result collection and MLflow export for Evaluator job results.
 5. Add Customizer exporter reconciliation tags when training is refactored.
 6. Add Data Designer gapfill job IDs and generated-sample lineage.

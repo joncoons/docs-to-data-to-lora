@@ -196,7 +196,28 @@ context-baked test dataset for each collection. It emits `run_context.json`,
 `metrics.json`, `artifacts_manifest.json`, and `service_refs.json` for later
 MLflow export.
 
-## Sixth K8s Template: Webcrawler
+## Sixth K8s Template: Dataset Finalization
+
+Dataset finalization is the versioning step that should run after split/sample
+artifacts are complete and before dataset registration. It writes
+`manifests/dataset_version_manifest.json`, computes artifact checksums, records
+source-system/source-kind/modality composition, and emits MLflow-ready
+observability files.
+
+Artifacts:
+
+```text
+deploy/dataset-finalization/
+  Containerfile
+  README.md
+  job.yaml
+```
+
+The Job can backfill `provenance/dataset_samples.jsonl` from `stage2_eval.jsonl`
+when the sidecar is missing, which keeps the local monolith and K8s execution
+paths compatible.
+
+## Seventh K8s Template: Webcrawler
 
 The webcrawler is now represented as a first-class K8s source-acquisition
 component. It builds from the in-repo `external/rag-crawler` copy, exposes a
@@ -220,7 +241,7 @@ status inspection. Use the Job/CronJob templates for deterministic source
 collection refreshes that feed Stage 0. The service remains internal by default;
 all external dependencies are configured through ConfigMap/Secret/PVC bindings.
 
-## Seventh K8s Template: Stage 0 Corpus Prep
+## Eighth K8s Template: Stage 0 Corpus Prep
 
 Stage 0 corpus prep is the first implemented source-pipeline Job after source
 acquisition. It scrolls the Elasticsearch crawl/vector index, optionally joins
@@ -243,7 +264,7 @@ separate pipeline child runs. Mount the crawler registry export as read-only and
 pass `--url-registry /crawler-registry/<collection>_url_registry.json` when the
 registry is available.
 
-## Eighth K8s Template: Stage 1A Entailment Shards
+## Ninth K8s Template: Stage 1A Entailment Shards
 
 Stage 1A entailment extraction is the first implemented sharded LLM Job. It
 reads Stage 0 `passages.jsonl`, assigns passages to indexed pods by stable
@@ -301,12 +322,13 @@ Do not put NodePorts, passwords, or host-specific paths in scripts.
 2. Adapter inspection Job. Implemented in `deploy/adapter-inspection/`.
 3. Evaluator target/config registration Job. Implemented in `deploy/evaluator-registration/`.
 4. Evaluation matrix orchestration Job. Implemented in `deploy/evaluation-matrix/`.
-5. Dataset registration Job. Implemented in `deploy/dataset-registration/`.
-6. Stage 0 corpus/provenance Job. Implemented in `deploy/stage0-corpus-prep/`.
-7. Stage 1A entailment shard Job. Implemented in `deploy/stage1a-entailment-shards/`.
-8. Stage 1B/1C generation shard Jobs.
-9. Gap analysis Job and Data Designer submission.
-10. Curator service integration.
+5. Dataset finalization Job. Implemented in `deploy/dataset-finalization/`.
+6. Dataset registration Job. Implemented in `deploy/dataset-registration/`.
+7. Stage 0 corpus/provenance Job. Implemented in `deploy/stage0-corpus-prep/`.
+8. Stage 1A entailment shard Job. Implemented in `deploy/stage1a-entailment-shards/`.
+9. Stage 1B/1C generation shard Jobs.
+10. Gap analysis Job and Data Designer submission.
+11. Curator service integration.
 
 This order gives immediate operational value while avoiding a large rewrite of
 the source-grounded dataset pipeline.

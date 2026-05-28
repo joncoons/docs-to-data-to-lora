@@ -23,11 +23,25 @@
     },
     "origin": {
       "type": "string",
-      "enum": ["source_entailed", "synthetic_gapfill", "human_reviewed", "imported_baseline"]
+      "enum": [
+        "source_entailed",
+        "synthetic_gapfill",
+        "human_reviewed",
+        "imported_baseline"
+      ]
     },
     "task_type": {
       "type": "string",
-      "enum": ["qa", "summary", "listicle", "procedural", "bridging", "contrastive", "rag_eval", "other"]
+      "enum": [
+        "qa",
+        "summary",
+        "listicle",
+        "procedural",
+        "bridging",
+        "contrastive",
+        "rag_eval",
+        "other"
+      ]
     },
     "prompt": {
       "type": "string"
@@ -36,7 +50,10 @@
       "type": "string"
     },
     "system": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "lineage": {
       "type": "object",
@@ -64,12 +81,39 @@
           "default": []
         },
         "gap_id": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "data_designer_job_id": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "seed_sample_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "source_systems": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "source_kinds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "modalities": {
           "type": "array",
           "items": {
             "type": "string"
@@ -83,13 +127,22 @@
       "additionalProperties": true,
       "properties": {
         "curator_job_id": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "judge_model": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "grounding_score": {
-          "type": ["number", "null"],
+          "type": [
+            "number",
+            "null"
+          ],
           "minimum": 0,
           "maximum": 1
         }
@@ -112,7 +165,10 @@
       "then": {
         "properties": {
           "lineage": {
-            "required": ["entailment_ids", "source_revision_ids"]
+            "required": [
+              "entailment_ids",
+              "source_revision_ids"
+            ]
           }
         }
       }
@@ -128,7 +184,10 @@
       "then": {
         "properties": {
           "lineage": {
-            "required": ["gap_id", "data_designer_job_id"]
+            "required": [
+              "gap_id",
+              "data_designer_job_id"
+            ]
           }
         }
       }

@@ -185,6 +185,7 @@ Tasks:
 - Add K8s-native webcrawler deployment and crawl Job/CronJob templates. Implemented under `deploy/webcrawler`, using PVCs, ConfigMap/Secret wiring, and an internal ClusterIP service.
 - Extend Stage 1A to emit `entailments.jsonl`. Implemented, with K8s shard outputs, observability, and source-system/source-kind/modality lineage propagation from Stage 0 passages.
 - Extend sample generation to emit `dataset_samples.jsonl`. Implemented, with per-sample source composition fields available to dataset registration observability.
+- Add dataset finalization to emit deterministic `dataset_version_manifest.json`. Implemented with source composition metrics, artifact checksums, observability files, and a K8s Job template under `deploy/dataset-finalization/`.
 - Preserve current `training.jsonl` and `validation.jsonl` outputs for compatibility.
 - Add schema validation tests.
 

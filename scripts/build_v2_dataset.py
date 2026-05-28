@@ -24,6 +24,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 from scripts.pipeline.claude_client import ClaudeJudge
 from scripts.pipeline.config import Config, get_claude_api_key, get_es_password
 from scripts.pipeline.es_client import make_es_client
+from scripts.pipeline.finalize_dataset import finalize_dataset
 from scripts.pipeline.llm_client import LLMClient
 from scripts.pipeline.models import KVPRow, Passage
 from scripts.pipeline.progress import Progress
@@ -234,6 +235,13 @@ def main() -> int:
             len(sample_rows),
             args.output / "provenance" / "dataset_samples.jsonl",
         )
+        manifest = finalize_dataset(
+            args.output,
+            dataset_name=args.collection,
+            system_prompt=system_prompt,
+            observability_dir=None,
+        )
+        log.info("Provenance: dataset version %s", manifest["dataset_version_id"])
 
     log.info("Done. Output dir: %s", args.output)
     return 0

@@ -26,7 +26,12 @@
     },
     "dataset_role": {
       "type": "string",
-      "enum": ["source_entailed", "synthetic_gapfill", "blended", "evaluation"]
+      "enum": [
+        "source_entailed",
+        "synthetic_gapfill",
+        "blended",
+        "evaluation"
+      ]
     },
     "created_at": {
       "type": "string",
@@ -78,10 +83,16 @@
       "additionalProperties": true,
       "properties": {
         "curator_job_id": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "curator_config_hash": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^(sha256:[a-fA-F0-9]{64})?$"
         }
       }
@@ -91,21 +102,36 @@
       "additionalProperties": false,
       "properties": {
         "method": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "seed": {
-          "type": ["integer", "null"]
+          "type": [
+            "integer",
+            "null"
+          ]
         },
         "train_count": {
-          "type": ["integer", "null"],
+          "type": [
+            "integer",
+            "null"
+          ],
           "minimum": 0
         },
         "validation_count": {
-          "type": ["integer", "null"],
+          "type": [
+            "integer",
+            "null"
+          ],
           "minimum": 0
         },
         "test_count": {
-          "type": ["integer", "null"],
+          "type": [
+            "integer",
+            "null"
+          ],
           "minimum": 0
         }
       }
@@ -113,19 +139,30 @@
     "outputs": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["samples_uri"],
+      "required": [
+        "samples_uri"
+      ],
       "properties": {
         "samples_uri": {
           "type": "string"
         },
         "training_uri": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "validation_uri": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "test_uri": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "hashes": {
           "type": "object",
@@ -141,16 +178,28 @@
       "additionalProperties": false,
       "properties": {
         "namespace": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "dataset_name": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "files_url": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "version_id": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "version_tags": {
           "type": "array",
@@ -158,6 +207,118 @@
             "type": "string"
           },
           "default": []
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "rows": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        },
+        "samples": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "integer",
+              "number"
+            ]
+          }
+        },
+        "sources": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "source_composition": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "sample_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_url_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_revision_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_chunk_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "entailment_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_systems": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        },
+        "source_kinds": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        },
+        "modalities": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "artifact_path",
+          "sha256",
+          "bytes"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "artifact_path": {
+            "type": "string"
+          },
+          "artifact_kind": {
+            "type": "string"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha256:[a-fA-F0-9]{64}$"
+          },
+          "rows": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       }
     }

@@ -1,0 +1,16 @@
+# Lightweight image for dataset version finalization.
+#
+# Build example:
+#   docker build -f deploy/dataset-finalization/Containerfile -t docs-to-data-to-lora/dataset-finalization:latest .
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+RUN pip install --no-cache-dir pydantic
+
+WORKDIR /app
+COPY scripts/pipeline /app/scripts/pipeline
+
+ENTRYPOINT ["python", "scripts/pipeline/finalize_dataset.py"]
