@@ -291,3 +291,22 @@ def test_write_observability_documents_creates_json_files(tmp_path):
     write_observability_documents(out, {"metrics.json": {"datasets.count": 1}})
 
     assert json.loads((out / "metrics.json").read_text()) == {"datasets.count": 1}
+
+
+def test_discover_lineage_files_includes_curator_artifacts(tmp_path):
+    coll = tmp_path / "nim_curated"
+    (coll / "manifests").mkdir(parents=True)
+    (coll / "curator").mkdir()
+    (coll / "manifests" / "dataset_version_manifest.json").write_text("{}")
+    (coll / "curator" / "curator_config.yaml").write_text("name: curator\n")
+    (coll / "curator" / "curation_manifest.json").write_text("{}")
+    (coll / "curator" / "accepted_samples.jsonl").write_text('{"sample_id": "s1"}\n')
+
+    lineage_files = discover_lineage_files(coll)
+
+    assert [item.repo_path for item in lineage_files] == [
+        "manifests/dataset_version_manifest.json",
+        "curator/curator_config.yaml",
+        "curator/curation_manifest.json",
+        "curator/accepted_samples.jsonl",
+    ]

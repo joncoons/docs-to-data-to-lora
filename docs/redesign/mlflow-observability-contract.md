@@ -257,6 +257,47 @@ Artifacts:
 | `data_designer/generated_samples.jsonl` | Generated samples with source gap refs |
 | `provenance/data_designer_samples.jsonl` | Provenance sample sidecar for Data Designer outputs |
 
+## Curator
+
+NeMo Curator should own generic deduplication and quality filtering. The
+repository-owned handoff/collector logs the native job/config references and the
+accepted/rejected sample artifacts.
+
+Tags:
+
+| Tag | Example |
+|---|---|
+| `pipeline.stage` | `curator` |
+| `nemo_curator_job_id` | deployed Curator job or cluster run ID |
+| `curator_config_hash` | `sha256:<hash>` |
+
+Metrics:
+
+| Metric | Meaning |
+|---|---|
+| `curator.samples.input` | Dataset samples handed to Curator |
+| `curator.samples.accepted` | Retained samples collected from Curator |
+| `curator.samples.rejected` | Removed samples collected from Curator |
+| `curator.acceptance_rate` | Accepted/input |
+| `curator.rows.training` | Training rows written after retained-sample split |
+| `curator.rows.validation` | Validation rows written after retained-sample split |
+| `curator.rejection_reason.<reason>.count` | Removed samples by Curator reason/filter |
+
+Artifacts:
+
+| Artifact | Source |
+|---|---|
+| `curator/input/dataset_samples.jsonl` | Normalized Curator input records |
+| `curator/curator_config.yaml` | Curator configuration used for the run |
+| `curator/submission_plan.json` | Curator handoff plan |
+| `curator/accepted_samples.jsonl` | Retained samples mapped back to dataset sample schema |
+| `curator/rejected_samples.jsonl` | Removed samples mapped back to dataset sample schema |
+| `curator/rejection_report.jsonl` | Compact rejection reason report |
+| `curator/curation_manifest.json` | Native job/config/output summary |
+
+Dataset finalization should also emit `dataset.curator.*` metrics when
+`curator/curation_manifest.json` is present.
+
 ## Customizer
 
 Prefer native Customizer MLflow export when available. The repository wrapper or

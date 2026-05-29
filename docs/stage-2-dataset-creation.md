@@ -513,14 +513,24 @@ quality gate, not a generation step.
 
 ### Pipeline steps
 
-1. **Exact dedup** on the `question` field.
-2. **MinHash fuzzy dedup** on concatenated `question + answer`, Jaccard threshold
-   0.85.
-3. **Length filter**: drop pairs where `question` < 8 tokens OR `answer` < 25
-   tokens.
-4. **Heuristic quality**: drop pairs where `answer` is a substring of `question`.
-5. **Train/val split**: 90/10 random stratified by `stage` (ensures train and val
-   both contain LE/synthesis/instruction/gapfill in proportion).
+The showcase path uses `scripts/pipeline/curator_handoff.py` and
+`deploy/curator/` to hand native NeMo Curator a normalized
+`curator/input/dataset_samples.jsonl` file. Curator should run exact/fuzzy
+deduplication and quality filters in the official Curator container or
+Curator-backed cluster, then the collect step maps retained/removed records back
+to dataset sample lineage.
+
+1. **Prepare Curator input** from `provenance/dataset_samples.jsonl`.
+2. **Native Curator quality filters** using `configs/curator/sft-dedup-quality.yaml`.
+3. **Native Curator deduplication** for exact and fuzzy duplicates; semantic dedup
+   remains disabled until the embedding model/GPU budget is selected.
+4. **Collect Curator outputs** into `curator/accepted_samples.jsonl`,
+   `curator/rejected_samples.jsonl`, and `curator/curation_manifest.json`.
+5. **Train/val split**: 90/10 random stratified by sample origin and task type.
+
+The older pure-Python `scripts/pipeline/stage3_curator.py` path remains a local
+offline fallback for exact dedup, MinHash, token length filters, substring
+checks, and split writing.
 
 The 10% val split (vs. the April-era 5%) is intentional: the smaller
 post-Curator counts (~2,000-2,400 per collection) would yield only ~100-120 val
@@ -529,6 +539,10 @@ pairs at 5% — too few for stable val_loss during LoRA training.
 ### Output format
 
 Files:
+- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/input/dataset_samples.jsonl`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/accepted_samples.jsonl`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/rejected_samples.jsonl`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/curation_manifest.json`
 - `/mnt/nvme2/peft/datasets/v2/<collection>/training.jsonl`
 - `/mnt/nvme2/peft/datasets/v2/<collection>/validation.jsonl`
 

@@ -90,7 +90,8 @@ version IDs, uploaded lineage file lists, and provenance sidecar references.
 When `provenance/dataset_samples.jsonl` is present, registration also emits
 source composition metrics for source systems, source kinds, modalities,
 distinct source revisions/chunks, entailments, and synthetic versus grounded
-samples.
+samples. Curator input, config, manifest, accepted samples, rejected samples,
+and rejection reports are uploaded as lineage sidecars when present.
 
 ## Local Dry Run
 

@@ -69,6 +69,13 @@ ARTIFACT_CANDIDATES = (
     "data_designer/result_manifest.json",
     "data_designer/generated_samples.jsonl",
     "provenance/data_designer_samples.jsonl",
+    "curator/input/dataset_samples.jsonl",
+    "curator/curator_config.yaml",
+    "curator/submission_plan.json",
+    "curator/accepted_samples.jsonl",
+    "curator/rejected_samples.jsonl",
+    "curator/rejection_report.jsonl",
+    "curator/curation_manifest.json",
     "bias_report.json",
     "validation_report.json",
 )
@@ -280,6 +287,27 @@ def input_ids(dataset_dir: Path, composition: dict[str, Any]) -> dict[str, list[
     }
 
 
+
+
+def curation_metadata(
+    dataset_dir: Path,
+    *,
+    curator_job_id: str | None = None,
+    curator_config_hash: str | None = None,
+) -> dict[str, Any]:
+    curation_manifest = read_json_if_exists(dataset_dir / "curator" / "curation_manifest.json")
+    return {
+        "curator_job_id": curator_job_id or curation_manifest.get("curator_job_id"),
+        "curator_config_hash": (
+            curator_config_hash or curation_manifest.get("curator_config_hash")
+        ),
+        "native_service": curation_manifest.get("native_service"),
+        "manifest_uri": "curator/curation_manifest.json" if curation_manifest else None,
+        "metrics": curation_manifest.get("metrics", {}),
+        "outputs": curation_manifest.get("outputs", {}),
+    }
+
+
 def build_outputs(dataset_dir: Path, artifacts: list[dict[str, Any]]) -> dict[str, Any]:
     artifact_hashes = {
         artifact["artifact_path"]: artifact["sha256"]
@@ -374,6 +402,11 @@ def build_dataset_version_manifest(
         outputs.get("hashes", {}),
         metrics,
     )
+    curation = curation_metadata(
+        dataset_dir,
+        curator_job_id=curator_job_id,
+        curator_config_hash=curator_config_hash,
+    )
     manifest = {
         "schema_version": "provenance.v1",
         "dataset_version_id": dataset_version_id,
@@ -381,10 +414,7 @@ def build_dataset_version_manifest(
         "dataset_role": role,
         "created_at": created_at or utc_now(),
         "inputs": inputs,
-        "curation": {
-            "curator_job_id": curator_job_id,
-            "curator_config_hash": curator_config_hash,
-        },
+        "curation": curation,
         "split": split,
         "outputs": outputs,
         "metrics": metrics,
@@ -437,6 +467,14 @@ def build_observability_documents(
         metrics[f"dataset.source_kind.{safe_metric_name(source_kind)}.samples"] = count
     for modality, count in composition.get("modalities", {}).items():
         metrics[f"dataset.modality.{safe_metric_name(modality)}.samples"] = count
+    curation_metrics = (
+        manifest.get("curation", {}).get("metrics", {})
+        if isinstance(manifest.get("curation"), dict)
+        else {}
+    )
+    for key, value in curation_metrics.items():
+        if isinstance(value, int | float):
+            metrics[f"dataset.curator.{safe_metric_name(key)}"] = value
 
     artifact_entries = [file_manifest(manifest_path, dataset_dir, "dataset_version_manifest")]
     artifact_entries.extend(artifacts)
@@ -471,6 +509,7 @@ def build_observability_documents(
             "job_ids": composition.get("data_designer_job_ids", []),
             "gap_ids": composition.get("gap_ids", []),
         },
+        "curator": manifest.get("curation", {}),
     }
     artifacts_manifest = {
         "schema_version": "observability.v1",
@@ -502,6 +541,8 @@ def finalize_dataset(
     mlflow_tracking_uri: str | None = None,
     mlflow_experiment_name: str | None = None,
     mlflow_parent_run_id: str | None = None,
+    curator_job_id: str | None = None,
+    curator_config_hash: str | None = None,
     created_at: str | None = None,
 ) -> dict[str, Any]:
     ensure_dataset_samples(
@@ -514,6 +555,8 @@ def finalize_dataset(
         dataset_name=dataset_name,
         dataset_role=dataset_role,
         created_at=created_at,
+        curator_job_id=curator_job_id,
+        curator_config_hash=curator_config_hash,
     )
     manifest_path = dataset_dir / "manifests" / "dataset_version_manifest.json"
     write_json(manifest_path, manifest)
@@ -544,6 +587,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--mlflow-tracking-uri", default=os.getenv("MLFLOW_TRACKING_URI"))
     ap.add_argument("--mlflow-experiment-name", default=os.getenv("MLFLOW_EXPERIMENT_NAME"))
     ap.add_argument("--mlflow-parent-run-id", default=os.getenv("MLFLOW_PARENT_RUN_ID"))
+    ap.add_argument("--curator-job-id", default=os.getenv("CURATOR_JOB_ID"))
+    ap.add_argument("--curator-config-hash", default=os.getenv("CURATOR_CONFIG_HASH"))
     return ap.parse_args(argv)
 
 
@@ -565,6 +610,8 @@ def main(argv: list[str] | None = None) -> int:
         mlflow_tracking_uri=args.mlflow_tracking_uri,
         mlflow_experiment_name=args.mlflow_experiment_name,
         mlflow_parent_run_id=args.mlflow_parent_run_id,
+        curator_job_id=args.curator_job_id,
+        curator_config_hash=args.curator_config_hash,
     )
     log.info(
         "Dataset finalization complete: %s",

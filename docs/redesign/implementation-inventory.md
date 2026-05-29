@@ -208,10 +208,10 @@ Goal: replace pure-Python generic curation with NeMo Curator in the showcase pat
 
 Tasks:
 
-- Define Curator config for exact, fuzzy, semantic dedup, and quality filters.
-- Run Curator against `dataset_samples.jsonl` or a normalized intermediate.
-- Record Curator job/config hash in `dataset_version_manifest`.
-- Keep local dedup as fallback for offline testing only.
+- Define Curator config for exact, fuzzy, semantic dedup, and quality filters. Implemented as `configs/curator/sft-dedup-quality.yaml`, with semantic dedup disabled until the showcase embedding/GPU budget is selected.
+- Run Curator against `dataset_samples.jsonl` or a normalized intermediate. Implemented with `scripts/pipeline/curator_handoff.py`, which prepares `curator/input/dataset_samples.jsonl` and collects retained/removed Curator outputs.
+- Record Curator job/config hash in `dataset_version_manifest`. Implemented by dataset finalization from `curator/curation_manifest.json` or explicit CLI/env overrides.
+- Keep local dedup as fallback for offline testing only. In progress: `scripts/pipeline/stage3_curator.py` remains available but the K8s showcase handoff is now `deploy/curator/`.
 
 ### Phase 4: Native Dataset Registration
 

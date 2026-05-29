@@ -139,6 +139,41 @@ LINEAGE_FILE_CANDIDATES = (
         "provenance/data_designer_samples.jsonl",
         "data_designer_provenance_samples",
     ),
+    LineageFile(
+        Path("curator/input/dataset_samples.jsonl"),
+        "curator/input/dataset_samples.jsonl",
+        "curator_input",
+    ),
+    LineageFile(
+        Path("curator/curator_config.yaml"),
+        "curator/curator_config.yaml",
+        "curator_config",
+    ),
+    LineageFile(
+        Path("curator/submission_plan.json"),
+        "curator/submission_plan.json",
+        "curator_submission_plan",
+    ),
+    LineageFile(
+        Path("curator/curation_manifest.json"),
+        "curator/curation_manifest.json",
+        "curator_manifest",
+    ),
+    LineageFile(
+        Path("curator/accepted_samples.jsonl"),
+        "curator/accepted_samples.jsonl",
+        "curator_accepted_samples",
+    ),
+    LineageFile(
+        Path("curator/rejected_samples.jsonl"),
+        "curator/rejected_samples.jsonl",
+        "curator_rejected_samples",
+    ),
+    LineageFile(
+        Path("curator/rejection_report.jsonl"),
+        "curator/rejection_report.jsonl",
+        "curator_rejection_report",
+    ),
 )
 
 

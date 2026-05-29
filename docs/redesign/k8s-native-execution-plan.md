@@ -313,6 +313,31 @@ can still produce reviewable handoff artifacts. Use `submit` after building the
 image with the NVIDIA SDK packages for the deployed NeMo Microservices version,
 and use `collect` to ingest downloaded Data Designer result records.
 
+## Eleventh K8s Template: NeMo Curator Handoff
+
+NeMo Curator handoff is the native Stage 3 curation path. The Job prepares
+`provenance/dataset_samples.jsonl` as Curator-readable JSONL, copies the Curator
+config, collects retained/removed Curator records, writes `training.jsonl` and
+`validation.jsonl`, and emits MLflow-ready observability. Actual quality
+filtering and deduplication should run in the official NeMo Curator container or
+Curator-backed Dask/Ray cluster between `prepare` and `collect`.
+
+Artifacts:
+
+```text
+deploy/curator/
+  Containerfile
+  README.md
+  job.yaml
+
+configs/curator/
+  sft-dedup-quality.yaml
+```
+
+Dataset finalization records `curator/curation_manifest.json`, the Curator job
+ID, Curator config hash, accepted/rejected sample artifacts, and split outputs
+into the dataset version manifest.
+
 ## K8s Resource Guidance
 
 | Workload | CPU | Memory | GPU | Storage |
@@ -322,7 +347,8 @@ and use `collect` to ingest downloaded Data Designer result records.
 | Dataset registration | 500m-1 | 1-2Gi | none | workspace + Data Store access |
 | Stage 0 corpus prep | 1-4 | 4-16Gi | none | output PVC/Data Store |
 | Stage 1 generation shard | 1-4 | 2-8Gi | none client-side | output PVC/Data Store |
-| Curator | service-dependent | service-dependent | likely | NeMo Curator |
+| Curator prepare/collect | 2-8 | 4-32Gi | none | output PVC |
+| Native Curator dedup/filter | workload-dependent | workload-dependent | optional/likely for fuzzy/semantic | output PVC + Curator cache |
 
 ## Environment and Secret Pattern
 
@@ -355,7 +381,7 @@ Do not put NodePorts, passwords, or host-specific paths in scripts.
 8. Stage 1A entailment shard Job. Implemented in `deploy/stage1a-entailment-shards/`.
 9. Stage 1B/1C generation shard Jobs.
 10. Gap analysis Job and Data Designer submission. Gap manifest/Data Designer seed planning is implemented in `scripts/pipeline/stage1_5_gapfill.py`; prepare/collect K8s execution is implemented in `deploy/data-designer-gapfill/`, with live submission enabled when the NVIDIA SDK is included in the image.
-11. Curator service integration.
+11. Curator service integration. Curator handoff prepare/collect is implemented in `scripts/pipeline/curator_handoff.py` and `deploy/curator/`; native Curator execution should run between those modes in the official Curator container or cluster.
 
 This order gives immediate operational value while avoiding a large rewrite of
 the source-grounded dataset pipeline.

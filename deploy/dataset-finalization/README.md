@@ -19,6 +19,7 @@ For each collection, the Job expects files like:
   provenance/source_chunks.jsonl
   provenance/entailments.jsonl
   provenance/dataset_samples.jsonl
+  curator/curation_manifest.json        # optional, after NeMo Curator collect
 ```
 
 If `provenance/dataset_samples.jsonl` is missing but `stage2_eval.jsonl` is
@@ -51,8 +52,9 @@ Update `deploy/dataset-finalization/job.yaml` with that image.
 
 The manifest includes a deterministic `dataset_version_id`, split counts,
 artifact checksums, source revision/chunk coverage, source system/kind/modality
-composition, synthetic versus grounded counts, and Data Designer job IDs when
-present in sample lineage.
+composition, synthetic versus grounded counts, Data Designer job IDs when
+present in sample lineage, and Curator job/config metadata when
+`curator/curation_manifest.json` is present.
 
 ## Local Run
 

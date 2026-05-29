@@ -239,3 +239,53 @@ def test_finalize_dataset_backfill_preserves_data_designer_sidecar_lineage(tmp_p
     assert metrics["dataset.data_designer_jobs.count"] == 1
     assert metrics["dataset.gaps.filled.count"] == 1
     assert service_refs["data_designer"]["job_ids"] == ["dd_job_real"]
+
+
+def test_finalize_dataset_records_curator_manifest_and_observability(tmp_path):
+    dataset_dir = tmp_path / "nim_curated"
+    dataset_dir.mkdir()
+    _write_jsonl(dataset_dir / "training.jsonl", [{"prompt": "t1", "completion": "a1"}])
+    _write_jsonl(dataset_dir / "validation.jsonl", [{"prompt": "v1", "completion": "a1"}])
+    _write_jsonl(dataset_dir / "test_set.jsonl", [])
+    _write_jsonl(
+        dataset_dir / "provenance" / "dataset_samples.jsonl",
+        [_dataset_sample("sample_web", "source_entailed", ["web_crawl"], ["text"])],
+    )
+    curator_dir = dataset_dir / "curator"
+    curator_dir.mkdir()
+    (curator_dir / "curator_config.yaml").write_text("name: curator\n")
+    _write_jsonl(curator_dir / "accepted_samples.jsonl", [{"sample_id": "sample_web"}])
+    (curator_dir / "curation_manifest.json").write_text(json.dumps({
+        "native_service": "NeMo Curator",
+        "curator_job_id": "curator_job_1",
+        "curator_config_hash": "sha256:" + "a" * 64,
+        "metrics": {
+            "input_samples": 1,
+            "accepted_samples": 1,
+            "rejected_samples": 0,
+            "acceptance_rate": 1.0,
+            "training_rows": 1,
+            "validation_rows": 1,
+        },
+        "outputs": {
+            "accepted_samples_uri": "curator/accepted_samples.jsonl",
+        },
+    }))
+
+    manifest = finalize_dataset(
+        dataset_dir,
+        dataset_name="nim_curated",
+        observability_dir=tmp_path / "observability",
+        created_at="2026-05-28T12:00:00Z",
+    )
+
+    assert manifest["curation"]["curator_job_id"] == "curator_job_1"
+    assert manifest["curation"]["curator_config_hash"].startswith("sha256:")
+    assert "curator/curation_manifest.json" in manifest["outputs"]["hashes"]
+    assert "curator/accepted_samples.jsonl" in manifest["outputs"]["hashes"]
+
+    metrics = json.loads((tmp_path / "observability" / "metrics.json").read_text())
+    service_refs = json.loads((tmp_path / "observability" / "service_refs.json").read_text())
+    assert metrics["dataset.curator.accepted_samples"] == 1
+    assert metrics["dataset.curator.acceptance_rate"] == 1.0
+    assert service_refs["curator"]["curator_job_id"] == "curator_job_1"
