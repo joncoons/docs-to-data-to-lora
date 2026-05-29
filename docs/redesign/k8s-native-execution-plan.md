@@ -17,6 +17,26 @@ as Kubernetes Jobs or NeMo/NIM services.
 - Local scripts should be dry-run/debug entry points, not the only production
   execution path.
 
+## Platform Baseline
+
+The showcase now tracks the NeMo Platform control-plane deployment separately
+from repository-owned batch Jobs. `deploy/nemo-platform/` records the NGC-checked
+version pin and a starter values overlay for the current Kubernetes platform
+path:
+
+```text
+deploy/nemo-platform/
+  README.md
+  values.yaml
+  versions.yaml
+```
+
+The current pin is the private NeMo Platform chart
+`0857255566152269/external/nemo-platform:2.0.1` from the 26.3.1 install guide.
+Do not infer public individual microservice image tags from that chart version;
+Curator is pinned separately where this repository builds its Curator handoff
+image.
+
 ## Execution Classes
 
 | Class | Meaning |

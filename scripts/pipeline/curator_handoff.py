@@ -40,6 +40,10 @@ DEFAULT_OBSERVABILITY_DIR = Path(
 DEFAULT_CONFIG_FILE = _REPO_ROOT / "configs" / "curator" / "sft-dedup-quality.yaml"
 DEFAULT_TRAIN_RATIO = float(os.getenv("CURATOR_TRAIN_RATIO", "0.9"))
 DEFAULT_SEED = int(os.getenv("CURATOR_SPLIT_SEED", "42"))
+DEFAULT_CURATOR_IMAGE = os.getenv(
+    "NEMO_CURATOR_IMAGE",
+    "nvcr.io/nvidia/nemo-curator:26.04",
+)
 
 
 @dataclass(frozen=True)
@@ -184,7 +188,7 @@ def prepare_curator_input(config: CuratorHandoffConfig) -> dict[str, Any]:
             "scores_dir": "curator/scores",
         },
         "native_execution": {
-            "container": "nvcr.io/nvidia/nemo-curator:latest",
+            "container": DEFAULT_CURATOR_IMAGE,
             "notes": (
                 "Run NeMo Curator in the official container or Dask/Ray cluster "
                 "against curator/input/dataset_samples.jsonl, then run collect."

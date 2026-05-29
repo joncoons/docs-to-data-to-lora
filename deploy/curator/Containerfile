@@ -2,7 +2,7 @@
 #
 # Build example:
 #   docker build -f deploy/curator/Containerfile -t docs-to-data-to-lora/curator:latest .
-ARG NEMO_CURATOR_IMAGE=nvcr.io/nvidia/nemo-curator:latest
+ARG NEMO_CURATOR_IMAGE=nvcr.io/nvidia/nemo-curator:26.04
 FROM ${NEMO_CURATOR_IMAGE}
 
 ENV PYTHONUNBUFFERED=1 \

@@ -54,9 +54,9 @@ docker build \
 docker push <registry>/docs-to-data-to-lora/curator:latest
 ```
 
-The image extends `nvcr.io/nvidia/nemo-curator:latest` by default. Override
-`NEMO_CURATOR_IMAGE` at build time if the showcase cluster is pinned to a
-specific Curator release.
+The image extends `nvcr.io/nvidia/nemo-curator:26.04` by default, matching the
+current NGC Curator tag checked on 2026-05-29. Override `NEMO_CURATOR_IMAGE` at
+build time if the showcase cluster is pinned to a different Curator release.
 
 ## Local Prepare
 
