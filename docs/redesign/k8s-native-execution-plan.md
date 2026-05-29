@@ -413,10 +413,10 @@ Use the shared NeMo Platform service-plane ConfigMap for non-secret runtime
 configuration:
 
 ```text
-NMP_BASE_URL=http://nemo-core-api:8000
+NMP_BASE_URL=http://nemo-platform-api:8080
 NMP_WORKSPACE=default
-NMP_EVALUATOR_URL=http://nemo-evaluator:7331
-NMP_INFERENCE_GATEWAY_URL=http://rag-oai-proxy.runai-rag.svc.cluster.local:8080  # temporary
+NMP_EVALUATOR_URL=http://nemo-platform-api:8080
+NMP_INFERENCE_GATEWAY_URL=http://nemo-platform-api:8080/v2/workspaces/default/inference/gateway/openai/-
 NMP_DATASTORE_GIT_BASE=http://nemo-data-store:3000  # temporary compatibility
 TIES_TRIM_RATIO=0.2
 OUTPUT_DIR=/outputs/lora-nemo-usvcs-nemotron-nano-30b-r16

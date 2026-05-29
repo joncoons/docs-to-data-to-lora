@@ -81,12 +81,14 @@ default/stage3-nemo-usvcs-curated-test
 default/stage3-nemo-usvcs-curated-context-test
 ```
 
-## Service Plane Fix
+## Service Plane Finding
 
 The `nemo-platform-service-plane` ConfigMap was not present in the live cluster.
-The repository ConfigMap previously pointed at a nonexistent
-`http://nemo-platform-api:8080` service. Live validation showed this cluster uses
-service-specific names instead, so the ConfigMap was updated to:
+Live validation showed this cluster uses service-specific 25.12 names and does
+not expose the go-forward `http://nemo-platform-api:8080` Platform API service.
+
+The live-compatible settings are preserved in
+`deploy/nemo-platform/service-plane-configmap.legacy-25.12.yaml`:
 
 ```text
 NMP_BASE_URL=http://nemo-core-api:8000
@@ -97,11 +99,13 @@ NMP_ENTITY_STORE_URL=http://nemo-entity-store:8000
 NMP_DATASTORE_URL=http://nemo-data-store:3000
 NMP_DATASTORE_HF_ENDPOINT=http://nemo-data-store:3000/v1/hf
 NMP_DATASTORE_GIT_BASE=http://nemo-data-store:3000
+NMP_INFERENCE_GATEWAY_URL=http://rag-oai-proxy.runai-rag.svc.cluster.local:8080
 ```
 
-`NMP_INFERENCE_GATEWAY_URL` remains temporary and currently points at the
-legacy `rag-oai-proxy.runai-rag` service because no native NIM Proxy service was
-present in `nemo-peft` during this validation.
+The default `deploy/nemo-platform/service-plane-configmap.yaml` has since been
+restored to the go-forward NeMo Platform API control-plane target. Do not apply
+the default ConfigMap to this 25.12 cluster until the 26.3.1 Platform API
+deployment exists.
 
 ## Validation Result
 
@@ -111,7 +115,7 @@ Passed:
 - Core, Customizer, Entity Store, Evaluator, and Data Designer services are reachable from inside the cluster.
 - Entity Store model/dataset list APIs are readable.
 - Evaluator v1 and v2 APIs are present.
-- The repository service-plane ConfigMap is now aligned to live service names and has been applied in `nemo-peft`.
+- The live service names are documented and captured in a legacy 25.12 ConfigMap overlay.
 
 Blocked for full Platform SDK validation:
 
@@ -127,12 +131,14 @@ Blocked for full Platform SDK validation:
 Do not submit a Platform Customizer training job yet. First choose one of these
 paths:
 
-1. Upgrade/redeploy to the 26.3.1 NeMo Platform chart and build the validation
-   images with `nemo-platform`, then run `deploy/platform-models/` and
+1. Upgrade/redeploy to the 26.3.1 NeMo Platform chart, apply the default
+   `deploy/nemo-platform/service-plane-configmap.yaml`, build validation images
+   with `nemo-platform`, then run `deploy/platform-models/` and
    `deploy/platform-filesets/` live.
-2. Stay on the current 25.12 microservice deployment for now and use the legacy
-   Customizer payload path while continuing to log MLflow lineage through the
-   repository wrapper.
+2. If staying temporarily on the current 25.12 microservice deployment, apply
+   `deploy/nemo-platform/service-plane-configmap.legacy-25.12.yaml` and use the
+   legacy Customizer payload path while continuing to log MLflow lineage through
+   the repository wrapper.
 
-The target showcase should prefer path 1, but path 2 is the compatible route for
-this cluster as currently deployed.
+The target showcase should prefer path 1. Path 2 is only a compatibility route
+for the cluster as validated on 2026-05-29.

@@ -63,11 +63,14 @@ def test_service_plane_configmap_defines_platform_aliases():
 
     assert configmap["metadata"]["name"] == "nemo-platform-service-plane"
     data = configmap["data"]
-    assert data["NMP_BASE_URL"] == "http://nemo-core-api:8000"
+    assert data["NMP_BASE_URL"] == "http://nemo-platform-api:8080"
     assert data["NMP_WORKSPACE"] == "default"
-    assert data["NMP_CUSTOMIZER_URL"] == "http://nemo-customizer:8000"
-    assert data["NMP_EVALUATOR_URL"] == "http://nemo-evaluator:7331"
-    assert data["NMP_ENTITY_STORE_URL"] == "http://nemo-entity-store:8000"
+    assert data["NMP_CUSTOMIZER_URL"] == data["NMP_BASE_URL"]
+    assert data["NMP_EVALUATOR_URL"] == data["NMP_BASE_URL"]
+    assert data["NMP_ENTITY_STORE_URL"] == data["NMP_BASE_URL"]
+    assert data["NMP_INFERENCE_GATEWAY_URL"] == (
+        "http://nemo-platform-api:8080/v2/workspaces/default/inference/gateway/openai/-"
+    )
     assert data["NMP_DATASTORE_URL"] == "http://nemo-data-store:3000"
     assert data["NMP_DATASTORE_HF_ENDPOINT"] == "http://nemo-data-store:3000/v1/hf"
     assert data["NMP_DATASTORE_GIT_BASE"] == "http://nemo-data-store:3000"
@@ -82,6 +85,23 @@ def test_service_plane_configmap_defines_platform_aliases():
         "NMP_DATASTORE_GIT_BASE",
     ):
         assert key in data
+
+
+def test_legacy_25_12_service_plane_overlay_matches_live_validation():
+    configmap_path = (
+        REPO_ROOT / "deploy" / "nemo-platform" / "service-plane-configmap.legacy-25.12.yaml"
+    )
+    configmap = yaml.safe_load(configmap_path.read_text())
+
+    assert configmap["metadata"]["name"] == "nemo-platform-service-plane"
+    data = configmap["data"]
+    assert data["NMP_BASE_URL"] == "http://nemo-core-api:8000"
+    assert data["NMP_CUSTOMIZER_URL"] == "http://nemo-customizer:8000"
+    assert data["NMP_EVALUATOR_URL"] == "http://nemo-evaluator:7331"
+    assert data["NMP_ENTITY_STORE_URL"] == "http://nemo-entity-store:8000"
+    assert data["NMP_INFERENCE_GATEWAY_URL"] == (
+        "http://rag-oai-proxy.runai-rag.svc.cluster.local:8080"
+    )
 
 
 def test_k8s_jobs_source_platform_service_plane_configmap():

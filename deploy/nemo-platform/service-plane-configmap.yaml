@@ -8,25 +8,28 @@ metadata:
     app.kubernetes.io/name: nemo-platform-service-plane
     app.kubernetes.io/part-of: docs-to-data-to-lora
 data:
-  # Core/job API for the currently deployed nemo-platform Helm release.
-  # Confirm with `kubectl get svc -n nemo-peft` after chart upgrades; this
-  # cluster exposes service-specific APIs instead of a `nemo-platform-api`
-  # aggregate service.
-  NMP_BASE_URL: "http://nemo-core-api:8000"
+  # Go-forward NeMo Platform API control plane. The 26.3.1 Helm chart renders
+  # the platform base URL from the API service on port 8080; with the release
+  # name used by this repo's install sketch that service is expected to be
+  # nemo-platform-api.
+  NMP_BASE_URL: "http://nemo-platform-api:8080"
   NMP_WORKSPACE: "default"
 
-  # Service-specific aliases allow existing scripts to run while their payloads
-  # are migrated to first-class NeMo Platform SDK calls.
-  NMP_CUSTOMIZER_URL: "http://nemo-customizer:8000"
-  NMP_DATA_DESIGNER_URL: "http://nemo-data-designer:8000"
-  NMP_EVALUATOR_URL: "http://nemo-evaluator:7331"
-  # Temporary evaluator target compatibility until native NIM Proxy is verified.
-  NMP_INFERENCE_GATEWAY_URL: "http://rag-oai-proxy.runai-rag.svc.cluster.local:8080"
-  NMP_ENTITY_STORE_URL: "http://nemo-entity-store:8000"
+  # Platform-native SDK/REST clients should talk to the control-plane API. Keep
+  # these aliases so older entrypoints can read service-specific env names while
+  # still resolving to the Platform API.
+  NMP_CUSTOMIZER_URL: "http://nemo-platform-api:8080"
+  NMP_DATA_DESIGNER_URL: "http://nemo-platform-api:8080"
+  NMP_EVALUATOR_URL: "http://nemo-platform-api:8080"
+  NMP_ENTITY_STORE_URL: "http://nemo-platform-api:8080"
+
+  # OpenAI-compatible inference gateway route. Evaluator target registration
+  # appends /v1/chat/completions to this base.
+  NMP_INFERENCE_GATEWAY_URL: "http://nemo-platform-api:8080/v2/workspaces/default/inference/gateway/openai/-"
+
+  # Data Store remains a storage data-plane compatibility endpoint for jobs that
+  # still push or clone HF-style repos directly. Platform FileSets are the
+  # preferred Customizer handoff.
   NMP_DATASTORE_URL: "http://nemo-data-store:3000"
   NMP_DATASTORE_HF_ENDPOINT: "http://nemo-data-store:3000/v1/hf"
-
-  # Temporary compatibility path for code that still clones or pushes
-  # HF-style Git repos directly. Platform FileSets are now available for
-  # Customizer dataset handoff; TIES clone mode still uses this endpoint.
   NMP_DATASTORE_GIT_BASE: "http://nemo-data-store:3000"

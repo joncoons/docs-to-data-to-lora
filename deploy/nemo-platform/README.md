@@ -47,25 +47,38 @@ helm upgrade --install nemo-platform \
 kubectl apply -f deploy/nemo-platform/service-plane-configmap.yaml
 ```
 
-## Service Plane ConfigMap
+## Service Plane ConfigMaps
 
-`service-plane-configmap.yaml` is the compatibility layer used by the
-repository-owned Jobs. It defines `NMP_BASE_URL`, `NMP_WORKSPACE`, and
-service-specific aliases such as `NMP_EVALUATOR_URL` and
-`NMP_INFERENCE_GATEWAY_URL`. The live validation on 2026-05-29 showed this
-cluster exposes service-specific APIs (`nemo-core-api`, `nemo-customizer`,
-`nemo-entity-store`, `nemo-evaluator`) rather than a `nemo-platform-api`
-aggregate service. Verify with `kubectl get svc -n nemo-peft` after chart
-upgrades and update the aliases if NVIDIA changes service names.
+`service-plane-configmap.yaml` is the go-forward NeMo Platform control-plane
+configuration for repository-owned Jobs. It defines `NMP_BASE_URL`,
+`NMP_WORKSPACE`, and compatibility aliases such as `NMP_CUSTOMIZER_URL` and
+`NMP_EVALUATOR_URL`; those aliases intentionally resolve to the Platform API
+base URL instead of service-specific microservice URLs. NVIDIA's current Helm
+chart reference generates the platform `base_url` from the API service on port
+8080, and this repo's install sketch assumes the release name yields
+`http://nemo-platform-api:8080`. Verify with `kubectl get svc -n nemo-peft`
+after installing or upgrading the chart.
+
+`NMP_INFERENCE_GATEWAY_URL` points at the Platform OpenAI-compatible inference
+gateway route, not a standalone NIM Proxy service:
+
+```text
+http://nemo-platform-api:8080/v2/workspaces/default/inference/gateway/openai/-
+```
+
+Evaluator target registration appends `/v1/chat/completions` to that base.
 
 `NMP_DATASTORE_GIT_BASE` intentionally remains a direct Git/Data Store endpoint
-for compatibility paths that still clone or push HF-style repositories.
-`NMP_INFERENCE_GATEWAY_URL` currently points at the legacy `rag-oai-proxy`
-service because a native NIM Proxy service was not present in the validated
-cluster; replace it once the native Evaluator target path is verified. The
+for compatibility paths that still clone or push HF-style repositories. The
 Customizer training path now has a Platform FileSet handoff in
 `deploy/platform-filesets/`; TIES clone mode is the remaining direct Git/Data
 Store consumer.
+
+`service-plane-configmap.legacy-25.12.yaml` preserves the service-specific
+settings discovered during live validation on 2026-05-29. Use that overlay only
+for the current 25.12 microservice deployment, which did not expose
+`nemo-platform-api` and did not include the `nemo_platform` SDK in service pods.
+Do not treat that overlay as the target showcase architecture.
 
 ## Task Images
 

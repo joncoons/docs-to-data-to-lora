@@ -4,6 +4,7 @@ Explicit legacy service variables still win so existing standalone
 microservice deployments keep working, but Platform deployments can set the
 NMP_* variables once and let the jobs inherit them.
 """
+
 from __future__ import annotations
 
 import os
@@ -22,11 +23,16 @@ def env_first(*names: str, default: str | None = None) -> str | None:
 
 
 def default_nmp_base_url() -> str:
-    return env_first("NMP_BASE_URL", default=DEFAULT_LOCAL_PLATFORM_URL) or DEFAULT_LOCAL_PLATFORM_URL
+    return (
+        env_first("NMP_BASE_URL", default=DEFAULT_LOCAL_PLATFORM_URL) or DEFAULT_LOCAL_PLATFORM_URL
+    )
 
 
 def default_nmp_workspace() -> str:
-    return env_first("NMP_WORKSPACE", "DATASET_NAMESPACE", default=DEFAULT_WORKSPACE) or DEFAULT_WORKSPACE
+    return (
+        env_first("NMP_WORKSPACE", "DATASET_NAMESPACE", default=DEFAULT_WORKSPACE)
+        or DEFAULT_WORKSPACE
+    )
 
 
 def default_customizer_url() -> str:
@@ -50,11 +56,20 @@ def default_data_designer_url() -> str:
     )
 
 
+def platform_openai_gateway_url(
+    base_url: str | None = None,
+    workspace: str | None = None,
+) -> str:
+    base = (base_url or default_nmp_base_url()).rstrip("/")
+    ws = workspace or default_nmp_workspace()
+    return f"{base}/v2/workspaces/{ws}/inference/gateway/openai/-"
+
+
 def default_inference_gateway_url() -> str:
-    return (
-        env_first("NIM_PROXY_URL", "NMP_INFERENCE_GATEWAY_URL", "NMP_BASE_URL")
-        or DEFAULT_LOCAL_PLATFORM_URL
-    )
+    explicit = env_first("NIM_PROXY_URL", "NMP_INFERENCE_GATEWAY_URL")
+    if explicit:
+        return explicit
+    return platform_openai_gateway_url()
 
 
 def default_entity_store_url() -> str:
@@ -79,7 +94,4 @@ def default_data_store_hf_endpoint() -> str:
 
 
 def default_data_store_git_base() -> str:
-    return (
-        env_first("DATA_STORE_GIT_BASE", "NMP_DATASTORE_GIT_BASE")
-        or LEGACY_DATA_STORE_GIT_BASE
-    )
+    return env_first("DATA_STORE_GIT_BASE", "NMP_DATASTORE_GIT_BASE") or LEGACY_DATA_STORE_GIT_BASE

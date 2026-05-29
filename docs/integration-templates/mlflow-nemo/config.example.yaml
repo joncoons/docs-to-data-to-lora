@@ -9,12 +9,12 @@ mlflow:
 nemo:
   workspace: "default"
   project: "docs-to-data-to-lora"
-  platform_base_url: "http://nemo-core-api:8000"
-  customizer_url: "http://nemo-customizer:8000"
-  data_designer_url: "http://nemo-data-designer:8000"
-  evaluator_url: "http://nemo-evaluator:7331"
-  inference_gateway_url: "http://rag-oai-proxy.runai-rag.svc.cluster.local:8080"  # temporary until native NIM Proxy is verified
-  entity_store_url: "http://nemo-entity-store:8000"
+  platform_base_url: "http://nemo-platform-api:8080"
+  customizer_url: "http://nemo-platform-api:8080"
+  data_designer_url: "http://nemo-platform-api:8080"
+  evaluator_url: "http://nemo-platform-api:8080"
+  inference_gateway_url: "http://nemo-platform-api:8080/v2/workspaces/default/inference/gateway/openai/-"
+  entity_store_url: "http://nemo-platform-api:8080"
   data_store_url: "http://nemo-data-store:3000"
   data_store_internal_hf_endpoint: "http://nemo-data-store:3000/v1/hf"
   data_store_git_base: "http://nemo-data-store:3000"  # TIES/Data Store compatibility
