@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -24,13 +25,25 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from scripts.nemo_platform import default_customizer_url  # noqa: E402
+from scripts.nemo_platform import default_customizer_url, default_nmp_workspace  # noqa: E402
 from scripts.stage3.customizer_client import CustomizerClient, JobStatus  # noqa: E402
+from scripts.stage3.platform_customizer import (  # noqa: E402
+    DEFAULT_LORA_DROPOUT,
+    DEFAULT_MAX_SEQ_LENGTH,
+    DEFAULT_PLATFORM_PAYLOAD_FORMAT,
+    build_lora_training_spec,
+    build_mlflow_integration,
+    build_platform_customizer_job,
+    build_platform_customizer_spec,
+    fileset_uri_from_ref,
+    model_entity_for_base,
+)
 from scripts.stage3.moe_models import MoEAdapterSpec  # noqa: E402
 
 log = logging.getLogger(__name__)
 
 DEFAULT_CUSTOMIZER_URL = default_customizer_url()
+DEFAULT_WORKSPACE = default_nmp_workspace()
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -131,6 +144,99 @@ def submit_adapter_job_moe(
     return client.submit_job(cfg)
 
 
+def build_platform_customizer_payload_moe(
+    spec: MoEAdapterSpec,
+    *,
+    workspace: str,
+    dataset_entity: str,
+    output_model_entity: str,
+    description: str,
+    model_entity: str | None = None,
+    dataset_fileset_uri: str | None = None,
+    batch_size: int = 8,
+    epochs: int = 2,
+    learning_rate: float = 1.0e-4,
+    max_seq_length: int = DEFAULT_MAX_SEQ_LENGTH,
+    lora_dropout: float = DEFAULT_LORA_DROPOUT,
+    mlflow_tracking_uri: str | None = None,
+    mlflow_experiment_name: str | None = None,
+    mlflow_run_name: str | None = None,
+) -> dict:
+    """Build NeMo Platform SDK create-job args for this MoE shard."""
+    output_workspace, output_name = output_model_entity.split("/", 1)
+    job_workspace = workspace or output_workspace
+    training = build_lora_training_spec(
+        rank=spec.rank,
+        alpha=spec.alpha,
+        batch_size=batch_size,
+        epochs=epochs,
+        learning_rate=learning_rate,
+        max_seq_length=max_seq_length,
+        dropout=lora_dropout,
+    )
+    integrations = build_mlflow_integration(
+        tracking_uri=mlflow_tracking_uri,
+        experiment_name=mlflow_experiment_name,
+        run_name=mlflow_run_name,
+        description=description,
+        tags={
+            "adapter_name": spec.adapter_name,
+            "collection": spec.collection,
+            "base_model": spec.base_model,
+            "rank": str(spec.rank),
+            "shard": spec.shard,
+            "stage": "stage3",
+        },
+    )
+    platform_spec = build_platform_customizer_spec(
+        model_entity=model_entity or model_entity_for_base(spec.base_model, job_workspace),
+        dataset_fileset_uri=dataset_fileset_uri
+        or fileset_uri_from_ref(dataset_entity, default_workspace=job_workspace),
+        output_name=output_name,
+        training=training,
+        integrations=integrations,
+    )
+    return build_platform_customizer_job(
+        name=spec.adapter_name,
+        workspace=job_workspace,
+        spec=platform_spec,
+    )
+
+
+def submit_adapter_job_moe_platform(
+    spec: MoEAdapterSpec,
+    *,
+    workspace: str,
+    dataset_entity: str,
+    output_model_entity: str,
+    description: str,
+    client: CustomizerClient,
+    model_entity: str | None = None,
+    dataset_fileset_uri: str | None = None,
+) -> str:
+    """Build a Platform spec and create the MoE Customizer job through the SDK."""
+    payload = build_platform_customizer_payload_moe(
+        spec,
+        workspace=workspace,
+        dataset_entity=dataset_entity,
+        output_model_entity=output_model_entity,
+        description=description,
+        model_entity=model_entity,
+        dataset_fileset_uri=dataset_fileset_uri,
+    )
+    log.info(
+        "Submitting Platform MoE adapter %s on model %s shard=%s",
+        spec.adapter_name,
+        payload["spec"]["model"],
+        spec.shard,
+    )
+    return client.submit_platform_job(
+        name=payload["name"],
+        workspace=payload["workspace"],
+        spec=payload["spec"],
+    )
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -146,6 +252,23 @@ def main() -> int:
     )
     ap.add_argument("--rank", required=True, type=int, choices=[16, 32])
     ap.add_argument("--shard", required=True, choices=["a", "b"])
+    ap.add_argument(
+        "--payload-format",
+        choices=["platform", "legacy"],
+        default=DEFAULT_PLATFORM_PAYLOAD_FORMAT,
+        help="Dry-run/submit payload shape. Defaults to CUSTOMIZER_PAYLOAD_FORMAT or platform.",
+    )
+    ap.add_argument("--workspace", default=DEFAULT_WORKSPACE)
+    ap.add_argument("--model-entity", default=None)
+    ap.add_argument("--dataset-fileset-uri", default=None)
+    ap.add_argument("--batch-size", type=int, default=8)
+    ap.add_argument("--epochs", type=int, default=2)
+    ap.add_argument("--learning-rate", type=float, default=1.0e-4)
+    ap.add_argument("--max-seq-length", type=int, default=DEFAULT_MAX_SEQ_LENGTH)
+    ap.add_argument("--lora-dropout", type=float, default=DEFAULT_LORA_DROPOUT)
+    ap.add_argument("--mlflow-tracking-uri", default=os.getenv("MLFLOW_TRACKING_URI"))
+    ap.add_argument("--mlflow-experiment-name", default=os.getenv("MLFLOW_EXPERIMENT_NAME"))
+    ap.add_argument("--mlflow-run-name", default=os.getenv("MLFLOW_RUN_NAME"))
     ap.add_argument(
         "--customizer-url",
         default=DEFAULT_CUSTOMIZER_URL,
@@ -182,26 +305,53 @@ def main() -> int:
     output_model_entity = f"default/{adapter_name}"
     description = f"Stage 3 MoE — {coll_short} × nemotron-nano-30b r{rank} shard-{shard}"
 
-    if args.dry_run:
-        cfg = build_customizer_config_moe(
+    if args.payload_format == "platform":
+        payload = build_platform_customizer_payload_moe(
+            spec,
+            workspace=args.workspace,
+            dataset_entity=dataset_entity,
+            output_model_entity=output_model_entity,
+            description=description,
+            model_entity=args.model_entity,
+            dataset_fileset_uri=args.dataset_fileset_uri,
+            batch_size=args.batch_size,
+            epochs=args.epochs,
+            learning_rate=args.learning_rate,
+            max_seq_length=args.max_seq_length,
+            lora_dropout=args.lora_dropout,
+            mlflow_tracking_uri=args.mlflow_tracking_uri,
+            mlflow_experiment_name=args.mlflow_experiment_name,
+            mlflow_run_name=args.mlflow_run_name,
+        )
+    else:
+        payload = build_customizer_config_moe(
             spec,
             NANO_CONFIG_TEMPLATE,
             dataset_entity,
             output_model_entity,
             description,
         )
-        print(json.dumps(cfg, indent=2))
+
+    if args.dry_run:
+        print(json.dumps(payload, indent=2))
         return 0
 
     with CustomizerClient(args.customizer_url) as client:
-        job_id = submit_adapter_job_moe(
-            spec,
-            NANO_CONFIG_TEMPLATE,
-            dataset_entity=dataset_entity,
-            output_model_entity=output_model_entity,
-            description=description,
-            client=client,
-        )
+        if args.payload_format == "platform":
+            job_id = client.submit_platform_job(
+                name=payload["name"],
+                workspace=payload["workspace"],
+                spec=payload["spec"],
+            )
+        else:
+            job_id = submit_adapter_job_moe(
+                spec,
+                NANO_CONFIG_TEMPLATE,
+                dataset_entity=dataset_entity,
+                output_model_entity=output_model_entity,
+                description=description,
+                client=client,
+            )
         log.info(
             "Submitted: job_id=%s adapter=%s output_model=%s",
             job_id,

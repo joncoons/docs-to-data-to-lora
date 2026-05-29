@@ -72,9 +72,10 @@ DATA_STORE_HF_ENDPOINT <- NMP_DATASTORE_HF_ENDPOINT
 ```
 
 `DATA_STORE_GIT_BASE` remains a compatibility endpoint for the current
-HF/Git-style upload path. The Platform-native follow-up is to register/upload
-training artifacts as FileSets and hand `fileset://workspace/name` URIs to
-Customizer.
+HF/Git-style upload path. For Platform-native training, run
+`deploy/platform-filesets/` after this Job; it uploads the same finalized
+datasets and lineage sidecars as FileSets and produces `fileset://workspace/name`
+URIs for Customizer.
 
 ## Observability Output
 

@@ -12,7 +12,7 @@ from __future__ import annotations
 import enum
 import logging
 import time
-from typing import Optional
+from typing import Any, Optional
 
 import httpx
 
@@ -43,6 +43,19 @@ _STATUS_MAP = {
 }
 
 
+def _extract_job_id(job: Any) -> str:
+    for attr in ("id", "job_id", "name"):
+        value = getattr(job, attr, None)
+        if value:
+            return str(value)
+    if isinstance(job, dict):
+        for key in ("id", "job_id", "name"):
+            if job.get(key):
+                return str(job[key])
+    return str(job)
+
+
+
 class CustomizerClient:
     def __init__(self, base_url: str, api_key: str = "", timeout: float = 30.0):
         self.base_url = base_url.rstrip("/")
@@ -58,6 +71,25 @@ class CustomizerClient:
         resp.raise_for_status()
         body = resp.json()
         return body["id"]
+
+
+    def submit_platform_job(self, name: str, workspace: str, spec: dict) -> str:
+        """Create a NeMo Platform Customizer job through the Platform SDK."""
+        try:
+            from nemo_platform import NeMoPlatform  # type: ignore
+        except ImportError as exc:
+            raise RuntimeError(
+                "NeMo Platform SDK is not installed. Install nemo-platform or "
+                "run with --payload-format legacy against standalone Customizer."
+            ) from exc
+
+        client = NeMoPlatform(base_url=self.base_url, workspace=workspace)
+        job = client.customization.jobs.create(
+            name=name,
+            workspace=workspace,
+            spec=spec,
+        )
+        return _extract_job_id(job)
 
     def get_status(self, job_id: str) -> JobStatus:
         resp = self._http.get(f"/v1/customization/jobs/{job_id}")

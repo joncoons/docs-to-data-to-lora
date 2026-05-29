@@ -408,14 +408,16 @@ dataset and adapter handoff moves to NeMo Platform FileSets.
 4. Evaluation matrix orchestration Job. Implemented in `deploy/evaluation-matrix/`.
 5. Dataset finalization Job. Implemented in `deploy/dataset-finalization/`.
 6. Dataset registration Job. Implemented in `deploy/dataset-registration/`.
-7. Stage 0 corpus/provenance Job. Implemented in `deploy/stage0-corpus-prep/`.
-8. Stage 1A entailment shard Job. Implemented in `deploy/stage1a-entailment-shards/`.
-9. Stage 1B/1C generation shard Jobs.
-10. Gap analysis Job and Data Designer submission. Gap manifest/Data Designer seed planning is implemented in `scripts/pipeline/stage1_5_gapfill.py`; prepare/collect K8s execution is implemented in `deploy/data-designer-gapfill/`, with live submission enabled when the NVIDIA SDK is included in the image.
-11. Curator service integration. Curator handoff prepare/collect is implemented in `scripts/pipeline/curator_handoff.py` and `deploy/curator/`; native heuristic filtering is implemented in `deploy/curator/native-filter-job.yaml`, with GPU exact/fuzzy/semantic dedup left as a cluster-sized Curator extension.
+7. Platform FileSet upload Job for Customizer handoff. Implemented in `deploy/platform-filesets/`.
+8. Stage 0 corpus/provenance Job. Implemented in `deploy/stage0-corpus-prep/`.
+9. Stage 1A entailment shard Job. Implemented in `deploy/stage1a-entailment-shards/`.
+10. Stage 1B/1C generation shard Jobs.
+11. Gap analysis Job and Data Designer submission. Gap manifest/Data Designer seed planning is implemented in `scripts/pipeline/stage1_5_gapfill.py`; prepare/collect K8s execution is implemented in `deploy/data-designer-gapfill/`, with live submission enabled when the NVIDIA SDK is included in the image.
+12. Curator service integration. Curator handoff prepare/collect is implemented in `scripts/pipeline/curator_handoff.py` and `deploy/curator/`; native heuristic filtering is implemented in `deploy/curator/native-filter-job.yaml`, with GPU exact/fuzzy/semantic dedup left as a cluster-sized Curator extension.
 
 This order gives immediate operational value while avoiding a large rewrite of
-the source-grounded dataset pipeline. The next Platform-specific refactors are
-Customizer job creation with `spec` + `fileset://` datasets, Data Designer
-submission through `nemo_platform`, and then optional Evaluator v2 adoption once
-its preview API is required.
+the source-grounded dataset pipeline. Customizer job creation now has a
+Platform `spec` + `fileset://` path. The next Platform-specific refactors are
+live in-cluster validation of the SDK submission path, Data Designer submission
+through `nemo_platform`, and then optional Evaluator v2 adoption once its
+preview API is required.

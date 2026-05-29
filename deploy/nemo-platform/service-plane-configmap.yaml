@@ -24,7 +24,7 @@ data:
   NMP_DATASTORE_URL: "http://nemo-platform-api:8080"
   NMP_DATASTORE_HF_ENDPOINT: "http://nemo-platform-api:8080/v1/hf"
 
-  # Temporary compatibility path for code that still clones HF-style Git repos
-  # directly. Replace this with FileSet-based handoff during the Customizer
-  # payload migration.
+  # Temporary compatibility path for code that still clones or pushes
+  # HF-style Git repos directly. Platform FileSets are now available for
+  # Customizer dataset handoff; TIES clone mode still uses this endpoint.
   NMP_DATASTORE_GIT_BASE: "http://nemo-data-store:3000"

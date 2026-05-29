@@ -101,6 +101,7 @@ def test_k8s_jobs_source_platform_service_plane_configmap():
         "ties-merge/job.yaml": {
             "DATA_STORE_GIT_BASE": "NMP_DATASTORE_GIT_BASE",
         },
+        "platform-filesets/job.yaml": {},
     }
 
     for rel_path, env_expectations in expectations.items():
@@ -111,3 +112,30 @@ def test_k8s_jobs_source_platform_service_plane_configmap():
         env = _env_by_name(container)
         for env_name, key in env_expectations.items():
             assert _configmap_key(env[env_name]) == key
+
+
+def test_platform_fileset_job_uploads_from_dataset_pvc_to_observability_pvc():
+    container = _first_container(REPO_ROOT / "deploy" / "platform-filesets" / "job.yaml")
+
+    assert container["envFrom"] == [
+        {"configMapRef": {"name": "nemo-platform-service-plane"}}
+    ]
+    assert "--include-train" in container["args"]
+    assert "--include-test" in container["args"]
+    assert "--include-context-test" in container["args"]
+    mounts = {item["name"]: item for item in container["volumeMounts"]}
+    assert mounts["dataset-artifacts"]["mountPath"] == "/datasets"
+    assert mounts["dataset-artifacts"]["readOnly"] is True
+    assert mounts["fileset-output"]["mountPath"] == "/outputs"
+
+
+def test_platform_aware_containerfiles_copy_shared_nemo_platform_helper():
+    for rel_path in (
+        "data-designer-gapfill/Containerfile",
+        "dataset-registration/Containerfile",
+        "evaluation-matrix/Containerfile",
+        "evaluator-registration/Containerfile",
+        "platform-filesets/Containerfile",
+    ):
+        text = (REPO_ROOT / "deploy" / rel_path).read_text()
+        assert "COPY scripts/nemo_platform.py" in text or "COPY scripts /app/scripts" in text

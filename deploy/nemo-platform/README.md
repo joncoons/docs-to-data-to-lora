@@ -57,8 +57,10 @@ called `nemo-platform`, which normally yields `nemo-platform-api:8080`; verify
 with `kubectl get svc -n nemo-peft` if the release name changes.
 
 `NMP_DATASTORE_GIT_BASE` intentionally remains a direct Git/Data Store endpoint
-for the current dataset upload and TIES clone paths. Replace that with
-FileSet-based handoff during the Customizer payload migration.
+for compatibility paths that still clone or push HF-style repositories. The
+Customizer training path now has a Platform FileSet handoff in
+`deploy/platform-filesets/`; TIES clone mode is the remaining direct Git/Data
+Store consumer.
 
 ## Task Images
 

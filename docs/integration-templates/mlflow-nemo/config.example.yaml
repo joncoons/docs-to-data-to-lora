@@ -17,7 +17,8 @@ nemo:
   entity_store_url: "http://nemo-platform-api:8080"
   data_store_url: "http://nemo-platform-api:8080"
   data_store_internal_hf_endpoint: "http://nemo-platform-api:8080/v1/hf"
-  data_store_git_base: "http://nemo-data-store:3000"  # temporary compatibility
+  data_store_git_base: "http://nemo-data-store:3000"  # TIES/Data Store compatibility
+  customizer_payload_format: "platform"
 
 data_store_auth:
   # Prefer environment variables in implementation.
