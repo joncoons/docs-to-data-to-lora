@@ -12,6 +12,7 @@ Usage:
   python3 scripts/stage3/train_adapter_moe.py \\
       --collection nim_curated --rank 16 --shard a [--dry-run] [--wait]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -55,8 +56,8 @@ NANO_CONFIG_TEMPLATE = "nvidia/nemotron-3-nano-30b-a3b@v1.0+96GB-singleGPU"
 # Maps (collection, shard) → fully-qualified entity-store dataset ref.
 # These must exist in entity-store before submitting (created by build_moe_shards.py).
 _SHARD_DATASET_FOR: dict[tuple[str, str], str] = {
-    ("nim_curated", "a"):        "default/stage3-nim-curated-shard-a",
-    ("nim_curated", "b"):        "default/stage3-nim-curated-shard-b",
+    ("nim_curated", "a"): "default/stage3-nim-curated-shard-a",
+    ("nim_curated", "b"): "default/stage3-nim-curated-shard-b",
     ("nemo_usvcs_curated", "a"): "default/stage3-nemo-usvcs-curated-shard-a",
     ("nemo_usvcs_curated", "b"): "default/stage3-nemo-usvcs-curated-shard-b",
 }
@@ -71,6 +72,7 @@ _CORPUS_SHORT = {
 # ---------------------------------------------------------------------------
 # Config builder
 # ---------------------------------------------------------------------------
+
 
 def build_customizer_config_moe(
     spec: MoEAdapterSpec,
@@ -104,15 +106,15 @@ def build_customizer_config_moe(
             "optimizer": "adamw_with_cosine_annealing",
             "adam_beta1": 0.9,
             "adam_beta2": 0.99,
-            "batch_size": 8,              # MoE: 8 (dense: 16)
+            "batch_size": 8,  # MoE: 8 (dense: 16)
             "epochs": 2,
             "learning_rate": 1.0e-4,
             "log_every_n_steps": 10,
             "lora": {
                 "adapter_dim": spec.rank,
-                "alpha": spec.alpha,      # MoEAdapterSpec guarantees alpha == rank
+                "alpha": spec.alpha,  # MoEAdapterSpec guarantees alpha == rank
                 "adapter_dropout": None,
-                "target_modules": None,   # use Customizer defaults per base model
+                "target_modules": None,  # use Customizer defaults per base model
             },
             "sequence_packing_enabled": False,  # MoE + sm_120 constraint
         },
@@ -122,6 +124,7 @@ def build_customizer_config_moe(
 # ---------------------------------------------------------------------------
 # Job submitter
 # ---------------------------------------------------------------------------
+
 
 def submit_adapter_job_moe(
     spec: MoEAdapterSpec,
@@ -241,6 +244,7 @@ def submit_adapter_job_moe_platform(
 # CLI
 # ---------------------------------------------------------------------------
 
+
 def main() -> int:
     ap = argparse.ArgumentParser(
         description="Submit one Customizer LoRA job for Nemotron-3-Nano-30B-A3B (MoE)."
@@ -270,6 +274,16 @@ def main() -> int:
     ap.add_argument("--mlflow-experiment-name", default=os.getenv("MLFLOW_EXPERIMENT_NAME"))
     ap.add_argument("--mlflow-run-name", default=os.getenv("MLFLOW_RUN_NAME"))
     ap.add_argument(
+        "--poll-interval-s",
+        type=float,
+        default=float(os.getenv("CUSTOMIZER_POLL_INTERVAL_S", "30")),
+    )
+    ap.add_argument(
+        "--timeout-s",
+        type=float,
+        default=float(os.getenv("CUSTOMIZER_TIMEOUT_S", str(4 * 3600))),
+    )
+    ap.add_argument(
         "--customizer-url",
         default=DEFAULT_CUSTOMIZER_URL,
         help=(
@@ -285,7 +299,7 @@ def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
     rank = args.rank
-    alpha = rank                     # α/r = 1.0 for MoE
+    alpha = rank  # α/r = 1.0 for MoE
     shard = args.shard
     collection = args.collection
     coll_short = _CORPUS_SHORT[collection]
@@ -360,7 +374,19 @@ def main() -> int:
         )
         print(job_id)
         if args.wait:
-            terminal = client.wait_until_done(job_id)
+            if args.payload_format == "platform":
+                terminal = client.wait_platform_until_done(
+                    name=payload["name"],
+                    workspace=payload["workspace"],
+                    poll_interval_s=args.poll_interval_s,
+                    timeout_s=args.timeout_s,
+                )
+            else:
+                terminal = client.wait_until_done(
+                    job_id,
+                    poll_interval_s=args.poll_interval_s,
+                    timeout_s=args.timeout_s,
+                )
             log.info("Terminal status: %s", terminal.value)
             return 0 if terminal == JobStatus.COMPLETED else 1
         return 0

@@ -9,9 +9,10 @@ as Kubernetes Jobs or NeMo/NIM services.
 
 - Batch transforms should run as Kubernetes Jobs.
 - Long-running inference should run as NIM/NIM Proxy services.
-- Training and evaluation should use NeMo Customizer and NeMo Evaluator.
-- Dataset bytes should move through NeMo Data Store.
-- Dataset/model identities should move through NeMo Entity Store.
+- Training and evaluation should use NeMo Platform Customizer and NeMo Evaluator.
+- Customizer dataset handoff should use NeMo Platform FileSets.
+- Dataset bytes should still be mirrored through NeMo Data Store where evaluation, lineage, or compatibility needs it.
+- Dataset/model identities should use NeMo Platform entities, with Entity Store compatibility retained where needed.
 - Secrets must come from Kubernetes Secrets, not source code.
 - Jobs should emit structured observability files that can be exported to MLflow.
 - Local scripts should be dry-run/debug entry points, not the only production
@@ -362,6 +363,36 @@ Dataset finalization records `curator/curation_manifest.json`, the Curator job
 ID, Curator config hash, accepted/rejected sample artifacts, and split outputs
 into the dataset version manifest.
 
+## Twelfth K8s Template: Platform Model Entities and Customizer Training
+
+The Platform-native Customizer handoff now has two control-plane Jobs after
+FileSet upload:
+
+```text
+deploy/platform-models/
+  Containerfile
+  README.md
+  job.yaml
+
+deploy/customizer-training/
+  Containerfile
+  README.md
+  dense-job.yaml
+  moe-job.yaml
+```
+
+`platform-models` verifies the base Model Entities and model FileSets required
+by Customizer, then writes `platform_model_entities_manifest.json` for MLflow
+lineage. It supports `--create-missing` for deliberate first-cluster bootstrap,
+but the default Job is verify-only because model import may require accepted
+Hugging Face licenses, Platform secrets, and large checkpoint downloads.
+
+`customizer-training` submits dense and MoE LoRA examples through the Platform
+SDK with `spec.model`, `spec.dataset=fileset://...`, `spec.training`, and native
+MLflow integration fields. The Jobs use `--wait`, which polls Platform
+Customizer status by job name/workspace so a Kubernetes pipeline step can track
+terminal state without owning the GPU training workload.
+
 ## K8s Resource Guidance
 
 | Workload | CPU | Memory | GPU | Storage |
@@ -372,6 +403,8 @@ into the dataset version manifest.
 | Stage 0 corpus prep | 1-4 | 4-16Gi | none | output PVC/Data Store |
 | Stage 1 generation shard | 1-4 | 2-8Gi | none client-side | output PVC/Data Store |
 | Curator prepare/collect | 2-8 | 4-32Gi | none | output PVC |
+| Platform model verification | 250m-500m | 512Mi-1Gi | none | observability PVC |
+| Customizer submit/poll | 250m-500m | 512Mi-1Gi | none in submitter | NeMo Platform owns training storage/GPU |
 | Native Curator dedup/filter | workload-dependent | workload-dependent | optional/likely for fuzzy/semantic | output PVC + Curator cache |
 
 ## Environment and Secret Pattern
@@ -409,15 +442,18 @@ dataset and adapter handoff moves to NeMo Platform FileSets.
 5. Dataset finalization Job. Implemented in `deploy/dataset-finalization/`.
 6. Dataset registration Job. Implemented in `deploy/dataset-registration/`.
 7. Platform FileSet upload Job for Customizer handoff. Implemented in `deploy/platform-filesets/`.
-8. Stage 0 corpus/provenance Job. Implemented in `deploy/stage0-corpus-prep/`.
-9. Stage 1A entailment shard Job. Implemented in `deploy/stage1a-entailment-shards/`.
-10. Stage 1B/1C generation shard Jobs.
-11. Gap analysis Job and Data Designer submission. Gap manifest/Data Designer seed planning is implemented in `scripts/pipeline/stage1_5_gapfill.py`; prepare/collect K8s execution is implemented in `deploy/data-designer-gapfill/`, with live submission enabled when the NVIDIA SDK is included in the image.
-12. Curator service integration. Curator handoff prepare/collect is implemented in `scripts/pipeline/curator_handoff.py` and `deploy/curator/`; native heuristic filtering is implemented in `deploy/curator/native-filter-job.yaml`, with GPU exact/fuzzy/semantic dedup left as a cluster-sized Curator extension.
+8. Platform Model Entity verification/import planning. Implemented in `deploy/platform-models/`.
+9. Platform Customizer dense/MoE submit-poll Jobs. Implemented in `deploy/customizer-training/`.
+10. Stage 0 corpus/provenance Job. Implemented in `deploy/stage0-corpus-prep/`.
+11. Stage 1A entailment shard Job. Implemented in `deploy/stage1a-entailment-shards/`.
+12. Stage 1B/1C generation shard Jobs.
+13. Gap analysis Job and Data Designer submission. Gap manifest/Data Designer seed planning is implemented in `scripts/pipeline/stage1_5_gapfill.py`; prepare/collect K8s execution is implemented in `deploy/data-designer-gapfill/`, with live submission enabled when the NVIDIA SDK is included in the image.
+14. Curator service integration. Curator handoff prepare/collect is implemented in `scripts/pipeline/curator_handoff.py` and `deploy/curator/`; native heuristic filtering is implemented in `deploy/curator/native-filter-job.yaml`, with GPU exact/fuzzy/semantic dedup left as a cluster-sized Curator extension.
 
 This order gives immediate operational value while avoiding a large rewrite of
 the source-grounded dataset pipeline. Customizer job creation now has a
-Platform `spec` + `fileset://` path. The next Platform-specific refactors are
-live in-cluster validation of the SDK submission path, Data Designer submission
-through `nemo_platform`, and then optional Evaluator v2 adoption once its
-preview API is required.
+Platform `spec` + `fileset://` path, base Model Entity verification, and
+Kubernetes submit/poll templates. The next Platform-specific refactors are live
+in-cluster validation of these SDK paths, Data Designer submission through
+`nemo_platform`, and optional Evaluator v2 adoption once its preview API is
+required.

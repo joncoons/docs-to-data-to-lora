@@ -44,7 +44,6 @@ def test_public_curator_pin_is_current_but_legacy_microservices_are_not_overstat
     }
 
 
-
 def _first_container(manifest_path: Path) -> dict:
     manifest = yaml.safe_load(manifest_path.read_text())
     return manifest["spec"]["template"]["spec"]["containers"][0]
@@ -102,13 +101,14 @@ def test_k8s_jobs_source_platform_service_plane_configmap():
             "DATA_STORE_GIT_BASE": "NMP_DATASTORE_GIT_BASE",
         },
         "platform-filesets/job.yaml": {},
+        "platform-models/job.yaml": {},
+        "customizer-training/dense-job.yaml": {},
+        "customizer-training/moe-job.yaml": {},
     }
 
     for rel_path, env_expectations in expectations.items():
         container = _first_container(REPO_ROOT / "deploy" / rel_path)
-        assert container["envFrom"] == [
-            {"configMapRef": {"name": "nemo-platform-service-plane"}}
-        ]
+        assert container["envFrom"] == [{"configMapRef": {"name": "nemo-platform-service-plane"}}]
         env = _env_by_name(container)
         for env_name, key in env_expectations.items():
             assert _configmap_key(env[env_name]) == key
@@ -117,9 +117,7 @@ def test_k8s_jobs_source_platform_service_plane_configmap():
 def test_platform_fileset_job_uploads_from_dataset_pvc_to_observability_pvc():
     container = _first_container(REPO_ROOT / "deploy" / "platform-filesets" / "job.yaml")
 
-    assert container["envFrom"] == [
-        {"configMapRef": {"name": "nemo-platform-service-plane"}}
-    ]
+    assert container["envFrom"] == [{"configMapRef": {"name": "nemo-platform-service-plane"}}]
     assert "--include-train" in container["args"]
     assert "--include-test" in container["args"]
     assert "--include-context-test" in container["args"]
@@ -136,6 +134,36 @@ def test_platform_aware_containerfiles_copy_shared_nemo_platform_helper():
         "evaluation-matrix/Containerfile",
         "evaluator-registration/Containerfile",
         "platform-filesets/Containerfile",
+        "platform-models/Containerfile",
+        "customizer-training/Containerfile",
     ):
         text = (REPO_ROOT / "deploy" / rel_path).read_text()
         assert "COPY scripts/nemo_platform.py" in text or "COPY scripts /app/scripts" in text
+
+
+def test_platform_model_job_verifies_model_entities_and_writes_manifest():
+    container = _first_container(REPO_ROOT / "deploy" / "platform-models" / "job.yaml")
+
+    assert container["envFrom"] == [{"configMapRef": {"name": "nemo-platform-service-plane"}}]
+    assert "--verify" in container["args"]
+    assert "--out" in container["args"]
+    assert any(arg.endswith("platform_model_entities_manifest.json") for arg in container["args"])
+    mounts = {item["name"]: item for item in container["volumeMounts"]}
+    assert mounts["model-entity-output"]["mountPath"] == "/outputs"
+
+
+def test_customizer_training_jobs_use_platform_payload_wait_and_mlflow_env():
+    for rel_path in (
+        "customizer-training/dense-job.yaml",
+        "customizer-training/moe-job.yaml",
+    ):
+        container = _first_container(REPO_ROOT / "deploy" / rel_path)
+        env = _env_by_name(container)
+
+        assert container["envFrom"] == [{"configMapRef": {"name": "nemo-platform-service-plane"}}]
+        assert env["CUSTOMIZER_PAYLOAD_FORMAT"]["value"] == "platform"
+        assert env["MLFLOW_EXPERIMENT_NAME"]["value"] == "docs-to-data-to-lora"
+        assert env["MLFLOW_TRACKING_URI"]["value"] == "http://mlflow:5000"
+        assert "--payload-format" in container["args"]
+        assert "platform" in container["args"]
+        assert "--wait" in container["args"]

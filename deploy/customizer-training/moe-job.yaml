@@ -1,0 +1,63 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: submit-stage3-moe-lora-shard-a
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: customizer-training
+    app.kubernetes.io/component: moe-lora
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: customizer-training
+        app.kubernetes.io/component: moe-lora
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: moe-lora
+          image: <registry>/docs-to-data-to-lora/customizer-training:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - python
+            - scripts/stage3/train_adapter_moe.py
+          envFrom:
+            - configMapRef:
+                name: nemo-platform-service-plane
+          env:
+            - name: CUSTOMIZER_PAYLOAD_FORMAT
+              value: platform
+            - name: MLFLOW_TRACKING_URI
+              value: http://mlflow:5000
+            - name: MLFLOW_EXPERIMENT_NAME
+              value: docs-to-data-to-lora
+            - name: MLFLOW_RUN_NAME
+              value: lora-nim-nemotron-nano-30b-r16-shard-a
+            - name: CUSTOMIZER_TIMEOUT_S
+              value: "43200"
+            - name: PIPELINE_RUN_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+          args:
+            - --collection
+            - nim_curated
+            - --rank
+            - "16"
+            - --shard
+            - a
+            - --payload-format
+            - platform
+            - --wait
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi

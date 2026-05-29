@@ -1,0 +1,21 @@
+# Lightweight image for verifying NeMo Platform base Model Entities.
+#
+# Build example:
+#   docker build -f deploy/platform-models/Containerfile -t docs-to-data-to-lora/platform-models:latest .
+FROM python:3.12-slim
+
+ARG NEMO_PLATFORM_REQUIREMENTS=""
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+RUN pip install --no-cache-dir httpx pydantic \
+    && if [ -n "$NEMO_PLATFORM_REQUIREMENTS" ]; then \
+         pip install --no-cache-dir $NEMO_PLATFORM_REQUIREMENTS; \
+       fi
+
+WORKDIR /app
+COPY scripts /app/scripts
+
+ENTRYPOINT ["python", "scripts/stage3/platform_model_entities.py"]

@@ -1,0 +1,21 @@
+# Lightweight image for submitting Stage 3 LoRA Customizer jobs through NeMo Platform.
+#
+# Build example:
+#   docker build -f deploy/customizer-training/Containerfile -t docs-to-data-to-lora/customizer-training:latest .
+FROM python:3.12-slim
+
+ARG NEMO_PLATFORM_REQUIREMENTS=""
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+RUN pip install --no-cache-dir httpx \
+    && if [ -n "$NEMO_PLATFORM_REQUIREMENTS" ]; then \
+         pip install --no-cache-dir $NEMO_PLATFORM_REQUIREMENTS; \
+       fi
+
+WORKDIR /app
+COPY scripts /app/scripts
+
+ENTRYPOINT ["python", "scripts/stage3/train_adapter.py"]

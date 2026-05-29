@@ -1,4 +1,5 @@
 """Stage 3 train-adapter CLI: submit one Customizer LoRA job per AdapterSpec."""
+
 from __future__ import annotations
 
 import argparse
@@ -232,6 +233,16 @@ def main() -> int:
     ap.add_argument("--mlflow-experiment-name", default=os.getenv("MLFLOW_EXPERIMENT_NAME"))
     ap.add_argument("--mlflow-run-name", default=os.getenv("MLFLOW_RUN_NAME"))
     ap.add_argument(
+        "--poll-interval-s",
+        type=float,
+        default=float(os.getenv("CUSTOMIZER_POLL_INTERVAL_S", "30")),
+    )
+    ap.add_argument(
+        "--timeout-s",
+        type=float,
+        default=float(os.getenv("CUSTOMIZER_TIMEOUT_S", str(4 * 3600))),
+    )
+    ap.add_argument(
         "--customizer-url",
         default=DEFAULT_CUSTOMIZER_URL,
         help=(
@@ -262,9 +273,7 @@ def main() -> int:
 
     dataset_entity = _DATASET_FOR_COLLECTION[args.collection]
     output_model_entity = f"default/{adapter_name}"
-    description = (
-        f"Stage 3 — {coll_short} × {base_short} LoRA r{rank}"
-    )
+    description = f"Stage 3 — {coll_short} × {base_short} LoRA r{rank}"
 
     if args.payload_format == "platform":
         payload = build_platform_customizer_payload(
@@ -321,7 +330,19 @@ def main() -> int:
         )
         print(job_id)
         if args.wait:
-            terminal = client.wait_until_done(job_id)
+            if args.payload_format == "platform":
+                terminal = client.wait_platform_until_done(
+                    name=payload["name"],
+                    workspace=payload["workspace"],
+                    poll_interval_s=args.poll_interval_s,
+                    timeout_s=args.timeout_s,
+                )
+            else:
+                terminal = client.wait_until_done(
+                    job_id,
+                    poll_interval_s=args.poll_interval_s,
+                    timeout_s=args.timeout_s,
+                )
             log.info("Terminal status: %s", terminal.value)
             return 0 if terminal == JobStatus.COMPLETED else 1
         return 0
