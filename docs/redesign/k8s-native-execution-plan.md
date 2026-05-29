@@ -318,9 +318,11 @@ and use `collect` to ingest downloaded Data Designer result records.
 NeMo Curator handoff is the native Stage 3 curation path. The Job prepares
 `provenance/dataset_samples.jsonl` as Curator-readable JSONL, copies the Curator
 config, collects retained/removed Curator records, writes `training.jsonl` and
-`validation.jsonl`, and emits MLflow-ready observability. Actual quality
-filtering and deduplication should run in the official NeMo Curator container or
-Curator-backed Dask/Ray cluster between `prepare` and `collect`.
+`validation.jsonl`, and emits MLflow-ready observability. The native filter
+Job now runs Curator `filter_documents` in the NeMo Curator container between
+`prepare` and `collect`; larger GPU exact/fuzzy/semantic dedup
+can use the same prepared input and output directories with a Curator-backed
+Dask/Ray cluster.
 
 Artifacts:
 
@@ -329,9 +331,11 @@ deploy/curator/
   Containerfile
   README.md
   job.yaml
+  native-filter-job.yaml
 
 configs/curator/
   sft-dedup-quality.yaml
+  sft-filter-documents.yaml
 ```
 
 Dataset finalization records `curator/curation_manifest.json`, the Curator job
@@ -381,7 +385,7 @@ Do not put NodePorts, passwords, or host-specific paths in scripts.
 8. Stage 1A entailment shard Job. Implemented in `deploy/stage1a-entailment-shards/`.
 9. Stage 1B/1C generation shard Jobs.
 10. Gap analysis Job and Data Designer submission. Gap manifest/Data Designer seed planning is implemented in `scripts/pipeline/stage1_5_gapfill.py`; prepare/collect K8s execution is implemented in `deploy/data-designer-gapfill/`, with live submission enabled when the NVIDIA SDK is included in the image.
-11. Curator service integration. Curator handoff prepare/collect is implemented in `scripts/pipeline/curator_handoff.py` and `deploy/curator/`; native Curator execution should run between those modes in the official Curator container or cluster.
+11. Curator service integration. Curator handoff prepare/collect is implemented in `scripts/pipeline/curator_handoff.py` and `deploy/curator/`; native heuristic filtering is implemented in `deploy/curator/native-filter-job.yaml`, with GPU exact/fuzzy/semantic dedup left as a cluster-sized Curator extension.
 
 This order gives immediate operational value while avoiding a large rewrite of
 the source-grounded dataset pipeline.

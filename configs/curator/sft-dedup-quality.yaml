@@ -12,6 +12,7 @@ input_path: /datasets/nim_curated/curator/input
 output_path: /datasets/nim_curated/curator/retained
 removed_path: /datasets/nim_curated/curator/removed
 scores_path: /datasets/nim_curated/curator/scores
+quality_filter_config: /workspace/configs/curator/sft-filter-documents.yaml
 text_field: text
 id_field: id
 

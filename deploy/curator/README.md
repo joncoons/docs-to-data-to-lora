@@ -5,14 +5,14 @@ repository still owns the SFT sample schema, lineage sidecars, split writing,
 and MLflow-ready observability JSON. NeMo Curator owns quality filtering and
 deduplication over the normalized `text` field.
 
-The handoff has two phases:
+The handoff has three phases:
 
 1. `prepare`: convert `provenance/dataset_samples.jsonl` into
    `curator/input/dataset_samples.jsonl`, copy the Curator config, and write a
    submission plan.
-2. Run native NeMo Curator in the official container or Dask/Ray cluster, with
-   retained records written to `curator/retained/` and removed records written
-   to `curator/removed/`.
+2. `native-filter`: run NeMo Curator `filter_documents` in the Curator image,
+   with retained records written to `curator/retained/`, removed records
+   written to `curator/removed/`, and scores written to `curator/scores/`.
 3. `collect`: read retained/removed records, write curated sample sidecars,
    create `training.jsonl` and `validation.jsonl`, and emit observability.
 
@@ -68,6 +68,26 @@ python scripts/pipeline/curator_handoff.py \
   --config-file configs/curator/sft-dedup-quality.yaml \
   --observability-dir /tmp/curator-observability/nim_curated
 ```
+
+## Native Filter Job
+
+After `prepare`, apply `deploy/curator/native-filter-job.yaml`. It runs the
+Curator `filter_documents` CLI against `curator/input/` using
+`configs/curator/sft-filter-documents.yaml` and writes the exact retained,
+removed, and score directories expected by `collect`.
+
+```bash
+kubectl apply -f deploy/curator/native-filter-job.yaml
+kubectl wait -n nemo-peft --for=condition=complete job/curator-native-filter-nim-curated
+```
+
+The default job uses `CURATOR_DEVICE=cpu`, which is suitable for the lightweight
+heuristic filter pass. For GPU-backed exact/fuzzy deduplication, use the same
+prepared input and Curator cache/output directories but switch the job to a GPU
+node pool, add `nvidia.com/gpu` resource limits, set `CURATOR_DEVICE=gpu`, and
+run Curator's documented exact/fuzzy dedup commands before `collect`. Semantic
+dedup is intentionally disabled in `configs/curator/sft-dedup-quality.yaml`
+until the showcase embedding model and GPU budget are selected.
 
 ## Local Collect
 

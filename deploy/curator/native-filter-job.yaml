@@ -1,0 +1,78 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: curator-native-filter-nim-curated
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: curator-native-filter
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: curator-native-filter
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: ngc-registry
+      containers:
+        - name: curator-native-filter
+          image: <registry>/docs-to-data-to-lora/curator:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: COLLECTION
+              value: nim_curated
+            - name: CURATOR_DEVICE
+              value: cpu
+            - name: CURATOR_NUM_WORKERS
+              value: "8"
+            - name: CURATOR_THREADS_PER_WORKER
+              value: "1"
+          command:
+            - bash
+            - -lc
+          args:
+            - |
+              set -euo pipefail
+
+              DATASET_DIR="/datasets/${COLLECTION}"
+              CURATOR_DIR="${DATASET_DIR}/curator"
+              mkdir -p \
+                "${CURATOR_DIR}/retained" \
+                "${CURATOR_DIR}/removed" \
+                "${CURATOR_DIR}/scores" \
+                "${CURATOR_DIR}/logs/native-filter"
+
+              filter_documents \
+                --input-data-dir="${CURATOR_DIR}/input" \
+                --filter-config-file=/workspace/configs/curator/sft-filter-documents.yaml \
+                --output-retained-document-dir="${CURATOR_DIR}/retained" \
+                --output-removed-document-dir="${CURATOR_DIR}/removed" \
+                --output-document-score-dir="${CURATOR_DIR}/scores" \
+                --log-dir="${CURATOR_DIR}/logs/native-filter" \
+                --device="${CURATOR_DEVICE}" \
+                --num-workers="${CURATOR_NUM_WORKERS}" \
+                --threads-per-worker="${CURATOR_THREADS_PER_WORKER}"
+          resources:
+            requests:
+              cpu: "2"
+              memory: 8Gi
+            limits:
+              cpu: "8"
+              memory: 32Gi
+          volumeMounts:
+            - name: dataset-artifacts
+              mountPath: /datasets
+            - name: observability-output
+              mountPath: /observability
+      volumes:
+        - name: dataset-artifacts
+          persistentVolumeClaim:
+            claimName: stage3-datasets
+        - name: observability-output
+          persistentVolumeClaim:
+            claimName: pipeline-observability
