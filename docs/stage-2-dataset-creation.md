@@ -390,6 +390,11 @@ The K8s-native handoff job is `deploy/data-designer-gapfill/`. Its `prepare`
 mode creates `data_designer/seed_dataset.csv` and `submission_plan.json`; its
 `collect` mode converts Data Designer result records into `stage1_5_gapfill.jsonl`,
 `data_designer/generated_samples.jsonl`, and `provenance/data_designer_samples.jsonl`.
+After collection, the normal Stage 2 QA/finalization path reads
+`stage1_5_gapfill.jsonl` automatically and admits matching
+`provenance/data_designer_samples.jsonl` sidecar records by `sample_id`, so the
+final `provenance/dataset_samples.jsonl` retains Data Designer job IDs, gap IDs,
+seed references, and recipe metadata.
 
 Use `python scripts/build_v2_dataset.py ... --stage1-5-mode legacy-direct` only
 when you intentionally want the older direct LLM fallback to emit synthetic rows
@@ -441,6 +446,11 @@ Default handoff files:
 - `stage1_5_gapfill.jsonl` is written empty by Stage 1.5 to make resume behavior
   explicit; the Data Designer collect path overwrites it with normalized
   synthetic rows after generation.
+- `provenance/data_designer_samples.jsonl` carries the exact Data Designer job,
+  gap, seed, and recipe lineage for those rows.
+- `provenance/dataset_samples.jsonl` is written after Stage 2 QA and overlays
+  matching Data Designer sidecar records by `sample_id`, preserving native
+  service lineage even when Stage 2 refines the prompt or completion text.
 
 Legacy direct mode still writes `/mnt/nvme2/peft/datasets/v2/<collection>/stage1_5_gapfill.jsonl`
 with the Stage 1A-compatible row schema:

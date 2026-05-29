@@ -23,12 +23,14 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 from scripts.pipeline.claude_client import ClaudeJudge  # noqa: E402
 from scripts.pipeline.config import Config, get_claude_api_key, get_es_password  # noqa: E402
+from scripts.pipeline.dataset_admission import (  # noqa: E402
+    admitted_dataset_samples_from_kvp_rows,
+)
 from scripts.pipeline.es_client import make_es_client  # noqa: E402
 from scripts.pipeline.finalize_dataset import finalize_dataset  # noqa: E402
 from scripts.pipeline.llm_client import LLMClient  # noqa: E402
 from scripts.pipeline.models import KVPRow, Passage  # noqa: E402
 from scripts.pipeline.progress import Progress  # noqa: E402
-from scripts.pipeline.provenance import dataset_samples_from_kvp_rows  # noqa: E402
 from scripts.pipeline.provenance_io import write_jsonl  # noqa: E402
 from scripts.pipeline.stage0_corpus_prep import run_stage0  # noqa: E402
 from scripts.pipeline.stage1a_le_kvp import run_stage1a  # noqa: E402
@@ -235,7 +237,11 @@ def main() -> int:
     if sample_rows:
         write_jsonl(
             args.output / "provenance" / "dataset_samples.jsonl",
-            dataset_samples_from_kvp_rows(sample_rows, system_prompt=system_prompt),
+            admitted_dataset_samples_from_kvp_rows(
+                sample_rows,
+                dataset_dir=args.output,
+                system_prompt=system_prompt,
+            ),
         )
         log.info(
             "Provenance: %d dataset samples → %s",

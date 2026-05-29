@@ -161,3 +161,81 @@ def test_finalize_dataset_backfills_missing_dataset_samples(tmp_path):
     assert len(samples) == 1
     assert samples[0]["lineage"]["source_systems"] == ["web_crawl"]
     assert manifest["source_composition"]["source_systems"] == {"web_crawl": 1}
+
+
+def test_finalize_dataset_backfill_preserves_data_designer_sidecar_lineage(tmp_path):
+    dataset_dir = tmp_path / "nim_curated"
+    dataset_dir.mkdir()
+    _write_jsonl(dataset_dir / "training.jsonl", [{"prompt": "t1", "completion": "a1"}])
+    _write_jsonl(dataset_dir / "validation.jsonl", [])
+    _write_jsonl(dataset_dir / "test_set.jsonl", [])
+    stage2_row = KVPRow(
+        passage_id="gapfill#gap_real",
+        source_url="<data-designer-synthetic>",
+        product_family="nim",
+        stage="1.5",
+        target_product_family="nim",
+        sample_id="sample_dd",
+        question="Refined synthetic question?",
+        answer="Refined synthetic answer.",
+        context="NIM documentation context.",
+        refined=True,
+        source_chunk_ids=["chunk_row"],
+        source_systems=["data_designer"],
+        source_kinds=["synthetic_gapfill"],
+        modalities=["text"],
+    )
+    (dataset_dir / "stage2_eval.jsonl").write_text(stage2_row.model_dump_json() + "\n")
+    _write_jsonl(
+        dataset_dir / "provenance" / "data_designer_samples.jsonl",
+        [{
+            "schema_version": "provenance.v1",
+            "sample_id": "sample_dd",
+            "origin": "synthetic_gapfill",
+            "task_type": "qa",
+            "prompt": "Original synthetic question?",
+            "completion": "Original synthetic answer.",
+            "system": None,
+            "lineage": {
+                "entailment_ids": ["ent_seed"],
+                "source_revision_ids": [],
+                "source_chunk_ids": ["chunk_seed"],
+                "source_systems": ["data_designer"],
+                "source_kinds": ["synthetic_gapfill"],
+                "modalities": ["text"],
+                "gap_id": "gap_real",
+                "data_designer_job_id": "dd_job_real",
+                "seed_sample_ids": ["sample_seed"],
+            },
+            "quality": {},
+            "metadata": {
+                "source_url": "<data-designer-synthetic>",
+                "gap_manifest_id": "gapmanifest_real",
+                "recipe_name": "nim-gapfill",
+            },
+        }],
+    )
+
+    manifest = finalize_dataset(
+        dataset_dir,
+        dataset_name="nim_curated",
+        observability_dir=tmp_path / "observability",
+        created_at="2026-05-28T12:00:00Z",
+    )
+
+    samples = [
+        json.loads(line)
+        for line in (dataset_dir / "provenance" / "dataset_samples.jsonl").read_text().splitlines()
+    ]
+    assert samples[0]["prompt"] == "Refined synthetic question?"
+    assert samples[0]["lineage"]["gap_id"] == "gap_real"
+    assert samples[0]["lineage"]["data_designer_job_id"] == "dd_job_real"
+    assert samples[0]["metadata"]["gap_manifest_id"] == "gapmanifest_real"
+    assert manifest["inputs"]["data_designer_job_ids"] == ["dd_job_real"]
+    assert manifest["source_composition"]["gap_ids"] == ["gap_real"]
+
+    metrics = json.loads((tmp_path / "observability" / "metrics.json").read_text())
+    service_refs = json.loads((tmp_path / "observability" / "service_refs.json").read_text())
+    assert metrics["dataset.data_designer_jobs.count"] == 1
+    assert metrics["dataset.gaps.filled.count"] == 1
+    assert service_refs["data_designer"]["job_ids"] == ["dd_job_real"]

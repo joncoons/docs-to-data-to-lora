@@ -295,7 +295,9 @@ Data Designer gap-fill is the native synthetic-generation handoff after Stage
 1.5 coverage analysis. The Job consumes `provenance/gap_manifest.json` and
 `data_designer/gapfill_requests.jsonl`, writes a seed CSV/submission plan, can
 submit through the NeMo Data Designer SDK, and normalizes generated results back
-into `stage1_5_gapfill.jsonl` plus provenance samples.
+into `stage1_5_gapfill.jsonl` plus provenance samples. The downstream Stage 2
+and dataset-finalization path admits those samples by `sample_id`, preserving
+Data Designer job IDs and gap IDs in the final dataset lineage.
 
 Artifacts:
 

@@ -21,9 +21,11 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from scripts.pipeline.dataset_admission import (  # noqa: E402
+    admitted_dataset_samples_from_kvp_rows,
+)
 from scripts.pipeline.models import KVPRow  # noqa: E402
 from scripts.pipeline.provenance import (  # noqa: E402
-    dataset_samples_from_kvp_rows,
     stable_id,
     utc_now,
 )
@@ -171,7 +173,14 @@ def ensure_dataset_samples(
         for line in stage2_path.read_text().splitlines()
         if line.strip()
     ]
-    write_jsonl(samples_path, dataset_samples_from_kvp_rows(rows, system_prompt=system_prompt))
+    write_jsonl(
+        samples_path,
+        admitted_dataset_samples_from_kvp_rows(
+            rows,
+            dataset_dir=dataset_dir,
+            system_prompt=system_prompt,
+        ),
+    )
     log.info("Dataset finalization: backfilled %d dataset samples", len(rows))
     return True
 
@@ -418,6 +427,8 @@ def build_observability_documents(
         "dataset.source_chunks.count": metrics_data["sources"]["source_chunks"],
         "dataset.entailments.count": metrics_data["sources"]["entailments"],
         "dataset.gap_count": metrics_data["sources"]["gaps"],
+        "dataset.gaps.filled.count": metrics_data["sources"]["gaps"],
+        "dataset.data_designer_jobs.count": metrics_data["sources"]["data_designer_jobs"],
         "dataset.artifacts.count": metrics_data["artifacts"]["count"],
     }
     for source_system, count in composition.get("source_systems", {}).items():
@@ -455,6 +466,10 @@ def build_observability_documents(
         },
         "outputs": {
             "dataset_version_manifest": str(manifest_path),
+        },
+        "data_designer": {
+            "job_ids": composition.get("data_designer_job_ids", []),
+            "gap_ids": composition.get("gap_ids", []),
         },
     }
     artifacts_manifest = {

@@ -196,7 +196,9 @@ Metrics:
 | `dataset.delta.added_chunks` | Added chunks since previous crawl |
 | `dataset.delta.changed_chunks` | Changed chunks since previous crawl |
 | `dataset.delta.deleted_chunks` | Deleted chunks since previous crawl |
-| `dataset.gap_count` | Coverage gaps selected for generation |
+| `dataset.gap_count` | Distinct gap IDs represented in final sample lineage |
+| `dataset.gaps.filled.count` | Distinct Data Designer gaps admitted into the final dataset |
+| `dataset.data_designer_jobs.count` | Distinct Data Designer job IDs represented in final sample lineage |
 
 Artifacts:
 

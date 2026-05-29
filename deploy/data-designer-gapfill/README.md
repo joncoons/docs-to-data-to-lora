@@ -4,6 +4,9 @@ This Job bridges the custom Stage 1.5 coverage analysis to native NeMo Data
 Designer execution. It consumes `data_designer/gapfill_requests.jsonl`, prepares
 a datastore-backed seed dataset plan, optionally submits a Data Designer job, and
 normalizes returned synthetic pairs back into Stage 1.5 rows with provenance.
+The downstream Stage 2 QA and dataset-finalization path reads those rows and
+admits `provenance/data_designer_samples.jsonl` by `sample_id`, so Data
+Designer job and gap lineage survives prompt/answer refinement.
 
 The implementation follows the NeMo Data Designer service model: seed data must
 be uploaded to the configured datastore before generation, and live job creation
