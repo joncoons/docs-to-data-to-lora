@@ -119,7 +119,7 @@ row-level provenance lives in registered files, not only custom_fields
 | Path | Classification | Notes | Target Action |
 |---|---|---|---|
 | `scripts/stage3/customizer_client.py` | Replace native/fallback | Thin REST wrapper with version uncertainty. | Prefer NeMo Platform SDK/CLI. Keep as legacy fallback only if SDK coverage is insufficient. |
-| `scripts/stage3/train_adapter.py` | Keep, implemented Platform path | Legacy payload remains as rollback, but default dry-run/submit shape now emits NeMo Platform Customizer SDK args with `spec.dataset=fileset://...`. | Validate live SDK submission in-cluster. |
+| `scripts/stage3/train_adapter.py` | Keep, refactor | Job spec planning is useful, but direct payload shape is brittle. | Convert to config builder for native Customizer client. |
 | `scripts/stage3/train_adapter_moe.py` | Keep, refactor | MoE-specific adapter training may be intentional. | Isolate MoE experiment logic from platform submission mechanics. |
 | `scripts/stage3/customizer-templates/*` | Keep, refactor | Captures real cluster template lessons. | Move under `configs/customizer/templates/` and document version compatibility. |
 | `scripts/stage3/holdout_split.py` | Keep, refactor | Split logic likely useful. | Align with `dataset_version_manifest` split metadata. |

@@ -6,12 +6,11 @@ config) from the data-store's HF-compatible API.
 """
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
 import httpx
-
-from scripts.nemo_platform import default_data_store_url
 
 _BASE_DIR_FOR_MODEL = {
     "meta/llama-3.2-1b-instruct": "lora-llama-3.2-1b",
@@ -35,7 +34,7 @@ def per_base_dir(base_model: str, root: Path) -> Path:
 
 
 def sync_adapter(meta: AdapterMeta, root: Path,
-                 datastore_url: str | None = None,
+                 datastore_url: str = "http://nemo-data-store:3000",
                  timeout: float = 60.0) -> Path:
     """Download adapter_model.safetensors + adapter_config.json into per-base dir.
 
@@ -44,9 +43,8 @@ def sync_adapter(meta: AdapterMeta, root: Path,
     out_dir = per_base_dir(meta.base_model, root) / meta.name
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    resolved_datastore_url = datastore_url or default_data_store_url()
     base_url = (
-        f"{resolved_datastore_url.rstrip('/')}/v1/hf/default/{meta.name}/resolve/{meta.job_id}"
+        f"{datastore_url.rstrip('/')}/v1/hf/default/{meta.name}/resolve/{meta.job_id}"
     )
     for fname in ("adapter_model.safetensors", "adapter_config.json"):
         resp = httpx.get(f"{base_url}/{fname}", timeout=timeout)

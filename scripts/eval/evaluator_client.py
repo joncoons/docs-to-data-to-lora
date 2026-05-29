@@ -7,8 +7,6 @@ from enum import Enum
 
 import httpx
 
-from scripts.nemo_platform import default_evaluator_url
-
 log = logging.getLogger(__name__)
 
 
@@ -26,14 +24,13 @@ _TERMINAL = {EvalJobStatus.COMPLETED, EvalJobStatus.FAILED, EvalJobStatus.CANCEL
 
 
 class EvaluatorClient:
-    def __init__(self, base_url: str | None = None,
+    def __init__(self, base_url: str = "http://192.168.1.187:30913",
                  api_key: str | None = None, timeout: float = 30.0) -> None:
-        resolved_base_url = base_url or default_evaluator_url()
         headers = {"Content-Type": "application/json"}
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
-        self.base_url = resolved_base_url
-        self._http = httpx.Client(base_url=resolved_base_url, headers=headers,
+        self.base_url = base_url
+        self._http = httpx.Client(base_url=base_url, headers=headers,
                                    timeout=timeout)
 
     def __enter__(self): return self

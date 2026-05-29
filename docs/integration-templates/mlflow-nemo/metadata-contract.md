@@ -18,8 +18,6 @@ Use names already established by the repository.
 | Parent run name | `<collection>/<base-short>/r<rank>` | `nim_curated/llama-3.2-1b/r16` |
 | Adapter name | `lora-<corpus-short>-<base-short>-r<rank>` | `lora-nim-llama-3.2-1b-r16` |
 | Entity Store dataset | `default/stage3-<collection-with-dashes>` | `default/stage3-nim-curated` |
-| Platform dataset FileSet | `fileset://default/stage3-<collection-with-dashes>` | `fileset://default/stage3-nim-curated` |
-| Platform base Model Entity | `default/<model-entity-name>` | `default/llama-3.2-1b-instruct` |
 | Entity Store output model | `default/<adapter-name>` | `default/lora-nim-llama-3.2-1b-r16` |
 | Data Store dataset URI | `hf://datasets/default/<dataset-name>` | `hf://datasets/default/stage3-nim-curated` |
 
@@ -35,10 +33,8 @@ Use names already established by the repository.
 | `adapter_name` | yes | `lora-nim-llama-3.2-1b-r16` |
 | `dataset_entity` | yes | `default/stage3-nim-curated` |
 | `output_model_entity` | yes | `default/lora-nim-llama-3.2-1b-r16` |
-| `nemo_platform_workspace` | yes | `default` |
-| `nemo_model_entity` | yes | `default/llama-3.2-1b-instruct` |
-| `nemo_dataset_fileset_uri` | yes | `fileset://default/stage3-nim-curated` |
 | `promotion_status` | no | `candidate` |
+| `nemo_workspace` | no | `default` |
 | `project` | no | `docs-to-data-to-lora` |
 
 ## MLflow Parent Run Params
@@ -51,8 +47,7 @@ Use names already established by the repository.
 | `train.batch_size` | `16` |
 | `train.learning_rate` | `0.0001` |
 | `train.seed` | `42` |
-| `customizer.payload_format` | `platform` |
-| `customizer.config_template` | Legacy rollback only: `meta/llama-3.2-1b-instruct@v1.0.0+80GB` |
+| `customizer.config_template` | `meta/llama-3.2-1b-instruct@v1.0.0+80GB` |
 | `customizer.sequence_packing_enabled` | `false` |
 
 ## Dataset Child Run
@@ -65,7 +60,6 @@ Tags:
 |---|---|
 | `nemo_data_store_uri` | `hf://datasets/default/stage3-nim-curated` |
 | `nemo_entity_store_ref` | `default/stage3-nim-curated` |
-| `nemo_platform_fileset_uri` | `fileset://default/stage3-nim-curated` |
 | `dataset_format` | `hf` |
 | `source_collection` | `nim_curated` |
 | `dataset_version_id` | stable ID from `dataset_version_manifest.json` |
@@ -102,8 +96,6 @@ Artifacts:
 | `provenance/gap_manifest.json` | Gap/bias selections for Data Designer, if present |
 | `dataset/bias_report.json` | Stage 2 bias report, if present |
 | `dataset/validation_report.json` | Stage 2 validation report, if present |
-| `platform/filesets_manifest.json` | NeMo Platform FileSet upload/verification manifest |
-| `platform/model_entities_manifest.json` | NeMo Platform base Model Entity verification manifest |
 
 If using MLflow dataset tracking, log the NeMo dataset URI as the dataset
 source and attach context `training`, `validation`, or `evaluation`.
@@ -116,14 +108,10 @@ Tags:
 
 | Tag | Example |
 |---|---|
-| `nemo_customizer_job_id` | `platform-job-...` or SDK-returned ID |
-| `nemo_platform_customizer_job_name` | `lora-nim-llama-3.2-1b-r16` |
+| `nemo_customizer_job_id` | `cust-...` |
 | `nemo_customizer_status` | `completed` |
-| `nemo_platform_workspace` | `default` |
-| `nemo_model_entity` | `default/llama-3.2-1b-instruct` |
-| `nemo_dataset_fileset_uri` | `fileset://default/stage3-nim-curated` |
 | `nemo_output_model_entity` | `default/lora-nim-llama-3.2-1b-r16` |
-| `nemo_output_path` | Legacy fallback only, if standalone Customizer returns one |
+| `nemo_output_path` | `hf://models/default/lora-nim-llama-3.2-1b-r16` |
 
 Metrics:
 
@@ -139,10 +127,8 @@ Artifacts:
 
 | Artifact | Source |
 |---|---|
-| `customizer/platform_job_payload.json` | Exact Platform SDK create-job args submitted to Customizer |
-| `customizer/platform_job_final.json` | Final Platform job status detail response |
-| `customizer/job_payload.json` | Legacy standalone Customizer payload, if rollback path is used |
-| `customizer/job_final.json` | Legacy standalone Customizer final response, if rollback path is used |
+| `customizer/job_payload.json` | Exact request submitted to Customizer |
+| `customizer/job_final.json` | Final job detail response |
 
 ## Evaluator Child Run
 
@@ -189,11 +175,6 @@ When a NeMo schema allows free-form metadata, include these fields:
 | `source_collection` | ES collection name |
 | `dataset_version_id` | Stable dataset version ID |
 | `mlflow_parent_run_id` | Parent run for dataset/model build |
-| `nemo_platform_workspace` | Platform workspace for the resource |
-| `nemo_model_entity` | Base Model Entity used for training, where relevant |
-| `nemo_dataset_fileset_uri` | Training or evaluation FileSet URI, where relevant |
 
 For Entity Store datasets, include the MLflow run ID in `description` if no
-structured custom field is available in the deployed schema. For Platform
-resources, prefer structured metadata/custom fields where the SDK schema allows
-it and otherwise rely on the MLflow artifacts above as the durable crosswalk.
+structured custom field is available in the deployed schema.

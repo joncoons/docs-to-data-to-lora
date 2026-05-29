@@ -69,10 +69,8 @@ docker build \
   -t <registry>/docs-to-data-to-lora/data-designer-gapfill:latest .
 ```
 
-For live submission, add the NVIDIA SDK packages that match your NeMo
-Platform deployment. The current Platform-native target is
-`nemo-platform[data-designer]`; this Job still carries the legacy SDK submitter
-until the full Data Designer SDK migration is completed:
+For live submission, add the NVIDIA SDK packages from the package source used
+by your NeMo Microservices deployment:
 
 ```bash
 docker build \

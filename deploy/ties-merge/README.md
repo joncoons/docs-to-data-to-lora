@@ -26,11 +26,14 @@ kubectl create secret generic nemo-data-store-git \
   --from-literal=DATA_STORE_PASSWORD='<password>'
 ```
 
-The Job sources `deploy/nemo-platform/service-plane-configmap.yaml` and maps
-`DATA_STORE_GIT_BASE` from `NMP_DATASTORE_GIT_BASE`. This is still a direct
-Git/Data Store compatibility endpoint because TIES clone mode reads adapter
-repositories directly. Do not embed credentials in the image, args, or source
-code.
+The Job expects `DATA_STORE_GIT_BASE` to point at the internal Git/Data Store
+service, for example:
+
+```text
+http://nemo-data-store:3000
+```
+
+Do not embed credentials in the image, args, or source code.
 
 ## Data Store Clone Mode
 

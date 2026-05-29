@@ -301,30 +301,20 @@ Dataset finalization should also emit `dataset.curator.*` metrics when
 ## Customizer
 
 Prefer native Customizer MLflow export when available. The repository wrapper or
-collector should still log the Platform handoff and job crosswalk:
+collector should still log:
 
 | Type | Name |
 |---|---|
 | tag | `nemo_customizer_job_id` |
-| tag | `nemo_platform_customizer_job_name` |
-| tag | `nemo_platform_workspace` |
-| tag | `nemo_model_entity` |
-| tag | `nemo_dataset_fileset_uri` |
 | tag | `nemo_output_model_entity` |
 | tag | `nemo_output_model_uri` |
-| param | `customizer.payload_format` |
+| param | `customizer.template_ref` |
 | param | `dataset_entity` |
 | metric | `train.loss` |
 | metric | `train.val_loss` |
 | metric | `train.wall_time_s` |
-| artifact | `platform/model_entities_manifest.json` |
-| artifact | `platform/filesets_manifest.json` |
-| artifact | `customizer/platform_job_payload.json` |
-| artifact | `customizer/platform_job_final.json` |
-
-Legacy standalone Customizer rollback runs may additionally log
-`customizer.template_ref`, `customizer/job_payload.json`, and
-`customizer/job_final.json`.
+| artifact | `customizer/job_payload.json` |
+| artifact | `customizer/job_final.json` |
 
 When Customizer exports directly to MLflow, also log:
 

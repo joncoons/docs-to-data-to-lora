@@ -3,13 +3,12 @@
 ## Objective
 
 Create a repeatable adapter-training workflow where MLflow records lineage and
-promotion state, and NeMo Platform performs the actual training/evaluation work:
+promotion state, and NeMo Microservices perform the actual work:
 
-- NeMo Platform FileSets store Customizer-ready dataset and model files.
-- NeMo Platform Model Entities identify the trainable base models.
+- NeMo Data Store stores dataset files.
+- NeMo Entity Store registers datasets and model entities.
 - NeMo Customizer trains LoRA adapters.
 - NeMo Evaluator scores adapters, bases, and the 49B comparator target.
-- NeMo Data Store and Entity Store remain compatibility/provenance surfaces.
 - MLflow links every step with a stable run graph.
 
 ## Control Plane Boundary
@@ -17,9 +16,9 @@ promotion state, and NeMo Platform performs the actual training/evaluation work:
 | Concern | Owner | Notes |
 |---|---|---|
 | Run identity, experiment grouping, lineage, promotion tags | MLflow | One parent run per adapter build; child runs for dataset, train, eval, promotion |
-| Dataset bytes | NeMo Platform FileSets plus Data Store compatibility | FileSets are canonical for Customizer; HF-style dataset repos remain for lineage/eval compatibility |
-| Dataset entity metadata | NeMo Entity Store | Existing refs use `default/stage3-...`; FileSet URIs use `fileset://default/stage3-...` |
-| Training execution | NeMo Platform Customizer | Submit SDK create-job args with `spec.model`, `spec.dataset=fileset://...`, `spec.training`, and optional MLflow integration |
+| Dataset bytes | NeMo Data Store | Existing scripts use HF-style dataset repos |
+| Dataset entity metadata | NeMo Entity Store | Existing refs use `default/stage3-...` |
+| Training execution | NeMo Customizer | Existing job endpoint is `/v1/customization/jobs` |
 | Evaluation execution | NeMo Evaluator | Existing job endpoint is `/v1/evaluation/jobs` |
 | Adapter serving | NIM / deployment layer | Current docs mention `NIM_PEFT_SOURCE` path-based loading |
 
@@ -51,7 +50,7 @@ Recommended NeMo dataset names:
 | `nim_curated` | `default/stage3-nim-curated` | `default/stage3-nim-curated-test` |
 | `nemo_usvcs_curated` | `default/stage3-nemo-usvcs-curated` | `default/stage3-nemo-usvcs-curated-test` |
 
-## Phase 2: Platform Handoff and Customizer Training
+## Phase 2: Customizer Training
 
 Input:
 
@@ -59,71 +58,47 @@ Input:
 - base model,
 - LoRA rank and alpha,
 - dataset entity ref,
-- Platform dataset FileSet URI,
-- Platform base Model Entity ref,
+- Customizer config template ref,
 - MLflow tracking URI.
 
 Steps:
 
-1. Create an MLflow child run named `platform-handoff`.
-2. Verify the base Model Entity and model FileSet by running
-   `scripts/stage3/platform_model_entities.py --verify` or the
-   `deploy/platform-models/` Job. Use `--create-missing` only for deliberate
-   first-cluster bootstrap after licenses/secrets are ready.
-3. Ensure the dataset FileSet exists by running `scripts/eval/upload_platform_filesets.py`
-   or the `deploy/platform-filesets/` Job.
-4. Log `platform/model_entities_manifest.json` and
-   `platform/filesets_manifest.json` to MLflow.
-5. Create an MLflow child run named `customizer-training`.
-6. Build the Platform Customizer payload using
-   `scripts/stage3/train_adapter.py --payload-format platform`.
-4. Include MLflow integration fields in the Platform `spec.integrations` block
-   when `MLFLOW_TRACKING_URI` or `MLFLOW_EXPERIMENT_NAME` is configured:
+1. Create an MLflow child run named `customizer-training`.
+2. Build the Customizer payload using `scripts/stage3/train_adapter.py`.
+3. Add MLflow integration fields when the target Customizer version supports
+   them:
 
 ```json
 {
-  "name": "<adapter-name>",
-  "workspace": "default",
-  "spec": {
-    "model": "default/<model-entity>",
-    "dataset": "fileset://default/<dataset-fileset>",
-    "training": {
-      "type": "sft",
-      "peft": {"type": "lora", "rank": 16, "alpha": 32}
-    },
-    "integrations": {
-      "mlflow": {
-        "experiment_name": "docs-to-data-to-lora",
-        "tracking_uri": "<mlflow-tracking-uri>",
-        "tags": {
-          "collection": "<collection>",
-          "base_model": "<base-model>",
-          "rank": "16"
-        }
+  "integrations": {
+    "mlflow": {
+      "experiment_name": "docs-to-data-to-lora",
+      "run_name": "<adapter-name>",
+      "tracking_uri": "<mlflow-tracking-uri>",
+      "tags": {
+        "collection": "<collection>",
+        "dataset_entity": "<namespace/name>",
+        "output_model_entity": "<namespace/name>"
       }
     }
   }
 }
 ```
 
-7. Submit the Customizer job through the NeMo Platform SDK.
-8. Log the returned `nemo_customizer_job_id` and
-   `nemo_platform_customizer_job_name` to MLflow immediately.
-9. Poll the job by name/workspace with the Platform SDK status API.
-10. Log `customizer/platform_job_payload.json`,
-    `customizer/platform_job_final.json`, output adapter/model references, and
-    training metrics available from Customizer or native MLflow export.
+4. Submit the Customizer job.
+5. Log the returned `nemo_customizer_job_id` to MLflow immediately.
+6. Poll the job until terminal.
+7. Log final status, output path, output model entity, and training metrics
+   available from the Customizer job detail endpoint.
 
 Notes:
 
-- Use `--payload-format legacy` only for rollback against standalone Customizer.
-- Platform payloads should reference FileSet URIs, not local paths or legacy
-  Entity Store dataset strings.
+- Keep the existing `sequence_packing_enabled: false` behavior for Blackwell
+  compatibility.
+- Keep the current dataset and output model references as Entity Store strings,
+  not local paths.
 - If Customizer also logs into MLflow directly, the wrapper still logs the
-  Customizer job ID/name and parent MLflow run ID so both MLflow runs can be
-  reconciled.
-- `deploy/customizer-training/` provides Kubernetes submission/polling Jobs for
-  dense and MoE examples.
+  Customizer job ID so both MLflow runs can be reconciled.
 
 ## Phase 3: Evaluator Runs
 

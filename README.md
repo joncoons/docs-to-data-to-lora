@@ -120,9 +120,8 @@ python scripts/sitemap_to_inventory.py \
   Qdrant all work).
 - **An embedding endpoint** (an NIM, an OpenAI-compatible API, or any
   HTTP-accessible embedding model).
-- **For Stages 2-3:** NVIDIA NeMo Platform 26.3.1, including Data
-  Designer, Customizer, Evaluator, Entity/File services, and the NIM-backed
-  inference gateway used by the showcase jobs.
+- **For Stages 2-3:** NVIDIA NeMo Microservices (Data Designer + Customizer),
+  or equivalent tools for synthetic data generation and LoRA training.
 
 ## Worked examples
 
@@ -183,11 +182,12 @@ Generation strategies:
 
 ## Integration templates
 
-For teams that want MLflow to orchestrate and audit the NeMo Platform
+For teams that want MLflow to orchestrate and audit the NeMo Microservices
 lifecycle, see
 [`docs/integration-templates/mlflow-nemo`](docs/integration-templates/mlflow-nemo/).
-The template keeps NeMo Platform as the execution plane while MLflow records
-lineage, IDs, metrics, artifacts, and promotion state.
+The template keeps NeMo Data Store, Entity Store, Customizer, and Evaluator as
+the execution plane while MLflow records lineage, IDs, metrics, and promotion
+state.
 
 ## Contributing
 

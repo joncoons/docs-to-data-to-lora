@@ -31,20 +31,15 @@ from urllib.parse import quote, urlsplit, urlunsplit
 
 import httpx
 
-from scripts.nemo_platform import (
-    default_data_store_git_base,
-    default_data_store_hf_endpoint,
-    default_data_store_url,
-    default_entity_store_url,
-    default_nmp_workspace,
+
+DEFAULT_NAMESPACE = os.getenv("DATASET_NAMESPACE", "default")
+DEFAULT_ENTITY_STORE_URL = os.getenv("ENTITY_STORE_URL", "http://nemo-entity-store:8000")
+DEFAULT_DATA_STORE_URL = os.getenv("DATA_STORE_URL", "http://nemo-data-store:3000")
+DEFAULT_DATA_STORE_GIT_BASE = os.getenv("DATA_STORE_GIT_BASE", DEFAULT_DATA_STORE_URL)
+DEFAULT_DATA_STORE_HF_ENDPOINT = os.getenv(
+    "DATA_STORE_HF_ENDPOINT",
+    "http://nemo-data-store:3000/v1/hf",
 )
-
-
-DEFAULT_NAMESPACE = default_nmp_workspace()
-DEFAULT_ENTITY_STORE_URL = default_entity_store_url()
-DEFAULT_DATA_STORE_URL = default_data_store_url()
-DEFAULT_DATA_STORE_GIT_BASE = default_data_store_git_base()
-DEFAULT_DATA_STORE_HF_ENDPOINT = default_data_store_hf_endpoint()
 DEFAULT_BASE_DIR = Path(os.getenv("DATASET_BASE_DIR", "/mnt/nvme2/peft/datasets/v2"))
 DEFAULT_OBSERVABILITY_DIR = Path(
     os.getenv("OBSERVABILITY_DIR", "/outputs/observability/dataset-registration")

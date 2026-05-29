@@ -21,20 +21,11 @@ spec:
         - name: evaluator-registration
           image: <registry>/docs-to-data-to-lora/evaluator-registration:latest
           imagePullPolicy: IfNotPresent
-          envFrom:
-            - configMapRef:
-                name: nemo-platform-service-plane
           env:
             - name: EVALUATOR_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: nemo-platform-service-plane
-                  key: NMP_EVALUATOR_URL
+              value: "http://nemo-evaluator:8000"
             - name: NIM_PROXY_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: nemo-platform-service-plane
-                  key: NMP_INFERENCE_GATEWAY_URL
+              value: "http://nemo-nim-proxy:8000"
             - name: EVALUATOR_API_KEY
               valueFrom:
                 secretKeyRef:

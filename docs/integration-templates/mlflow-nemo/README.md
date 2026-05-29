@@ -1,9 +1,9 @@
 # MLflow + NeMo Orchestration Template
 
 This template plans the integration discussed in the MLflow/NeMo notes:
-MLflow acts as the orchestration and audit layer, while NeMo Platform remains
-the execution plane for FileSet handoff, Model Entity readiness, LoRA
-customization, evaluation, and adapter artifact storage.
+MLflow acts as the orchestration and audit layer, while NeMo Microservices
+remain the execution plane for dataset registration, LoRA customization,
+evaluation, and adapter artifact storage.
 
 The intent is not to make MLflow pretend to own NeMo resources. Instead, each
 MLflow run records durable cross-references to the NeMo objects that did the
@@ -16,11 +16,9 @@ The current repository already has most of the NeMo-side operations:
 | Repository area | Existing role | Integration use |
 |---|---|---|
 | `scripts/build_v2_dataset.py` | Builds Stage 2 `training.jsonl` and `validation.jsonl` | Input step for a tracked MLflow run |
-| `scripts/stage3/platform_model_entities.py` | Plans/verifies Platform base Model Entities and model FileSets | Logged before Customizer submission |
-| `scripts/eval/upload_platform_filesets.py` | Uploads train/test datasets and lineage sidecars to Platform FileSets | Canonical Customizer dataset handoff |
-| `scripts/stage3/train_adapter.py` | Builds and submits NeMo Platform Customizer LoRA jobs | Called by the MLflow orchestrator |
+| `scripts/stage3/train_adapter.py` | Builds and submits NeMo Customizer LoRA jobs | Called by the MLflow orchestrator |
 | `scripts/stage3/build_moe_shards.py` | Creates shard datasets in NeMo Data Store and Entity Store | Reused for MoE adapter dataset registration |
-| `scripts/eval/upload_test_datasets.py` | Registers training/test datasets in NeMo Data Store and Entity Store, with observability JSON | Compatibility lineage and later MLflow export |
+| `scripts/eval/upload_test_datasets.py` | Registers training/test datasets in NeMo Data Store and Entity Store, with observability JSON | Reused for dataset lineage and later MLflow export |
 | `scripts/eval/register_evaluator_entities.py` | Builds Evaluator target/config payloads and dataset payload shape | Source of canonical Evaluator and dataset metadata |
 | `scripts/eval/run_evaluation_matrix.py` | Submits Evaluator jobs for adapter/base/49B-comparator comparisons | Called after Customizer jobs complete |
 
@@ -46,14 +44,10 @@ Stage 2 dataset build
 NeMo Data Store repo + NeMo Entity Store dataset
     |
     v
-NeMo Platform FileSet + base Model Entity verification
-    |
-    v
 MLflow parent run
     |
     +-- child run: dataset registration
-    +-- child run: Platform handoff manifests
-    +-- child run: NeMo Platform Customizer LoRA job
+    +-- child run: NeMo Customizer LoRA job
     +-- child run: NeMo Evaluator job matrix
     +-- optional child run: promotion/deployment
 ```
@@ -63,23 +57,17 @@ MLflow should record:
 - the dataset files, provenance manifests, version IDs, and checksums produced by Stage 2,
 - the NeMo Data Store `hf://datasets/...` URI,
 - the NeMo Entity Store `namespace/name` dataset reference,
-- the NeMo Platform FileSet URI used by Customizer,
-- the NeMo Platform base Model Entity used by Customizer,
-- the Customizer job ID, Platform job name, status detail, and output model entity,
+- the Customizer job ID and output model entity,
 - the Evaluator job IDs, exported MLflow run IDs when available, and normalized metrics,
 - the adapter artifact location or promotion target.
 
-NeMo Platform should remain authoritative for:
+NeMo should remain authoritative for:
 
-- Platform FileSet storage used by Customizer,
-- base Model Entity readiness and model spec population,
+- dataset file storage,
+- dataset entity registration,
 - Customizer job lifecycle,
 - Evaluator target/config/job lifecycle,
 - LoRA adapter artifacts.
-
-The legacy Data Store and Entity Store registration remains useful for
-compatibility, provenance, and evaluation flows while the Customizer path moves
-to Platform-native FileSets and Model Entities.
 
 ## First Implementation Target
 
@@ -90,8 +78,6 @@ collection: nim_curated
 base_model: meta/llama-3.2-1b-instruct
 rank: 16
 dataset_entity: default/stage3-nim-curated
-dataset_fileset_uri: fileset://default/stage3-nim-curated
-model_entity: default/llama-3.2-1b-instruct
 output_model_entity: default/lora-nim-llama-3.2-1b-r16
 ```
 

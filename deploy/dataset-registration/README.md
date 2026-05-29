@@ -61,21 +61,16 @@ kubectl create secret generic nemo-data-store-git \
 
 ## Service Configuration
 
-The Job sources `deploy/nemo-platform/service-plane-configmap.yaml` and maps
-the Platform keys into the legacy variable names used by the uploader:
+The Job uses cluster-local service URLs:
 
 ```text
-ENTITY_STORE_URL <- NMP_ENTITY_STORE_URL
-DATA_STORE_URL <- NMP_DATASTORE_URL
-DATA_STORE_GIT_BASE <- NMP_DATASTORE_GIT_BASE
-DATA_STORE_HF_ENDPOINT <- NMP_DATASTORE_HF_ENDPOINT
+ENTITY_STORE_URL=http://nemo-entity-store:8000
+DATA_STORE_URL=http://nemo-data-store:3000
+DATA_STORE_GIT_BASE=http://nemo-data-store:3000
+DATA_STORE_HF_ENDPOINT=http://nemo-data-store:3000/v1/hf
 ```
 
-`DATA_STORE_GIT_BASE` remains a compatibility endpoint for the current
-HF/Git-style upload path. For Platform-native training, run
-`deploy/platform-filesets/` after this Job; it uploads the same finalized
-datasets and lineage sidecars as FileSets and produces `fileset://workspace/name`
-URIs for Customizer.
+Adjust these to match the deployed Service names and ports.
 
 ## Observability Output
 

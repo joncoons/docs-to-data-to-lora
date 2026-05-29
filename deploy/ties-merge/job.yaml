@@ -21,15 +21,9 @@ spec:
         - name: ties-merge
           image: <registry>/docs-to-data-to-lora/ties-merge:latest
           imagePullPolicy: IfNotPresent
-          envFrom:
-            - configMapRef:
-                name: nemo-platform-service-plane
           env:
             - name: DATA_STORE_GIT_BASE
-              valueFrom:
-                configMapKeyRef:
-                  name: nemo-platform-service-plane
-                  key: NMP_DATASTORE_GIT_BASE
+              value: "http://nemo-data-store:3000"
             - name: DATA_STORE_USER
               valueFrom:
                 secretKeyRef:

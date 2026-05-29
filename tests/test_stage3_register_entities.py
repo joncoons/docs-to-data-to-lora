@@ -77,7 +77,7 @@ def test_build_dataset_payload_for_nim():
     assert payload["namespace"] == "default"
     assert payload["format"] == "hf"
     assert payload["files_url"] == "hf://datasets/default/stage3-nim-curated-test"
-    assert payload["hf_endpoint"] == ree.DEFAULT_DATA_STORE_HF_ENDPOINT
+    assert payload["hf_endpoint"] == "http://nemo-data-store:3000/v1/hf"
 
 
 # --- configs -------------------------------------------------------------

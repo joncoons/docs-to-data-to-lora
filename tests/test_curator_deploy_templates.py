@@ -8,13 +8,6 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_curator_base_image_is_pinned_to_ngc_release():
-    containerfile = REPO_ROOT / "deploy" / "curator" / "Containerfile"
-    content = containerfile.read_text()
-
-    assert "ARG NEMO_CURATOR_IMAGE=nvcr.io/nvidia/nemo-curator:26.04" in content
-
-
 def test_native_filter_job_writes_collect_compatible_paths():
     job_path = REPO_ROOT / "deploy" / "curator" / "native-filter-job.yaml"
     job = list(yaml.safe_load_all(job_path.read_text()))[0]

@@ -12,6 +12,7 @@ the operational task can re-use the canonical payload shape.
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import os
 import re
@@ -24,17 +25,11 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.eval.evaluator_client import EvaluatorClient  # noqa: E402
-from scripts.nemo_platform import (  # noqa: E402
-    default_data_store_hf_endpoint,
-    default_evaluator_url,
-    default_inference_gateway_url,
-)
 
 log = logging.getLogger(__name__)
 
-DEFAULT_EVALUATOR_URL = default_evaluator_url()
-DEFAULT_NIM_PROXY_URL = default_inference_gateway_url()
-DEFAULT_DATA_STORE_HF_ENDPOINT = default_data_store_hf_endpoint()
+DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:8000")
+DEFAULT_NIM_PROXY_URL = os.getenv("NIM_PROXY_URL", "http://nemo-nim-proxy:8000")
 DEFAULT_TRAINING_SESSION_LOG = Path(
     os.getenv(
         "TRAINING_SESSION_LOG",
@@ -169,17 +164,13 @@ def build_49b_target(proxy_url: str) -> dict:
     return build_base_target(_NEMOTRON_SUPER_49B_BASE, proxy_url)
 
 
-def build_dataset_payload(
-    collection: str,
-    files_url: str,
-    hf_endpoint: str | None = None,
-) -> dict:
+def build_dataset_payload(collection: str, files_url: str) -> dict:
     """Build the JSON payload for an entity-store dataset registration.
 
     Note: datasets live in NeMo Entity Store (not Evaluator). This payload is
-    POSTed to the Entity Store route by the dataset registration Job after
-    uploading the test_set.jsonl files to NeMo Data Store or Platform file
-    storage. This script's CLI does NOT register datasets — it only handles
+    POSTed to http://nemo-entity-store:8000/v1/datasets by operational Task 9
+    (after uploading the test_set.jsonl files to NeMo Data Store via the HF
+    Hub API). This script's CLI does NOT register datasets — it only handles
     Evaluator-owned targets and configs. The builder is exported so the
     operational task can re-use it.
     """
@@ -192,7 +183,7 @@ def build_dataset_payload(
         ),
         "format": "hf",
         "files_url": files_url,
-        "hf_endpoint": hf_endpoint or DEFAULT_DATA_STORE_HF_ENDPOINT,
+        "hf_endpoint": "http://nemo-data-store:3000/v1/hf",
     }
 
 
@@ -374,9 +365,8 @@ def _create_config_idempotent(client: EvaluatorClient, payload: dict) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--evaluator-url", default=DEFAULT_EVALUATOR_URL,
-                    help="NeMo Evaluator or NeMo Platform API base URL. Defaults "
-                         "to EVALUATOR_URL, NMP_EVALUATOR_URL, NMP_BASE_URL, "
-                         "or http://localhost:8080.")
+                    help="NeMo Evaluator base URL. Defaults to EVALUATOR_URL or "
+                         "http://nemo-evaluator:8000.")
     ap.add_argument("--evaluator-api-key", default=os.getenv("EVALUATOR_API_KEY"),
                     help="Optional Evaluator bearer token. Defaults to EVALUATOR_API_KEY.")
     ap.add_argument("--log-path", type=Path, default=DEFAULT_TRAINING_SESSION_LOG,
@@ -393,11 +383,9 @@ def main() -> int:
     ap.add_argument("--all", action="store_true",
                     help="Register adapter targets, base targets, 49B comparator, and configs")
     ap.add_argument("--proxy-url", default=DEFAULT_NIM_PROXY_URL,
-                    help="NIM Proxy or NeMo Platform Inference Gateway base URL. "
-                         "Defaults to NIM_PROXY_URL, NMP_INFERENCE_GATEWAY_URL, "
-                         "NMP_BASE_URL, or http://localhost:8080. All Stage 3 "
-                         "Evaluator model targets point at this endpoint's "
-                         "/v1/chat/completions route.")
+                    help="NeMo NIM Proxy base URL. Defaults to NIM_PROXY_URL or "
+                         "http://nemo-nim-proxy:8000. All Stage 3 Evaluator "
+                         "model targets point at this proxy's /v1/chat/completions endpoint.")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.INFO,

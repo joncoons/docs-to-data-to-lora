@@ -36,18 +36,17 @@ rerunning the Job.
 
 ## Service Configuration
 
-The Job sources `deploy/nemo-platform/service-plane-configmap.yaml` and maps
-Platform service-plane keys into the existing CLI variables:
+The Job uses environment variables so service names are cluster-local and do
+not require hard-coded NodePorts:
 
 ```text
-EVALUATOR_URL <- NMP_EVALUATOR_URL
-NIM_PROXY_URL <- NMP_INFERENCE_GATEWAY_URL
+EVALUATOR_URL=http://nemo-evaluator:8000
+NIM_PROXY_URL=http://nemo-nim-proxy:8000
 ```
 
-`NIM_PROXY_URL` must resolve from the Evaluator runtime because Evaluator
-invokes the registered model endpoint. In the Platform deployment this should
-point at the Platform inference gateway rather than the old standalone NIM
-Proxy service.
+Adjust `EVALUATOR_URL` to match the Service and port exposed by your NeMo
+Evaluator deployment. `NIM_PROXY_URL` must resolve from the Evaluator service
+runtime, because Evaluator invokes the registered model endpoint.
 
 If Evaluator requires bearer auth, create an optional Secret:
 

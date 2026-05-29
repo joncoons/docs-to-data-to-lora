@@ -1,4 +1,6 @@
 """Tests for pure functions in build_moe_shards.py."""
+import pytest
+
 from scripts.stage3.build_moe_shards import (
     stratified_2way_split,
     fold_system_into_prompt,

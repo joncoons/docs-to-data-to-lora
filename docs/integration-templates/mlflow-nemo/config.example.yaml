@@ -9,19 +9,11 @@ mlflow:
 nemo:
   workspace: "default"
   project: "docs-to-data-to-lora"
-  platform_base_url: "http://nemo-platform-api:8080"
-  customizer_url: "http://nemo-platform-api:8080"
-  data_designer_url: "http://nemo-platform-api:8080"
-  evaluator_url: "http://nemo-platform-api:8080"
-  inference_gateway_url: "http://nemo-platform-api:8080/v2/workspaces/default/inference/gateway/openai/-"
-  entity_store_url: "http://nemo-platform-api:8080"
+  customizer_url: "http://nemo-customizer:8000"
+  entity_store_url: "http://nemo-entity-store:8000"
   data_store_url: "http://nemo-data-store:3000"
+  evaluator_url: "http://nemo-evaluator:8000"
   data_store_internal_hf_endpoint: "http://nemo-data-store:3000/v1/hf"
-  data_store_git_base: "http://nemo-data-store:3000"  # TIES/Data Store compatibility
-  customizer_payload_format: "platform"
-  model_entities_manifest: "/outputs/observability/platform-models/platform_model_entities_manifest.json"
-  filesets_observability_dir: "/outputs/observability/platform-filesets"
-  filesets_manifest: "/outputs/observability/platform-filesets/platform_filesets_manifest.json"
 
 data_store_auth:
   # Prefer environment variables in implementation.
@@ -33,55 +25,27 @@ collections:
     corpus_short: "nim"
     stage2_dir: "/mnt/nvme2/peft/datasets/v2/nim_curated"
     train_dataset_name: "stage3-nim-curated"
-    train_dataset_entity: "default/stage3-nim-curated"
-    train_fileset_uri: "fileset://default/stage3-nim-curated"
     test_dataset_name: "stage3-nim-curated-test"
-    test_fileset_uri: "fileset://default/stage3-nim-curated-test"
-    context_test_fileset_uri: "fileset://default/stage3-nim-curated-context-test"
     evaluator_dataset_ref: "default/stage3-nim-curated-test"
 
   nemo_usvcs_curated:
     corpus_short: "nemo-usvcs"
     stage2_dir: "/mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated"
     train_dataset_name: "stage3-nemo-usvcs-curated"
-    train_dataset_entity: "default/stage3-nemo-usvcs-curated"
-    train_fileset_uri: "fileset://default/stage3-nemo-usvcs-curated"
     test_dataset_name: "stage3-nemo-usvcs-curated-test"
-    test_fileset_uri: "fileset://default/stage3-nemo-usvcs-curated-test"
-    context_test_fileset_uri: "fileset://default/stage3-nemo-usvcs-curated-context-test"
     evaluator_dataset_ref: "default/stage3-nemo-usvcs-curated-test"
 
 base_models:
   meta/llama-3.2-1b-instruct:
-    model_entity: "default/llama-3.2-1b-instruct"
-    model_fileset: "default/llama-3.2-1b-instruct"
-    hf_repo_id: "meta-llama/Llama-3.2-1B-Instruct"
-    requires_hf_token: true
-    customizer_template: "meta/llama-3.2-1b-instruct@v1.0.0+80GB"  # legacy rollback only
+    customizer_template: "meta/llama-3.2-1b-instruct@v1.0.0+80GB"
     allow_base_target: true
 
   meta/llama-3.2-3b-instruct:
-    model_entity: "default/llama-3.2-3b-instruct"
-    model_fileset: "default/llama-3.2-3b-instruct"
-    hf_repo_id: "meta-llama/Llama-3.2-3B-Instruct"
-    requires_hf_token: true
-    customizer_template: "meta/llama-3.2-3b-instruct@v1.0.0+80GB"  # legacy rollback only
+    customizer_template: "meta/llama-3.2-3b-instruct@v1.0.0+80GB"
     allow_base_target: true
 
   meta/llama-3.1-8b-instruct:
-    model_entity: "default/llama-3.1-8b-instruct"
-    model_fileset: "default/llama-3.1-8b-instruct"
-    hf_repo_id: "meta-llama/Meta-Llama-3.1-8B-Instruct"
-    requires_hf_token: true
-    customizer_template: "meta/llama-3.1-8b-instruct@v1.0.0+80GB"  # legacy rollback only
-    allow_base_target: true
-
-  nvidia/nemotron-3-nano-30b-a3b:
-    model_entity: "default/nemotron-3-nano-30b-a3b"
-    model_fileset: "default/nemotron-3-nano-30b-a3b"
-    hf_repo_id: "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16"
-    requires_hf_token: false
-    customizer_template: "nvidia/nemotron-3-nano-30b-a3b@v1.0+96GB-singleGPU"  # legacy rollback only
+    customizer_template: "meta/llama-3.1-8b-instruct@v1.0.0+80GB"
     allow_base_target: true
 
 training_defaults:

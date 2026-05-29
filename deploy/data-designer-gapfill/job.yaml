@@ -21,20 +21,11 @@ spec:
         - name: data-designer-gapfill
           image: <registry>/docs-to-data-to-lora/data-designer-gapfill:latest
           imagePullPolicy: IfNotPresent
-          envFrom:
-            - configMapRef:
-                name: nemo-platform-service-plane
           env:
             - name: NEMO_MICROSERVICES_BASE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: nemo-platform-service-plane
-                  key: NMP_DATA_DESIGNER_URL
+              value: "http://nemo-data-designer:8080"
             - name: NEMO_MICROSERVICES_DATASTORE_ENDPOINT
-              valueFrom:
-                configMapKeyRef:
-                  name: nemo-platform-service-plane
-                  key: NMP_DATASTORE_HF_ENDPOINT
+              value: "http://nemo-data-store:3000/v1/hf"
             - name: DATA_DESIGNER_SEED_REPO_ID
               value: "default/nim-curated-gapfill-seeds"
             - name: DATA_DESIGNER_MODEL

@@ -10,9 +10,7 @@ from scripts.stage3.train_adapter_moe import (
     NANO_BASE_MODEL,
     NANO_CONFIG_TEMPLATE,
     build_customizer_config_moe,
-    build_platform_customizer_payload_moe,
     submit_adapter_job_moe,
-    submit_adapter_job_moe_platform,
 )
 
 
@@ -132,52 +130,6 @@ def test_moe_config_uses_nano_template():
 # Test 6: submit_adapter_job_moe passes config to client and returns job_id
 # ---------------------------------------------------------------------------
 
-def test_build_platform_customizer_payload_moe_uses_shard_fileset():
-    spec = _nano_spec()
-
-    payload = build_platform_customizer_payload_moe(
-        spec,
-        workspace="default",
-        dataset_entity=_SHARD_DATASET_FOR[("nim_curated", "a")],
-        output_model_entity="default/lora-nim-nemotron-nano-30b-r16-shard-a",
-        description="unit test",
-        mlflow_tracking_uri="http://mlflow:5000",
-    )
-
-    assert payload["name"] == "lora-nim-nemotron-nano-30b-r16-shard-a"
-    spec_payload = payload["spec"]
-    assert spec_payload["model"] == "default/nemotron-3-nano-30b-a3b"
-    assert spec_payload["dataset"] == "fileset://default/stage3-nim-curated-shard-a"
-    assert spec_payload["training"]["batch_size"] == 8
-    assert spec_payload["training"]["peft"] == {
-        "type": "lora",
-        "rank": 16,
-        "alpha": 16,
-        "dropout": 0.0,
-    }
-    assert spec_payload["integrations"]["mlflow"]["tags"]["shard"] == "a"
-
-
-def test_submit_adapter_job_moe_platform_calls_sdk_client():
-    spec = _nano_spec()
-    fake_client = MagicMock()
-    fake_client.submit_platform_job.return_value = "cust-moe-platform"
-
-    job_id = submit_adapter_job_moe_platform(
-        spec,
-        workspace="default",
-        dataset_entity=_SHARD_DATASET_FOR[("nim_curated", "a")],
-        output_model_entity="default/lora-nim-nemotron-nano-30b-r16-shard-a",
-        description="unit test",
-        client=fake_client,
-    )
-
-    assert job_id == "cust-moe-platform"
-    fake_client.submit_platform_job.assert_called_once()
-    kwargs = fake_client.submit_platform_job.call_args.kwargs
-    assert kwargs["spec"]["dataset"] == "fileset://default/stage3-nim-curated-shard-a"
-
-
 def test_submit_adapter_job_moe_calls_client():
     spec = _nano_spec()
     fake_client = MagicMock()
@@ -216,7 +168,6 @@ def test_cli_dry_run_produces_valid_json():
             "--collection", "nim_curated",
             "--rank", "16",
             "--shard", "a",
-            "--payload-format", "legacy",
             "--dry-run",
         ],
         capture_output=True,

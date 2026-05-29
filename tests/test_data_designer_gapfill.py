@@ -47,7 +47,6 @@ def _config(tmp_path, mode="prepare", results_jsonl=None):
         datastore_endpoint="http://nemo-data-store:3000/v1/hf",
         seed_repo_id="default/nim-gapfill-seeds",
         seed_filename="gapfill_requests.csv",
-        workspace="default",
         model="nvidia/nemotron-3-super-120b-a12b",
         model_alias="gapfill_model",
         model_provider="system/nvidia-build",
@@ -102,8 +101,6 @@ def test_build_submission_plan_records_native_data_designer_settings(tmp_path):
 
     assert plan["gap_manifest_id"] == "gapmanifest_123"
     assert plan["seed_dataset"]["repo_id"] == "default/nim-gapfill-seeds"
-    assert plan["seed_dataset"]["workspace"] == "default"
-    assert plan["data_designer"]["workspace"] == "default"
     assert plan["data_designer"]["model"] == "nvidia/nemotron-3-super-120b-a12b"
     assert plan["data_designer"]["num_records"] == 2
     assert plan["metrics"]["pairs_requested"] == 7

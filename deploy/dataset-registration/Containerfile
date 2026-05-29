@@ -14,7 +14,6 @@ RUN apt-get update \
     && pip install --no-cache-dir httpx
 
 WORKDIR /app
-COPY scripts/nemo_platform.py /app/scripts/nemo_platform.py
 COPY scripts/eval /app/scripts/eval
 
 ENTRYPOINT ["python", "scripts/eval/upload_test_datasets.py"]

@@ -1,6 +1,7 @@
-"""Tests for train_adapter CLI submission logic (legacy-compatible Customizer wire schema)."""
+"""Tests for train_adapter CLI submission logic (Customizer 25.12 wire schema)."""
 import json
 import subprocess
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -9,9 +10,7 @@ from scripts.stage3.train_adapter import (
     _DATASET_FOR_COLLECTION,
     _TEMPLATE_FOR_BASE,
     build_customizer_config,
-    build_platform_customizer_payload,
     submit_adapter_job,
-    submit_adapter_job_platform,
 )
 
 # ---------------------------------------------------------------------------
@@ -44,7 +43,7 @@ def _nim_curated_config(rank: int = 16) -> dict:
 # ---------------------------------------------------------------------------
 
 def test_build_config_top_level_shape():
-    """Top-level keys match legacy-compatible Customizer schema; legacy fields absent."""
+    """Top-level keys match Customizer 25.12 schema; legacy fields absent."""
     cfg = _nim_curated_config()
 
     # Required top-level fields
@@ -175,60 +174,6 @@ def test_dataset_entity_for_nemo_usvcs():
 # Test 2: submit_adapter_job calls client and returns job_id
 # ---------------------------------------------------------------------------
 
-def test_build_platform_customizer_payload_uses_fileset_and_model_entity():
-    spec = _nim_curated_spec()
-
-    payload = build_platform_customizer_payload(
-        spec,
-        workspace="default",
-        dataset_entity=_DATASET_FOR_COLLECTION["nim_curated"],
-        output_model_entity="default/lora-nim-llama-3.2-3b-r16",
-        description="unit test",
-        mlflow_tracking_uri="http://mlflow:5000",
-        mlflow_experiment_name="docs-to-data-to-lora",
-    )
-
-    assert payload["name"] == "lora-nim-llama-3.2-3b-r16"
-    assert payload["workspace"] == "default"
-    spec_payload = payload["spec"]
-    assert spec_payload["model"] == "default/llama-3.2-3b-instruct"
-    assert spec_payload["dataset"] == "fileset://default/stage3-nim-curated"
-    assert spec_payload["output"] == {"name": "lora-nim-llama-3.2-3b-r16"}
-    assert spec_payload["deployment_config"] == {"lora_enabled": True}
-    assert spec_payload["training"]["type"] == "sft"
-    assert spec_payload["training"]["peft"] == {
-        "type": "lora",
-        "rank": 16,
-        "alpha": 32,
-        "dropout": 0.0,
-    }
-    assert spec_payload["training"]["batch_size"] == 16
-    assert spec_payload["integrations"]["mlflow"]["tracking_uri"] == "http://mlflow:5000"
-    assert spec_payload["integrations"]["mlflow"]["tags"]["collection"] == "nim_curated"
-
-
-def test_submit_adapter_job_platform_calls_sdk_client():
-    spec = _nim_curated_spec()
-    fake_client = MagicMock()
-    fake_client.submit_platform_job.return_value = "cust-platform-abc"
-
-    job_id = submit_adapter_job_platform(
-        spec,
-        workspace="default",
-        dataset_entity=_DATASET_FOR_COLLECTION["nim_curated"],
-        output_model_entity="default/lora-nim-llama-3.2-3b-r16",
-        description="unit test",
-        client=fake_client,
-    )
-
-    assert job_id == "cust-platform-abc"
-    fake_client.submit_platform_job.assert_called_once()
-    kwargs = fake_client.submit_platform_job.call_args.kwargs
-    assert kwargs["name"] == "lora-nim-llama-3.2-3b-r16"
-    assert kwargs["workspace"] == "default"
-    assert kwargs["spec"]["dataset"] == "fileset://default/stage3-nim-curated"
-
-
 def test_submit_adapter_job_calls_client_and_returns_job_id():
     """submit_adapter_job passes the built config to client.submit_job and forwards job_id."""
     spec = _nim_curated_spec()
@@ -259,7 +204,7 @@ def test_submit_adapter_job_calls_client_and_returns_job_id():
 # ---------------------------------------------------------------------------
 
 def test_cli_dry_run_produces_valid_json_with_correct_shape():
-    """CLI --dry-run prints valid JSON matching the legacy-compatible Customizer wire schema."""
+    """CLI --dry-run prints valid JSON matching the Customizer 25.12 wire schema."""
     python = "/home/joncoons/anaconda3/envs/nat/bin/python3"
     script = str(
         Path(__file__).resolve().parents[1]
@@ -271,7 +216,6 @@ def test_cli_dry_run_produces_valid_json_with_correct_shape():
             "--collection", "nim_curated",
             "--base-model", "meta/llama-3.2-3b-instruct",
             "--rank", "16",
-            "--payload-format", "legacy",
             "--dry-run",
         ],
         capture_output=True,
