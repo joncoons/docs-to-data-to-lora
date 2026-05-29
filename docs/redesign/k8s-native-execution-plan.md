@@ -288,6 +288,29 @@ The Job writes shard-specific outputs such as
 should concatenate shard outputs into the monolithic filenames expected by the
 remaining local pipeline stages.
 
+
+## Tenth K8s Template: Data Designer Gap-Fill
+
+Data Designer gap-fill is the native synthetic-generation handoff after Stage
+1.5 coverage analysis. The Job consumes `provenance/gap_manifest.json` and
+`data_designer/gapfill_requests.jsonl`, writes a seed CSV/submission plan, can
+submit through the NeMo Data Designer SDK, and normalizes generated results back
+into `stage1_5_gapfill.jsonl` plus provenance samples.
+
+Artifacts:
+
+```text
+deploy/data-designer-gapfill/
+  Containerfile
+  README.md
+  job.yaml
+```
+
+The default manifest mode is `prepare` so clusters without the SDK package source
+can still produce reviewable handoff artifacts. Use `submit` after building the
+image with the NVIDIA SDK packages for the deployed NeMo Microservices version,
+and use `collect` to ingest downloaded Data Designer result records.
+
 ## K8s Resource Guidance
 
 | Workload | CPU | Memory | GPU | Storage |
@@ -329,7 +352,7 @@ Do not put NodePorts, passwords, or host-specific paths in scripts.
 7. Stage 0 corpus/provenance Job. Implemented in `deploy/stage0-corpus-prep/`.
 8. Stage 1A entailment shard Job. Implemented in `deploy/stage1a-entailment-shards/`.
 9. Stage 1B/1C generation shard Jobs.
-10. Gap analysis Job and Data Designer submission. Gap manifest/Data Designer seed planning is implemented in `scripts/pipeline/stage1_5_gapfill.py`; K8s templates and native submission remain next.
+10. Gap analysis Job and Data Designer submission. Gap manifest/Data Designer seed planning is implemented in `scripts/pipeline/stage1_5_gapfill.py`; prepare/collect K8s execution is implemented in `deploy/data-designer-gapfill/`, with live submission enabled when the NVIDIA SDK is included in the image.
 11. Curator service integration.
 
 This order gives immediate operational value while avoiding a large rewrite of

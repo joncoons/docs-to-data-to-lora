@@ -1,0 +1,24 @@
+# Lightweight image for Data Designer gap-fill submission/result collection.
+#
+# Build example:
+#   docker build -f deploy/data-designer-gapfill/Containerfile -t docs-to-data-to-lora/data-designer-gapfill:latest .
+#
+# To enable live submission, provide an SDK requirements string accepted by pip,
+# for example from your NVIDIA Python package index or internal wheel mirror.
+FROM python:3.12-slim
+
+ARG NEMO_SDK_REQUIREMENTS=""
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+RUN pip install --no-cache-dir pydantic \
+    && if [ -n "$NEMO_SDK_REQUIREMENTS" ]; then \
+         pip install --no-cache-dir $NEMO_SDK_REQUIREMENTS; \
+       fi
+
+WORKDIR /app
+COPY scripts/pipeline /app/scripts/pipeline
+
+ENTRYPOINT ["python", "scripts/pipeline/data_designer_gapfill.py"]

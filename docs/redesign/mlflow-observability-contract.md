@@ -235,6 +235,9 @@ Metrics:
 | Metric | Meaning |
 |---|---|
 | `gapfill.gaps.requested` | Number of gaps submitted |
+| `gapfill.seed_records.count` | Seed records handed to Data Designer |
+| `gapfill.records.requested` | Data Designer records requested |
+| `gapfill.pairs.requested` | Target pair count from the gap manifest |
 | `gapfill.samples.generated` | Candidate synthetic samples |
 | `gapfill.samples.accepted` | Samples admitted after QA |
 | `gapfill.acceptance_rate` | Accepted/generated |
@@ -245,9 +248,12 @@ Artifacts:
 |---|---|
 | `data_designer/request_manifest.json` | Planned Data Designer handoff summary |
 | `data_designer/gapfill_requests.jsonl` | Per-gap seed records with retrieved chunks and generation briefs |
-| `data_designer/request.json` | Exact submitted generation request |
+| `data_designer/seed_dataset.csv` | Datastore-ready seed dataset for Data Designer |
+| `data_designer/submission_plan.json` | Exact native submission plan and model settings |
+| `data_designer/request.json` | Exact submitted generation request, if exported by the SDK path |
 | `data_designer/result_manifest.json` | Returned job/result metadata |
 | `data_designer/generated_samples.jsonl` | Generated samples with source gap refs |
+| `provenance/data_designer_samples.jsonl` | Provenance sample sidecar for Data Designer outputs |
 
 ## Customizer
 

@@ -114,6 +114,31 @@ LINEAGE_FILE_CANDIDATES = (
         "data_designer/gapfill_requests.jsonl",
         "data_designer_gapfill_requests",
     ),
+    LineageFile(
+        Path("data_designer/seed_dataset.csv"),
+        "data_designer/seed_dataset.csv",
+        "data_designer_seed_dataset",
+    ),
+    LineageFile(
+        Path("data_designer/submission_plan.json"),
+        "data_designer/submission_plan.json",
+        "data_designer_submission_plan",
+    ),
+    LineageFile(
+        Path("data_designer/result_manifest.json"),
+        "data_designer/result_manifest.json",
+        "data_designer_result_manifest",
+    ),
+    LineageFile(
+        Path("data_designer/generated_samples.jsonl"),
+        "data_designer/generated_samples.jsonl",
+        "data_designer_generated_samples",
+    ),
+    LineageFile(
+        Path("provenance/data_designer_samples.jsonl"),
+        "provenance/data_designer_samples.jsonl",
+        "data_designer_provenance_samples",
+    ),
 )
 
 
@@ -362,6 +387,11 @@ def discover_provenance_artifacts(source_dir: Path) -> list[dict[str, Any]]:
         source_dir / "provenance" / "gap_manifest.json",
         source_dir / "data_designer" / "request_manifest.json",
         source_dir / "data_designer" / "gapfill_requests.jsonl",
+        source_dir / "data_designer" / "seed_dataset.csv",
+        source_dir / "data_designer" / "submission_plan.json",
+        source_dir / "data_designer" / "result_manifest.json",
+        source_dir / "data_designer" / "generated_samples.jsonl",
+        source_dir / "provenance" / "data_designer_samples.jsonl",
         source_dir / "bias_report.json",
         source_dir / "validation_report.json",
     ]

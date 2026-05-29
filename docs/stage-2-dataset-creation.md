@@ -386,6 +386,11 @@ record instead of directly calling an LLM:
    Stage 1.5 computes pairs-needed and number of requested seed records; the
    native Data Designer submission/result-collection Job owns generation.
 
+The K8s-native handoff job is `deploy/data-designer-gapfill/`. Its `prepare`
+mode creates `data_designer/seed_dataset.csv` and `submission_plan.json`; its
+`collect` mode converts Data Designer result records into `stage1_5_gapfill.jsonl`,
+`data_designer/generated_samples.jsonl`, and `provenance/data_designer_samples.jsonl`.
+
 Use `python scripts/build_v2_dataset.py ... --stage1-5-mode legacy-direct` only
 when you intentionally want the older direct LLM fallback to emit synthetic rows
 locally.
@@ -431,8 +436,11 @@ Default handoff files:
 - `provenance/gap_manifest.json` follows `schemas/provenance/gap_manifest.schema.json`.
 - `data_designer/gapfill_requests.jsonl` contains one seed record per gap, with
   retrieved chunks, source URLs, seed IDs, and requested pair counts.
-- `stage1_5_gapfill.jsonl` is written empty to make resume behavior explicit:
-  synthetic rows are expected from the later Data Designer result path.
+- `data_designer/seed_dataset.csv` and `data_designer/submission_plan.json` are
+  written by the Data Designer gap-fill Job before native submission.
+- `stage1_5_gapfill.jsonl` is written empty by Stage 1.5 to make resume behavior
+  explicit; the Data Designer collect path overwrites it with normalized
+  synthetic rows after generation.
 
 Legacy direct mode still writes `/mnt/nvme2/peft/datasets/v2/<collection>/stage1_5_gapfill.jsonl`
 with the Stage 1A-compatible row schema:

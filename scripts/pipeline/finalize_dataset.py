@@ -44,6 +44,7 @@ SPLIT_FILES = {
 }
 
 ARTIFACT_CANDIDATES = (
+    "stage1_5_gapfill.jsonl",
     "stage2_eval.jsonl",
     "training.jsonl",
     "validation.jsonl",
@@ -61,6 +62,11 @@ ARTIFACT_CANDIDATES = (
     "provenance/gap_manifest.json",
     "data_designer/request_manifest.json",
     "data_designer/gapfill_requests.jsonl",
+    "data_designer/seed_dataset.csv",
+    "data_designer/submission_plan.json",
+    "data_designer/result_manifest.json",
+    "data_designer/generated_samples.jsonl",
+    "provenance/data_designer_samples.jsonl",
     "bias_report.json",
     "validation_report.json",
 )
