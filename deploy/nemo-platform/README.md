@@ -52,12 +52,17 @@ kubectl apply -f deploy/nemo-platform/service-plane-configmap.yaml
 `service-plane-configmap.yaml` is the compatibility layer used by the
 repository-owned Jobs. It defines `NMP_BASE_URL`, `NMP_WORKSPACE`, and
 service-specific aliases such as `NMP_EVALUATOR_URL` and
-`NMP_INFERENCE_GATEWAY_URL`. The default `NMP_BASE_URL` assumes a Helm release
-called `nemo-platform`, which normally yields `nemo-platform-api:8080`; verify
-with `kubectl get svc -n nemo-peft` if the release name changes.
+`NMP_INFERENCE_GATEWAY_URL`. The live validation on 2026-05-29 showed this
+cluster exposes service-specific APIs (`nemo-core-api`, `nemo-customizer`,
+`nemo-entity-store`, `nemo-evaluator`) rather than a `nemo-platform-api`
+aggregate service. Verify with `kubectl get svc -n nemo-peft` after chart
+upgrades and update the aliases if NVIDIA changes service names.
 
 `NMP_DATASTORE_GIT_BASE` intentionally remains a direct Git/Data Store endpoint
-for compatibility paths that still clone or push HF-style repositories. The
+for compatibility paths that still clone or push HF-style repositories.
+`NMP_INFERENCE_GATEWAY_URL` currently points at the legacy `rag-oai-proxy`
+service because a native NIM Proxy service was not present in the validated
+cluster; replace it once the native Evaluator target path is verified. The
 Customizer training path now has a Platform FileSet handoff in
 `deploy/platform-filesets/`; TIES clone mode is the remaining direct Git/Data
 Store consumer.

@@ -63,8 +63,14 @@ def test_service_plane_configmap_defines_platform_aliases():
 
     assert configmap["metadata"]["name"] == "nemo-platform-service-plane"
     data = configmap["data"]
-    assert data["NMP_BASE_URL"] == "http://nemo-platform-api:8080"
+    assert data["NMP_BASE_URL"] == "http://nemo-core-api:8000"
     assert data["NMP_WORKSPACE"] == "default"
+    assert data["NMP_CUSTOMIZER_URL"] == "http://nemo-customizer:8000"
+    assert data["NMP_EVALUATOR_URL"] == "http://nemo-evaluator:7331"
+    assert data["NMP_ENTITY_STORE_URL"] == "http://nemo-entity-store:8000"
+    assert data["NMP_DATASTORE_URL"] == "http://nemo-data-store:3000"
+    assert data["NMP_DATASTORE_HF_ENDPOINT"] == "http://nemo-data-store:3000/v1/hf"
+    assert data["NMP_DATASTORE_GIT_BASE"] == "http://nemo-data-store:3000"
     for key in (
         "NMP_CUSTOMIZER_URL",
         "NMP_DATA_DESIGNER_URL",
