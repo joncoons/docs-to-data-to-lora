@@ -42,8 +42,10 @@ from urllib.parse import quote, urlsplit, urlunsplit
 import safetensors.torch
 import torch
 
+from scripts.nemo_platform import default_data_store_git_base
 
-DEFAULT_DATA_STORE_GIT_BASE = "http://nemo-data-store:3000"
+
+DEFAULT_DATA_STORE_GIT_BASE = default_data_store_git_base()
 
 
 # ---------------------------------------------------------------------------
@@ -111,7 +113,12 @@ def _inject_basic_auth(base_url: str, user: str | None, password: str | None) ->
 
 def data_store_git_base(cli_value: str | None = None) -> str:
     """Resolve the Data Store Git base URL from CLI/env without hardcoded secrets."""
-    base_url = cli_value or os.getenv("DATA_STORE_GIT_BASE") or DEFAULT_DATA_STORE_GIT_BASE
+    base_url = (
+        cli_value
+        or os.getenv("DATA_STORE_GIT_BASE")
+        or os.getenv("NMP_DATASTORE_GIT_BASE")
+        or DEFAULT_DATA_STORE_GIT_BASE
+    )
     return _inject_basic_auth(
         base_url,
         os.getenv("DATA_STORE_USER"),
@@ -242,8 +249,9 @@ def main() -> int:
         "--data-store-git-base",
         help=(
             "Base Git URL for NeMo Data Store clone mode. Defaults to "
-            "DATA_STORE_GIT_BASE or http://nemo-data-store:3000. Optional "
-            "DATA_STORE_USER/DATA_STORE_PASSWORD env vars are injected as basic auth."
+            "DATA_STORE_GIT_BASE, NMP_DATASTORE_GIT_BASE, or the compatibility "
+            "default http://nemo-data-store:3000. Optional DATA_STORE_USER/"
+            "DATA_STORE_PASSWORD env vars are injected as basic auth."
         ),
     )
     ap.add_argument("--out", required=True, help="Output directory for merged adapter")

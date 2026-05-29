@@ -1,18 +1,18 @@
 """Thin HTTP wrapper around NeMo Customizer's REST API.
 
-Endpoint and exact request shape may differ slightly between Customizer versions
-— verify against the running 25.12 cluster service at implementation time. If
-the routes here don't match, adjust route names but keep the public Client
-interface (submit_job, get_status, get_output_path, wait_until_done) unchanged.
+Endpoint and exact request shape may differ between legacy standalone
+Customizer and the NeMo Platform API. This client preserves the existing
+submit_job, get_status, get_output_path, and wait_until_done interface while
+the payload builder migrates toward the Platform SDK spec/FileSet model.
 
-Cluster service: nemo-customizer.nemo-peft:8000 (NodePort 30910).
+Default endpoint selection lives in scripts.nemo_platform.
 """
 from __future__ import annotations
 
 import enum
 import logging
 import time
-from typing import Any, Optional
+from typing import Optional
 
 import httpx
 

@@ -376,10 +376,15 @@ into the dataset version manifest.
 
 ## Environment and Secret Pattern
 
-Use ConfigMaps for non-secret runtime configuration:
+Use the shared NeMo Platform service-plane ConfigMap for non-secret runtime
+configuration:
 
 ```text
-DATA_STORE_GIT_BASE=http://nemo-data-store:3000
+NMP_BASE_URL=http://nemo-platform-api:8080
+NMP_WORKSPACE=default
+NMP_EVALUATOR_URL=http://nemo-platform-api:8080
+NMP_INFERENCE_GATEWAY_URL=http://nemo-platform-api:8080
+NMP_DATASTORE_GIT_BASE=http://nemo-data-store:3000  # temporary compatibility
 TIES_TRIM_RATIO=0.2
 OUTPUT_DIR=/outputs/lora-nemo-usvcs-nemotron-nano-30b-r16
 ```
@@ -391,7 +396,9 @@ DATA_STORE_USER
 DATA_STORE_PASSWORD
 ```
 
-Do not put NodePorts, passwords, or host-specific paths in scripts.
+Do not put NodePorts, passwords, or host-specific paths in scripts. The
+remaining direct Git/Data Store URL is a deliberate compatibility bridge until
+dataset and adapter handoff moves to NeMo Platform FileSets.
 
 ## Recommended Conversion Order
 
@@ -408,4 +415,7 @@ Do not put NodePorts, passwords, or host-specific paths in scripts.
 11. Curator service integration. Curator handoff prepare/collect is implemented in `scripts/pipeline/curator_handoff.py` and `deploy/curator/`; native heuristic filtering is implemented in `deploy/curator/native-filter-job.yaml`, with GPU exact/fuzzy/semantic dedup left as a cluster-sized Curator extension.
 
 This order gives immediate operational value while avoiding a large rewrite of
-the source-grounded dataset pipeline.
+the source-grounded dataset pipeline. The next Platform-specific refactors are
+Customizer job creation with `spec` + `fileset://` datasets, Data Designer
+submission through `nemo_platform`, and then optional Evaluator v2 adoption once
+its preview API is required.

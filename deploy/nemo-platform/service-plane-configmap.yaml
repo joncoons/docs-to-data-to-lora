@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nemo-platform-service-plane
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: nemo-platform-service-plane
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+data:
+  # For Helm release "nemo-platform", the chart's API service convention is
+  # normally nemo-platform-api:8080. Confirm with `kubectl get svc -n nemo-peft`
+  # if the release name or chart templates differ.
+  NMP_BASE_URL: "http://nemo-platform-api:8080"
+  NMP_WORKSPACE: "default"
+
+  # Service-specific aliases allow existing scripts to run while their payloads
+  # are migrated to first-class NeMo Platform SDK calls.
+  NMP_CUSTOMIZER_URL: "http://nemo-platform-api:8080"
+  NMP_DATA_DESIGNER_URL: "http://nemo-platform-api:8080"
+  NMP_EVALUATOR_URL: "http://nemo-platform-api:8080"
+  NMP_INFERENCE_GATEWAY_URL: "http://nemo-platform-api:8080"
+  NMP_ENTITY_STORE_URL: "http://nemo-platform-api:8080"
+  NMP_DATASTORE_URL: "http://nemo-platform-api:8080"
+  NMP_DATASTORE_HF_ENDPOINT: "http://nemo-platform-api:8080/v1/hf"
+
+  # Temporary compatibility path for code that still clones HF-style Git repos
+  # directly. Replace this with FileSet-based handoff during the Customizer
+  # payload migration.
+  NMP_DATASTORE_GIT_BASE: "http://nemo-data-store:3000"

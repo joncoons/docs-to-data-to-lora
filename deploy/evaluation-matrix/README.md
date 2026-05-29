@@ -42,11 +42,8 @@ Use this file for result collection and later auditability.
 
 ## Service Configuration
 
-The Job uses cluster-local service URLs:
-
-```text
-EVALUATOR_URL=http://nemo-evaluator:8000
-```
+The Job sources `deploy/nemo-platform/service-plane-configmap.yaml` and maps
+`EVALUATOR_URL` from `NMP_EVALUATOR_URL`.
 
 If Evaluator requires bearer auth, reuse the optional Secret from
 `deploy/evaluator-registration/`:

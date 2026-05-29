@@ -1,7 +1,6 @@
-"""Tests for train_adapter CLI submission logic (Customizer 25.12 wire schema)."""
+"""Tests for train_adapter CLI submission logic (legacy-compatible Customizer wire schema)."""
 import json
 import subprocess
-import sys
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -43,7 +42,7 @@ def _nim_curated_config(rank: int = 16) -> dict:
 # ---------------------------------------------------------------------------
 
 def test_build_config_top_level_shape():
-    """Top-level keys match Customizer 25.12 schema; legacy fields absent."""
+    """Top-level keys match legacy-compatible Customizer schema; legacy fields absent."""
     cfg = _nim_curated_config()
 
     # Required top-level fields
@@ -204,7 +203,7 @@ def test_submit_adapter_job_calls_client_and_returns_job_id():
 # ---------------------------------------------------------------------------
 
 def test_cli_dry_run_produces_valid_json_with_correct_shape():
-    """CLI --dry-run prints valid JSON matching the Customizer 25.12 wire schema."""
+    """CLI --dry-run prints valid JSON matching the legacy-compatible Customizer wire schema."""
     python = "/home/joncoons/anaconda3/envs/nat/bin/python3"
     script = str(
         Path(__file__).resolve().parents[1]

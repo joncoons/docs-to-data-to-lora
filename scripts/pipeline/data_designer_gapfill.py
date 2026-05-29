@@ -24,6 +24,11 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from scripts.nemo_platform import (  # noqa: E402
+    default_data_designer_url,
+    default_data_store_hf_endpoint,
+    default_nmp_workspace,
+)
 from scripts.pipeline.models import KVPRow  # noqa: E402
 from scripts.pipeline.provenance import SCHEMA_VERSION, stable_id, utc_now  # noqa: E402
 
@@ -31,8 +36,9 @@ DEFAULT_DATASET_DIR = Path(os.getenv("DATASET_DIR", "/datasets/nim_curated"))
 DEFAULT_OBSERVABILITY_DIR = Path(
     os.getenv("OBSERVABILITY_DIR", "/observability/data-designer-gapfill/nim_curated")
 )
-DEFAULT_DATA_DESIGNER_URL = os.getenv("NEMO_MICROSERVICES_BASE_URL")
-DEFAULT_DATASTORE_ENDPOINT = os.getenv("NEMO_MICROSERVICES_DATASTORE_ENDPOINT")
+DEFAULT_DATA_DESIGNER_URL = default_data_designer_url()
+DEFAULT_DATASTORE_ENDPOINT = default_data_store_hf_endpoint()
+DEFAULT_WORKSPACE = default_nmp_workspace()
 DEFAULT_MODEL = os.getenv("DATA_DESIGNER_MODEL", "nvidia/nemotron-3-super-120b-a12b")
 DEFAULT_MODEL_ALIAS = os.getenv("DATA_DESIGNER_MODEL_ALIAS", "gapfill_model")
 DEFAULT_PROVIDER = os.getenv("DATA_DESIGNER_MODEL_PROVIDER", "system/nvidia-build")
@@ -68,6 +74,7 @@ class DataDesignerConfig:
     datastore_endpoint: str | None
     seed_repo_id: str
     seed_filename: str
+    workspace: str
     model: str
     model_alias: str
     model_provider: str
@@ -207,11 +214,13 @@ def build_submission_plan(
             "local_path": str(seed_csv),
             "repo_id": config.seed_repo_id,
             "filename": config.seed_filename,
+            "workspace": config.workspace,
             "record_count": record_count,
             "datastore_endpoint": config.datastore_endpoint,
         },
         "data_designer": {
             "base_url": config.data_designer_url,
+            "workspace": config.workspace,
             "model": config.model,
             "model_alias": config.model_alias,
             "model_provider": config.model_provider,
@@ -250,9 +259,9 @@ def submit_with_nemo_microservices_sdk(
     plan: dict[str, Any],
 ) -> dict[str, Any]:
     if not config.data_designer_url:
-        raise RuntimeError("NEMO_MICROSERVICES_BASE_URL or --data-designer-url is required")
+        raise RuntimeError("NMP_BASE_URL/NMP_DATA_DESIGNER_URL or --data-designer-url is required")
     if not config.datastore_endpoint:
-        raise RuntimeError("NEMO_MICROSERVICES_DATASTORE_ENDPOINT or --datastore-endpoint is required")
+        raise RuntimeError("NMP_DATASTORE_HF_ENDPOINT or --datastore-endpoint is required")
     try:
         from nemo_microservices.data_designer.essentials import (  # type: ignore
             DataDesignerConfigBuilder,
@@ -604,6 +613,7 @@ def build_observability_documents(
         "schema_version": "observability.v1",
         "data_designer": {
             "base_url": config.data_designer_url,
+            "workspace": config.workspace,
             "job_id": job_info.get("job_id"),
             "job_status": job_info.get("status"),
             "seed_repo_id": config.seed_repo_id,
@@ -703,6 +713,7 @@ def parse_args() -> argparse.Namespace:
         choices=["prepare", "submit", "collect", "submit-and-collect"],
         default=os.getenv("DATA_DESIGNER_GAPFILL_MODE", "prepare"),
     )
+    ap.add_argument("--workspace", default=DEFAULT_WORKSPACE)
     ap.add_argument("--data-designer-url", default=DEFAULT_DATA_DESIGNER_URL)
     ap.add_argument("--datastore-endpoint", default=DEFAULT_DATASTORE_ENDPOINT)
     ap.add_argument("--seed-repo-id", default=os.getenv("DATA_DESIGNER_SEED_REPO_ID"))
@@ -734,6 +745,7 @@ def main() -> int:
         datastore_endpoint=args.datastore_endpoint,
         seed_repo_id=seed_repo_id,
         seed_filename=args.seed_filename,
+        workspace=args.workspace,
         model=args.model,
         model_alias=args.model_alias,
         model_provider=args.model_provider,

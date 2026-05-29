@@ -24,10 +24,13 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from scripts.stage3.customizer_client import CustomizerClient, JobStatus
-from scripts.stage3.moe_models import MoEAdapterSpec
+from scripts.nemo_platform import default_customizer_url  # noqa: E402
+from scripts.stage3.customizer_client import CustomizerClient, JobStatus  # noqa: E402
+from scripts.stage3.moe_models import MoEAdapterSpec  # noqa: E402
 
 log = logging.getLogger(__name__)
+
+DEFAULT_CUSTOMIZER_URL = default_customizer_url()
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -63,7 +66,7 @@ def build_customizer_config_moe(
     output_model_entity: str,
     description: str,
 ) -> dict:
-    """Build the Customizer 25.12 job submission payload from a MoEAdapterSpec.
+    """Build the legacy-compatible Customizer job payload from a MoEAdapterSpec.
 
     Key MoE-specific hyperparameters (validated methodology):
       - α = rank (α/r = 1.0) — dense default α=2r diverges at end-of-warmup
@@ -145,8 +148,12 @@ def main() -> int:
     ap.add_argument("--shard", required=True, choices=["a", "b"])
     ap.add_argument(
         "--customizer-url",
-        default="http://192.168.1.187:30910",
-        help="Customizer REST endpoint (NodePort default)",
+        default=DEFAULT_CUSTOMIZER_URL,
+        help=(
+            "Customizer or NeMo Platform API base URL. Defaults to CUSTOMIZER_URL, "
+            "CUSTOMIZER_BASE_URL, NMP_CUSTOMIZER_URL, NMP_BASE_URL, or "
+            "http://localhost:8080."
+        ),
     )
     ap.add_argument("--wait", action="store_true", help="Block until job terminates")
     ap.add_argument("--dry-run", action="store_true")

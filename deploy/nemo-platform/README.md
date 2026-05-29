@@ -43,7 +43,22 @@ helm upgrade --install nemo-platform \
   --create-namespace \
   nemo-platform-2.0.1.tar.gz \
   -f deploy/nemo-platform/values.yaml
+
+kubectl apply -f deploy/nemo-platform/service-plane-configmap.yaml
 ```
+
+## Service Plane ConfigMap
+
+`service-plane-configmap.yaml` is the compatibility layer used by the
+repository-owned Jobs. It defines `NMP_BASE_URL`, `NMP_WORKSPACE`, and
+service-specific aliases such as `NMP_EVALUATOR_URL` and
+`NMP_INFERENCE_GATEWAY_URL`. The default `NMP_BASE_URL` assumes a Helm release
+called `nemo-platform`, which normally yields `nemo-platform-api:8080`; verify
+with `kubectl get svc -n nemo-peft` if the release name changes.
+
+`NMP_DATASTORE_GIT_BASE` intentionally remains a direct Git/Data Store endpoint
+for the current dataset upload and TIES clone paths. Replace that with
+FileSet-based handoff during the Customizer payload migration.
 
 ## Task Images
 

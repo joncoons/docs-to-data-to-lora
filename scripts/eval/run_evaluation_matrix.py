@@ -20,10 +20,11 @@ from scripts.eval.register_evaluator_entities import (  # noqa: E402
     AdapterRow,
     load_adapters_from_log,
 )
+from scripts.nemo_platform import default_evaluator_url  # noqa: E402
 
 log = logging.getLogger(__name__)
 
-DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:8000")
+DEFAULT_EVALUATOR_URL = default_evaluator_url()
 DEFAULT_TRAINING_SESSION_LOG = Path(
     os.getenv(
         "TRAINING_SESSION_LOG",
@@ -206,8 +207,9 @@ def wait_all(client: EvaluatorClient, job_ids: list[str],
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--evaluator-url", default=DEFAULT_EVALUATOR_URL,
-                    help="NeMo Evaluator base URL. Defaults to EVALUATOR_URL or "
-                         "http://nemo-evaluator:8000.")
+                    help="NeMo Evaluator or NeMo Platform API base URL. Defaults "
+                         "to EVALUATOR_URL, NMP_EVALUATOR_URL, NMP_BASE_URL, "
+                         "or http://localhost:8080.")
     ap.add_argument("--evaluator-api-key", default=os.getenv("EVALUATOR_API_KEY"),
                     help="Optional Evaluator bearer token. Defaults to EVALUATOR_API_KEY.")
     ap.add_argument("--log-path", type=Path, default=DEFAULT_TRAINING_SESSION_LOG,

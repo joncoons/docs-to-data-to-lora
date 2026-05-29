@@ -21,15 +21,30 @@ spec:
         - name: dataset-registration
           image: <registry>/docs-to-data-to-lora/dataset-registration:latest
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: nemo-platform-service-plane
           env:
             - name: ENTITY_STORE_URL
-              value: "http://nemo-entity-store:8000"
+              valueFrom:
+                configMapKeyRef:
+                  name: nemo-platform-service-plane
+                  key: NMP_ENTITY_STORE_URL
             - name: DATA_STORE_URL
-              value: "http://nemo-data-store:3000"
+              valueFrom:
+                configMapKeyRef:
+                  name: nemo-platform-service-plane
+                  key: NMP_DATASTORE_URL
             - name: DATA_STORE_GIT_BASE
-              value: "http://nemo-data-store:3000"
+              valueFrom:
+                configMapKeyRef:
+                  name: nemo-platform-service-plane
+                  key: NMP_DATASTORE_GIT_BASE
             - name: DATA_STORE_HF_ENDPOINT
-              value: "http://nemo-data-store:3000/v1/hf"
+              valueFrom:
+                configMapKeyRef:
+                  name: nemo-platform-service-plane
+                  key: NMP_DATASTORE_HF_ENDPOINT
             - name: DATA_STORE_USER
               valueFrom:
                 secretKeyRef:

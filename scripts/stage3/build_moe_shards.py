@@ -14,7 +14,7 @@ Datasets named stage3-<corpus>-shard-{a,b} in the data-store.
 Ported from nim-sft-final/scripts/build_2way_pc_full.py — adapted for:
   - stage3 collection paths (adapter_train.jsonl / adapter_val.jsonl)
   - stratified shuffle by `stage` field (falls back to plain shuffle)
-  - NodePort endpoints (192.168.1.187:30911 / :30912)
+  - Platform-aware service configuration via NMP_* or legacy service env vars
 
 Usage:
   python3 scripts/stage3/build_moe_shards.py --collection nim_curated [--seed 42]
@@ -23,21 +23,36 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import random
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import quote, urlsplit, urlunsplit
 
 import httpx
 
-DATASET_NAMESPACE = "default"
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from scripts.nemo_platform import (  # noqa: E402
+    default_data_store_git_base,
+    default_data_store_hf_endpoint,
+    default_data_store_url,
+    default_entity_store_url,
+    default_nmp_workspace,
+)
+
 SHARDS = ["a", "b"]
 
-ENTITY_STORE = "http://192.168.1.187:30911"
-DATA_STORE = "http://192.168.1.187:30912"
-GITEA_USER = "datastore_admin"
-GITEA_PASS = "nemo-peft-ds"
+DEFAULT_DATASET_NAMESPACE = default_nmp_workspace()
+DEFAULT_ENTITY_STORE_URL = default_entity_store_url()
+DEFAULT_DATA_STORE_URL = default_data_store_url()
+DEFAULT_DATA_STORE_GIT_BASE = default_data_store_git_base()
+DEFAULT_DATA_STORE_HF_ENDPOINT = default_data_store_hf_endpoint()
 
 # Canonical source paths
 _CORPUS_BASE = Path("/mnt/nvme2/peft/datasets/v2")
@@ -45,6 +60,54 @@ _COLLECTION_TO_DIR = {
     "nim_curated": _CORPUS_BASE / "nim_curated",
     "nemo_usvcs_curated": _CORPUS_BASE / "nemo_usvcs_curated",
 }
+
+
+@dataclass(frozen=True)
+class ServiceConfig:
+    namespace: str
+    entity_store_url: str
+    data_store_url: str
+    data_store_git_base: str
+    data_store_hf_endpoint: str
+    data_store_user: str | None
+    data_store_password: str | None
+
+    @property
+    def data_store_auth(self) -> tuple[str, str] | None:
+        if not self.data_store_user:
+            return None
+        return (self.data_store_user, self.data_store_password or "")
+
+    @property
+    def authenticated_git_base(self) -> str:
+        return inject_basic_auth(
+            self.data_store_git_base,
+            self.data_store_user,
+            self.data_store_password,
+        )
+
+
+def inject_basic_auth(base_url: str, user: str | None, password: str | None) -> str:
+    base_url = base_url.rstrip("/")
+    if not user:
+        return base_url
+    parts = urlsplit(base_url)
+    if parts.username:
+        return base_url
+    if not parts.scheme or not parts.netloc:
+        raise ValueError(f"Data Store Git base must be an absolute URL, got: {base_url!r}")
+    auth = quote(user, safe="")
+    if password is not None:
+        auth = f"{auth}:{quote(password, safe='')}"
+    return urlunsplit(
+        (
+            parts.scheme,
+            f"{auth}@{parts.netloc}",
+            parts.path.rstrip("/"),
+            parts.query,
+            parts.fragment,
+        )
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -145,15 +208,15 @@ def _sh(*args, cwd=None, allow_fail=False):
 # Data-store operations (integration; not unit-tested)
 # ---------------------------------------------------------------------------
 
-def create_dataset_repo(name: str) -> None:
-    repo_id = f"{DATASET_NAMESPACE}/{name}"
+def create_dataset_repo(name: str, config: ServiceConfig) -> None:
+    repo_id = f"{config.namespace}/{name}"
     r = httpx.post(
-        f"{DATA_STORE}/v1/hf/api/repos/create",
-        auth=(GITEA_USER, GITEA_PASS),
+        f"{config.data_store_url.rstrip('/')}/v1/hf/api/repos/create",
+        auth=config.data_store_auth,
         json={
             "type": "dataset",
             "name": name,
-            "organization": DATASET_NAMESPACE,
+            "organization": config.namespace,
             "private": False,
         },
         timeout=15,
@@ -169,9 +232,14 @@ def create_dataset_repo(name: str) -> None:
         sys.exit(1)
 
 
-def push_shard_files(name: str, train_rows: list[dict], val_rows: list[dict]) -> None:
-    repo_id = f"{DATASET_NAMESPACE}/{name}"
-    push_url = f"http://{GITEA_USER}:{GITEA_PASS}@192.168.1.187:30912/{repo_id}.git"
+def push_shard_files(
+    name: str,
+    train_rows: list[dict],
+    val_rows: list[dict],
+    config: ServiceConfig,
+) -> None:
+    repo_id = f"{config.namespace}/{name}"
+    push_url = f"{config.authenticated_git_base.rstrip('/')}/{repo_id}.git"
     with tempfile.TemporaryDirectory() as td:
         td = Path(td)
         _sh("git", "clone", push_url, str(td / "repo"))
@@ -201,12 +269,16 @@ def push_shard_files(name: str, train_rows: list[dict], val_rows: list[dict]) ->
 
 
 def register_in_entity_store(
-    name: str, n_train: int, n_val: int, collection: str
+    name: str,
+    n_train: int,
+    n_val: int,
+    collection: str,
+    config: ServiceConfig,
 ) -> None:
     shard_letter = name.split("-")[-1].upper()
     payload = {
         "name": name,
-        "namespace": DATASET_NAMESPACE,
+        "namespace": config.namespace,
         "description": (
             f"Nemotron-3-Nano-30B-A3B 2-way TIES SFT prompt/completion — "
             f"shard {shard_letter} ({n_train} train rows, stratified by stage, "
@@ -215,16 +287,16 @@ def register_in_entity_store(
             f"curves. Collection: {collection}."
         ),
         "format": "hf",
-        "files_url": f"hf://datasets/{DATASET_NAMESPACE}/{name}",
-        "hf_endpoint": "http://nemo-data-store:3000/v1/hf",
+        "files_url": f"hf://datasets/{config.namespace}/{name}",
+        "hf_endpoint": config.data_store_hf_endpoint,
     }
-    r = httpx.post(f"{ENTITY_STORE}/v1/datasets", json=payload, timeout=30)
+    r = httpx.post(f"{config.entity_store_url.rstrip('/')}/v1/datasets", json=payload, timeout=30)
     if r.status_code in (200, 201):
-        print(f"  registered in entity-store")
+        print("  registered in entity-store")
     elif r.status_code == 409:
         r2 = httpx.patch(
-            f"{ENTITY_STORE}/v1/datasets/{DATASET_NAMESPACE}/{name}",
-            json={"format": "hf", "hf_endpoint": "http://nemo-data-store:3000/v1/hf"},
+            f"{config.entity_store_url.rstrip('/')}/v1/datasets/{config.namespace}/{name}",
+            json={"format": "hf", "hf_endpoint": config.data_store_hf_endpoint},
             timeout=15,
         )
         print(f"  already in entity-store, patched ({r2.status_code})")
@@ -248,7 +320,24 @@ def main() -> int:
         help="Which stage3 corpus to shard",
     )
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--namespace", default=DEFAULT_DATASET_NAMESPACE)
+    ap.add_argument("--entity-store-url", default=DEFAULT_ENTITY_STORE_URL)
+    ap.add_argument("--data-store-url", default=DEFAULT_DATA_STORE_URL)
+    ap.add_argument("--data-store-git-base", default=DEFAULT_DATA_STORE_GIT_BASE)
+    ap.add_argument("--data-store-hf-endpoint", default=DEFAULT_DATA_STORE_HF_ENDPOINT)
+    ap.add_argument("--data-store-user", default=os.getenv("DATA_STORE_USER"))
+    ap.add_argument("--data-store-password", default=os.getenv("DATA_STORE_PASSWORD"))
     args = ap.parse_args()
+
+    config = ServiceConfig(
+        namespace=args.namespace,
+        entity_store_url=args.entity_store_url,
+        data_store_url=args.data_store_url,
+        data_store_git_base=args.data_store_git_base,
+        data_store_hf_endpoint=args.data_store_hf_endpoint,
+        data_store_user=args.data_store_user,
+        data_store_password=args.data_store_password,
+    )
 
     collection = args.collection
     seed = args.seed
@@ -299,7 +388,7 @@ def main() -> int:
     # Sample row preview
     if shard_a:
         s = shard_a[0]
-        print(f"\nSample shard-a row 0:")
+        print("\nSample shard-a row 0:")
         print(f"  prompt    ({len(s['prompt'])} chars): {s['prompt'][:200]!r}...")
         print(f"  completion ({len(s['completion'])} chars): {s['completion'][:200]!r}...")
 
@@ -308,9 +397,15 @@ def main() -> int:
     for letter in SHARDS:
         name = shard_dataset_name(collection, letter)
         print(f"\n=== {name} ===")
-        create_dataset_repo(name)
-        push_shard_files(name, train_shards[letter], val_pc)
-        register_in_entity_store(name, len(train_shards[letter]), len(val_pc), collection)
+        create_dataset_repo(name, config)
+        push_shard_files(name, train_shards[letter], val_pc, config)
+        register_in_entity_store(
+            name,
+            len(train_shards[letter]),
+            len(val_pc),
+            collection,
+            config,
+        )
 
     print(f"\nBoth MoE shards ready for {collection} TIES run.")
     return 0
