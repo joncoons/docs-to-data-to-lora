@@ -55,6 +55,13 @@ Frozen inputs:
 
 The Super Curator model ID remains `nvidia/nvidia/nemotron-3-super-v3`. The Ultra generator model ID used by existing repo evaluation jobs is `nvidia/nvidia/nemotron-3-ultra`; verify endpoint availability before launch and record any endpoint-resolved alias in the generation manifest.
 
+### Micro execution slice
+
+The first Curator Super run on the full 48-document NIM slice was stopped after roughly 17 minutes with one active `DiverseQAStage` task, zero completed DiverseQA tasks, and no raw JSONL output. That attempt is preserved under `runs/curator/nim_curated/super-v3-attempt2.*`.
+
+For the initial endpoint and quality hypothesis check, use `micro_slice_manifest.json` and `inputs_micro/`. This derived slice keeps the same seed and source-selection policy but uses 8 documents per corpus: 2 short, 2 medium, 2 long, and 2 very-long documents. Use this micro slice for the first Super-vs-Ultra generation comparison before spending time on the larger frozen slice.
+
+
 ## Generation controls
 
 - Hold prompts, temperature, max tokens, context packing, and filtering constant except for the generator model.
