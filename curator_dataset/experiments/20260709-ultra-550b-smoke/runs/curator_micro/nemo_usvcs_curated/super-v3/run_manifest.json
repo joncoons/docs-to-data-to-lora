@@ -1,0 +1,54 @@
+{
+  "artifacts": [
+    {
+      "bytes": 168141,
+      "path": "raw/1bb643310e15.jsonl",
+      "rows": 35,
+      "sha256": "8154898f2d7a3d272de27ced3d0a1e84938196984f32a5d8156becb4290cc06f"
+    }
+  ],
+  "completed_at": "2026-07-09T19:00:11.924277Z",
+  "curator": {
+    "image": "nvcr.io/nvidia/nemo-curator:26.04",
+    "image_digest": "sha256:11635749967ea52fb82ccc2b82d326a4de3dfc50a51605c95a993a007e8219ac",
+    "pipeline": "Nemotron-CC DiverseQAStage",
+    "version": "1.2.0+f07fa0e1"
+  },
+  "elapsed_seconds": 144.509,
+  "generation": {
+    "base_delay": 2.0,
+    "max_concurrent_requests": 2,
+    "max_output_tokens": 600,
+    "max_retries": 5,
+    "seed": 42,
+    "temperature": 0.5,
+    "thinking": false,
+    "top_p": 0.9
+  },
+  "input": {
+    "bytes": 85157,
+    "path": "/workspace/curator_dataset/experiments/20260709-ultra-550b-smoke/inputs_micro/nemo_usvcs_curated.curator_input.jsonl",
+    "rows": 8,
+    "sha256": "c291f662f8dca9912780ed35bf512121ce117afb13e015d70f0c11d3a27f3c64"
+  },
+  "preprocessing": {
+    "max_input_tokens": 1000,
+    "min_document_tokens": 30,
+    "min_segment_tokens": 30,
+    "native_helper": "nemotron_cc_pipelines.add_preprocessing_pipeline"
+  },
+  "prompts": {
+    "diverse_qa_sha256": "a3fa9d87c45c55c9a3cf3ea0e9afd57250196c2f5f15d8013588ffabe6f19c2f",
+    "system_sha256": "042c0a111392840ad0f8af69c488c01f72b9fbfd2819fb85b4c1adb540b94112"
+  },
+  "provider": {
+    "api_key_source": "Kubernetes Secret reference; value not persisted",
+    "base_url": "https://inference-api.nvidia.com/v1",
+    "model": "nvidia/nvidia/nemotron-3-super-v3"
+  },
+  "result_task_count": 1,
+  "schema_version": "curator_dataset.diverse_qa_run.v1",
+  "started_at": "2026-07-09T18:57:47.415214Z",
+  "status": "completed",
+  "tokenizer": "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-FP8"
+}
