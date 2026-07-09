@@ -90,8 +90,6 @@ def main() -> int:
         "host",
         "--shm-size",
         "8g",
-        "--user",
-        f"{os.getuid()}:{os.getgid()}",
         "--env",
         "NVIDIA_API_KEY",
         "--env",
@@ -142,6 +140,23 @@ def main() -> int:
         str(args.max_input_tokens),
     ]
     completed = subprocess.run(command, env=environment, check=False)
+    if output_dir.exists():
+        subprocess.run(
+            [
+                "docker",
+                "run",
+                "--rm",
+                "--volume",
+                f"{EXPERIMENT_ROOT}:/workspace/curator_dataset",
+                "--entrypoint",
+                "chown",
+                image_ref,
+                "-R",
+                f"{os.getuid()}:{os.getgid()}",
+                container_path(output_dir),
+            ],
+            check=True,
+        )
     return completed.returncode
 
 
