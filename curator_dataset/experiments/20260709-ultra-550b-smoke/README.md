@@ -42,6 +42,19 @@ Freeze a deterministic, source-balanced slice before generation:
 
 Target output size per cell: about 500 training rows and 100 validation rows after normalization. That is large enough to expose format and grounding problems but small enough to run quickly.
 
+### Frozen slice edge
+
+The 2026-07-09 smoke slice is now frozen in `slice_manifest.json` using seed `20260709-ultra-550b-smoke-v1`. It selects 48 documents per corpus, balanced as 12 short, 12 medium, 12 long, and 12 very-long documents. Exact duplicate document text is excluded before selection so repeated generated docs do not overweight the smoke signal.
+
+Frozen inputs:
+
+- Curator NIM: `inputs/nim_curated.curator_input.jsonl`
+- LE NIM: `inputs/nim_curated.passages.jsonl`
+- Curator NeMo Microservices: `inputs/nemo_usvcs_curated.curator_input.jsonl`
+- LE NeMo Microservices: `inputs/nemo_usvcs_curated.passages.jsonl`
+
+The Super Curator model ID remains `nvidia/nvidia/nemotron-3-super-v3`. The Ultra generator model ID used by existing repo evaluation jobs is `nvidia/nvidia/nemotron-3-ultra`; verify endpoint availability before launch and record any endpoint-resolved alias in the generation manifest.
+
 ## Generation controls
 
 - Hold prompts, temperature, max tokens, context packing, and filtering constant except for the generator model.

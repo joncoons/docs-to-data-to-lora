@@ -50,7 +50,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--image", default=DEFAULT_IMAGE)
     parser.add_argument("--digest", default=DEFAULT_DIGEST)
+    parser.add_argument(
+        "--base-url",
+        default="https://inference-api.nvidia.com/v1",
+    )
+    parser.add_argument("--model", default="nvidia/nvidia/nemotron-3-super-v3")
+    parser.add_argument(
+        "--tokenizer",
+        default="nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-FP8",
+    )
     parser.add_argument("--max-concurrent-requests", type=int, default=3)
+    parser.add_argument("--max-retries", type=int, default=5)
+    parser.add_argument("--base-delay", type=float, default=2.0)
+    parser.add_argument("--temperature", type=float, default=0.5)
+    parser.add_argument("--top-p", type=float, default=0.9)
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--max-output-tokens", type=int, default=600)
+    parser.add_argument("--min-document-tokens", type=int, default=30)
+    parser.add_argument("--min-segment-tokens", type=int, default=30)
+    parser.add_argument("--max-input-tokens", type=int, default=1000)
     return parser.parse_args()
 
 
@@ -96,8 +114,32 @@ def main() -> int:
         container_path(input_path),
         "--output-dir",
         container_path(output_dir),
+        "--base-url",
+        args.base_url,
+        "--model",
+        args.model,
+        "--tokenizer",
+        args.tokenizer,
         "--max-concurrent-requests",
         str(args.max_concurrent_requests),
+        "--max-retries",
+        str(args.max_retries),
+        "--base-delay",
+        str(args.base_delay),
+        "--temperature",
+        str(args.temperature),
+        "--top-p",
+        str(args.top_p),
+        "--seed",
+        str(args.seed),
+        "--max-output-tokens",
+        str(args.max_output_tokens),
+        "--min-document-tokens",
+        str(args.min_document_tokens),
+        "--min-segment-tokens",
+        str(args.min_segment_tokens),
+        "--max-input-tokens",
+        str(args.max_input_tokens),
     ]
     completed = subprocess.run(command, env=environment, check=False)
     return completed.returncode
