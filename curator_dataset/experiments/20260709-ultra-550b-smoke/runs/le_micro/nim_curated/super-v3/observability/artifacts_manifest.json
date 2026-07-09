@@ -1,0 +1,29 @@
+{
+  "artifacts": [
+    {
+      "artifact_kind": "input_passages",
+      "artifact_path": "passages.jsonl",
+      "bytes": 71411,
+      "path": "curator_dataset/experiments/20260709-ultra-550b-smoke/inputs_micro/nim_curated.passages.jsonl",
+      "rows": 8,
+      "sha256": "sha256:c687491814561ef1026e6a20ceb4872aec74ea4d0a7643472def139cefda2df0"
+    },
+    {
+      "artifact_kind": "stage1a_rows",
+      "artifact_path": "stage1a_le.jsonl",
+      "bytes": 508814,
+      "path": "curator_dataset/experiments/20260709-ultra-550b-smoke/runs/le_micro/nim_curated/super-v3/stage1a_le.jsonl",
+      "rows": 46,
+      "sha256": "sha256:17b63337dd53202c0b82753a3ae4b827afc30a63ab06f66f8bded80a47477129"
+    },
+    {
+      "artifact_kind": "entailment_provenance",
+      "artifact_path": "provenance/entailments.jsonl",
+      "bytes": 23418,
+      "path": "curator_dataset/experiments/20260709-ultra-550b-smoke/runs/le_micro/nim_curated/super-v3/provenance/entailments.jsonl",
+      "rows": 17,
+      "sha256": "sha256:440dee1cb368c0eaa5d85b818a17afc28416f279c04e103dfe21b248a08a018e"
+    }
+  ],
+  "schema_version": "observability.v1"
+}

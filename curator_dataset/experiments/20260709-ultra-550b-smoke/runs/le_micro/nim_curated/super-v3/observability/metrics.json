@@ -1,0 +1,15 @@
+{
+  "stage1a.entailments.count": 17,
+  "stage1a.max_workers": 1,
+  "stage1a.modality.unknown.rows": 46,
+  "stage1a.passages.input.count": 8,
+  "stage1a.passages.selected.count": 8,
+  "stage1a.product_family.nim.rows": 46,
+  "stage1a.rows.count": 46,
+  "stage1a.shard.count": 1,
+  "stage1a.shard.index": 0,
+  "stage1a.source_chunks.count": 5,
+  "stage1a.source_kind.unknown.rows": 46,
+  "stage1a.source_revisions.count": 5,
+  "stage1a.source_system.web_crawl.rows": 46
+}
