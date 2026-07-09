@@ -59,8 +59,15 @@ class LLMClient:
         self._counter = itertools.count()
         self._clients = [OpenAI(base_url=ep, api_key=api_key) for ep in endpoints]
 
-    def _next_client(self) -> OpenAI:
-        return self._clients[next(self._counter) % len(self._clients)]
+    def _next_client(self) -> tuple[OpenAI, str]:
+        index = next(self._counter) % len(self._clients)
+        return self._clients[index], self.endpoints[index]
+
+    @staticmethod
+    def _no_think_extra_body(endpoint: str) -> dict:
+        if "inference-api.nvidia.com" in endpoint or "integrate.api.nvidia.com" in endpoint:
+            return {"chat_template_kwargs": {"enable_thinking": False}}
+        return {"reasoning_effort": "none"}
 
     def call(self, system: str, user: str, max_tokens: int = 1024) -> Optional[str]:
         with self._semaphore:
@@ -68,7 +75,7 @@ class LLMClient:
                 elapsed = time.time() - self._last_call[0]
                 if elapsed < self._min_interval:
                     time.sleep(self._min_interval - elapsed)
-                client = self._next_client()
+                client, endpoint = self._next_client()
                 try:
                     kwargs = {
                         "model": self.model,
@@ -80,7 +87,7 @@ class LLMClient:
                         "max_tokens": max_tokens,
                     }
                     if self.no_think:
-                        kwargs["extra_body"] = {"reasoning_effort": "none"}
+                        kwargs["extra_body"] = self._no_think_extra_body(endpoint)
                     resp = client.chat.completions.create(**kwargs)
                     self._last_call[0] = time.time()
                     return _strip_think_blocks(resp.choices[0].message.content)
