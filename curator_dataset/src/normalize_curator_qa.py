@@ -48,7 +48,11 @@ def read_raw_rows(raw_dir: Path) -> list[dict[str, Any]]:
     return rows
 
 
-def normalize_rows(raw_rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, int]]:
+def normalize_rows(
+    raw_rows: list[dict[str, Any]],
+    *,
+    generation_model: str = "nvidia/nvidia/nemotron-3-super-v3",
+) -> tuple[list[dict[str, Any]], dict[str, int]]:
     normalized: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
     parsed_segments = 0
@@ -93,7 +97,7 @@ def normalize_rows(raw_rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]]
                     "generation": {
                         "framework": "NeMo Curator",
                         "stage": "Nemotron-CC DiverseQAStage",
-                        "model": "nvidia/nvidia/nemotron-3-super-v3",
+                        "model": generation_model,
                     },
                 }
             )
@@ -106,11 +110,25 @@ def normalize_rows(raw_rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]]
     }
 
 
+
+def resolve_generation_model(raw_dir: Path, explicit_model: str | None) -> str:
+    if explicit_model:
+        return explicit_model
+    run_manifest = raw_dir.parent / "run_manifest.json"
+    if run_manifest.exists():
+        with run_manifest.open() as stream:
+            manifest = json.load(stream)
+        model = manifest.get("provider", {}).get("model")
+        if model:
+            return str(model)
+    return "nvidia/nvidia/nemotron-3-super-v3"
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--raw-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--model")
     return parser.parse_args()
 
 
@@ -119,7 +137,11 @@ def main() -> int:
     raw_dir = require_experiment_path(args.raw_dir)
     output = require_experiment_path(args.output)
     manifest_path = require_experiment_path(args.manifest)
-    samples, metrics = normalize_rows(read_raw_rows(raw_dir))
+    generation_model = resolve_generation_model(raw_dir, args.model)
+    samples, metrics = normalize_rows(
+        read_raw_rows(raw_dir),
+        generation_model=generation_model,
+    )
     if not samples:
         raise RuntimeError(f"no QA pairs parsed from {raw_dir}")
     write_jsonl_atomic(output, samples)
@@ -127,6 +149,7 @@ def main() -> int:
         "schema_version": "curator_dataset.qa_dataset_manifest.v1",
         "created_at": utc_now(),
         "raw_dir": str(raw_dir),
+        "generation_model": generation_model,
         "metrics": metrics,
         "output": {
             "path": str(output),

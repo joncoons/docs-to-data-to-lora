@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 from build_url_documents import require_experiment_path, sha256_file, write_json_atomic, write_jsonl_atomic
-from normalize_curator_qa import normalize_rows, read_raw_rows, utc_now
+from normalize_curator_qa import normalize_rows, read_raw_rows, resolve_generation_model, utc_now
 
 
 SYSTEM_PROMPT = (
@@ -21,6 +21,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--raw-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--model")
     return parser.parse_args()
 
 
@@ -29,7 +30,11 @@ def main() -> int:
     raw_dir = require_experiment_path(args.raw_dir)
     output = require_experiment_path(args.output)
     manifest_path = require_experiment_path(args.manifest)
-    samples, metrics = normalize_rows(read_raw_rows(raw_dir))
+    generation_model = resolve_generation_model(raw_dir, args.model)
+    samples, metrics = normalize_rows(
+        read_raw_rows(raw_dir),
+        generation_model=generation_model,
+    )
     if not samples:
         raise RuntimeError(f"no QA pairs parsed from {raw_dir}")
     for sample in samples:
@@ -41,6 +46,7 @@ def main() -> int:
         "created_at": utc_now(),
         "collection": "nemo_usvcs_curated",
         "raw_dir": str(raw_dir),
+        "generation_model": generation_model,
         "system_prompt": SYSTEM_PROMPT,
         "metrics": metrics,
         "output": {
