@@ -1,0 +1,8 @@
+{
+  "dataset.stage3_nemo_usvcs_curated_curator_diverseqa_20260629.bytes.training_jsonl": 1310290,
+  "dataset.stage3_nemo_usvcs_curated_curator_diverseqa_20260629.bytes.validation_jsonl": 160963,
+  "dataset.stage3_nemo_usvcs_curated_curator_diverseqa_20260629.lineage_files.uploaded.count": 1,
+  "dataset.stage3_nemo_usvcs_curated_curator_diverseqa_20260629.rows.training": 3865,
+  "dataset.stage3_nemo_usvcs_curated_curator_diverseqa_20260629.rows.validation": 480,
+  "datasets.count": 1
+}
