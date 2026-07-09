@@ -1,0 +1,20 @@
+{
+  "created_at": "2026-07-09T19:54:19Z",
+  "mlflow": {
+    "experiment_name": null,
+    "parent_run_id": null,
+    "tracking_uri": null
+  },
+  "output_dir": "curator_dataset/experiments/20260709-ultra-550b-smoke/runs/le_micro/nemo_usvcs_curated/super-v3",
+  "parameters": {
+    "max_workers": 1
+  },
+  "pipeline_run_id": "le-micro-nemo-super-v3-20260709",
+  "pipeline_stage": "stage1a-le-kvp",
+  "schema_version": "observability.v1",
+  "shard": {
+    "count": 1,
+    "index": 0,
+    "label": "shard-00000-of-00001"
+  }
+}
