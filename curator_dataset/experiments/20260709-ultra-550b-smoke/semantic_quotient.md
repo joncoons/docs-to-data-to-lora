@@ -6,6 +6,8 @@ Embedding model: `nvidia/llama-3.2-nv-embedqa-1b-v2` via `http://10.43.101.173:8
 
 Primary quotient: symmetric same-source nearest-neighbor cosine between Super and Ultra QA rows. `1 - quotient` is the semantic dissimilarity score. Text embedded is generated question plus answer only; source context is excluded.
 
+![Super vs Ultra semantic quotient documentation graph](semantic_quotient_doc_graph.svg)
+
 | Approach | Corpus | Super rows | Ultra rows | Exact pairs | Exact-pair mean | Source-NN quotient | Dissimilarity | Centroid cosine |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Curator | NIM | 249 | 248 | 248 | 0.523447 | 0.793715 | 0.206285 | 0.993617 |
