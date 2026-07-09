@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: EVALUATOR_URL
-              value: "http://nemo-evaluator:8000"
+              value: "http://nemo-evaluator:7331"
             - name: EVALUATOR_JOB_IDS_OUT
               value: /outputs/evaluator_job_ids.json
             - name: EVALUATOR_API_KEY

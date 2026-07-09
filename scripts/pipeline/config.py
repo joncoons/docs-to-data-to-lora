@@ -21,9 +21,13 @@ DEFAULT_NIM_ENDPOINTS: tuple[str, ...] = tuple(
         "http://nim-llm-super-120b-bw.runai-rag:8000/v1",
     ).split(",")
 )
-DEFAULT_CLAUDE_BASE = os.environ.get(
-    "PIPELINE_CLAUDE_BASE",
+DEFAULT_EXTERNAL_JUDGE_BASE = os.environ.get(
+    "PIPELINE_EXTERNAL_JUDGE_BASE",
     "https://inference-api.nvidia.com/v1",
+)
+DEFAULT_EXTERNAL_JUDGE_MODEL = os.environ.get(
+    "PIPELINE_EXTERNAL_JUDGE_MODEL",
+    "nvidia/llama-3.3-nemotron-super-49b-v1.5",
 )
 
 
@@ -31,8 +35,8 @@ DEFAULT_CLAUDE_BASE = os.environ.get(
 class Config:
     es_host: str = DEFAULT_ES_HOST
     nim_endpoints: list[str] = field(default_factory=lambda: list(DEFAULT_NIM_ENDPOINTS))
-    claude_base_url: str = DEFAULT_CLAUDE_BASE
-    claude_model: str = "aws/anthropic/bedrock-claude-sonnet-4-6"
+    external_judge_base_url: str = DEFAULT_EXTERNAL_JUDGE_BASE
+    external_judge_model: str = DEFAULT_EXTERNAL_JUDGE_MODEL
     super120b_model: str = "nvidia/nemotron-3-super-120b-a12b"
 
     base_output_dir: Path = field(default_factory=lambda: Path("/mnt/nvme2/peft/datasets/v2"))
@@ -105,6 +109,6 @@ def get_es_password() -> str:
     )
 
 
-def get_claude_api_key() -> str:
-    """Get the NVIDIA Inference API key (used for Claude Sonnet judge calls)."""
+def get_external_judge_api_key() -> str:
+    """Get the NVIDIA Inference API key used for external judge calls."""
     return get_k8s_secret("nvidia-inference-key", "runai-rag", "api-key")

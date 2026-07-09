@@ -183,7 +183,7 @@ Output JSON:
 }}"""
 
 
-# ── Stage 4: External judge (Claude Sonnet) ──────────────────────────────────
+# ── Stage 4: External judge ─────────────────────────────────────────────────
 
 JUDGE_SYSTEM = (
     "You are an impartial grader of question-answer pairs against their source text. "

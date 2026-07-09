@@ -21,8 +21,12 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from scripts.pipeline.claude_client import ClaudeJudge  # noqa: E402
-from scripts.pipeline.config import Config, get_claude_api_key, get_es_password  # noqa: E402
+from scripts.pipeline.external_judge_client import ExternalJudge  # noqa: E402
+from scripts.pipeline.config import (  # noqa: E402
+    Config,
+    get_es_password,
+    get_external_judge_api_key,
+)
 from scripts.pipeline.dataset_admission import (  # noqa: E402
     admitted_dataset_samples_from_kvp_rows,
 )
@@ -223,10 +227,10 @@ def main() -> int:
         if args.resume and progress.is_done("4"):
             log.info("Stage 4: skipping (already done)")
         else:
-            judge = ClaudeJudge(
-                base_url=cfg.claude_base_url,
-                api_key=get_claude_api_key(),
-                model=cfg.claude_model,
+            judge = ExternalJudge(
+                base_url=cfg.external_judge_base_url,
+                api_key=get_external_judge_api_key(),
+                model=cfg.external_judge_model,
             )
             run_stage4(stage2_rows, judge, args.output, args.collection,
                        sample_size=cfg.judge_sample_size,

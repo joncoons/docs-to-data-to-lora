@@ -1,0 +1,79 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: live-ragas-smoke-kimi
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: live-ragas-smoke
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: live-ragas-smoke
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: live-ragas-smoke
+          image: <registry>/docs-to-data-to-lora/evaluation-matrix:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - python
+            - scripts/eval/run_live_ragas_smoke.py
+          env:
+            - name: EVALUATOR_URL
+              value: "http://nemo-evaluator:7331"
+            - name: TARGET_API_URL
+              value: "http://rag-oai-proxy.runai-rag:8080"
+            - name: JUDGE_API_URL
+              value: "https://inference-api.nvidia.com/v1/chat/completions"
+            - name: EVALUATOR_JUDGE_MODEL
+              value: "nvidia/moonshotai/kimi-k2.6"
+            - name: JUDGE_API_KEY_ENV
+              value: "KIMI_KEY"
+            - name: KIMI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kimi-judge-api
+                  key: KIMI_KEY
+            - name: EVALUATOR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nemo-evaluator-api
+                  key: EVALUATOR_API_KEY
+                  optional: true
+          args:
+            - --dataset-path
+            - /datasets/nim_curated/test_set_with_context.jsonl
+            - --limit
+            - "1"
+            - --judge-max-retries
+            - "3"
+            - --metrics
+            - faithfulness
+            - --out
+            - /outputs/live_ragas_smoke_kimi.json
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          volumeMounts:
+            - name: dataset-artifacts
+              mountPath: /datasets
+              readOnly: true
+            - name: evaluator-results
+              mountPath: /outputs
+      volumes:
+        - name: dataset-artifacts
+          persistentVolumeClaim:
+            claimName: stage3-datasets
+        - name: evaluator-results
+          persistentVolumeClaim:
+            claimName: evaluator-results

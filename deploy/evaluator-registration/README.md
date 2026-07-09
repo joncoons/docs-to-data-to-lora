@@ -4,9 +4,10 @@ This Job registers Stage 3 NeMo Evaluator model targets and evaluation configs.
 It is an idempotent control-plane step: reruns tolerate existing targets/configs
 when Evaluator returns HTTP 409.
 
-The registered model targets point at native NeMo NIM Proxy using Evaluator's
-`format: nim` target shape. This is the preferred showcase path over the legacy
-`deploy/rag-oai-proxy` workaround.
+The registered model targets point at the OpenAI-compatible model proxy using Evaluator's
+`format: nim` target shape. The current eval test cluster uses the
+`rag-oai-proxy` service as the model-routing endpoint until a native NIM Proxy
+service is available.
 
 ## Build Image
 
@@ -40,8 +41,8 @@ The Job uses environment variables so service names are cluster-local and do
 not require hard-coded NodePorts:
 
 ```text
-EVALUATOR_URL=http://nemo-evaluator:8000
-NIM_PROXY_URL=http://nemo-nim-proxy:8000
+EVALUATOR_URL=http://nemo-evaluator:7331
+NIM_PROXY_URL=http://rag-oai-proxy.runai-rag:8080
 ```
 
 Adjust `EVALUATOR_URL` to match the Service and port exposed by your NeMo

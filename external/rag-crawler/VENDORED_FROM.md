@@ -1,8 +1,8 @@
 # Vendored Webcrawler Copy
 
-This directory is an in-repository copy of `/home/joncoons/claude/rag-crawler` for docs-to-data-to-lora integration work.
+This directory is an in-repository copy of the sibling `rag-crawler` project for docs-to-data-to-lora integration work.
 
-- Source path: `/home/joncoons/claude/rag-crawler`
+- Source path: sibling `rag-crawler` checkout
 - Source commit observed before copy: `30f0dba`
 - Source working tree status at copy time: dirty
 - Copy date: 2026-05-28

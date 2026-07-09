@@ -1,0 +1,120 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ultra-8b-nim-html-only-20260610t032644z
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: direct-nemotron-ultra-judge
+    app.kubernetes.io/component: 8b-nim-html-only-phase1-phase2
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "8b-nim-html-only-nemotron-ultra-20260610t032644z"
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: direct-nemotron-ultra-judge
+        app.kubernetes.io/component: 8b-nim-html-only-phase1-phase2
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+        eval-run-id: "8b-nim-html-only-nemotron-ultra-20260610t032644z"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: direct-judge
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              pip install --no-cache-dir -q httpx
+              echo "Starting Phase 1 Nemotron Ultra single-axis for 8B NIM HTML-only"
+              python /scripts/singleaxis/run_direct_kimi_singleaxis.py \
+                --responses /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/base/base/20260610t032644z/responses.jsonl \
+                --responses /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r16/20260610t032644z/responses.jsonl \
+                --responses /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r32/20260610t032644z/responses.jsonl \
+                --completions-root "$COMPLETIONS_OUTPUT_ROOT" \
+                --eval-run-id "$SINGLEAXIS_EVAL_RUN_ID" \
+                --output-root "$SINGLEAXIS_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-timeout-s 600 \
+                --judge-max-attempts 5 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 4 \
+                --resume \
+                --log-every 25
+              echo "Starting Phase 2 Nemotron Ultra pairwise for 8B NIM HTML-only"
+              python /scripts/pairwise/run_direct_kimi_pairwise.py \
+                --pair 8b-base /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/base/base/20260610t032644z/responses.jsonl 8b-nim-html-e5-r16 /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r16/20260610t032644z/responses.jsonl \
+                --pair 8b-base /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/base/base/20260610t032644z/responses.jsonl 8b-nim-html-e5-r32 /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r32/20260610t032644z/responses.jsonl \
+                --pair 8b-nim-html-e5-r16 /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r16/20260610t032644z/responses.jsonl 8b-nim-html-e5-r32 /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r32/20260610t032644z/responses.jsonl \
+                --eval-run-id "$PAIRWISE_EVAL_RUN_ID" \
+                --output-root "$PAIRWISE_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-timeout-s 600 \
+                --judge-max-attempts 5 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 4 \
+                --resume \
+                --position-swap \
+                --log-every 25
+          env:
+            - name: SINGLEAXIS_EVAL_RUN_ID
+              value: "8b-nim-html-only-nemotron-ultra-20260610t032644z"
+            - name: PAIRWISE_EVAL_RUN_ID
+              value: "8b-nim-html-only-nemotron-ultra-pairwise-20260610t032644z"
+            - name: COMPLETIONS_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/completions
+            - name: SINGLEAXIS_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/singleaxis-nemotron-ultra
+            - name: PAIRWISE_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/pairwise-nemotron-ultra
+            - name: JUDGE_API_URL
+              value: https://inference-api.nvidia.com/v1/chat/completions
+            - name: EVALUATOR_JUDGE_MODEL
+              value: nvidia/nvidia/nemotron-3-ultra
+            - name: KIMI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kimi-judge-api
+                  key: KIMI_KEY
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          volumeMounts:
+            - name: singleaxis-script
+              mountPath: /scripts/singleaxis
+              readOnly: true
+            - name: pairwise-script
+              mountPath: /scripts/pairwise
+              readOnly: true
+            - name: nvme2
+              mountPath: /mnt/nvme2
+      volumes:
+        - name: singleaxis-script
+          configMap:
+            name: direct-kimi-singleaxis-script
+            defaultMode: 0555
+        - name: pairwise-script
+          configMap:
+            name: direct-kimi-pairwise-script
+            defaultMode: 0555
+        - name: nvme2
+          persistentVolumeClaim:
+            claimName: nvme2-pvc

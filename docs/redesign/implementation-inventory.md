@@ -7,7 +7,7 @@ parts that should move to NVIDIA-native services, SDKs, or deployment patterns.
 Backup taken before this inventory:
 
 ```text
-/home/joncoons/claude/backups/docs-to-data-to-lora-20260528-131428
+../backups/docs-to-data-to-lora-20260528-131428
 ```
 
 ## Classification Legend
@@ -118,7 +118,7 @@ row-level provenance lives in registered files, not only custom_fields
 
 | Path | Classification | Notes | Target Action |
 |---|---|---|---|
-| `scripts/stage3/customizer_client.py` | Replace native/fallback | Thin REST wrapper with version uncertainty. | Prefer NeMo Platform SDK/CLI. Keep as legacy fallback only if SDK coverage is insufficient. |
+| `scripts/stage3/customizer_client.py` | Replace native/fallback | Thin REST wrapper with version uncertainty. | Prefer NeMo Customizer SDK/CLI or documented API clients. Keep as legacy fallback only if native coverage is insufficient. |
 | `scripts/stage3/train_adapter.py` | Keep, refactor | Job spec planning is useful, but direct payload shape is brittle. | Convert to config builder for native Customizer client. |
 | `scripts/stage3/train_adapter_moe.py` | Keep, refactor | MoE-specific adapter training may be intentional. | Isolate MoE experiment logic from platform submission mechanics. |
 | `scripts/stage3/customizer-templates/*` | Keep, refactor | Captures real cluster template lessons. | Move under `configs/customizer/templates/` and document version compatibility. |
@@ -132,7 +132,7 @@ row-level provenance lives in registered files, not only custom_fields
 
 | Path | Classification | Notes | Target Action |
 |---|---|---|---|
-| `deploy/rag-oai-proxy/*` | Quarantine/replace native | Explicitly identified as Claude-generated workaround. | Replace showcase path with Evaluator targets pointing at NIM Proxy. Keep only as temporary fallback. |
+| `deploy/rag-oai-proxy/*` | Quarantine/replace native | Temporary OpenAI-compatible proxy workaround. | Replace showcase path with Evaluator targets pointing at NIM Proxy. Keep only as temporary fallback. |
 | `scripts/eval/register_evaluator_entities.py` | Keep | Builder functions now register native NIM Proxy model targets and configs. | Run as the K8s control-plane Job in `deploy/evaluator-registration/`; keep custom proxy path legacy only. |
 | `scripts/eval/evaluator_client.py` | Replace native/fallback | Thin REST wrapper. | Prefer NeMo Evaluator SDK/CLI. Keep as fallback if needed. |
 | `scripts/eval/run_evaluation_matrix.py` | Keep | Evaluation matrix is useful showcase logic and now has K8s-friendly submission/polling controls. | Run through `deploy/evaluation-matrix/`; add result collection as the next separate Job. |
@@ -298,5 +298,5 @@ Those are later phases after source-grounded lineage is stable.
 - Whether to store provenance JSONL, Parquet, or both.
 - Whether chunk text should be embedded in `source_chunks.jsonl` or stored by pointer for large binary corpora.
 - Whether current Elasticsearch chunk IDs are stable enough to use as external source IDs.
-- Whether the external Claude validation gate remains outside NeMo Evaluator or becomes an Evaluator-backed dataset-quality job.
+- Whether the independent external validation gate remains outside NeMo Evaluator or becomes an Evaluator-backed dataset-quality job.
 - Whether MoE adapter experiments are part of the core showcase or an advanced appendix.

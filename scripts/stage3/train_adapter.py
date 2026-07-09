@@ -36,6 +36,7 @@ def build_customizer_config(
     dataset_entity: str,
     output_model_entity: str,
     description: str,
+    epochs: int = 2,
 ) -> dict:
     """Build the Customizer 25.12 job submission payload from an AdapterSpec.
 
@@ -57,7 +58,7 @@ def build_customizer_config(
             "adam_beta1": 0.9,
             "adam_beta2": 0.99,
             "batch_size": 16,
-            "epochs": 2,
+            "epochs": epochs,
             "learning_rate": 1.0e-4,
             "log_every_n_steps": 10,
             "lora": {
@@ -78,10 +79,16 @@ def submit_adapter_job(
     output_model_entity: str,
     description: str,
     client: CustomizerClient,
+    epochs: int = 2,
 ) -> str:
     """Build config and POST to Customizer; returns the job_id string."""
     cfg = build_customizer_config(
-        spec, base_template, dataset_entity, output_model_entity, description
+        spec,
+        base_template,
+        dataset_entity,
+        output_model_entity,
+        description,
+        epochs=epochs,
     )
     log.info(
         "Submitting adapter %s on template %s",
@@ -108,6 +115,28 @@ def main() -> int:
     )
     ap.add_argument("--rank", required=True, type=int, choices=[16, 32])
     ap.add_argument(
+        "--dataset-entity",
+        help="Override the registered Customizer dataset entity, e.g. default/stage3-nim-curated-dd-kimi-v1",
+    )
+    ap.add_argument(
+        "--adapter-name",
+        help="Override the generated adapter/output model name suffix.",
+    )
+    ap.add_argument(
+        "--output-model-entity",
+        help="Override the full Customizer output model entity. Defaults to default/<adapter-name>.",
+    )
+    ap.add_argument(
+        "--description",
+        help="Override the Customizer job description.",
+    )
+    ap.add_argument(
+        "--epochs",
+        type=int,
+        default=2,
+        help="Number of training epochs for the Customizer job.",
+    )
+    ap.add_argument(
         "--customizer-url",
         default="http://192.168.1.187:30910",
         help="Customizer REST endpoint (NodePort default)",
@@ -122,7 +151,7 @@ def main() -> int:
     alpha = 2 * rank
     base_short = args.base_model.split("/")[-1].replace("-instruct", "")
     coll_short = "nim" if args.collection == "nim_curated" else "nemo-usvcs"
-    adapter_name = f"lora-{coll_short}-{base_short}-r{rank}"
+    adapter_name = args.adapter_name or f"lora-{coll_short}-{base_short}-r{rank}"
 
     spec = AdapterSpec(
         adapter_name=adapter_name,
@@ -132,9 +161,9 @@ def main() -> int:
         alpha=alpha,
     )
 
-    dataset_entity = _DATASET_FOR_COLLECTION[args.collection]
-    output_model_entity = f"default/{adapter_name}"
-    description = (
+    dataset_entity = args.dataset_entity or _DATASET_FOR_COLLECTION[args.collection]
+    output_model_entity = args.output_model_entity or f"default/{adapter_name}"
+    description = args.description or (
         f"Stage 3 — {coll_short} × {base_short} LoRA r{rank}"
     )
 
@@ -145,6 +174,7 @@ def main() -> int:
             dataset_entity,
             output_model_entity,
             description,
+            epochs=args.epochs,
         )
         print(json.dumps(cfg, indent=2))
         return 0
@@ -157,6 +187,7 @@ def main() -> int:
             output_model_entity=output_model_entity,
             description=description,
             client=client,
+            epochs=args.epochs,
         )
         log.info(
             "Submitted: job_id=%s adapter=%s output_model=%s",

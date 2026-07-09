@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>8B NIM HTML-Only Judge Matrix</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #fff;
+      --text: #17202a;
+      --muted: #5c6878;
+      --line: #d9dee7;
+      --head: #edf1f6;
+      --accent: #275b8f;
+      --good: #0d6b43;
+      --warn: #8a5a00;
+      --bad: #9f2f2f;
+      --blue-soft: #e8f2ff;
+      --green-soft: #e8f6ef;
+      --amber-soft: #fff3d8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main { max-width: 1480px; margin: 0 auto; padding: 24px; }
+    h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: 0; }
+    h2 { margin: 0 0 4px; font-size: 18px; letter-spacing: 0; }
+    p { margin: 0; color: var(--muted); line-height: 1.42; }
+    code { background: #edf1f6; border-radius: 4px; padding: 1px 4px; }
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+    .meta { color: var(--muted); font-size: 13px; text-align: right; min-width: 320px; }
+    .note-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 10px;
+      margin: 18px 0 20px;
+    }
+    .note {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .note strong { color: var(--text); display: block; margin-bottom: 4px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin: 18px 0;
+      overflow: hidden;
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: var(--head);
+    }
+    .legend {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+    .pill { border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; background: #fff; }
+    .table-wrap { overflow: auto; max-height: 72vh; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1080px; }
+    th, td {
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 8px 10px;
+      font-size: 13px;
+      vertical-align: top;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #f3f5f8;
+      font-weight: 700;
+      text-align: left;
+      white-space: nowrap;
+    }
+    th.group { text-align: center; background: #e6ebf2; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    td.center, th.center { text-align: center; }
+    tr:nth-child(even) td { background: #fbfcfd; }
+    tr:hover td { background: #eef5ff; }
+    .good { color: var(--good); font-weight: 700; }
+    .bad { color: var(--bad); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .soft-blue { background: var(--blue-soft) !important; }
+    .soft-green { background: var(--green-soft) !important; }
+    .soft-amber { background: var(--amber-soft) !important; }
+    .small { color: var(--muted); font-size: 12px; }
+    @media (max-width: 900px) {
+      main { padding: 16px; }
+      .intro { display: block; }
+      .meta { text-align: left; margin-top: 8px; min-width: 0; }
+      .note-grid { grid-template-columns: 1fr; }
+      table { min-width: 980px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div class="intro">
+    <div>
+      <h1>8B NIM HTML-Only Judge Matrix</h1>
+      <p>Side-by-side comparison of Nemotron Ultra and Claude Sonnet 4.6 as judges for the HTML-only NIM grounded dataset experiment.</p>
+    </div>
+    <div class="meta">
+      Generated 2026-06-10<br>
+      Dataset: <code>nim_curated_html_only</code><br>
+      Completion run: <code>20260610t032644z</code>
+    </div>
+  </div>
+
+  <div class="note-grid">
+    <div class="note"><strong>Scope</strong>8B base plus HTML-only e5 LoRA adapters <code>r16</code> and <code>r32</code>.</div>
+    <div class="note"><strong>Judges</strong><code>nvidia/nvidia/nemotron-3-ultra</code> and <code>azure/anthropic/claude-sonnet-4-6</code>.</div>
+    <div class="note"><strong>Rows</strong>482 context-baked eval rows. Claude has zero row failures across all phases.</div>
+    <div class="note"><strong>49B comparator</strong>Matching HTML-only 49B completions were generated; older non-HTML 49B rows were not reused.</div>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Phase 1: Single-Axis Matrix</h2>
+        <p>Score means on 1-5 axes. Delta columns are Sonnet minus Ultra.</p>
+      </div>
+      <div class="legend">
+        <span class="pill">Higher is better</span>
+        <span class="pill">Composite = mean of four axes</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2">Target</th>
+            <th class="group" colspan="5">Nemotron Ultra</th>
+            <th class="group" colspan="5">Claude Sonnet 4.6</th>
+            <th class="group" colspan="5">Sonnet - Ultra</th>
+          </tr>
+          <tr>
+            <th class="num">Accuracy</th><th class="num">Completeness</th><th class="num">Faithfulness</th><th class="num">Clarity</th><th class="num">Composite</th>
+            <th class="num">Accuracy</th><th class="num">Completeness</th><th class="num">Faithfulness</th><th class="num">Clarity</th><th class="num">Composite</th>
+            <th class="num">Accuracy</th><th class="num">Completeness</th><th class="num">Faithfulness</th><th class="num">Clarity</th><th class="num">Composite</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>8B base</td>
+            <td class="num">4.133</td><td class="num">3.981</td><td class="num">4.361</td><td class="num">4.876</td><td class="num soft-blue">4.338</td>
+            <td class="num">4.127</td><td class="num">3.369</td><td class="num">4.400</td><td class="num">4.434</td><td class="num soft-blue">4.082</td>
+            <td class="num bad">-0.006</td><td class="num bad">-0.612</td><td class="num good">+0.039</td><td class="num bad">-0.442</td><td class="num bad">-0.256</td>
+          </tr>
+          <tr>
+            <td>8B HTML-only r16</td>
+            <td class="num">4.162</td><td class="num">3.834</td><td class="num">4.413</td><td class="num">4.907</td><td class="num soft-blue">4.329</td>
+            <td class="num">4.210</td><td class="num">3.220</td><td class="num">4.446</td><td class="num">4.506</td><td class="num soft-blue">4.095</td>
+            <td class="num good">+0.048</td><td class="num bad">-0.614</td><td class="num good">+0.033</td><td class="num bad">-0.400</td><td class="num bad">-0.233</td>
+          </tr>
+          <tr>
+            <td>8B HTML-only r32</td>
+            <td class="num">4.178</td><td class="num">3.840</td><td class="num">4.394</td><td class="num">4.911</td><td class="num soft-blue">4.331</td>
+            <td class="num">4.232</td><td class="num">3.100</td><td class="num">4.463</td><td class="num">4.546</td><td class="num soft-blue">4.085</td>
+            <td class="num good">+0.054</td><td class="num bad">-0.741</td><td class="num good">+0.068</td><td class="num bad">-0.365</td><td class="num bad">-0.246</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Phase 2: 8B Pairwise Matrix</h2>
+        <p>Within-family pairwise comparisons. Win columns follow the pair label order.</p>
+      </div>
+      <div class="legend">
+        <span class="pill">Non-loss = wins + ties</span>
+        <span class="pill">Ultra base-vs-r16 has 3 failed rows</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2">Pair</th>
+            <th rowspan="2">Rows</th>
+            <th rowspan="2">Failed</th>
+            <th class="group" colspan="5">Nemotron Ultra</th>
+            <th class="group" colspan="5">Claude Sonnet 4.6</th>
+          </tr>
+          <tr>
+            <th class="num">Left Wins</th><th class="num">Right Wins</th><th class="num">Ties</th><th class="num">Right Non-Loss</th><th class="center">Win-Lean</th>
+            <th class="num">Left Wins</th><th class="num">Right Wins</th><th class="num">Ties</th><th class="num">Right Non-Loss</th><th class="center">Win-Lean</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>8B base vs r16</td>
+            <td class="num">479 / 482</td><td class="num">3 / 0</td>
+            <td class="num">164</td><td class="num soft-green">180</td><td class="num">135</td><td class="num">65.8%</td><td class="center good">r16</td>
+            <td class="num soft-green">174</td><td class="num">145</td><td class="num">163</td><td class="num">63.9%</td><td class="center warn">base</td>
+          </tr>
+          <tr>
+            <td>8B base vs r32</td>
+            <td class="num">482</td><td class="num">0</td>
+            <td class="num">156</td><td class="num soft-green">173</td><td class="num">153</td><td class="num">67.6%</td><td class="center good">r32</td>
+            <td class="num soft-green">192</td><td class="num">132</td><td class="num">158</td><td class="num">60.2%</td><td class="center warn">base</td>
+          </tr>
+          <tr>
+            <td>r16 vs r32</td>
+            <td class="num">482</td><td class="num">0</td>
+            <td class="num soft-green">149</td><td class="num">139</td><td class="num">194</td><td class="num">69.1%</td><td class="center good">r16</td>
+            <td class="num soft-green">156</td><td class="num">81</td><td class="num">245</td><td class="num">67.6%</td><td class="center good">r16</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Phase 3: 49B Comparator Matrix</h2>
+        <p>49B is the left side in every pair. The key metric is 8B non-loss: 8B wins plus ties.</p>
+      </div>
+      <div class="legend">
+        <span class="pill">Higher 8B non-loss is better for adaptation</span>
+        <span class="pill">All rows complete, zero failures</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2">Pair</th>
+            <th class="group" colspan="6">Nemotron Ultra</th>
+            <th class="group" colspan="6">Claude Sonnet 4.6</th>
+            <th rowspan="2" class="num">Sonnet - Ultra 8B Non-Loss</th>
+          </tr>
+          <tr>
+            <th class="num">49B Wins</th><th class="num">8B Wins</th><th class="num">Ties</th><th class="num">8B Non-Loss</th><th class="num">49B Non-Loss</th><th class="num">Rows</th>
+            <th class="num">49B Wins</th><th class="num">8B Wins</th><th class="num">Ties</th><th class="num">8B Non-Loss</th><th class="num">49B Non-Loss</th><th class="num">Rows</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>49B vs 8B base</td>
+            <td class="num soft-green">325</td><td class="num">64</td><td class="num">93</td><td class="num">32.6%</td><td class="num">86.7%</td><td class="num">482</td>
+            <td class="num soft-green">303</td><td class="num">80</td><td class="num">99</td><td class="num">37.1%</td><td class="num">83.4%</td><td class="num">482</td>
+            <td class="num good">+4.6%</td>
+          </tr>
+          <tr>
+            <td>49B vs 8B HTML-only r16</td>
+            <td class="num soft-green">314</td><td class="num">98</td><td class="num">70</td><td class="num">34.9%</td><td class="num">79.7%</td><td class="num">482</td>
+            <td class="num soft-green">309</td><td class="num">104</td><td class="num">69</td><td class="num">35.9%</td><td class="num">78.4%</td><td class="num">482</td>
+            <td class="num good">+1.0%</td>
+          </tr>
+          <tr>
+            <td>49B vs 8B HTML-only r32</td>
+            <td class="num soft-green">316</td><td class="num">87</td><td class="num">79</td><td class="num">34.4%</td><td class="num">82.0%</td><td class="num">482</td>
+            <td class="num soft-green">330</td><td class="num">109</td><td class="num">43</td><td class="num">31.5%</td><td class="num">77.4%</td><td class="num">482</td>
+            <td class="num bad">-2.9%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Interpretation Matrix</h2>
+        <p>Compact readout of what the two judges agree and disagree on.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Question</th><th>Ultra Read</th><th>Sonnet Read</th><th>Practical Takeaway</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Did LoRA improve single-axis faithfulness?</td>
+            <td>Yes. r16 improved from 4.361 to 4.413; r32 to 4.394.</td>
+            <td>Yes. r16 improved from 4.400 to 4.446; r32 to 4.463.</td>
+            <td class="soft-green">Both judges agree the adapters improve faithfulness.</td>
+          </tr>
+          <tr>
+            <td>Did LoRA improve pairwise preference over base?</td>
+            <td>Yes. r16 and r32 both beat base on raw wins.</td>
+            <td>No. Sonnet prefers base over both adapters on raw wins.</td>
+            <td class="soft-amber">Judge-dependent. Treat the LoRA gain as axis-specific, not universally preferred.</td>
+          </tr>
+          <tr>
+            <td>Which rank is stronger?</td>
+            <td>r16 narrowly beats r32 by raw wins; r32 slightly leads single-axis accuracy/completeness.</td>
+            <td>r16 clearly beats r32 pairwise; r32 leads single-axis accuracy/faithfulness.</td>
+            <td class="soft-amber">r16 looks safer pairwise; r32 looks better on isolated scoring axes.</td>
+          </tr>
+          <tr>
+            <td>Did 8B approach 49B on Phase 3?</td>
+            <td>Not parity. Best 8B non-loss is r16 at 34.9%.</td>
+            <td>Not parity. Best 8B non-loss is base at 37.1%, r16 at 35.9%.</td>
+            <td class="soft-blue">HTML-only filtering did not close the 49B gap, but r16 is still competitive enough to justify targeted follow-up.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</body>
+</html>

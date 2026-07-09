@@ -189,3 +189,12 @@ def test_load_generated_records_reads_csv(tmp_path):
     records = load_generated_records(None, out)
 
     assert records == [{"gap_id": "gap_nim", "question": "Q?", "answer": "A."}]
+
+
+
+def test_extract_pairs_strips_inline_think_tags():
+    record = {
+        "qa_pairs_json": '<think>{"pairs": []}</think>{"pairs": [{"question": "<think>draft</think>Q?", "answer": "<think>draft</think>A."}]}'
+    }
+
+    assert extract_pairs(record) == [{"question": "Q?", "answer": "A."}]

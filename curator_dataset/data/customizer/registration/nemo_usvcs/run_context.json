@@ -1,0 +1,15 @@
+{
+  "base_dir": "/mnt/nvme2/peft/datasets/v2",
+  "collections": [
+    "nemo_usvcs_curated"
+  ],
+  "created_at": "2026-06-29T22:33:21+00:00",
+  "mlflow": {
+    "experiment_name": null,
+    "parent_run_id": null,
+    "tracking_uri": null
+  },
+  "pipeline_run_id": "curator-diverseqa-training-20260629",
+  "pipeline_stage": "dataset-registration",
+  "schema_version": "observability.v1"
+}

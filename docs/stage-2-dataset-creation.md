@@ -43,9 +43,9 @@ The pipeline has eight stages, run in order for each collection:
    pair. Output: `stage2_eval.jsonl`.
 7. **Stage 3 — NeMo Curator**: exact dedup, MinHash fuzzy dedup, length filter,
    quality filter, train/val split. Outputs: `training.jsonl` + `validation.jsonl`.
-8. **Stage 4 — Validation Gate**: independent external judge (Claude Sonnet 4.6
-   via NVIDIA Inference API) spot-checks 100 pairs per collection on three binary
-   criteria; pipeline passes if grounding rate ≥ 90%.
+8. **Stage 4 — Validation Gate**: an independent external judge spot-checks 100
+   pairs per collection on three binary criteria; pipeline passes if grounding
+   rate ≥ 90%.
 
 ---
 
@@ -587,9 +587,8 @@ role in generating the pairs.
 1. Random stratified sample of 100 pairs per collection from Stage 3
    `training.jsonl` (stratified by `stage` so all generation strategies are
    represented).
-2. For each sampled pair, call Claude Sonnet 4.6 via NVIDIA Inference API
-   (`https://inference-api.nvidia.com/v1`) with the validation prompt. API key
-   read from k8s secret `nvidia-inference-key` in `runai-rag`.
+2. For each sampled pair, call the configured independent judge endpoint with
+   the validation prompt. API key material is read from a Kubernetes Secret.
 3. Score each pair on three binary criteria:
    - **Grounded**: every factual claim in the answer is supported by the source
      `context`.
@@ -749,8 +748,8 @@ model will see at inference time in a RAG setting.
 
 Stage 2 uses super-120b to evaluate pairs that super-120b generated. The
 agreement bias is real: models tend to approve output that resembles their own
-generation style. Stage 4 breaks this loop by using Claude Sonnet 4.6 — an
-independent model that had no role in generating the data — as the final gate.
+generation style. Stage 4 breaks this loop by using an independent judge model
+that had no role in generating the data as the final gate.
 This pattern follows the `[[feedback_external_frontier_judge]]` principle: for
 LLM-as-judge tasks, independence over self-contained is the priority.
 
@@ -775,13 +774,11 @@ LLM calls use direct API calls, not Data Designer.
 
 ## References
 
-### Code (this cluster)
+### Historical Inputs
 
-- `/home/joncoons/claude/rag/scripts/build_nim_dataset.py` — April 2026
-  production pipeline (LE + kNN synthesis + instruction + Curator). The Stage 2
-  `build_v2_dataset.py` extends this.
-- `/home/joncoons/claude/rag/custom_dataset_creation.md` — April 2026 methodology
-  doc that this pipeline supersedes.
+- Earlier local pipeline and methodology notes informed the first version of
+  this stage. The durable implementation for this repository is
+  `scripts/build_v2_dataset.py`.
 - Archive: `prompt_zoo.py` + `pydantic_models.py` in the `archive/` directory
   of this repository (provenance for the Jan 2025 LE/KVP/QA-eval prompts; not
   redistributed here, original path:

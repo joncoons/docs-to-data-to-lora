@@ -24,7 +24,7 @@ _TERMINAL = {EvalJobStatus.COMPLETED, EvalJobStatus.FAILED, EvalJobStatus.CANCEL
 
 
 class EvaluatorClient:
-    def __init__(self, base_url: str = "http://192.168.1.187:30913",
+    def __init__(self, base_url: str = "http://nemo-evaluator:7331",
                  api_key: str | None = None, timeout: float = 30.0) -> None:
         headers = {"Content-Type": "application/json"}
         if api_key:
@@ -46,10 +46,37 @@ class EvaluatorClient:
         resp.raise_for_status()
         return resp.json()["id"]
 
+    def update_target(self, namespace: str, name: str, payload: dict) -> str:
+        resp = self._http.patch(
+            f"/v1/evaluation/targets/{namespace}/{name}", json=payload
+        )
+        resp.raise_for_status()
+        return resp.json()["id"]
+
+    def update_config(self, namespace: str, name: str, payload: dict) -> str:
+        resp = self._http.patch(
+            f"/v1/evaluation/configs/{namespace}/{name}", json=payload
+        )
+        resp.raise_for_status()
+        return resp.json()["id"]
+
+    def delete_target(self, namespace: str, name: str) -> None:
+        resp = self._http.delete(f"/v1/evaluation/targets/{namespace}/{name}")
+        resp.raise_for_status()
+
+    def delete_config(self, namespace: str, name: str) -> None:
+        resp = self._http.delete(f"/v1/evaluation/configs/{namespace}/{name}")
+        resp.raise_for_status()
+
     def submit_job(self, payload: dict) -> str:
         resp = self._http.post("/v1/evaluation/jobs", json=payload)
         resp.raise_for_status()
         return resp.json()["id"]
+
+    def submit_live(self, payload: dict) -> dict:
+        resp = self._http.post("/v1/evaluation/live", json=payload)
+        resp.raise_for_status()
+        return resp.json()
 
     def get_status(self, job_id: str) -> EvalJobStatus:
         resp = self._http.get(f"/v1/evaluation/jobs/{job_id}")

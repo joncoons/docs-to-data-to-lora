@@ -1,0 +1,34 @@
+{
+  "jobs": {
+    "nim_r16_lr5e5": {
+      "artifact_files_url": "hf://default/lora-nim-curator-lr5e5-e2-llama31-8b-r16-20260629@cust-9zY9FLQbWpAxb2MVoSeteG",
+      "artifact_status": "upload_completed",
+      "best_epoch": 1,
+      "best_val_loss": 1.4772801399230957,
+      "best_val_loss_step": 853,
+      "epochs_completed": 2,
+      "job_id": "cust-9zY9FLQbWpAxb2MVoSeteG",
+      "promotion_verified": true,
+      "status": "completed"
+    },
+    "nim_r16_lr6p8e5": {
+      "artifact_files_url": "hf://default/lora-nim-curator-lr6p8e5-e2-llama31-8b-r16-20260629@cust-Q6ASpeDuedSoBAXsdwfJsH",
+      "artifact_status": "upload_completed",
+      "best_epoch": 1,
+      "best_val_loss": 1.4587769508361816,
+      "best_val_loss_step": 853,
+      "epochs_completed": 2,
+      "job_id": "cust-Q6ASpeDuedSoBAXsdwfJsH",
+      "promotion_verified": true,
+      "status": "completed"
+    }
+  },
+  "observed_at": "2026-06-30T02:38:49.231953Z",
+  "policy": {
+    "early_stopping": false,
+    "maximum_epochs": 5,
+    "promotion_target": "Customizer output model revision",
+    "selection_metric": "validation loss"
+  },
+  "schema_version": "curator_dataset.best_checkpoint_promotion.v1"
+}

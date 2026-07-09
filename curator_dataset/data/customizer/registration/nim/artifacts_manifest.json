@@ -1,0 +1,40 @@
+{
+  "artifacts": [
+    {
+      "artifact_kind": "uploaded_dataset_file",
+      "bytes": 2168949,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-curator-diverseqa-20260629",
+      "path": "curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/training.jsonl",
+      "repo_path": "training.jsonl",
+      "rows": 6845,
+      "sha256": "sha256:095dec04be3c75ba3877535a26b6d8c0aa2586a37dad93fcf8dba90bae0f45b0",
+      "split": "training",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_dataset_file",
+      "bytes": 260741,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-curator-diverseqa-20260629",
+      "path": "curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/validation.jsonl",
+      "repo_path": "validation.jsonl",
+      "rows": 815,
+      "sha256": "sha256:aeae824049b9e52a34ad047be9d3c791b207e8440aa5f7fb192539030879ee67",
+      "split": "validation",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "manifests/dataset_version_manifest.json",
+      "bytes": 805,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-curator-diverseqa-20260629",
+      "path": "curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/manifests/dataset_version_manifest.json",
+      "repo_path": "manifests/dataset_version_manifest.json",
+      "sha256": "sha256:cfd8a18554de866d73b461962563e29d44374df6bd64c81851ce5451ac1a76a7",
+      "uploaded_to_data_store": true
+    }
+  ],
+  "schema_version": "observability.v1"
+}

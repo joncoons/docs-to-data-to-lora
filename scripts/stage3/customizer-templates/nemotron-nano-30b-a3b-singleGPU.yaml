@@ -1,12 +1,12 @@
 # Customizer template — Nemotron-3-Nano-30B-A3B single-GPU LoRA SFT
 #
-# Source: nemo-platform-customizer-config ConfigMap (namespace: nemo-peft),
+# Source: Customizer config ConfigMap (namespace: nemo-peft),
 # under customizationConfigTemplates.templates, captured 2026-05-26 from the
 # live cluster.
 #
 # Purpose: this is the custom Customizer template used for the MoE LoRA SFT
 # methodology documented in
-#   /home/joncoons/claude/nim-sft-final/NEMOTRON_NANO_LORA_METHODOLOGY.md
+#   NEMOTRON_NANO_LORA_METHODOLOGY.md
 # §2 ("Custom Customizer template — +96GB-singleGPU"). It diverges from the
 # shipped DP=2 / EP=2 recipe (which deterministically deadlocks in the
 # FSDP-MoE checkpoint-gather path per [[project_nano_v3_sft_failed]]) by
@@ -19,7 +19,7 @@
 # (GET /v1/customization/configs).
 #
 # To restore this template on a cluster where it's missing, splice this YAML
-# block into nemo-platform-customizer-config under
+# block into the Customizer config ConfigMap under
 # customizationConfigTemplates.templates and restart the customizer pod.
 # The existing `@v1.0+96GB` (DP=2/EP=2) template is left intact as a
 # documented fallback for hardware where single-GPU memory isn't sufficient.

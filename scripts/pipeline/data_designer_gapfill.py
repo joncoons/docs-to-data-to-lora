@@ -41,6 +41,25 @@ DEFAULT_MAX_TOKENS = int(os.getenv("DATA_DESIGNER_MAX_TOKENS", "2048"))
 DEFAULT_TOP_P = float(os.getenv("DATA_DESIGNER_TOP_P", "1.0"))
 DEFAULT_SAMPLING_STRATEGY = os.getenv("DATA_DESIGNER_SAMPLING_STRATEGY", "ordered")
 
+_THINK_BALANCED = re.compile(r"<think>.*?</think>\s*", re.DOTALL | re.IGNORECASE)
+_THINK_OPEN_TAIL = re.compile(r"<think>.*$", re.DOTALL | re.IGNORECASE)
+_THINK_PRELUDE = re.compile(r"^.*?</think>\s*", re.DOTALL | re.IGNORECASE)
+
+
+def strip_think_tags(text: str) -> str:
+    """Strip reasoning-model think blocks before parsing or persisting synthetic rows."""
+    if not text:
+        return text
+    cleaned = _THINK_BALANCED.sub("", text)
+    cleaned = _THINK_PRELUDE.sub("", cleaned)
+    cleaned = _THINK_OPEN_TAIL.sub("", cleaned)
+    return cleaned.strip()
+
+
+def _clean_generated_text(value: Any) -> str:
+    return strip_think_tags(str(value or "")).strip()
+
+
 PROMPT_TEMPLATE = """\
 Gap ID: {{ gap_id }}
 Brief: {{ generation_brief }}
@@ -315,7 +334,7 @@ def submit_with_nemo_microservices_sdk(
 
 
 def _parse_json_object(value: str) -> Any:
-    text = value.strip()
+    text = strip_think_tags(value)
     text = re.sub(r"^```(?:json)?\s*", "", text, flags=re.MULTILINE)
     text = re.sub(r"\s*```$", "", text, flags=re.MULTILINE)
     try:
@@ -357,20 +376,36 @@ def extract_pairs(record: dict[str, Any]) -> list[dict[str, str]]:
         parsed = _parse_json_object(candidate) if isinstance(candidate, str) else candidate
         if isinstance(parsed, dict) and isinstance(parsed.get("pairs"), list):
             return [
-                {"question": str(item.get("question", "")), "answer": str(item.get("answer", ""))}
+                {
+                    "question": _clean_generated_text(item.get("question")),
+                    "answer": _clean_generated_text(item.get("answer")),
+                }
                 for item in parsed["pairs"]
-                if item.get("question") and item.get("answer")
+                if _clean_generated_text(item.get("question")) and _clean_generated_text(item.get("answer"))
             ]
         if isinstance(parsed, list):
             return [
-                {"question": str(item.get("question", "")), "answer": str(item.get("answer", ""))}
+                {
+                    "question": _clean_generated_text(item.get("question")),
+                    "answer": _clean_generated_text(item.get("answer")),
+                }
                 for item in parsed
-                if isinstance(item, dict) and item.get("question") and item.get("answer")
+                if (
+                    isinstance(item, dict)
+                    and _clean_generated_text(item.get("question"))
+                    and _clean_generated_text(item.get("answer"))
+                )
             ]
     if record.get("question") and record.get("answer"):
-        return [{"question": str(record["question"]), "answer": str(record["answer"])}]
+        return [{
+            "question": _clean_generated_text(record["question"]),
+            "answer": _clean_generated_text(record["answer"]),
+        }]
     if record.get("prompt") and record.get("completion"):
-        return [{"question": str(record["prompt"]), "answer": str(record["completion"])}]
+        return [{
+            "question": _clean_generated_text(record["prompt"]),
+            "answer": _clean_generated_text(record["completion"]),
+        }]
     return []
 
 

@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nim-llm-8b-cache-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 500Gi
+  nfs:
+    path: /mnt/nvme4/nim_cache/nim
+    server: 192.168.0.169
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nim-llm-8b-cache-pvc
+  namespace: runai-rag
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  storageClassName: ""
+  volumeName: nim-llm-8b-cache-pv
+---
+apiVersion: apps.nvidia.com/v1alpha1
+kind: NIMCache
+metadata:
+  name: nim-llm-8b-cache
+  namespace: runai-rag
+spec:
+  resources:
+    cpu: "0"
+    memory: "0"
+  source:
+    ngc:
+      authSecret: ngc-api
+      model:
+        engine: vllm
+        precision: fp8
+        profiles:
+          - 4d9fed9cb9fa4c5694b793a6421b62077b812e4e0326a10032b948cc9ddc0712
+        qosProfile: throughput
+        tensorParallelism: "1"
+      modelPuller: nvcr.io/nim/meta/llama-3.1-8b-instruct:2.0.5
+      pullSecret: ngc-secret
+  storage:
+    pvc:
+      create: false
+      name: nim-llm-8b-cache-pvc
+      size: 500Gi
+      volumeAccessMode: ReadWriteMany
+---
+apiVersion: apps.nvidia.com/v1alpha1
+kind: NIMService
+metadata:
+  name: nim-llm-8b-bw-lora
+  namespace: runai-rag
+spec:
+  annotations:
+    run.ai/gpu-memory: 50000M
+  authSecret: ngc-api
+  env:
+    - name: NIM_HTTP_API_PORT
+      value: "8000"
+    - name: NIM_TRITON_LOG_VERBOSE
+      value: "1"
+    - name: NIM_SERVED_MODEL_NAME
+      value: meta/llama-3.1-8b-instruct
+    - name: NIM_MODEL_PROFILE
+      value: 4d9fed9cb9fa4c5694b793a6421b62077b812e4e0326a10032b948cc9ddc0712
+    - name: NIM_PEFT_SOURCE
+      value: /model-store/lora-adapters-8b-latest
+    - name: NIM_PASSTHROUGH_ARGS
+      value: --max-lora-rank 32 --max-loras 4
+  expose:
+    ingress:
+      spec: {}
+    service:
+      grpcPort: 8001
+      name: http
+      port: 8000
+      type: ClusterIP
+  image:
+    pullPolicy: IfNotPresent
+    pullSecrets:
+      - ngc-secret
+    repository: nvcr.io/nim/meta/llama-3.1-8b-instruct
+    tag: 2.0.5
+  livenessProbe: {}
+  metrics:
+    serviceMonitor: {}
+  nodeSelector:
+    kubernetes.io/hostname: ubuntu-local-dev
+  readinessProbe: {}
+  replicas: 2
+  resources:
+    limits:
+      nvidia.com/gpu: "1"
+    requests:
+      nvidia.com/gpu: "1"
+  scale:
+    hpa:
+      maxReplicas: 2
+      minReplicas: 2
+  startupProbe: {}
+  storage:
+    nimCache:
+      name: nim-llm-8b-cache
+    pvc: {}
+    sharedMemorySizeLimit: 16Gi

@@ -6,7 +6,7 @@ def test_config_defaults():
     cfg = Config()
     assert cfg.es_host.startswith("https://")
     assert cfg.nim_endpoints  # at least one
-    assert cfg.claude_model == "aws/anthropic/bedrock-claude-sonnet-4-6"
+    assert cfg.external_judge_model == "nvidia/llama-3.3-nemotron-super-49b-v1.5"
     assert cfg.super120b_model == "nvidia/nemotron-3-super-120b-a12b"
 
 

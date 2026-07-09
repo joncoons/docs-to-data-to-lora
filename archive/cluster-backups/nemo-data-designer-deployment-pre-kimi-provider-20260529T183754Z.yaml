@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "6"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"nemo-data-designer"},"name":"nemo-data-designer","namespace":"nemo-peft"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"nemo-data-designer"}},"template":{"metadata":{"labels":{"app":"nemo-data-designer"}},"spec":{"containers":[{"args":["api"],"env":[{"name":"NGC_API_KEY","valueFrom":{"secretKeyRef":{"key":"NGC_API_KEY","name":"ngc-api"}}},{"name":"NEMO_MICROSERVICES_DATA_DESIGNER_ARTIFACTS_ROOT","value":"/artifacts_root"},{"name":"NEMO_MICROSERVICES_CONFIG_FILE_PATH","value":"/etc/nmp/config.yaml"}],"image":"nvcr.io/nvidia/nemo-microservices/data-designer:25.12","imagePullPolicy":"IfNotPresent","livenessProbe":{"failureThreshold":5,"httpGet":{"path":"/health","port":8000},"initialDelaySeconds":60,"periodSeconds":30},"name":"data-designer","ports":[{"containerPort":8000,"name":"http"}],"readinessProbe":{"failureThreshold":10,"httpGet":{"path":"/health","port":8000},"initialDelaySeconds":30,"periodSeconds":15},"resources":{"limits":{"cpu":"4","memory":"8Gi"},"requests":{"cpu":"1","memory":"2Gi"}},"volumeMounts":[{"mountPath":"/artifacts_root","name":"artifacts"},{"mountPath":"/etc/nmp","name":"nmp-config"}]}],"imagePullSecrets":[{"name":"ngc-secret"}],"nodeSelector":{"kubernetes.io/hostname":"ubuntu-local-dev"},"serviceAccountName":"nemo-data-designer","volumes":[{"name":"artifacts","persistentVolumeClaim":{"claimName":"data-designer-artifacts-pvc"}},{"configMap":{"name":"nemo-data-designer-config"},"name":"nmp-config"}]}}}}
+  creationTimestamp: "2026-05-06T14:33:32Z"
+  generation: 6
+  labels:
+    app: nemo-data-designer
+  name: nemo-data-designer
+  namespace: nemo-peft
+  resourceVersion: "34812585"
+  uid: b46308a2-a6c3-4600-a439-075e44e46d25
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: nemo-data-designer
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2026-05-06T16:06:49-05:00"
+      labels:
+        app: nemo-data-designer
+    spec:
+      containers:
+      - args:
+        - api
+        env:
+        - name: NGC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: NGC_API_KEY
+              name: ngc-api
+        - name: NEMO_MICROSERVICES_DATA_DESIGNER_ARTIFACTS_ROOT
+          value: /artifacts_root
+        - name: NEMO_MICROSERVICES_CONFIG_FILE_PATH
+          value: /etc/nmp/config.yaml
+        image: nvcr.io/nvidia/nemo-microservices/data-designer:25.12
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /health
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: data-designer
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /health
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: "4"
+            memory: 8Gi
+          requests:
+            cpu: "1"
+            memory: 2Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /artifacts_root
+          name: artifacts
+        - mountPath: /etc/nmp
+          name: nmp-config
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: ngc-secret
+      nodeSelector:
+        kubernetes.io/hostname: ubuntu-local-dev
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: nemo-data-designer
+      serviceAccountName: nemo-data-designer
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: artifacts
+        persistentVolumeClaim:
+          claimName: data-designer-artifacts-pvc
+      - configMap:
+          defaultMode: 420
+          name: nemo-data-designer-config
+        name: nmp-config
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2026-05-06T16:01:25Z"
+    lastUpdateTime: "2026-05-06T21:07:53Z"
+    message: ReplicaSet "nemo-data-designer-6789c5978" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2026-05-27T07:20:36Z"
+    lastUpdateTime: "2026-05-27T07:20:36Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 6
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

@@ -23,9 +23,9 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: EVALUATOR_URL
-              value: "http://nemo-evaluator:8000"
+              value: "http://nemo-evaluator:7331"
             - name: NIM_PROXY_URL
-              value: "http://nemo-nim-proxy:8000"
+              value: "http://rag-oai-proxy.runai-rag:8080"
             - name: EVALUATOR_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -34,6 +34,7 @@ spec:
                   optional: true
           args:
             - --all
+            - --update-existing
             - --log-path
             - /inputs/training_session.log
           resources:

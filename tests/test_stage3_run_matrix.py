@@ -101,30 +101,55 @@ def test_49b_pairwise_jobs_compare_49b_against_each_adapter():
     assert all(j["extra"]["target_b"].startswith("default/lora-") for j in jobs)
 
 
-def test_pairwise_jobs_count_is_30():
-    """C(6,2)=15 pairs per corpus, 2 corpora = 30 jobs."""
+def test_pairwise_jobs_count_is_42():
+    """Per corpus: 6 base-vs-adapter jobs + C(6,2)=15 rank/variant jobs."""
     jobs = build_pairwise_jobs(
         adapters=_all_12(),
         config_name="default/stage3-pairwise-tournament",
     )
-    assert len(jobs) == 30
+    assert len(jobs) == 42
 
 
-def test_pairwise_pairs_stay_within_corpus():
+def test_pairwise_adapter_pairs_stay_within_corpus():
     jobs = build_pairwise_jobs(
         adapters=_all_12(),
         config_name="default/stage3-pairwise-tournament",
     )
-    for j in jobs:
+    adapter_pairs = [j for j in jobs if j["extra"]["target_a"].startswith("default/lora-")]
+    assert adapter_pairs
+    for j in adapter_pairs:
         a = j["extra"]["target_a"]
         b = j["extra"]["target_b"]
-        # both adapters belong to the same corpus → same prefix-after-lora-
-        # crude check: "lora-nim-" vs "lora-nemo-usvcs-"
-        assert a.startswith("default/lora-")
         assert b.startswith("default/lora-")
         a_kind = "nim" if "-nim-" in a else "nemo-usvcs"
         b_kind = "nim" if "-nim-" in b else "nemo-usvcs"
         assert a_kind == b_kind, f"cross-corpus pair: {a} vs {b}"
+
+
+def test_pairwise_includes_base_vs_each_adapter():
+    jobs = build_pairwise_jobs(
+        adapters=_all_12(),
+        config_name="default/stage3-pairwise-tournament",
+    )
+    base_pairs = [j for j in jobs if not j["extra"]["target_a"].startswith("default/lora-")]
+    assert len(base_pairs) == 12
+
+    expected = {
+        ("default/llama-3.2-1b-instruct", "default/lora-nim-llama-3.2-1b-r16"),
+        ("default/llama-3.2-1b-instruct", "default/lora-nim-llama-3.2-1b-r32"),
+        ("default/llama-3.2-3b-instruct", "default/lora-nim-llama-3.2-3b-r16"),
+        ("default/llama-3.2-3b-instruct", "default/lora-nim-llama-3.2-3b-r32"),
+        ("default/llama-3.1-8b-instruct", "default/lora-nim-llama-3.1-8b-r16"),
+        ("default/llama-3.1-8b-instruct", "default/lora-nim-llama-3.1-8b-r32"),
+        ("default/llama-3.2-1b-instruct", "default/lora-nemo-usvcs-llama-3.2-1b-r16"),
+        ("default/llama-3.2-1b-instruct", "default/lora-nemo-usvcs-llama-3.2-1b-r32"),
+        ("default/llama-3.2-3b-instruct", "default/lora-nemo-usvcs-llama-3.2-3b-r16"),
+        ("default/llama-3.2-3b-instruct", "default/lora-nemo-usvcs-llama-3.2-3b-r32"),
+        ("default/llama-3.1-8b-instruct", "default/lora-nemo-usvcs-llama-3.1-8b-r16"),
+        ("default/llama-3.1-8b-instruct", "default/lora-nemo-usvcs-llama-3.1-8b-r32"),
+    }
+    actual = {(j["extra"]["target_a"], j["extra"]["target_b"]) for j in base_pairs}
+    assert actual == expected
 
 
 def test_submit_wave_invokes_client_per_job():
@@ -209,9 +234,9 @@ def test_main_submit_only_writes_all_wave_ids_without_polling(tmp_path, monkeypa
     assert rem.main() == 0
 
     assert wait_mock.call_count == 0
-    assert len(submitted) == 4
+    assert len(submitted) == 5
     data = json.loads(out.read_text())
     assert set(data) == {"wave_a", "wave_b", "wave_c"}
     assert len(data["wave_a"]) == 3
-    assert data["wave_b"] == []
+    assert len(data["wave_b"]) == 1
     assert len(data["wave_c"]) == 1

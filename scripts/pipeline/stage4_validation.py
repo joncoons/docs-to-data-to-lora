@@ -1,4 +1,4 @@
-"""Stage 4: External-judge validation gate (Claude Sonnet 4.6)."""
+"""Stage 4: external-judge validation gate."""
 from __future__ import annotations
 
 import json
@@ -8,7 +8,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
-from scripts.pipeline.claude_client import ClaudeJudge
+from scripts.pipeline.external_judge_client import ExternalJudge
 from scripts.pipeline.models import KVPRow
 from scripts.pipeline.prompts import JUDGE_SYSTEM, JUDGE_USER
 
@@ -50,7 +50,7 @@ def parse_judge_response(raw: str) -> dict:
     }
 
 
-def validate_pair(row: KVPRow, judge: ClaudeJudge) -> dict:
+def validate_pair(row: KVPRow, judge: ExternalJudge) -> dict:
     raw = judge.grade(JUDGE_SYSTEM, JUDGE_USER.format(
         question=row.question, answer=row.answer, context=row.context,
     ))
@@ -75,7 +75,7 @@ def sample_for_validation(rows: list[KVPRow], n: int, seed: int = 42) -> list[KV
     return sample[:n]
 
 
-def run_stage4(train_rows: list[KVPRow], judge: ClaudeJudge,
+def run_stage4(train_rows: list[KVPRow], judge: ExternalJudge,
                output_dir: Path, collection: str, sample_size: int = 100,
                threshold: float = 0.9) -> dict:
     sample = sample_for_validation(train_rows, n=sample_size)

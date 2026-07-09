@@ -69,7 +69,7 @@ as Kubernetes Jobs or NeMo/NIM services.
 | NIM base/adapter serving | NIM service | Long-running model serving. | Prefer NIM Operator/NIM Proxy patterns. |
 | `scripts/eval/register_evaluator_entities.py` | K8s Job | Idempotent control-plane registration. | Now aligned to NIM Proxy model targets. |
 | `scripts/eval/run_evaluation_matrix.py` | K8s Job | Orchestrates Evaluator jobs and records IDs. | NeMo Evaluator owns execution. |
-| `deploy/rag-oai-proxy/*` | Legacy | Claude-generated workaround. | Keep until native NIM Proxy/Evaluator path is verified. |
+| `deploy/rag-oai-proxy/*` | Legacy | Temporary OpenAI-compatible proxy workaround. | Keep until native NIM Proxy/Evaluator path is verified. |
 | `scripts/eval/adapter_sync.py` | Legacy or deployment-specific Job | Sidecar sync depends on path-based LoRA serving. | Prefer native NIM LoRA serving. |
 
 ## First K8s Template: TIES Merge

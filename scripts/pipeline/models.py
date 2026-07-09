@@ -48,7 +48,7 @@ class SynthesisPair(BaseModel):
 
 class SynthesisPairs(BaseModel):
     """Output of Stage 1B kNN synthesis (one bridging + one contrastive per call)."""
-    pairs: list[dict]  # dicts for backwards-compat with Claude raw JSON
+    pairs: list[dict]  # dicts for backwards-compatible raw judge JSON
 
 
 class InstructionPair(BaseModel):

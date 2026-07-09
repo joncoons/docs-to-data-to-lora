@@ -45,6 +45,10 @@ DEFAULT_OBSERVABILITY_DIR = Path(
     os.getenv("OBSERVABILITY_DIR", "/outputs/observability/dataset-registration")
 )
 DEFAULT_COLLECTIONS = ("nim_curated", "nemo_usvcs_curated")
+DATA_STORE_GITATTRIBUTES = """* filter=lfs diff=lfs merge=lfs -text
+*.gitattributes filter=lfs diff=lfs merge=lfs text
+/.gitattributes -filter=lfs -diff=lfs -merge=lfs -text
+"""
 
 
 @dataclass(frozen=True)
@@ -130,14 +134,59 @@ LINEAGE_FILE_CANDIDATES = (
         "data_designer_result_manifest",
     ),
     LineageFile(
+        Path("data_designer/kimi_seed_requests.jsonl"),
+        "data_designer/kimi_seed_requests.jsonl",
+        "data_designer_kimi_seed_requests",
+    ),
+    LineageFile(
+        Path("data_designer/results_manifest.json"),
+        "data_designer/results_manifest.json",
+        "data_designer_results_manifest",
+    ),
+    LineageFile(
+        Path("data_designer/download_manifest.json"),
+        "data_designer/download_manifest.json",
+        "data_designer_download_manifest",
+    ),
+    LineageFile(
+        Path("data_designer/generated_raw.jsonl"),
+        "data_designer/generated_raw.jsonl",
+        "data_designer_generated_raw",
+    ),
+    LineageFile(
         Path("data_designer/generated_samples.jsonl"),
         "data_designer/generated_samples.jsonl",
         "data_designer_generated_samples",
     ),
     LineageFile(
+        Path("data_designer/accepted_samples.jsonl"),
+        "data_designer/accepted_samples.jsonl",
+        "data_designer_accepted_samples",
+    ),
+    LineageFile(
+        Path("data_designer/omitted_seed_records.jsonl"),
+        "data_designer/omitted_seed_records.jsonl",
+        "data_designer_omitted_seed_records",
+    ),
+    LineageFile(
+        Path("data_designer/synthetic_train_rows.jsonl"),
+        "data_designer/synthetic_train_rows.jsonl",
+        "data_designer_synthetic_train_rows",
+    ),
+    LineageFile(
         Path("provenance/data_designer_samples.jsonl"),
         "provenance/data_designer_samples.jsonl",
         "data_designer_provenance_samples",
+    ),
+    LineageFile(
+        Path("provenance/synthetic_samples.jsonl"),
+        "provenance/synthetic_samples.jsonl",
+        "synthetic_provenance_samples",
+    ),
+    LineageFile(
+        Path("provenance/merge_manifest.json"),
+        "provenance/merge_manifest.json",
+        "synthetic_merge_manifest",
     ),
     LineageFile(
         Path("curator/input/dataset_samples.jsonl"),
@@ -425,8 +474,17 @@ def discover_provenance_artifacts(source_dir: Path) -> list[dict[str, Any]]:
         source_dir / "data_designer" / "seed_dataset.csv",
         source_dir / "data_designer" / "submission_plan.json",
         source_dir / "data_designer" / "result_manifest.json",
+        source_dir / "data_designer" / "kimi_seed_requests.jsonl",
+        source_dir / "data_designer" / "results_manifest.json",
+        source_dir / "data_designer" / "download_manifest.json",
+        source_dir / "data_designer" / "generated_raw.jsonl",
         source_dir / "data_designer" / "generated_samples.jsonl",
+        source_dir / "data_designer" / "accepted_samples.jsonl",
+        source_dir / "data_designer" / "omitted_seed_records.jsonl",
+        source_dir / "data_designer" / "synthetic_train_rows.jsonl",
         source_dir / "provenance" / "data_designer_samples.jsonl",
+        source_dir / "provenance" / "synthetic_samples.jsonl",
+        source_dir / "provenance" / "merge_manifest.json",
         source_dir / "bias_report.json",
         source_dir / "validation_report.json",
     ]
@@ -490,6 +548,8 @@ def build_description(
         )
     elif spec.dataset_role == "evaluation":
         desc = f"Stage 3 held-out evaluation dataset for {spec.collection} ({row_text})."
+    elif spec.dataset_role == "augmented_training":
+        desc = f"Stage 3 augmented training dataset for {spec.collection} ({row_text})."
     else:
         desc = f"Stage 3 source-grounded training dataset for {spec.collection} ({row_text})."
 
@@ -596,10 +656,12 @@ def push_dataset_files(
             dst = repo / item.repo_path
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(item.source, dst)
+        (repo / ".gitattributes").write_text(DATA_STORE_GITATTRIBUTES)
         run_cmd(["git", "config", "user.email", config.git_user_email], cwd=repo)
         run_cmd(["git", "config", "user.name", config.git_user_name], cwd=repo)
         repo_paths = [item.repo_path for item in spec.files]
         repo_paths.extend(item.repo_path for item in lineage_files)
+        repo_paths.append(".gitattributes")
         run_cmd(["git", "add", *repo_paths], cwd=repo)
         row_counts = {item.split: count_jsonl_rows(item.source) for item in spec.files}
         row_text = ", ".join(f"{split}={count}" for split, count in sorted(row_counts.items()))
@@ -801,13 +863,14 @@ def register_dataset_spec(
     mlflow_parent_run_id: str | None,
     *,
     require_lineage: bool = True,
+    include_lineage: bool = True,
 ) -> dict[str, Any]:
     missing = validate_spec_files(spec, require_lineage=require_lineage)
     if missing:
         missing_text = ", ".join(str(p) for p in missing)
         raise FileNotFoundError(f"{spec.name} missing source files: {missing_text}")
     repo_status = create_dataset_repo(spec, config)
-    push_result = push_dataset_files(spec, config, include_lineage=True)
+    push_result = push_dataset_files(spec, config, include_lineage=include_lineage)
     dataset_version = load_dataset_version_manifest(spec.source_dir)
     payload = build_entity_store_payload(
         spec,
@@ -834,6 +897,17 @@ def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--base-dir", type=Path, default=DEFAULT_BASE_DIR)
     ap.add_argument("--collections", nargs="+", default=list(DEFAULT_COLLECTIONS))
+    ap.add_argument(
+        "--train-source-dir",
+        type=Path,
+        default=None,
+        help="Override the source directory for a single custom training dataset registration.",
+    )
+    ap.add_argument(
+        "--train-dataset-name",
+        default=None,
+        help="Override the Data Store/Entity Store dataset name for a single training dataset registration.",
+    )
     ap.add_argument("--namespace", default=DEFAULT_NAMESPACE)
     ap.add_argument("--entity-store-url", default=DEFAULT_ENTITY_STORE_URL)
     ap.add_argument("--data-store-url", default=DEFAULT_DATA_STORE_URL)
@@ -859,6 +933,14 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Warn instead of failing when dataset_version_manifest.json is absent",
     )
+    ap.add_argument(
+        "--no-lineage-upload",
+        action="store_true",
+        help=(
+            "Register only dataset split files in Data Store. Provenance remains in local "
+            "observability output but is not pushed into the dataset repo."
+        ),
+    )
     return ap.parse_args()
 
 
@@ -879,13 +961,36 @@ def main() -> int:
         data_store_user=args.data_store_user,
         data_store_password=args.data_store_password,
     )
-    specs = default_dataset_specs(
-        args.base_dir,
-        args.collections,
-        include_train=include_train,
-        include_test=include_test,
-        include_context_test=include_context_test,
-    )
+    if args.train_source_dir or args.train_dataset_name:
+        if len(args.collections) != 1:
+            print("FATAL: --train-source-dir/--train-dataset-name require exactly one collection")
+            return 1
+        if not include_train or include_test or include_context_test:
+            print("FATAL: custom train dataset registration requires --include-train only")
+            return 1
+        collection = args.collections[0]
+        source_dir = args.train_source_dir or args.base_dir / collection
+        dataset_name = args.train_dataset_name or f"stage3-{collection_slug(collection)}"
+        specs = [
+            DatasetSpec(
+                name=dataset_name,
+                collection=collection,
+                dataset_role="augmented_training",
+                source_dir=source_dir,
+                files=(
+                    DatasetFile(source_dir / "training.jsonl", "training.jsonl", "training"),
+                    DatasetFile(source_dir / "validation.jsonl", "validation.jsonl", "validation"),
+                ),
+            )
+        ]
+    else:
+        specs = default_dataset_specs(
+            args.base_dir,
+            args.collections,
+            include_train=include_train,
+            include_test=include_test,
+            include_context_test=include_context_test,
+        )
 
     results: list[dict[str, Any]] = []
     for spec in specs:
@@ -906,7 +1011,11 @@ def main() -> int:
                 )
         if args.dry_run:
             row_counts = {item.split: count_jsonl_rows(item.source) for item in spec.files}
-            lineage_files = [item.repo_path for item in discover_lineage_files(spec.source_dir)]
+            lineage_files = (
+                []
+                if args.no_lineage_upload
+                else [item.repo_path for item in discover_lineage_files(spec.source_dir)]
+            )
             results.append({
                 "dataset": spec.name,
                 "collection": spec.collection,
@@ -924,6 +1033,7 @@ def main() -> int:
             pipeline_run_id=args.pipeline_run_id,
             mlflow_parent_run_id=args.mlflow_parent_run_id,
             require_lineage=not args.allow_missing_lineage,
+            include_lineage=not args.no_lineage_upload,
         )
         results.append(result)
         print(

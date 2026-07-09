@@ -1,4 +1,4 @@
-"""Orchestrate Wave A (single-axis), Wave B (LoRA-vs-LoRA pairwise), and
+"""Orchestrate Wave A (single-axis), Wave B (base/LoRA pairwise), and
 Wave C (49B vs LoRA pairwise) Evaluator jobs."""
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from scripts.eval.register_evaluator_entities import (  # noqa: E402
 
 log = logging.getLogger(__name__)
 
-DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:8000")
+DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:7331")
 DEFAULT_TRAINING_SESSION_LOG = Path(
     os.getenv(
         "TRAINING_SESSION_LOG",
@@ -46,10 +46,10 @@ _DATASET_FOR_COLLECTION = {
     "nemo_usvcs_curated":   "default/stage3-nemo-usvcs-curated-test-with-context",
 }
 
-# Bases that are NOT in the Wave A no-LoRA base-target sweep (Stage 3 spec:
-# Nano is LoRA-only; 49B is a separate comparator target — see Wave C).
+# Bases that are NOT in the Wave A no-LoRA base-target sweep. 49B remains a
+# separate comparator target in Wave C; Nano now has its own base-only NIM
+# deployment and should be evaluated as a base reference target.
 _BASES_NOT_IN_WAVE_A_BASE_SWEEP = {
-    "nvidia/nemotron-3-nano-30b-a3b",
     "nvidia/llama-3.3-nemotron-super-49b-v1.5",
 }
 
@@ -68,9 +68,8 @@ def build_singleaxis_jobs(adapters: list[AdapterRow],
     single-axis per the 2026-05-27 redesign (it only appears in Wave C pairwise).
 
     For the Stage 3 inventory (14 adapters across 4 bases, 2 corpora):
-      - 14 adapter jobs (one per adapter, paired with its corpus's test set)
-      -  6 base jobs   (3 dense Llama bases × 2 corpora)
-      = 20 jobs total
+      - adapter jobs (one per adapter, paired with its corpus's test set)
+      - base jobs (dense Llama plus Nano base targets × 2 corpora)
     """
     jobs: list[dict] = []
     for a in adapters:
@@ -95,16 +94,33 @@ def build_singleaxis_jobs(adapters: list[AdapterRow],
 
 def build_pairwise_jobs(adapters: list[AdapterRow],
                         config_name: str) -> list[dict]:
-    """Wave B — LoRA-vs-LoRA pairwise within each corpus.
+    """Wave B — within-family pairwise checks for each corpus.
 
-    7 LoRAs per corpus (3 Llama r=16 + 3 Llama r=32 + 1 Nano r=16) →
-    7C2 = 21 pairs per corpus × 2 corpora = 42 jobs.
+    Phase 2 needs two gates:
+      - base-vs-adapter to prove the LoRA improved the base model
+      - adapter-vs-adapter to compare ranks/variants within the same corpus
+
+    For the full Stage 3 inventory:
+      7 adapters per corpus -> 7 base-vs-adapter jobs plus 7C2 LoRA-vs-LoRA
+      jobs = 28 jobs per corpus, 56 total.
     """
     by_corpus: dict[str, list[AdapterRow]] = {}
     for a in adapters:
         by_corpus.setdefault(a.collection, []).append(a)
     jobs: list[dict] = []
     for coll, rows in by_corpus.items():
+        for a in rows:
+            base_target = _base_target_name(a.base_model)
+            adapter_target = f"default/{a.name}"
+            jobs.append({
+                "config": config_name,
+                "target": base_target,
+                "dataset": _DATASET_FOR_COLLECTION[coll],
+                "extra": {
+                    "target_a": base_target,
+                    "target_b": adapter_target,
+                },
+            })
         for a, b in combinations(rows, 2):
             jobs.append({
                 "config": config_name,
@@ -207,7 +223,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--evaluator-url", default=DEFAULT_EVALUATOR_URL,
                     help="NeMo Evaluator base URL. Defaults to EVALUATOR_URL or "
-                         "http://nemo-evaluator:8000.")
+                         "http://nemo-evaluator:7331.")
     ap.add_argument("--evaluator-api-key", default=os.getenv("EVALUATOR_API_KEY"),
                     help="Optional Evaluator bearer token. Defaults to EVALUATOR_API_KEY.")
     ap.add_argument("--log-path", type=Path, default=DEFAULT_TRAINING_SESSION_LOG,
@@ -219,6 +235,8 @@ def main() -> int:
     ap.add_argument("--wave", choices=["A", "B", "C", "all"], default="all")
     ap.add_argument("--submit-only", action="store_true",
                     help="Submit jobs and write IDs without polling for terminal status.")
+    ap.add_argument("--limit-jobs", type=int, default=0,
+                    help="Limit jobs submitted per selected wave. Use 1 for smoke tests.")
     ap.add_argument("--poll-interval", type=float, default=30.0,
                     help="Seconds between Evaluator status polls when not using --submit-only.")
     ap.add_argument("--max-wait-s", type=float, default=6 * 3600,
@@ -238,6 +256,8 @@ def main() -> int:
         out_map = json.loads(args.out.read_text())
 
     def submit_and_maybe_wait(wave_key: str, label: str, jobs: list[dict]) -> None:
+        if args.limit_jobs > 0:
+            jobs = jobs[:args.limit_jobs]
         log.info("submitting %s: %d jobs", label, len(jobs))
         job_ids = submit_wave(client, jobs)
         out_map[wave_key] = list(zip(job_ids, jobs))

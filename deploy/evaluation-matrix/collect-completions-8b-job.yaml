@@ -1,0 +1,61 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: collect-stage3-8b-completions-
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: completion-collector
+    app.kubernetes.io/component: llama-3.1-8b
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: completion-collector
+        app.kubernetes.io/component: llama-3.1-8b
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: completion-collector
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              set -eu
+              pip install --no-cache-dir -q httpx
+              RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}"
+              python /scripts/collect_completions.py                 --dataset /mnt/nvme2/peft/datasets/v2/nim_curated/test_set_with_context.jsonl                 --dataset-slug nim_curated                 --model llama-3.1-8b-instruct                 --model lora-nim-llama-3.1-8b-r16                 --model lora-nim-llama-3.1-8b-r32                 --run-id "$RUN_ID"                 --max-tokens 8192                 --concurrency 8
+              python /scripts/collect_completions.py                 --dataset /mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated/test_set_with_context.jsonl                 --dataset-slug nemo_usvcs_curated                 --model llama-3.1-8b-instruct                 --model lora-nemo-usvcs-llama-3.1-8b-r16                 --model lora-nemo-usvcs-llama-3.1-8b-r32                 --run-id "$RUN_ID"                 --max-tokens 8192                 --concurrency 8
+          env:
+            - name: TARGET_API_URL
+              value: "http://rag-oai-proxy.runai-rag:8080"
+            - name: COMPLETIONS_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/completions
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - name: collector-script
+              mountPath: /scripts
+              readOnly: true
+            - name: nvme2
+              mountPath: /mnt/nvme2
+      volumes:
+        - name: collector-script
+          configMap:
+            name: completion-collector-script
+            defaultMode: 0555
+        - name: nvme2
+          persistentVolumeClaim:
+            claimName: nvme2-pvc

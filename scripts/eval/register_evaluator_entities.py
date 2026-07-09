@@ -28,8 +28,11 @@ from scripts.eval.evaluator_client import EvaluatorClient  # noqa: E402
 
 log = logging.getLogger(__name__)
 
-DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:8000")
-DEFAULT_NIM_PROXY_URL = os.getenv("NIM_PROXY_URL", "http://nemo-nim-proxy:8000")
+DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:7331")
+DEFAULT_NIM_PROXY_URL = os.getenv(
+    "NIM_PROXY_URL",
+    "http://rag-oai-proxy.runai-rag:8080",
+)
 DEFAULT_TRAINING_SESSION_LOG = Path(
     os.getenv(
         "TRAINING_SESSION_LOG",
@@ -238,7 +241,10 @@ _RAGAS_INPUT_TEMPLATE = (
     '}'
 )
 
-_JUDGE_MODEL_REF = "default/claude-sonnet-4-6-judge"
+_JUDGE_MODEL_REF = os.getenv(
+    "EVALUATOR_JUDGE_MODEL_REF",
+    "default/llama-3.3-nemotron-super-49b-v1.5",
+)
 
 
 def _ragas_metric(metric_type: str) -> dict:
@@ -257,15 +263,15 @@ def build_singleaxis_config() -> dict:
 
     These three are the canonical RAG-eval subset (the prior nim-sft-final
     experiment used a near-identical set: faithfulness, answer_relevancy,
-    context_precision). All scored by Claude Sonnet via NVIDIA Inference API
-    (model entity: default/claude-sonnet-4-6-judge).
+    context_precision). All are scored by the configured independent judge
+    model entity.
     """
     return {
         "name": "stage3-singleaxis-rubric",
         "namespace": "default",
         "description": (
             "Stage 3 single-axis RAGAS — Faithfulness + ResponseRelevancy + "
-            "AnswerAccuracy, Claude Sonnet 4.6 judge"
+            "AnswerAccuracy, independent judge"
         ),
         "type": "custom",
         "params": {
@@ -291,14 +297,17 @@ def build_pairwise_config() -> dict:
     return {
         "name": "stage3-pairwise-tournament",
         "namespace": "default",
-        "description": "Stage 3 pairwise A/B/Tie with position swap, Claude judge",
+        "description": "Stage 3 pairwise A/B/Tie with position swap, independent judge",
         "type": "custom",
         "params": {
             "parallelism": 4,
             "temperature": 0.0001,  # Evaluator schema requires temperature > 0; greedy-equivalent
             "max_tokens": 8192,     # target inference budget; reasoning models (49B) need room for <think> + answer
             "extra": {
-                "judge_model": "aws/anthropic/bedrock-claude-sonnet-4-6",
+                "judge_model": os.getenv(
+                    "EVALUATOR_PAIRWISE_JUDGE_MODEL",
+                    "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+                ),
                 "judge_endpoint": "https://inference-api.nvidia.com/v1/chat/completions",
                 "pairwise_prompt": _PAIRWISE_PROMPT,
                 "position_swap": True,
@@ -331,31 +340,72 @@ def load_adapters_from_log(log_path: Path) -> list[AdapterRow]:
 
 # --- idempotent create helpers ----------------------------------------
 
-def _create_target_idempotent(client: EvaluatorClient, payload: dict,
-                               label: str) -> None:
-    """POST a target; tolerate 409 (already exists), re-raise everything else."""
+def _create_target_idempotent(
+    client: EvaluatorClient,
+    payload: dict,
+    label: str,
+    update_existing: bool = False,
+) -> None:
+    """POST a target; optionally PATCH on 409 when payloads need refresh."""
     import httpx
     try:
         tid = client.create_target(payload)
         log.info("%s target id=%s name=%s", label, tid, payload["name"])
     except httpx.HTTPStatusError as e:
         if e.response.status_code == 409:
-            log.warning("%s target already exists, skipping: %s",
-                        label, payload["name"])
+            if update_existing:
+                namespace = payload.get("namespace", "default")
+                try:
+                    tid = client.update_target(namespace, payload["name"], payload)
+                    log.info("%s target updated id=%s name=%s", label, tid, payload["name"])
+                except httpx.HTTPStatusError as update_error:
+                    if update_error.response.status_code != 501:
+                        raise
+                    log.warning(
+                        "%s target PATCH unsupported; deleting and recreating: %s",
+                        label,
+                        payload["name"],
+                    )
+                    client.delete_target(namespace, payload["name"])
+                    tid = client.create_target(payload)
+                    log.info("%s target recreated id=%s name=%s", label, tid, payload["name"])
+            else:
+                log.warning("%s target already exists, skipping: %s",
+                            label, payload["name"])
         else:
             raise
 
 
-def _create_config_idempotent(client: EvaluatorClient, payload: dict) -> None:
-    """POST a config; tolerate 409 (already exists), re-raise everything else."""
+def _create_config_idempotent(
+    client: EvaluatorClient,
+    payload: dict,
+    update_existing: bool = False,
+) -> None:
+    """POST a config; optionally PATCH on 409 when payloads need refresh."""
     import httpx
     try:
         cid = client.create_config(payload)
         log.info("config id=%s name=%s", cid, payload["name"])
     except httpx.HTTPStatusError as e:
         if e.response.status_code == 409:
-            log.warning("config already exists, skipping: %s",
-                        payload["name"])
+            if update_existing:
+                namespace = payload.get("namespace", "default")
+                try:
+                    cid = client.update_config(namespace, payload["name"], payload)
+                    log.info("config updated id=%s name=%s", cid, payload["name"])
+                except httpx.HTTPStatusError as update_error:
+                    if update_error.response.status_code != 501:
+                        raise
+                    log.warning(
+                        "config PATCH unsupported; deleting and recreating: %s",
+                        payload["name"],
+                    )
+                    client.delete_config(namespace, payload["name"])
+                    cid = client.create_config(payload)
+                    log.info("config recreated id=%s name=%s", cid, payload["name"])
+            else:
+                log.warning("config already exists, skipping: %s",
+                            payload["name"])
         else:
             raise
 
@@ -366,16 +416,18 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--evaluator-url", default=DEFAULT_EVALUATOR_URL,
                     help="NeMo Evaluator base URL. Defaults to EVALUATOR_URL or "
-                         "http://nemo-evaluator:8000.")
+                         "http://nemo-evaluator:7331.")
     ap.add_argument("--evaluator-api-key", default=os.getenv("EVALUATOR_API_KEY"),
                     help="Optional Evaluator bearer token. Defaults to EVALUATOR_API_KEY.")
     ap.add_argument("--log-path", type=Path, default=DEFAULT_TRAINING_SESSION_LOG,
                     help="Training-session inventory log. Defaults to TRAINING_SESSION_LOG "
                          "or evals/training_session.log.")
+    ap.add_argument("--update-existing", action="store_true",
+                    help="Refresh existing targets/configs on HTTP 409. Uses PATCH when supported; falls back to delete/recreate on 501.")
     ap.add_argument("--adapter-targets", action="store_true",
                     help="Register the 14 LoRA adapter targets (12 Llama + 2 Nano r=16)")
     ap.add_argument("--base-targets", action="store_true",
-                    help="Register the 3 dense Llama base reference targets")
+                    help="Register dense Llama plus Nano base reference targets")
     ap.add_argument("--49b-target", "--rag-target", dest="target_49b", action="store_true",
                     help="Register the single Nemotron-Super-49B-v1.5 comparator target")
     ap.add_argument("--configs", action="store_true",
@@ -383,9 +435,10 @@ def main() -> int:
     ap.add_argument("--all", action="store_true",
                     help="Register adapter targets, base targets, 49B comparator, and configs")
     ap.add_argument("--proxy-url", default=DEFAULT_NIM_PROXY_URL,
-                    help="NeMo NIM Proxy base URL. Defaults to NIM_PROXY_URL or "
-                         "http://nemo-nim-proxy:8000. All Stage 3 Evaluator "
-                         "model targets point at this proxy's /v1/chat/completions endpoint.")
+                    help="OpenAI-compatible model proxy base URL. Defaults to "
+                         "NIM_PROXY_URL or http://rag-oai-proxy.runai-rag:8080 "
+                         "for the current eval test cluster. Native NIM Proxy can "
+                         "be substituted when available.")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.INFO,
@@ -403,31 +456,39 @@ def main() -> int:
     adapters = load_adapters_from_log(args.log_path)
     log.info("loaded %d adapters from %s", len(adapters), args.log_path)
 
-    # Bases that get a no-LoRA reference target in the matrix. Nano is excluded
-    # (only its LoRA variants are in Stage 3 scope); 49B is registered via the
-    # separate build_49b_target helper to keep its naming explicit.
+    # Bases that get a no-LoRA reference target in the matrix. Nano is included
+    # because its hybrid MoE serving profiles require a separate base-only NIM
+    # deployment rather than using the LoRA-capable profile for base inference.
+    # 49B is registered via build_49b_target to keep comparator naming explicit.
     _BASE_TARGETS = [
         "meta/llama-3.2-1b-instruct",
         "meta/llama-3.2-3b-instruct",
         "meta/llama-3.1-8b-instruct",
+        "nvidia/nemotron-3-nano-30b-a3b",
     ]
 
     with EvaluatorClient(args.evaluator_url, api_key=args.evaluator_api_key) as client:
         if register_adapter_targets:
             for a in adapters:
                 p = build_adapter_target(a, proxy_url=args.proxy_url)
-                _create_target_idempotent(client, p, label="adapter")
+                _create_target_idempotent(
+                    client, p, label="adapter", update_existing=args.update_existing
+                )
         if register_base_targets:
             for base in _BASE_TARGETS:
                 p = build_base_target(base, proxy_url=args.proxy_url)
-                _create_target_idempotent(client, p, label="base")
+                _create_target_idempotent(
+                    client, p, label="base", update_existing=args.update_existing
+                )
         if register_49b_target:
             p = build_49b_target(proxy_url=args.proxy_url)
-            _create_target_idempotent(client, p, label="49b")
+            _create_target_idempotent(
+                client, p, label="49b", update_existing=args.update_existing
+            )
         if register_configs:
             for builder in (build_singleaxis_config, build_pairwise_config):
                 p = builder()
-                _create_config_idempotent(client, p)
+                _create_config_idempotent(client, p, update_existing=args.update_existing)
     return 0
 
 

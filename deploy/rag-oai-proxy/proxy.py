@@ -2,11 +2,11 @@
 
 Single sidecar that the Evaluator calls for every eval job. Two responsibilities:
 
-  1. Routing — derive the upstream {URL, model_id} from the inbound `model`:
-       Adapter targets (lora-*) and base targets (bare base model names)
-       map to the corresponding LoRA-enabled NIM Service. The 49B comparator
-       maps to nim-llm. Base inference vs LoRA inference is selected by what
-       `model` we forward to the upstream NIM (NIM routes via NIM_PEFT_SOURCE).
+  1. Routing — derive the upstream {URL, model_id} from the inbound `model`.
+       Dense Llama adapter targets and base targets can share the same
+       LoRA-enabled NIM Service, but Nemotron-3-Nano uses separate base-only
+       and LoRA-capable deployments because its hybrid MoE profiles are not
+       interchangeable for base and adapter serving.
   2. <think>...</think> scrubbing — applied to every response. Idempotent on
      responses without think tags (dense Llama path is a passthrough no-op).
      Keeps thinking ENABLED upstream so reasoning quality is preserved, but
@@ -36,11 +36,19 @@ from fastapi import FastAPI, HTTPException
 
 # --- upstream NIM Service names per base model ----------------------------
 
-_NIM_SERVICE_FOR_BASE: dict[str, str] = {
-    "meta/llama-3.2-1b-instruct":              "nim-llama-3.2-1b",
-    "meta/llama-3.2-3b-instruct":              "nim-llama-3.2-3b",
-    "meta/llama-3.1-8b-instruct":              "nim-llama-3.1-8b",
-    "nvidia/nemotron-3-nano-30b-a3b":          "nim-nemotron-nano",
+_NIM_LORA_SERVICE_FOR_BASE: dict[str, str] = {
+    "meta/llama-3.2-1b-instruct":              "nim-llm-1b-bw-lora",
+    "meta/llama-3.2-3b-instruct":              "nim-llm-3b-ada-lora",
+    "meta/llama-3.1-8b-instruct":              "nim-llm-8b-bw-lora",
+    "nvidia/nemotron-3-nano-30b-a3b":          "nim-llm-nemotron-3-nano-nvfp4-lora-bw",
+    "nvidia/llama-3.3-nemotron-super-49b-v1.5": "nim-llm",
+}
+
+_NIM_BASE_SERVICE_FOR_BASE: dict[str, str] = {
+    "meta/llama-3.2-1b-instruct":              "nim-llm-1b-bw-lora",
+    "meta/llama-3.2-3b-instruct":              "nim-llm-3b-ada-lora",
+    "meta/llama-3.1-8b-instruct":              "nim-llm-8b-bw-lora",
+    "nvidia/nemotron-3-nano-30b-a3b":          "nim-llm-nemotron-3-nano-nvfp4-nolora-bw",
     "nvidia/llama-3.3-nemotron-super-49b-v1.5": "nim-llm",
 }
 
@@ -48,19 +56,39 @@ _NIM_SERVICE_FOR_BASE: dict[str, str] = {
 _ADAPTERS: list[tuple[str, str, int]] = [
     ("nim",        "meta/llama-3.2-1b-instruct",     16),
     ("nim",        "meta/llama-3.2-1b-instruct",     32),
+    ("nim-dd-kimi","meta/llama-3.2-1b-instruct",     16),
+    ("nim-dd-kimi","meta/llama-3.2-1b-instruct",     32),
     ("nim",        "meta/llama-3.2-3b-instruct",     16),
     ("nim",        "meta/llama-3.2-3b-instruct",     32),
+    ("nim-dd5x",   "meta/llama-3.2-3b-instruct",     32),
+    ("nim-dd5x",   "meta/llama-3.2-3b-instruct",     16),
+    ("nim-dd5x-e5", "meta/llama-3.2-3b-instruct",    16),
+    ("nim-dd5x-e5", "meta/llama-3.2-3b-instruct",    32),
+    ("nim-e5",     "meta/llama-3.2-3b-instruct",     16),
+    ("nim-e5",     "meta/llama-3.2-3b-instruct",     32),
     ("nim",        "meta/llama-3.1-8b-instruct",     16),
     ("nim",        "meta/llama-3.1-8b-instruct",     32),
+    ("nim-e5",     "meta/llama-3.1-8b-instruct",     16),
+    ("nim-e5",     "meta/llama-3.1-8b-instruct",     32),
     ("nim",        "nvidia/nemotron-3-nano-30b-a3b", 16),
     ("nemo-usvcs", "meta/llama-3.2-1b-instruct",     16),
     ("nemo-usvcs", "meta/llama-3.2-1b-instruct",     32),
     ("nemo-usvcs", "meta/llama-3.2-3b-instruct",     16),
     ("nemo-usvcs", "meta/llama-3.2-3b-instruct",     32),
+    ("nemo-usvcs-dd5x", "meta/llama-3.2-3b-instruct",     32),
+    ("nemo-usvcs-dd5x", "meta/llama-3.2-3b-instruct",     16),
     ("nemo-usvcs", "meta/llama-3.1-8b-instruct",     16),
     ("nemo-usvcs", "meta/llama-3.1-8b-instruct",     32),
+    ("nemo-usvcs-e5", "meta/llama-3.1-8b-instruct",  16),
+    ("nemo-usvcs-e5", "meta/llama-3.1-8b-instruct",  32),
     ("nemo-usvcs", "nvidia/nemotron-3-nano-30b-a3b", 16),
 ]
+
+# Explicit replacement/experiment adapters that do not fit the base naming
+# convention above but should remain routable through the same LoRA deployment.
+_EXPLICIT_ADAPTERS: dict[str, str] = {
+    "lora-nemo-usvcs-nemotron-nano-30b-r16-retrain-20260530": "nvidia/nemotron-3-nano-30b-a3b",
+}
 
 
 def _adapter_name(corpus_slug: str, base: str, rank: int) -> str:
@@ -81,23 +109,25 @@ def _base_target_name(base: str) -> str:
 def _build_routes() -> dict[str, dict[str, Any]]:
     routes: dict[str, dict[str, Any]] = {}
 
-    # Adapter targets (14): each LoRA-enabled NIM serves its own LoRA names.
+    # Adapter targets: each LoRA-enabled NIM serves its own LoRA names.
     for corpus_slug, base, rank in _ADAPTERS:
-        nim_svc = _NIM_SERVICE_FOR_BASE[base]
+        nim_svc = _NIM_LORA_SERVICE_FOR_BASE[base]
         adapter = _adapter_name(corpus_slug, base, rank)
         routes[adapter] = {
             "url":            f"http://{nim_svc}.runai-rag:8000/v1/chat/completions",
             "upstream_model": adapter,
         }
+    for adapter, base in _EXPLICIT_ADAPTERS.items():
+        nim_svc = _NIM_LORA_SERVICE_FOR_BASE[base]
+        routes[adapter] = {
+            "url":            f"http://{nim_svc}.runai-rag:8000/v1/chat/completions",
+            "upstream_model": adapter,
+        }
 
-    # Base targets — same upstream NIM as the matching LoRA names, but
-    # `upstream_model` is the bare base model id (no LoRA applied at inference).
-    # The 49B is registered as a base too (it's not LoRA-modified in Stage 3).
-    for base, nim_svc in _NIM_SERVICE_FOR_BASE.items():
-        if base == "nvidia/nemotron-3-nano-30b-a3b":
-            # Nano base intentionally excluded from Stage 3 base-target sweep
-            # (only its LoRA variants are in scope).
-            continue
+    # Base targets: use base-only services where the NIM profile requires it.
+    # Nano is the important case: its feat_lora profile is not used for the
+    # base-only reference target.
+    for base, nim_svc in _NIM_BASE_SERVICE_FOR_BASE.items():
         target_name = _base_target_name(base)
         routes[target_name] = {
             "url":            f"http://{nim_svc}.runai-rag:8000/v1/chat/completions",
@@ -112,8 +142,9 @@ _ROUTES: dict[str, dict[str, Any]] = _build_routes()
 
 # --- <think>...</think> tag scrubbing (universal post-process) ----------
 
-_THINK_BALANCED = re.compile(r"<think>.*?</think>\s*", re.DOTALL)
-_THINK_OPEN_TAIL = re.compile(r"<think>.*$", re.DOTALL)
+_THINK_BALANCED = re.compile(r"<think>.*?</think>\s*", re.DOTALL | re.IGNORECASE)
+_THINK_OPEN_TAIL = re.compile(r"<think>.*$", re.DOTALL | re.IGNORECASE)
+_THINK_PRELUDE = re.compile(r"^.*?</think>\s*", re.DOTALL | re.IGNORECASE)
 
 
 def strip_think_tags(text: str) -> str:
@@ -121,6 +152,7 @@ def strip_think_tags(text: str) -> str:
     if not text:
         return text
     cleaned = _THINK_BALANCED.sub("", text)
+    cleaned = _THINK_PRELUDE.sub("", cleaned)
     cleaned = _THINK_OPEN_TAIL.sub("", cleaned)
     return cleaned.strip()
 

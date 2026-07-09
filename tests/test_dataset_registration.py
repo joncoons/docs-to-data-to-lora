@@ -4,7 +4,10 @@ from pathlib import Path
 
 from scripts.eval import upload_test_datasets as upload
 from scripts.eval.upload_test_datasets import (
+    DatasetFile,
+    DatasetSpec,
     ServiceConfig,
+    build_description,
     build_entity_store_payload,
     build_observability_documents,
     default_dataset_specs,
@@ -52,6 +55,30 @@ def test_inject_basic_auth_url_encodes_credentials():
     url = inject_basic_auth("http://data-store:3000", "user@example.com", "p@ ss")
 
     assert url == "http://user%40example.com:p%40%20ss@data-store:3000"
+
+
+def test_build_description_for_augmented_training_dataset(tmp_path):
+    spec = DatasetSpec(
+        name="stage3-nim-curated-dd-kimi-v1",
+        collection="nim_curated",
+        dataset_role="augmented_training",
+        source_dir=tmp_path,
+        files=(
+            DatasetFile(tmp_path / "training.jsonl", "training.jsonl", "training"),
+            DatasetFile(tmp_path / "validation.jsonl", "validation.jsonl", "validation"),
+        ),
+    )
+
+    desc = build_description(
+        spec,
+        {"training": 10, "validation": 2},
+        dataset_version={"dataset_version_id": "dsv_aug_001"},
+        pipeline_run_id=None,
+        mlflow_parent_run_id=None,
+    )
+
+    assert "augmented training dataset" in desc
+    assert "dataset_version_id=dsv_aug_001" in desc
 
 
 def test_build_entity_store_payload_includes_lineage_in_description(tmp_path):
@@ -159,6 +186,48 @@ def test_push_dataset_files_includes_lineage_artifacts(tmp_path, monkeypatch):
     assert "validation.jsonl" in git_add
     assert "manifests/dataset_version_manifest.json" in git_add
     assert "provenance/dataset_samples.jsonl" in git_add
+    assert ".gitattributes" in git_add
+
+
+def test_push_dataset_files_can_skip_lineage_for_customizer_repo(tmp_path, monkeypatch):
+    coll = tmp_path / "nim_curated"
+    (coll / "manifests").mkdir(parents=True)
+    (coll / "provenance").mkdir()
+    (coll / "training.jsonl").write_text('{"a": 1}\n')
+    (coll / "validation.jsonl").write_text('{"a": 2}\n')
+    (coll / "manifests" / "dataset_version_manifest.json").write_text("{}")
+    (coll / "provenance" / "dataset_samples.jsonl").write_text('{"id": "s1"}\n')
+    spec = default_dataset_specs(
+        tmp_path,
+        ["nim_curated"],
+        include_train=True,
+        include_test=False,
+        include_context_test=False,
+    )[0]
+    commands = []
+    gitattributes = []
+
+    def fake_run_cmd(args, cwd=None, allow_fail=False):
+        commands.append(args)
+        if args[:2] == ["git", "clone"]:
+            requested_repo = Path(args[-1])
+            requested_repo.mkdir(parents=True)
+        if args[:2] == ["git", "add"] and cwd is not None:
+            gitattributes.append((cwd / ".gitattributes").read_text())
+        return subprocess.CompletedProcess(args, 0, stdout=b"", stderr=b"")
+
+    monkeypatch.setattr(upload, "run_cmd", fake_run_cmd)
+
+    result = push_dataset_files(spec, _config(), include_lineage=False)
+
+    assert result["lineage_files"] == []
+    git_add = [args for args in commands if args[:2] == ["git", "add"]][0]
+    assert "training.jsonl" in git_add
+    assert "validation.jsonl" in git_add
+    assert ".gitattributes" in git_add
+    assert "manifests/dataset_version_manifest.json" not in git_add
+    assert "provenance/dataset_samples.jsonl" not in git_add
+    assert gitattributes == [upload.DATA_STORE_GITATTRIBUTES]
 
 
 def test_build_observability_documents_records_metrics_and_refs(tmp_path):

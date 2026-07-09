@@ -1,8 +1,7 @@
 """Tests for Evaluator target/config payload builders.
 
 These tests intentionally cover the native NIM Proxy model-target path. The
-Claude-generated rag-oai-proxy/RAG target path is legacy and should not be the
-default showcase path.
+legacy rag-oai-proxy/RAG target path should not be the default showcase path.
 """
 import sys
 
@@ -82,7 +81,7 @@ def test_build_dataset_payload_for_nim():
 
 # --- configs -------------------------------------------------------------
 
-def test_singleaxis_config_uses_ragas_metrics_and_claude_judge_ref():
+def test_singleaxis_config_uses_ragas_metrics_and_external_judge_ref():
     cfg = build_singleaxis_config()
     assert cfg["name"] == "stage3-singleaxis-rubric"
     assert cfg["type"] == "custom"
@@ -94,7 +93,7 @@ def test_singleaxis_config_uses_ragas_metrics_and_claude_judge_ref():
     metrics = task["metrics"]
     assert set(metrics) == {"faithfulness", "response_relevancy", "answer_accuracy"}
     for metric in metrics.values():
-        assert metric["params"]["judge"]["model"] == "default/claude-sonnet-4-6-judge"
+        assert metric["params"]["judge"]["model"] == "default/llama-3.3-nemotron-super-49b-v1.5"
         assert "retrieved_contexts" in metric["params"]["input_template"]
 
 
@@ -105,7 +104,7 @@ def test_pairwise_config_has_position_swap_and_judge():
     extra = cfg["params"]["extra"]
     assert extra["position_swap"] is True
     assert "A" in extra["pairwise_prompt"] and "B" in extra["pairwise_prompt"]
-    assert extra["judge_model"] == "aws/anthropic/bedrock-claude-sonnet-4-6"
+    assert extra["judge_model"] == "nvidia/llama-3.3-nemotron-super-49b-v1.5"
 
 
 # --- AdapterRow round-trip ----------------------------------------------
@@ -196,9 +195,9 @@ def test_main_all_registers_targets_and_configs_via_nim_proxy(tmp_path, monkeypa
 
     assert ree.main() == 0
 
-    # One adapter target from the fixture log, three dense base targets,
+    # One adapter target from the fixture log, four base targets,
     # and the 49B comparator.
-    assert len(created_targets) == 5
+    assert len(created_targets) == 6
     assert len(created_configs) == 2
     assert {cfg["name"] for cfg in created_configs} == {
         "stage3-singleaxis-rubric",

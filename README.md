@@ -106,6 +106,11 @@ python scripts/sitemap_to_inventory.py \
 #    rag-crawler (https://github.com/joncoons/rag-crawler).
 ```
 
+
+## Tutorial Notebooks
+
+A notebook-first walkthrough now lives under [`tutorial/`](tutorial/). It covers the complete flow from curated crawl through dataset creation, LoRA training, and evaluation, with companion markdown docs for execution modes, artifacts, and eval strategy.
+
 ## Prerequisites
 
 - **Python 3.10+** for the inventory script (no external deps; stdlib only).
@@ -177,8 +182,8 @@ Generation strategies:
 - **Stage 1.5 — Gap analysis + Data Designer handoff**: bias analysis by
   `product_family`; emit `gap_manifest.json` and Data Designer seed records for
   native synthetic generation of under-represented products.
-- **Stage 4 — External judge**: Claude Sonnet 4.6 (independent of generation)
-  spot-checks 100 pairs per collection; 90% grounding pass threshold.
+- **Stage 4 — External judge**: an independent judge model spot-checks 100
+  pairs per collection; 90% grounding pass threshold.
 
 ## Integration templates
 

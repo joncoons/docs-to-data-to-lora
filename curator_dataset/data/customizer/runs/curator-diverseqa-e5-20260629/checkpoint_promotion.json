@@ -1,0 +1,56 @@
+{
+  "jobs": {
+    "nemo_usvcs_r16": {
+      "artifact_files_url": null,
+      "artifact_status": null,
+      "best_epoch": null,
+      "best_val_loss": null,
+      "best_val_loss_step": null,
+      "epochs_completed": 0,
+      "job_id": "cust-DNU5tkRhPfHzjbq1sShngX",
+      "promotion_verified": false,
+      "status": "running"
+    },
+    "nemo_usvcs_r32": {
+      "artifact_files_url": null,
+      "artifact_status": null,
+      "best_epoch": null,
+      "best_val_loss": null,
+      "best_val_loss_step": null,
+      "epochs_completed": 0,
+      "job_id": "cust-MZWf4RV6ykPwRXKHXo3msS",
+      "promotion_verified": false,
+      "status": "running"
+    },
+    "nim_r16": {
+      "artifact_files_url": null,
+      "artifact_status": null,
+      "best_epoch": null,
+      "best_val_loss": null,
+      "best_val_loss_step": null,
+      "epochs_completed": 0,
+      "job_id": "cust-AvPjLCJsBhsi3fdLCFFCzA",
+      "promotion_verified": false,
+      "status": "failed"
+    },
+    "nim_r32": {
+      "artifact_files_url": null,
+      "artifact_status": null,
+      "best_epoch": null,
+      "best_val_loss": null,
+      "best_val_loss_step": null,
+      "epochs_completed": 0,
+      "job_id": "cust-HvcnhuFnT1yvPa8umy9ngJ",
+      "promotion_verified": false,
+      "status": "failed"
+    }
+  },
+  "observed_at": "2026-06-29T23:48:54.433650Z",
+  "policy": {
+    "early_stopping": false,
+    "maximum_epochs": 5,
+    "promotion_target": "Customizer output model revision",
+    "selection_metric": "validation loss"
+  },
+  "schema_version": "curator_dataset.best_checkpoint_promotion.v1"
+}

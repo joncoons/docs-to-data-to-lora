@@ -1,0 +1,8 @@
+LICENSE
+README.md
+pyproject.toml
+docs_to_data_to_lora.egg-info/PKG-INFO
+docs_to_data_to_lora.egg-info/SOURCES.txt
+docs_to_data_to_lora.egg-info/dependency_links.txt
+docs_to_data_to_lora.egg-info/requires.txt
+docs_to_data_to_lora.egg-info/top_level.txt

@@ -1,0 +1,6 @@
+{"customizer_status": "running", "job_id": "cust-9zY9FLQbWpAxb2MVoSeteG", "key": "nim_r16_lr5e5", "observed_at": "2026-06-30T02:14:44.601728Z", "worker_phase": "Running"}
+{"customizer_status": "running", "job_id": "cust-Q6ASpeDuedSoBAXsdwfJsH", "key": "nim_r16_lr6p8e5", "observed_at": "2026-06-30T02:14:44.601728Z", "worker_phase": "Running"}
+{"customizer_status": "running", "job_id": "cust-9zY9FLQbWpAxb2MVoSeteG", "key": "nim_r16_lr5e5", "observed_at": "2026-06-30T02:38:30.197018Z", "worker_phase": "Succeeded"}
+{"customizer_status": "running", "job_id": "cust-Q6ASpeDuedSoBAXsdwfJsH", "key": "nim_r16_lr6p8e5", "observed_at": "2026-06-30T02:38:30.197018Z", "worker_phase": "Succeeded"}
+{"customizer_status": "completed", "job_id": "cust-9zY9FLQbWpAxb2MVoSeteG", "key": "nim_r16_lr5e5", "observed_at": "2026-06-30T02:39:00.535450Z", "worker_phase": "Succeeded"}
+{"customizer_status": "completed", "job_id": "cust-Q6ASpeDuedSoBAXsdwfJsH", "key": "nim_r16_lr6p8e5", "observed_at": "2026-06-30T02:39:00.535450Z", "worker_phase": "Succeeded"}

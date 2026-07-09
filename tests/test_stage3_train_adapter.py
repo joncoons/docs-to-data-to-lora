@@ -240,3 +240,34 @@ def test_cli_dry_run_produces_valid_json_with_correct_shape():
     assert "name" not in cfg
     assert "output_model_path" not in cfg
     assert "precision" not in hp
+
+
+
+def test_cli_dry_run_accepts_augmented_dataset_overrides():
+    """CLI can target an augmented dataset entity without changing baseline mappings."""
+    python = "/home/joncoons/anaconda3/envs/nat/bin/python3"
+    script = str(
+        Path(__file__).resolve().parents[1]
+        / "scripts" / "stage3" / "train_adapter.py"
+    )
+    result = subprocess.run(
+        [
+            python, script,
+            "--collection", "nim_curated",
+            "--base-model", "meta/llama-3.2-1b-instruct",
+            "--rank", "16",
+            "--dataset-entity", "default/stage3-nim-curated-dd-kimi-v1",
+            "--adapter-name", "lora-nim-dd-kimi-llama-3.2-1b-r16",
+            "--description", "Stage 3 augmented NIM 1B r16 test",
+            "--dry-run",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, f"CLI exited non-zero:\n{result.stderr}"
+    cfg = json.loads(result.stdout)
+
+    assert cfg["dataset"] == "default/stage3-nim-curated-dd-kimi-v1"
+    assert cfg["output_model"] == "default/lora-nim-dd-kimi-llama-3.2-1b-r16"
+    assert cfg["description"] == "Stage 3 augmented NIM 1B r16 test"
+    assert cfg["hyperparameters"]["lora"]["adapter_dim"] == 16

@@ -1,0 +1,87 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ultra-phase3-49b-8b-html-only-20260610t032644z
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: direct-nemotron-ultra-pairwise
+    app.kubernetes.io/component: phase3-49b-8b-nim-html-only
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "phase3-49b-vs-8b-nim-html-only-nemotron-ultra-20260610t032644z"
+spec:
+  suspend: true
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: direct-nemotron-ultra-pairwise
+        app.kubernetes.io/component: phase3-49b-8b-nim-html-only
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+        eval-run-id: "phase3-49b-vs-8b-nim-html-only-nemotron-ultra-20260610t032644z"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: direct-pairwise
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              pip install --no-cache-dir -q httpx
+              python /scripts/run_direct_kimi_pairwise.py \
+                --pair 49b-super /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.3-nemotron-super-49b-v1/base/base/20260610t032644z/responses.jsonl 8b-base /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/base/base/20260610t032644z/responses.jsonl \
+                --pair 49b-super /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.3-nemotron-super-49b-v1/base/base/20260610t032644z/responses.jsonl 8b-nim-html-e5-r16 /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r16/20260610t032644z/responses.jsonl \
+                --pair 49b-super /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.3-nemotron-super-49b-v1/base/base/20260610t032644z/responses.jsonl 8b-nim-html-e5-r32 /mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r32/20260610t032644z/responses.jsonl \
+                --eval-run-id "$EVAL_RUN_ID" \
+                --output-root "$PAIRWISE_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-timeout-s 600 \
+                --judge-max-attempts 5 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 4 \
+                --resume \
+                --position-swap \
+                --log-every 25
+          env:
+            - name: EVAL_RUN_ID
+              value: "phase3-49b-vs-8b-nim-html-only-nemotron-ultra-20260610t032644z"
+            - name: PAIRWISE_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/pairwise-nemotron-ultra
+            - name: JUDGE_API_URL
+              value: https://inference-api.nvidia.com/v1/chat/completions
+            - name: EVALUATOR_JUDGE_MODEL
+              value: nvidia/nvidia/nemotron-3-ultra
+            - name: KIMI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kimi-judge-api
+                  key: KIMI_KEY
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          volumeMounts:
+            - name: pairwise-script
+              mountPath: /scripts
+              readOnly: true
+            - name: nvme2
+              mountPath: /mnt/nvme2
+      volumes:
+        - name: pairwise-script
+          configMap:
+            name: direct-kimi-pairwise-script
+            defaultMode: 0555
+        - name: nvme2
+          persistentVolumeClaim:
+            claimName: nvme2-pvc

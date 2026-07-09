@@ -1,0 +1,18 @@
+{
+  "created_at": "2026-06-29T20:25:50.837837Z",
+  "metrics": {
+    "exact_duplicate_pairs_dropped": 0,
+    "parse_failures": 0,
+    "parsed_segments": 4,
+    "qa_pairs": 32,
+    "raw_segments": 4
+  },
+  "output": {
+    "bytes": 89714,
+    "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nim_curated/qa/runs/smoke-20260629t2015z/dataset/qa_pairs.jsonl",
+    "rows": 32,
+    "sha256": "f3ee788d4485dace42d47e06e544883579c9c37d65658884fbda5f78a4422e90"
+  },
+  "raw_dir": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nim_curated/qa/runs/smoke-20260629t2015z/raw",
+  "schema_version": "curator_dataset.qa_dataset_manifest.v1"
+}

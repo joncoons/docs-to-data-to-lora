@@ -1,0 +1,40 @@
+{
+  "artifacts": [
+    {
+      "artifact_kind": "uploaded_dataset_file",
+      "bytes": 1310290,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-curator-diverseqa-20260629",
+      "path": "curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/training.jsonl",
+      "repo_path": "training.jsonl",
+      "rows": 3865,
+      "sha256": "sha256:533ebfab9726157aece6e4251dd5bcc4ac3f7200858a2c3b1dc50e2941d2d025",
+      "split": "training",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_dataset_file",
+      "bytes": 160963,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-curator-diverseqa-20260629",
+      "path": "curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/validation.jsonl",
+      "repo_path": "validation.jsonl",
+      "rows": 480,
+      "sha256": "sha256:e0d9de41b05fec6d0e706625e862193739f3d03a91d821912306176d1692b8bc",
+      "split": "validation",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "manifests/dataset_version_manifest.json",
+      "bytes": 812,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-curator-diverseqa-20260629",
+      "path": "curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/manifests/dataset_version_manifest.json",
+      "repo_path": "manifests/dataset_version_manifest.json",
+      "sha256": "sha256:13480a87e524237395cd4861d9ef520a3d8d56e7b74660c2164677a8131f0c25",
+      "uploaded_to_data_store": true
+    }
+  ],
+  "schema_version": "observability.v1"
+}

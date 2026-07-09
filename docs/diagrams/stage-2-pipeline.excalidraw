@@ -22,7 +22,7 @@
     {"type":"rectangle","id":"s3","x":380,"y":780,"width":260,"height":80,
      "strokeColor":"#e8590c","backgroundColor":"#ffd8a8","label":{"text":"Stage 3: NeMo Curator\ndedup · length · A⊂Q filter"}},
     {"type":"rectangle","id":"s4","x":380,"y":900,"width":260,"height":80,
-     "strokeColor":"#c92a2a","backgroundColor":"#ffc9c9","label":{"text":"Stage 4: External judge\nClaude Sonnet 4.6 spot-check"}},
+     "strokeColor":"#c92a2a","backgroundColor":"#ffc9c9","label":{"text":"Stage 4: External judge\nindependent spot-check"}},
     {"type":"rectangle","id":"out","x":380,"y":1020,"width":260,"height":80,
      "strokeColor":"#5f3dc4","backgroundColor":"#d0bfff","label":{"text":"training.jsonl + validation.jsonl\n(90 / 10 split, per collection)"}},
 

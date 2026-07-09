@@ -144,6 +144,22 @@ def main() -> int:
     ap.add_argument("--rank", required=True, type=int, choices=[16, 32])
     ap.add_argument("--shard", required=True, choices=["a", "b"])
     ap.add_argument(
+        "--dataset-entity",
+        help="Override the registered Customizer shard dataset entity.",
+    )
+    ap.add_argument(
+        "--adapter-name",
+        help="Override the generated shard adapter/output model name.",
+    )
+    ap.add_argument(
+        "--output-model-entity",
+        help="Override the full Customizer output model entity. Defaults to default/<adapter-name>.",
+    )
+    ap.add_argument(
+        "--description",
+        help="Override the Customizer job description.",
+    )
+    ap.add_argument(
         "--customizer-url",
         default="http://192.168.1.187:30910",
         help="Customizer REST endpoint (NodePort default)",
@@ -159,7 +175,7 @@ def main() -> int:
     shard = args.shard
     collection = args.collection
     coll_short = _CORPUS_SHORT[collection]
-    adapter_name = f"lora-{coll_short}-nemotron-nano-30b-r{rank}-shard-{shard}"
+    adapter_name = args.adapter_name or f"lora-{coll_short}-nemotron-nano-30b-r{rank}-shard-{shard}"
 
     spec = MoEAdapterSpec(
         adapter_name=adapter_name,
@@ -171,9 +187,11 @@ def main() -> int:
     )
 
     dataset_key = (collection, shard)
-    dataset_entity = _SHARD_DATASET_FOR[dataset_key]
-    output_model_entity = f"default/{adapter_name}"
-    description = f"Stage 3 MoE — {coll_short} × nemotron-nano-30b r{rank} shard-{shard}"
+    dataset_entity = args.dataset_entity or _SHARD_DATASET_FOR[dataset_key]
+    output_model_entity = args.output_model_entity or f"default/{adapter_name}"
+    description = args.description or (
+        f"Stage 3 MoE — {coll_short} × nemotron-nano-30b r{rank} shard-{shard}"
+    )
 
     if args.dry_run:
         cfg = build_customizer_config_moe(

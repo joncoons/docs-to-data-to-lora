@@ -1,0 +1,68 @@
+{
+  "collection": "nemo_usvcs_curated",
+  "counts": {
+    "documents_with_dropped_exact_duplicate_chunks": 11,
+    "dropped_exact_duplicate_chunks": 24,
+    "excluded_hits": {
+      "acknowledgement_page": 1
+    },
+    "html_chunks_before_acknowledgement_filter": 1289,
+    "raw_es_hits": 1289,
+    "retained_chunks": 1264,
+    "url_documents": 599
+  },
+  "created_at": "2026-06-29T21:15:19.297535Z",
+  "distributions": {
+    "chunks_per_document": {
+      "max": 79,
+      "mean": 2.11,
+      "min": 1
+    },
+    "words_per_document": {
+      "max": 27977,
+      "mean": 493.818,
+      "min": 3,
+      "over_1000": 45,
+      "over_4000": 4
+    }
+  },
+  "output": {
+    "bytes": 3118158,
+    "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nemo_usvcs_curated/url_documents.curator_ready.jsonl",
+    "rows": 599,
+    "sha256": "faf576a44d6dac0290ae0bd80216b5f3ba5849b54976babc1eeb14300a104ed4"
+  },
+  "policy": {
+    "exact_text_deduplication": {
+      "key": "SHA-256 of stripped chunk text",
+      "retention": "first in deterministic order",
+      "scope": "within URL"
+    },
+    "exclude_url_substrings": [
+      "acknowledgement",
+      "acknowledgment"
+    ],
+    "group_by": "resolved content_url/canonical_uri",
+    "include": "HTML-like text records only",
+    "order_by": [
+      "chunk_index",
+      "_id"
+    ],
+    "separator": "two newlines"
+  },
+  "schema_version": "curator_dataset.curator_ready_manifest.v1",
+  "source": {
+    "host": "https://10.43.233.46:9200",
+    "index": "nemo_usvcs_curated",
+    "index_uuid": "ZPJpw175Re6f5eecK9oQ-g",
+    "query": {
+      "match_all": {}
+    },
+    "scroll_consistency": "Elasticsearch scroll context",
+    "source_fields": [
+      "text",
+      "metadata"
+    ],
+    "type": "elasticsearch"
+  }
+}
