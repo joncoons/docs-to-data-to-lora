@@ -1,10 +1,10 @@
 {
   "batch_parse_attempts": 2,
   "batched_kvp_max_tokens": 16384,
-  "completed_before_start": 483,
+  "completed_before_start": 490,
   "endpoint": "https://inference-api.nvidia.com/v1",
   "failure_payloads": "failure_payloads/stage1a_raw_failures.jsonl",
-  "input_passages": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/passages.jsonl",
+  "input_passages": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/passages_html_retry.jsonl",
   "le_max_tokens": 16384,
   "limits": {
     "max_entailments": null,
@@ -42,5 +42,5 @@
     }
   ],
   "temperature": 0.95,
-  "updated_at": "2026-07-10T12:17:37.943344Z"
+  "updated_at": "2026-07-10T12:26:05.081431Z"
 }
