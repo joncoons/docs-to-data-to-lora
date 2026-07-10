@@ -23,18 +23,24 @@ from openai import OpenAI
 from tqdm import tqdm
 
 from scripts.pipeline.config import get_external_judge_api_key
-from scripts.pipeline.models import KVPRow, Passage
-from scripts.pipeline.provenance import entailments_from_kvp_rows
+from scripts.pipeline.models import KVPRow, LogEntailment, LogEntailmentList, Passage, QAKeyValuePair
+from scripts.pipeline.provenance import entailments_from_kvp_rows, sha256_text
 from scripts.pipeline.provenance_io import write_jsonl
-from scripts.pipeline.prompts import LE_SYSTEM, LE_USER
+from scripts.pipeline.prompts import KVP_SYSTEM, KVP_USER, LE_SYSTEM, LE_USER
 from scripts.pipeline.stage1a_batched_kvp import (
+    BATCHED_KVP_SYSTEM,
+    BATCHED_KVP_USER,
     BATCHED_PROMPT_HASH,
+    BatchedKVPResponse,
+    EntailmentPremiseItem,
     FALLBACK_PROMPT_HASH,
-    _call_batched_kvp,
     _chunks,
     _entailment_items,
-    _fallback_one_item,
+    _render_entailment_items,
+    _row_from_pair,
     _rows_from_batched_response,
+    parse_batched_kvp_response,
+    parse_kvp_response,
     parse_le_response,
 )
 
@@ -62,6 +68,13 @@ class LLMTarget:
     model: str
     api_key: str
     max_model_len: int | None = None
+
+
+@dataclass(frozen=True)
+class TargetCall:
+    index: int
+    client: OpenAI
+    target: LLMTarget
 
 
 class TimeoutLLMClient:
@@ -99,11 +112,12 @@ class TimeoutLLMClient:
             OpenAI(base_url=target.endpoint, api_key=target.api_key, timeout=request_timeout_s)
             for target in targets
         ]
+        self._thread_state = threading.local()
 
     @staticmethod
     def _estimated_prompt_tokens(system: str, user: str) -> int:
         text = system + "\n" + user
-        return max(len(text.split()), len(text) // 4)
+        return max(int(len(text.split()) * 1.4), len(text) // 3)
 
     @staticmethod
     def _target_fits(target: LLMTarget, prompt_tokens: int, max_tokens: int) -> bool:
@@ -111,16 +125,33 @@ class TimeoutLLMClient:
             return True
         return prompt_tokens + max_tokens <= target.max_model_len - 512
 
-    def _next_client(self, system: str, user: str, max_tokens: int) -> tuple[OpenAI, LLMTarget]:
+    def _next_client(
+        self,
+        system: str,
+        user: str,
+        max_tokens: int,
+        *,
+        avoid_indices: set[int] | None = None,
+    ) -> TargetCall:
+        avoid_indices = avoid_indices or set()
         prompt_tokens = self._estimated_prompt_tokens(system, user)
         start = next(self._counter)
         fallback_index = start % len(self._clients)
         for offset in range(len(self._clients)):
             index = (start + offset) % len(self._clients)
+            if index in avoid_indices:
+                continue
             target = self.targets[index]
             if self._target_fits(target, prompt_tokens, max_tokens):
-                return self._clients[index], target
-        return self._clients[fallback_index], self.targets[fallback_index]
+                return TargetCall(index, self._clients[index], target)
+        for offset in range(len(self._clients)):
+            index = (start + offset) % len(self._clients)
+            if index in avoid_indices:
+                continue
+            target = self.targets[index]
+            if target.max_model_len is None:
+                return TargetCall(index, self._clients[index], target)
+        return TargetCall(fallback_index, self._clients[fallback_index], self.targets[fallback_index])
 
     @staticmethod
     def _no_think_extra_body(endpoint: str) -> dict:
@@ -128,15 +159,35 @@ class TimeoutLLMClient:
             return {"chat_template_kwargs": {"enable_thinking": False}}
         return {"reasoning_effort": "none"}
 
+    @staticmethod
+    def _is_context_length_error(exc: Exception) -> bool:
+        text = str(exc).lower()
+        return "maximum context length" in text or "input_tokens" in text
+
+    def last_target(self) -> dict[str, str | int | None] | None:
+        return getattr(self._thread_state, "last_target", None)
+
     def call(self, system: str, user: str, max_tokens: int = 1024) -> Optional[str]:
         with self._semaphore:
+            avoid_indices: set[int] = set()
             for attempt in range(self.retry_attempts):
                 with self._last_call_lock:
                     elapsed = time.time() - self._last_call[0]
                     if elapsed < self._min_interval:
                         time.sleep(self._min_interval - elapsed)
-                    client, target = self._next_client(system, user, max_tokens)
+                    target_call = self._next_client(
+                        system,
+                        user,
+                        max_tokens,
+                        avoid_indices=avoid_indices,
+                    )
                     self._last_call[0] = time.time()
+                target = target_call.target
+                self._thread_state.last_target = {
+                    "endpoint": target.endpoint,
+                    "model": target.model,
+                    "max_model_len": target.max_model_len,
+                }
                 try:
                     kwargs = {
                         "model": target.model,
@@ -149,9 +200,17 @@ class TimeoutLLMClient:
                     }
                     if self.no_think:
                         kwargs["extra_body"] = self._no_think_extra_body(target.endpoint)
-                    response = client.chat.completions.create(**kwargs)
+                    response = target_call.client.chat.completions.create(**kwargs)
                     return strip_think_blocks(response.choices[0].message.content or "")
                 except Exception as exc:  # noqa: BLE001 - durable generation records failures per passage.
+                    if target.max_model_len is not None and self._is_context_length_error(exc):
+                        avoid_indices.add(target_call.index)
+                        log.warning(
+                            "LLM call local context limit on %s; retrying on an uncapped target if available: %s",
+                            target.endpoint,
+                            exc,
+                        )
+                        continue
                     log.warning("LLM call attempt %d/%d failed: %s", attempt + 1, self.retry_attempts, exc)
                     if attempt < self.retry_attempts - 1:
                         time.sleep(self.retry_base_delay_s * (attempt + 1))
@@ -171,9 +230,10 @@ def read_completed(path: Path) -> set[str]:
             if not line.strip():
                 continue
             row = json.loads(line)
-            # le_no_response is usually a transient endpoint/rate-limit failure,
-            # so it is intentionally retried on resume.
-            if row.get("status") in {"complete", "partial", "no_entailments", "le_parse_failed"}:
+            # partial/le_parse_failed/le_no_response/exception are retryable on
+            # resume. This intentionally favors coverage over stopping at the
+            # first model-format miss.
+            if row.get("status") in {"complete", "no_entailments"}:
                 completed.add(row["passage_id"])
     return completed
 
@@ -184,6 +244,169 @@ def read_rows(path: Path) -> list[KVPRow]:
     return [KVPRow.model_validate_json(line) for line in path.read_text(encoding="utf-8").splitlines() if line]
 
 
+def _extract_json_payload(raw: str) -> object | None:
+    text = raw.strip()
+    text = re.sub(r"^```(?:json)?\s*", "", text, flags=re.MULTILINE)
+    text = re.sub(r"\s*```$", "", text, flags=re.MULTILINE).strip()
+    for start_char, end_char in (("{", "}"), ("[", "]")):
+        start = text.find(start_char)
+        end = text.rfind(end_char)
+        if start < 0 or end <= start:
+            continue
+        try:
+            return json.loads(text[start : end + 1])
+        except json.JSONDecodeError:
+            continue
+    return None
+
+
+def parse_le_response_tolerant(raw: str) -> LogEntailmentList | None:
+    parsed = parse_le_response(raw)
+    if parsed is not None:
+        return parsed
+    payload = _extract_json_payload(raw)
+    try:
+        if isinstance(payload, list):
+            return LogEntailmentList(entailments=[LogEntailment.model_validate(item) for item in payload])
+        if isinstance(payload, dict):
+            if isinstance(payload.get("entailments"), list):
+                return LogEntailmentList.model_validate(payload)
+            if "conclusion" in payload and "premises" in payload:
+                return LogEntailmentList(entailments=[LogEntailment.model_validate(payload)])
+    except Exception:  # noqa: BLE001 - failed repair remains parse failure.
+        return None
+    return None
+
+
+def failure_payload(
+    *,
+    passage: Passage,
+    llm: TimeoutLLMClient,
+    prompt_type: str,
+    reason: str,
+    raw_response: str | None = None,
+    extra: dict | None = None,
+) -> dict:
+    payload = {
+        "schema_version": "le_uncapped_batch.stage1a_failure.v1",
+        "created_at": utc_now(),
+        "passage_id": passage.passage_id,
+        "prompt_type": prompt_type,
+        "reason": reason,
+        "target": llm.last_target(),
+    }
+    if raw_response is not None:
+        payload.update(
+            {
+                "raw_response": raw_response,
+                "raw_response_chars": len(raw_response),
+                "raw_response_sha256": sha256_text(raw_response),
+            }
+        )
+    if extra:
+        payload.update(extra)
+    return payload
+
+
+def _call_batched_kvp_durable(
+    passage: Passage,
+    items: list[EntailmentPremiseItem],
+    llm: TimeoutLLMClient,
+    *,
+    parse_attempts: int,
+    max_tokens: int,
+    failures: list[dict],
+) -> tuple[BatchedKVPResponse | None, str | None]:
+    user = BATCHED_KVP_USER.format(
+        entailment_items=_render_entailment_items(items),
+        text=passage.text,
+    )
+    for attempt in range(parse_attempts):
+        raw = llm.call(BATCHED_KVP_SYSTEM, user, max_tokens=max_tokens)
+        if not raw:
+            failures.append(
+                failure_payload(
+                    passage=passage,
+                    llm=llm,
+                    prompt_type="batched_kvp",
+                    reason="no_response",
+                    extra={"attempt": attempt + 1, "batch_size": len(items)},
+                )
+            )
+            continue
+        parsed = parse_batched_kvp_response(raw)
+        if parsed is not None and parsed.pairs:
+            return parsed, raw
+        failures.append(
+            failure_payload(
+                passage=passage,
+                llm=llm,
+                prompt_type="batched_kvp",
+                reason="parse_failed_or_empty_pairs",
+                raw_response=raw,
+                extra={"attempt": attempt + 1, "batch_size": len(items)},
+            )
+        )
+    return None, None
+
+
+def _fallback_one_item_durable(
+    passage: Passage,
+    item: EntailmentPremiseItem,
+    llm: TimeoutLLMClient,
+    *,
+    max_tokens: int,
+    failures: list[dict],
+) -> KVPRow | None:
+    raw = llm.call(
+        KVP_SYSTEM,
+        KVP_USER.format(
+            premise=item.premise,
+            conclusion=item.conclusion,
+            text=passage.text,
+        ),
+        max_tokens=max_tokens,
+    )
+    if not raw:
+        failures.append(
+            failure_payload(
+                passage=passage,
+                llm=llm,
+                prompt_type="fallback_kvp",
+                reason="no_response",
+                extra={
+                    "entailment_index": item.entailment_index,
+                    "premise_index": item.premise_index,
+                },
+            )
+        )
+        return None
+    kvp: QAKeyValuePair | None = parse_kvp_response(raw)
+    if not kvp:
+        failures.append(
+            failure_payload(
+                passage=passage,
+                llm=llm,
+                prompt_type="fallback_kvp",
+                reason="parse_failed",
+                raw_response=raw,
+                extra={
+                    "entailment_index": item.entailment_index,
+                    "premise_index": item.premise_index,
+                },
+            )
+        )
+        return None
+    return _row_from_pair(
+        passage=passage,
+        item=item,
+        question=kvp.question,
+        answer=kvp.answer,
+        llm=llm,
+        prompt_hash=FALLBACK_PROMPT_HASH,
+    )
+
+
 def process_passage(
     passage: Passage,
     llm: TimeoutLLMClient,
@@ -192,8 +415,9 @@ def process_passage(
     batch_parse_attempts: int,
     le_max_tokens: int,
     batched_kvp_max_tokens: int,
-) -> tuple[list[KVPRow], dict]:
+) -> tuple[list[KVPRow], dict, list[dict]]:
     started_at = utc_now()
+    failures: list[dict] = []
     le_raw = llm.call(LE_SYSTEM, LE_USER.format(text=passage.text), max_tokens=le_max_tokens)
     if not le_raw:
         return [], {
@@ -207,9 +431,18 @@ def process_passage(
             "batched_row_count": 0,
             "fallback_row_count": 0,
             "missing_premise_count": 0,
-        }
-    le_list = parse_le_response(le_raw)
+        }, failures
+    le_list = parse_le_response_tolerant(le_raw)
     if not le_list:
+        failures.append(
+            failure_payload(
+                passage=passage,
+                llm=llm,
+                prompt_type="le",
+                reason="parse_failed",
+                raw_response=le_raw,
+            )
+        )
         return [], {
             "passage_id": passage.passage_id,
             "status": "le_parse_failed",
@@ -222,7 +455,7 @@ def process_passage(
             "fallback_row_count": 0,
             "missing_premise_count": 0,
             "le_response_chars": len(le_raw),
-        }
+        }, failures
 
     items = _entailment_items(le_list.entailments)
     if not items:
@@ -237,17 +470,18 @@ def process_passage(
             "batched_row_count": 0,
             "fallback_row_count": 0,
             "missing_premise_count": 0,
-        }
+        }, failures
 
     rows: list[KVPRow] = []
     missing_premises = 0
     for batch in _chunks(items, max_premises_per_batch):
-        response = _call_batched_kvp(
+        response, raw_batched_response = _call_batched_kvp_durable(
             passage,
             batch,
             llm,
             parse_attempts=batch_parse_attempts,
             max_tokens=batched_kvp_max_tokens,
+            failures=failures,
         )
         produced: set[tuple[int, int]] = set()
         if response is not None:
@@ -258,15 +492,32 @@ def process_passage(
                 llm=llm,
             )
             rows.extend(batch_rows)
+            missing_from_batch = [item.key for item in batch if item.key not in produced]
+            if missing_from_batch:
+                failures.append(
+                    failure_payload(
+                        passage=passage,
+                        llm=llm,
+                        prompt_type="batched_kvp",
+                        reason="missing_pairs",
+                        raw_response=raw_batched_response,
+                        extra={
+                            "batch_size": len(batch),
+                            "missing_pairs": missing_from_batch,
+                            "produced_pairs": sorted(produced),
+                        },
+                    )
+                )
 
         for item in batch:
             if item.key in produced:
                 continue
-            fallback_row = _fallback_one_item(
+            fallback_row = _fallback_one_item_durable(
                 passage,
                 item,
                 llm,
                 max_tokens=batched_kvp_max_tokens,
+                failures=failures,
             )
             if fallback_row is not None:
                 rows.append(fallback_row)
@@ -287,7 +538,7 @@ def process_passage(
         "batched_row_count": batched_count,
         "fallback_row_count": fallback_count,
         "missing_premise_count": missing_premises,
-    }
+    }, failures
 
 
 def append_jsonl(path: Path, payloads: list[dict]) -> None:
@@ -304,6 +555,12 @@ def append_rows(path: Path, rows: list[KVPRow]) -> None:
         for row in rows:
             stream.write(row.model_dump_json() + "\n")
             stream.flush()
+
+
+def append_failures(path: Path, payloads: list[dict]) -> None:
+    if not payloads:
+        return
+    append_jsonl(path, payloads)
 
 
 def endpoint_api_key(endpoint: str, explicit_api_key: str | None = None) -> str:
@@ -380,6 +637,9 @@ def write_run_manifest(path: Path, args: argparse.Namespace, selected_count: int
         "retry_attempts": args.retry_attempts,
         "retry_base_delay_s": args.retry_base_delay_s,
         "request_timeout_s": args.request_timeout_s,
+        "retryable_statuses": ["exception", "le_no_response", "le_parse_failed", "partial"],
+        "failure_payloads": "failure_payloads/stage1a_raw_failures.jsonl",
+        "local_context_reroute": True,
         "max_premises_per_batch": args.max_premises_per_batch,
         "batch_parse_attempts": args.batch_parse_attempts,
         "le_max_tokens": args.le_max_tokens,
@@ -435,6 +695,7 @@ def main() -> int:
     results_path = args.output_dir / "stage1a_passage_results.jsonl"
     manifest_path = args.output_dir / "stage1a_batched_durable_manifest.json"
     entailments_path = args.output_dir / "provenance" / "entailments.jsonl"
+    failures_path = args.output_dir / "failure_payloads" / "stage1a_raw_failures.jsonl"
 
     passages = read_passages(args.input_passages)
     completed = read_completed(results_path)
@@ -471,9 +732,10 @@ def main() -> int:
         for future in tqdm(as_completed(futures), total=len(futures), desc="Stage 1A durable"):
             passage = futures[future]
             try:
-                rows, result = future.result()
+                rows, result, failures = future.result()
             except Exception as exc:  # noqa: BLE001 - keep batch durable.
                 rows = []
+                failures = []
                 result = {
                     "passage_id": passage.passage_id,
                     "status": "exception",
@@ -489,6 +751,7 @@ def main() -> int:
             with write_lock:
                 if rows:
                     append_rows(rows_path, rows)
+                append_failures(failures_path, failures)
                 append_jsonl(results_path, [result])
                 log.info(
                     "passage=%s status=%s rows=%s entailments=%s premises=%s missing=%s",
