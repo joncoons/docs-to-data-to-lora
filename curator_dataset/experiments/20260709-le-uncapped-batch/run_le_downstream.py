@@ -1,0 +1,610 @@
+#!/usr/bin/env python3
+"""Run downstream LE dataset stages from existing Stage 1A artifacts.
+
+This runner is scoped to the 2026-07-09 uncapped LE rerun. It preserves the
+existing Stage 0/1A files, reconstructs Stage 1B seed vectors in memory, and
+uses target-aware load balancing so local and NVIDIA-hosted Super aliases can
+be used together.
+"""
+from __future__ import annotations
+
+import argparse
+import itertools
+import json
+import logging
+import re
+import sys
+import threading
+import time
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Optional
+
+from openai import OpenAI
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+from scripts.pipeline.config import Config, get_es_password, get_external_judge_api_key  # noqa: E402
+from scripts.pipeline.dataset_admission import admitted_dataset_samples_from_kvp_rows  # noqa: E402
+from scripts.pipeline.es_client import make_es_client, scroll_all_chunks  # noqa: E402
+from scripts.pipeline.finalize_dataset import finalize_dataset  # noqa: E402
+from scripts.pipeline.models import KVPRow, Passage  # noqa: E402
+from scripts.pipeline.provenance_io import write_jsonl  # noqa: E402
+from scripts.pipeline.stage1_5_gapfill import run_stage1_5  # noqa: E402
+from scripts.pipeline.stage1b_synthesis import run_stage1b  # noqa: E402
+from scripts.pipeline.stage1c_instruction import run_stage1c  # noqa: E402
+from scripts.pipeline.stage2_qa_eval import run_stage2  # noqa: E402
+from scripts.pipeline.stage3_curator import run_stage3  # noqa: E402
+
+
+log = logging.getLogger("le_downstream")
+
+STAGE_ORDER = ("1b", "1c", "1.5", "2", "3", "finalize")
+DEFAULT_TARGETS = (
+    "http://10.43.114.25:8000/v1=nvidia/nemotron-3-super-120b-a12b@32768",
+    "https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-super-v3",
+)
+COLLECTION_DOMAIN = {
+    "nim_curated": "NVIDIA NIM",
+    "nemo_usvcs_curated": "NVIDIA NeMo Microservices",
+}
+
+_THINK_BLOCK_RE = re.compile(r"<think>.*?</think>", re.DOTALL)
+_THINK_PRELUDE_RE = re.compile(r"^.*?</think>", re.DOTALL)
+
+
+@dataclass(frozen=True)
+class LLMTarget:
+    endpoint: str
+    model: str
+    api_key: str
+    max_model_len: int | None = None
+
+
+@dataclass(frozen=True)
+class TargetCall:
+    index: int
+    client: OpenAI
+    target: LLMTarget
+
+
+def strip_think_blocks(content: str) -> str:
+    if not content:
+        return content
+    content = _THINK_BLOCK_RE.sub("", content)
+    content = _THINK_PRELUDE_RE.sub("", content)
+    return content.strip()
+
+
+class TargetAwareLLMClient:
+    """Duck-compatible replacement for LLMClient with per-target model IDs."""
+
+    def __init__(
+        self,
+        *,
+        targets: list[LLMTarget],
+        canonical_model: str,
+        max_workers: int,
+        min_interval_s: float,
+        retry_attempts: int,
+        retry_base_delay_s: float,
+        no_think: bool,
+        temperature: float,
+        request_timeout_s: float,
+    ) -> None:
+        if not targets:
+            raise ValueError("at least one LLM target is required")
+        self.targets = targets
+        self.endpoints = [target.endpoint for target in targets]
+        self.model = canonical_model
+        self.no_think = no_think
+        self.temperature = temperature
+        self.retry_attempts = retry_attempts
+        self.retry_base_delay_s = retry_base_delay_s
+        self._semaphore = threading.Semaphore(max_workers)
+        self._last_call = [0.0]
+        self._last_call_lock = threading.Lock()
+        self._min_interval = min_interval_s
+        self._counter = itertools.count()
+        self._clients = [
+            OpenAI(base_url=target.endpoint, api_key=target.api_key, timeout=request_timeout_s)
+            for target in targets
+        ]
+
+    @staticmethod
+    def _estimated_prompt_tokens(system: str, user: str) -> int:
+        text = system + "\n" + user
+        return max(int(len(text.split()) * 1.4), len(text) // 3)
+
+    @staticmethod
+    def _target_fits(target: LLMTarget, prompt_tokens: int, max_tokens: int) -> bool:
+        if target.max_model_len is None:
+            return True
+        return prompt_tokens + max_tokens <= target.max_model_len - 512
+
+    @staticmethod
+    def _no_think_extra_body(endpoint: str) -> dict[str, Any]:
+        if "inference-api.nvidia.com" in endpoint or "integrate.api.nvidia.com" in endpoint:
+            return {"chat_template_kwargs": {"enable_thinking": False}}
+        return {"reasoning_effort": "none"}
+
+    @staticmethod
+    def _is_context_length_error(exc: Exception) -> bool:
+        text = str(exc).lower()
+        return "maximum context length" in text or "input_tokens" in text
+
+    def _next_client(
+        self,
+        system: str,
+        user: str,
+        max_tokens: int,
+        *,
+        avoid_indices: set[int] | None = None,
+    ) -> TargetCall:
+        avoid_indices = avoid_indices or set()
+        prompt_tokens = self._estimated_prompt_tokens(system, user)
+        start = next(self._counter)
+        fallback_index = start % len(self._clients)
+        for offset in range(len(self._clients)):
+            index = (start + offset) % len(self._clients)
+            if index in avoid_indices:
+                continue
+            target = self.targets[index]
+            if self._target_fits(target, prompt_tokens, max_tokens):
+                return TargetCall(index, self._clients[index], target)
+        for offset in range(len(self._clients)):
+            index = (start + offset) % len(self._clients)
+            if index in avoid_indices:
+                continue
+            target = self.targets[index]
+            if target.max_model_len is None:
+                return TargetCall(index, self._clients[index], target)
+        return TargetCall(fallback_index, self._clients[fallback_index], self.targets[fallback_index])
+
+    def call(self, system: str, user: str, max_tokens: int = 1024) -> Optional[str]:
+        with self._semaphore:
+            avoid_indices: set[int] = set()
+            for attempt in range(self.retry_attempts):
+                with self._last_call_lock:
+                    elapsed = time.time() - self._last_call[0]
+                    if elapsed < self._min_interval:
+                        time.sleep(self._min_interval - elapsed)
+                    target_call = self._next_client(
+                        system,
+                        user,
+                        max_tokens,
+                        avoid_indices=avoid_indices,
+                    )
+                    self._last_call[0] = time.time()
+                target = target_call.target
+                try:
+                    kwargs: dict[str, Any] = {
+                        "model": target.model,
+                        "messages": [
+                            {"role": "system", "content": system},
+                            {"role": "user", "content": user},
+                        ],
+                        "temperature": self.temperature,
+                        "max_tokens": max_tokens,
+                    }
+                    if self.no_think:
+                        kwargs["extra_body"] = self._no_think_extra_body(target.endpoint)
+                    response = target_call.client.chat.completions.create(**kwargs)
+                    return strip_think_blocks(response.choices[0].message.content or "")
+                except Exception as exc:  # noqa: BLE001 - per-call retries are recorded in logs.
+                    if target.max_model_len is not None and self._is_context_length_error(exc):
+                        avoid_indices.add(target_call.index)
+                        log.warning(
+                            "Context limit on %s; retrying on another target if available: %s",
+                            target.endpoint,
+                            exc,
+                        )
+                        continue
+                    log.warning("LLM call attempt %d/%d failed: %s", attempt + 1, self.retry_attempts, exc)
+                    if attempt < self.retry_attempts - 1:
+                        time.sleep(self.retry_base_delay_s * (attempt + 1))
+            return None
+
+
+def endpoint_api_key(endpoint: str, explicit_api_key: str | None = None) -> str:
+    if explicit_api_key is not None:
+        return explicit_api_key
+    if "inference-api.nvidia.com" in endpoint or "integrate.api.nvidia.com" in endpoint:
+        return get_external_judge_api_key()
+    return "local"
+
+
+def parse_targets(raw_targets: list[str], explicit_api_key: str | None = None) -> list[LLMTarget]:
+    targets: list[LLMTarget] = []
+    for raw in raw_targets:
+        if "=" not in raw:
+            raise ValueError("--target must be ENDPOINT=MODEL or ENDPOINT=MODEL@MAX_CONTEXT_TOKENS")
+        endpoint, model = raw.split("=", 1)
+        endpoint = endpoint.strip()
+        model = model.strip()
+        max_model_len: int | None = None
+        if "@" in model:
+            model, raw_max_model_len = model.rsplit("@", 1)
+            max_model_len = int(raw_max_model_len)
+        elif "inference-api.nvidia.com" not in endpoint and "integrate.api.nvidia.com" not in endpoint:
+            max_model_len = 32768
+        if not endpoint or not model:
+            raise ValueError("--target must include non-empty endpoint and model")
+        targets.append(
+            LLMTarget(
+                endpoint=endpoint,
+                model=model,
+                api_key=endpoint_api_key(endpoint, explicit_api_key),
+                max_model_len=max_model_len,
+            )
+        )
+    return targets
+
+
+def read_passages(path: Path) -> list[Passage]:
+    return [Passage.model_validate_json(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def read_rows(path: Path) -> list[KVPRow]:
+    if not path.exists():
+        return []
+    return [KVPRow.model_validate_json(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def count_jsonl(path: Path) -> int:
+    if not path.exists():
+        return 0
+    with path.open() as stream:
+        return sum(1 for line in stream if line.strip())
+
+
+def load_progress(path: Path) -> set[str]:
+    if not path.exists():
+        return set()
+    payload = json.loads(path.read_text())
+    return set(payload.get("completed_stages", []))
+
+
+def write_progress(path: Path, completed: set[str]) -> None:
+    path.write_text(json.dumps({"completed_stages": sorted(completed)}, indent=2) + "\n")
+
+
+def stage_selected(requested: str, stage: str) -> bool:
+    return requested == "all" or requested == stage
+
+
+def latest_stage1a_status(output_dir: Path) -> dict[str, int]:
+    path = output_dir / "stage1a_passage_results.jsonl"
+    if not path.exists():
+        return {}
+    latest: dict[str, dict[str, Any]] = {}
+    with path.open() as stream:
+        for line in stream:
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            latest[row["passage_id"]] = row
+    counts: dict[str, int] = {}
+    for row in latest.values():
+        status = str(row.get("status") or "unknown")
+        counts[status] = counts.get(status, 0) + 1
+    return counts
+
+
+def validate_stage1a_complete(output_dir: Path, *, allow_incomplete: bool) -> None:
+    counts = latest_stage1a_status(output_dir)
+    if not counts:
+        log.warning("No stage1a_passage_results.jsonl found; Stage 1A completion cannot be verified")
+        return
+    incomplete = sum(
+        count
+        for status, count in counts.items()
+        if status not in {"complete", "no_entailments"}
+    )
+    log.info("Stage 1A latest status: %s", counts)
+    if incomplete and not allow_incomplete:
+        raise SystemExit(
+            f"Stage 1A is not complete ({incomplete} retryable passages remain); "
+            "rerun recovery or pass --allow-incomplete-stage1a explicitly."
+        )
+
+
+def load_seed_vectors(es: Any, index: str, passages: list[Passage]) -> dict[str, list[float]]:
+    wanted_chunk_ids = {chunk_id for passage in passages for chunk_id in passage.chunk_ids}
+    vectors_by_chunk_id: dict[str, list[float]] = {}
+    for hit in scroll_all_chunks(es, index):
+        hit_id = hit.get("_id")
+        if hit_id not in wanted_chunk_ids:
+            continue
+        vector = hit.get("_source", {}).get("vector")
+        if vector:
+            vectors_by_chunk_id[hit_id] = vector
+            if len(vectors_by_chunk_id) == len(wanted_chunk_ids):
+                break
+
+    seed_vectors: dict[str, list[float]] = {}
+    for passage in passages:
+        for chunk_id in passage.chunk_ids:
+            vector = vectors_by_chunk_id.get(chunk_id)
+            if vector:
+                seed_vectors[passage.passage_id] = vector
+                break
+    log.info(
+        "Stage 1B seed vectors: %d/%d passages, %d/%d chunk IDs",
+        len(seed_vectors),
+        len(passages),
+        len(vectors_by_chunk_id),
+        len(wanted_chunk_ids),
+    )
+    return seed_vectors
+
+
+def write_summary(
+    output_dir: Path,
+    *,
+    collection: str,
+    targets: list[LLMTarget],
+    temperature: float,
+    completed: set[str],
+    manifest: dict[str, Any] | None,
+) -> None:
+    counts = {
+        "passages": count_jsonl(output_dir / "passages.jsonl"),
+        "stage1a_rows": count_jsonl(output_dir / "stage1a_le.jsonl"),
+        "stage1b_rows": count_jsonl(output_dir / "stage1b_synthesis.jsonl"),
+        "stage1c_rows": count_jsonl(output_dir / "stage1c_instruction.jsonl"),
+        "stage1_5_rows": count_jsonl(output_dir / "stage1_5_gapfill.jsonl"),
+        "stage2_rows": count_jsonl(output_dir / "stage2_eval.jsonl"),
+        "stage2_dropped_rows": count_jsonl(output_dir / "stage2_dropped.jsonl"),
+        "training_rows": count_jsonl(output_dir / "training.jsonl"),
+        "validation_rows": count_jsonl(output_dir / "validation.jsonl"),
+    }
+    payload = {
+        "collection": collection,
+        "output_dir": str(output_dir),
+        "completed_stages": sorted(completed),
+        "targets": [
+            {k: v for k, v in asdict(target).items() if k != "api_key"}
+            for target in targets
+        ],
+        "canonical_model": "nvidia/nvidia/nemotron-3-super-v3",
+        "temperature": temperature,
+        "counts": counts,
+        "dataset_version_id": manifest.get("dataset_version_id") if manifest else None,
+    }
+    (output_dir / "le_downstream_summary.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    )
+    lines = [
+        "# LE Downstream Dataset Summary",
+        "",
+        f"- Collection: `{collection}`",
+        f"- Output dir: `{output_dir}`",
+        f"- Completed stages: `{', '.join(sorted(completed))}`",
+        f"- Dataset version: `{payload['dataset_version_id'] or 'not finalized'}`",
+        f"- LLM temperature: `{temperature}`",
+        "",
+        "## Targets",
+    ]
+    for target in payload["targets"]:
+        max_len = target["max_model_len"] or "uncapped"
+        lines.append(f"- `{target['endpoint']}` -> `{target['model']}` (`{max_len}`)")
+    lines.extend(["", "## Counts"])
+    for key, value in counts.items():
+        lines.append(f"- {key}: {value}")
+    (output_dir / "le_downstream_summary.md").write_text("\n".join(lines) + "\n")
+
+
+def parse_args() -> argparse.Namespace:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--collection", required=True, choices=sorted(COLLECTION_DOMAIN))
+    ap.add_argument("--output-dir", required=True, type=Path)
+    ap.add_argument("--stage", default="all", choices=(*STAGE_ORDER, "all"))
+    ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--allow-incomplete-stage1a", action="store_true")
+    ap.add_argument("--es-host", default=None)
+    ap.add_argument("--target", action="append", default=None)
+    ap.add_argument("--api-key", default=None)
+    ap.add_argument("--temperature", type=float, default=0.2)
+    ap.add_argument("--max-workers", type=int, default=None)
+    ap.add_argument("--min-request-interval-s", type=float, default=None)
+    ap.add_argument("--retry-attempts", type=int, default=None)
+    ap.add_argument("--retry-base-delay-s", type=float, default=None)
+    ap.add_argument("--request-timeout-s", type=float, default=600.0)
+    return ap.parse_args()
+
+
+def main() -> int:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s - %(message)s",
+    )
+    args = parse_args()
+    cfg = Config()
+    if args.es_host:
+        cfg.es_host = args.es_host
+    if args.max_workers is not None:
+        cfg.max_workers = args.max_workers
+    if args.min_request_interval_s is not None:
+        cfg.min_request_interval_s = args.min_request_interval_s
+    if args.retry_attempts is not None:
+        cfg.retry_attempts = args.retry_attempts
+    if args.retry_base_delay_s is not None:
+        cfg.retry_base_delay_s = args.retry_base_delay_s
+
+    output_dir = args.output_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
+    progress_path = output_dir / "le_downstream_progress.json"
+    completed = load_progress(progress_path)
+
+    validate_stage1a_complete(output_dir, allow_incomplete=args.allow_incomplete_stage1a)
+    passages = read_passages(output_dir / "passages.jsonl")
+    stage1a_rows = read_rows(output_dir / "stage1a_le.jsonl")
+    if not passages:
+        raise SystemExit(f"No passages found at {output_dir / 'passages.jsonl'}")
+    if not stage1a_rows:
+        raise SystemExit(f"No Stage 1A rows found at {output_dir / 'stage1a_le.jsonl'}")
+
+    domain = COLLECTION_DOMAIN[args.collection]
+    system_prompt = (
+        f"You are a precise {domain} technical assistant. "
+        "Answer based on official documentation."
+    )
+    targets = parse_targets(args.target or list(DEFAULT_TARGETS), explicit_api_key=args.api_key)
+    llm = TargetAwareLLMClient(
+        targets=targets,
+        canonical_model="nvidia/nvidia/nemotron-3-super-v3",
+        max_workers=cfg.max_workers,
+        min_interval_s=cfg.min_request_interval_s,
+        retry_attempts=cfg.retry_attempts,
+        retry_base_delay_s=cfg.retry_base_delay_s,
+        no_think=True,
+        temperature=args.temperature,
+        request_timeout_s=args.request_timeout_s,
+    )
+    es = make_es_client(cfg.es_host, get_es_password())
+
+    log.info(
+        "LE downstream start: collection=%s output=%s stage=%s resume=%s targets=%s",
+        args.collection,
+        output_dir,
+        args.stage,
+        args.resume,
+        [(target.endpoint, target.model, target.max_model_len) for target in targets],
+    )
+
+    manifest: dict[str, Any] | None = None
+
+    if stage_selected(args.stage, "1b"):
+        if args.resume and "1b" in completed and (output_dir / "stage1b_synthesis.jsonl").exists():
+            log.info("Stage 1B: skipping (already done)")
+        else:
+            seed_vectors = load_seed_vectors(es, args.collection, passages)
+            run_stage1b(
+                passages,
+                seed_vectors,
+                es,
+                args.collection,
+                domain,
+                llm,
+                output_dir,
+                max_workers=cfg.max_workers,
+                knn_k=cfg.knn_k,
+                num_candidates=cfg.knn_num_candidates,
+                top_neighbors=cfg.knn_top_neighbors,
+                max_context_tokens=cfg.knn_max_context_tokens,
+            )
+            completed.add("1b")
+            write_progress(progress_path, completed)
+    stage1b_rows = read_rows(output_dir / "stage1b_synthesis.jsonl")
+
+    if stage_selected(args.stage, "1c"):
+        if args.resume and "1c" in completed and (output_dir / "stage1c_instruction.jsonl").exists():
+            log.info("Stage 1C: skipping (already done)")
+        else:
+            run_stage1c(
+                passages,
+                domain,
+                llm,
+                output_dir,
+                top_percent=cfg.stage1c_top_percent,
+                min_passages=cfg.stage1c_min_passages,
+                max_workers=cfg.max_workers,
+            )
+            completed.add("1c")
+            write_progress(progress_path, completed)
+    stage1c_rows = read_rows(output_dir / "stage1c_instruction.jsonl")
+
+    if stage_selected(args.stage, "1.5"):
+        if args.resume and "1.5" in completed and (output_dir / "stage1_5_gapfill.jsonl").exists():
+            log.info("Stage 1.5: skipping (already done)")
+        else:
+            run_stage1_5(
+                passages,
+                stage1a_rows + stage1b_rows + stage1c_rows,
+                es,
+                args.collection,
+                llm,
+                output_dir,
+                threshold_factor=cfg.bias_threshold_factor,
+                target_factor=cfg.bias_gapfill_target_factor,
+                top_n_chunks=cfg.gapfill_top_n_chunks,
+                pairs_per_call=cfg.gapfill_pairs_per_call,
+                max_attempt_factor=cfg.gapfill_max_attempt_factor,
+                legacy_direct=False,
+            )
+            completed.add("1.5")
+            write_progress(progress_path, completed)
+    stage1_5_rows = read_rows(output_dir / "stage1_5_gapfill.jsonl")
+
+    all_pre_eval = stage1a_rows + stage1b_rows + stage1c_rows + stage1_5_rows
+    if stage_selected(args.stage, "2"):
+        if args.resume and "2" in completed and (output_dir / "stage2_eval.jsonl").exists():
+            log.info("Stage 2: skipping (already done)")
+        else:
+            run_stage2(all_pre_eval, llm, output_dir, max_workers=cfg.max_workers)
+            completed.add("2")
+            write_progress(progress_path, completed)
+    stage2_rows = read_rows(output_dir / "stage2_eval.jsonl")
+
+    if stage_selected(args.stage, "3"):
+        if args.resume and "3" in completed and (output_dir / "training.jsonl").exists():
+            log.info("Stage 3: skipping (already done)")
+        else:
+            if not stage2_rows:
+                raise SystemExit("Stage 3 requires stage2_eval.jsonl rows")
+            run_stage3(
+                stage2_rows,
+                output_dir,
+                system_prompt,
+                train_ratio=cfg.train_val_split,
+                minhash_threshold=cfg.minhash_threshold,
+                min_q_tokens=cfg.min_question_tokens,
+                min_a_tokens=cfg.min_answer_tokens,
+            )
+            completed.add("3")
+            write_progress(progress_path, completed)
+
+    if stage_selected(args.stage, "finalize"):
+        if (
+            args.resume
+            and "finalize" in completed
+            and (output_dir / "manifests" / "dataset_version_manifest.json").exists()
+        ):
+            log.info("Finalize: skipping (already done)")
+            manifest = json.loads((output_dir / "manifests" / "dataset_version_manifest.json").read_text())
+        else:
+            sample_rows = stage2_rows or all_pre_eval
+            write_jsonl(
+                output_dir / "provenance" / "dataset_samples.jsonl",
+                admitted_dataset_samples_from_kvp_rows(
+                    sample_rows,
+                    dataset_dir=output_dir,
+                    system_prompt=system_prompt,
+                ),
+            )
+            manifest = finalize_dataset(
+                output_dir,
+                dataset_name=args.collection,
+                system_prompt=system_prompt,
+                observability_dir=None,
+            )
+            completed.add("finalize")
+            write_progress(progress_path, completed)
+
+    write_summary(
+        output_dir,
+        collection=args.collection,
+        targets=targets,
+        temperature=args.temperature,
+        completed=completed,
+        manifest=manifest,
+    )
+    log.info("LE downstream done: %s", output_dir)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
