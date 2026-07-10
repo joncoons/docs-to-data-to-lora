@@ -13,6 +13,7 @@ __pycache__/
 *.so
 
 # Generated or large local experiment material that should be reviewed before remote publication
+.local-archive/
 curator_dataset/cache/
 curator_dataset/data/
 evals/
