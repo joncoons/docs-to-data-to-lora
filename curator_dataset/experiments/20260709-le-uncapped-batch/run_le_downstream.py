@@ -398,8 +398,10 @@ def write_source_filter_artifacts(
     selected_passages: list[Passage],
     raw_stage1a_rows: list[KVPRow],
     selected_stage1a_rows: list[KVPRow],
+    excluded_passage_reasons: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     selected_ids = {passage.passage_id for passage in selected_passages}
+    excluded_passage_reasons = excluded_passage_reasons or {}
     excluded_passages = [
         passage for passage in all_passages if passage.passage_id not in selected_ids
     ]
@@ -429,6 +431,10 @@ def write_source_filter_artifacts(
                         "url": passage.url,
                         "doc_kind": passage.doc_kind,
                         "chunk_ids": passage.chunk_ids,
+                        "reason": excluded_passage_reasons.get(
+                            passage.passage_id,
+                            "doc_kind_filter" if source_doc_kind != "all" else "not_selected",
+                        ),
                     },
                     sort_keys=True,
                 )
@@ -485,14 +491,14 @@ def stage_selected(requested: str, stage: str) -> bool:
     return requested == "all" or requested == stage
 
 
-def latest_stage1a_status(
+def latest_stage1a_records(
     output_dir: Path,
     *,
     passage_ids: set[str] | None = None,
-) -> tuple[dict[str, int], int]:
+) -> tuple[dict[str, dict[str, Any]], set[str]]:
     path = output_dir / "stage1a_passage_results.jsonl"
     if not path.exists():
-        return {}, 0
+        return {}, set(passage_ids or [])
     latest: dict[str, dict[str, Any]] = {}
     with path.open() as stream:
         for line in stream:
@@ -500,15 +506,40 @@ def latest_stage1a_status(
                 continue
             row = json.loads(line)
             latest[row["passage_id"]] = row
-    missing = 0
-    if passage_ids is not None:
-        missing = len(passage_ids - set(latest))
-        latest = {pid: row for pid, row in latest.items() if pid in passage_ids}
+    if passage_ids is None:
+        return latest, set()
+    missing = passage_ids - set(latest)
+    latest = {pid: row for pid, row in latest.items() if pid in passage_ids}
+    return latest, missing
+
+
+def latest_stage1a_status(
+    output_dir: Path,
+    *,
+    passage_ids: set[str] | None = None,
+) -> tuple[dict[str, int], int]:
+    latest, missing_ids = latest_stage1a_records(output_dir, passage_ids=passage_ids)
     counts: dict[str, int] = {}
     for row in latest.values():
         status = str(row.get("status") or "unknown")
         counts[status] = counts.get(status, 0) + 1
-    return counts, missing
+    return counts, len(missing_ids)
+
+
+def complete_stage1a_passage_filter(
+    output_dir: Path,
+    passage_ids: set[str],
+) -> tuple[set[str], dict[str, str]]:
+    latest, missing_ids = latest_stage1a_records(output_dir, passage_ids=passage_ids)
+    complete_ids: set[str] = set()
+    exclusions: dict[str, str] = {pid: "missing" for pid in missing_ids}
+    for pid, row in latest.items():
+        status = str(row.get("status") or "unknown")
+        if status in {"complete", "no_entailments"}:
+            complete_ids.add(pid)
+        else:
+            exclusions[pid] = status
+    return complete_ids, exclusions
 
 
 def validate_stage1a_complete(
@@ -685,6 +716,23 @@ def main() -> int:
     if not passages:
         raise SystemExit(f"No passages matched --source-doc-kind={args.source_doc_kind}")
     selected_passage_ids = {passage.passage_id for passage in passages}
+    excluded_passage_reasons: dict[str, str] = {}
+    if args.allow_incomplete_stage1a:
+        complete_ids, incomplete_reasons = complete_stage1a_passage_filter(
+            output_dir,
+            selected_passage_ids,
+        )
+        if incomplete_reasons:
+            excluded_passage_reasons.update(
+                {pid: f"stage1a_{reason}" for pid, reason in incomplete_reasons.items()}
+            )
+            passages = [passage for passage in passages if passage.passage_id in complete_ids]
+            selected_passage_ids = {passage.passage_id for passage in passages}
+            log.warning(
+                "Excluding %d selected passages with incomplete Stage 1A status: %s",
+                len(incomplete_reasons),
+                dict(sorted(incomplete_reasons.items())),
+            )
     validate_stage1a_complete(
         output_dir,
         allow_incomplete=args.allow_incomplete_stage1a,
@@ -705,6 +753,7 @@ def main() -> int:
         selected_passages=passages,
         raw_stage1a_rows=stage1a_rows_raw,
         selected_stage1a_rows=stage1a_rows,
+        excluded_passage_reasons=excluded_passage_reasons,
     )
     log.info(
         "Source filter: doc_kind=%s passages=%d/%d stage1a_rows=%d/%d",
