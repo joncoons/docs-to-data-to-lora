@@ -1,0 +1,7 @@
+2026-07-10 05:58:43,151 INFO __main__ - Stage 1A durable: 1 passages selected, 485 already completed
+Stage 1A durable:   0%|          | 0/1 [00:00<?, ?it/s]2026-07-10 05:59:05,911 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 05:59:14,002 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 05:59:29,859 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 05:59:29,860 INFO __main__ - passage=https://docs.nvidia.com/nemo/microservices/latest/evaluate/tutorials/index.html#p0 status=complete rows=6 entailments=4 premises=6 missing=0
+Stage 1A durable: 100%|██████████| 1/1 [00:46<00:00, 46.61s/it]Stage 1A durable: 100%|██████████| 1/1 [00:46<00:00, 46.61s/it]
+2026-07-10 05:59:30,537 INFO __main__ - Stage 1A durable complete: 9611 rows -> curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/stage1a_le.jsonl
