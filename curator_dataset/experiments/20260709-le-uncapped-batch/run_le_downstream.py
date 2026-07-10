@@ -42,10 +42,14 @@ from scripts.pipeline.stage3_curator import run_stage3  # noqa: E402
 log = logging.getLogger("le_downstream")
 
 STAGE_ORDER = ("1b", "1c", "1.5", "2", "3", "finalize")
+# This runner starts after Stage 1A. These defaults apply only to downstream
+# augmentation/audit calls; raw LE extraction/KVP generation stays with the
+# existing Stage 1A Super output in stage1a_le.jsonl.
 DEFAULT_TARGETS = (
-    "http://10.43.114.25:8000/v1=nvidia/nemotron-3-super-120b-a12b@32768",
-    "https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-super-v3",
+    "https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-ultra",
 )
+DEFAULT_CANONICAL_MODEL = "nvidia/nvidia/nemotron-3-ultra"
+DEFAULT_SOURCE_DOC_KIND = "html"
 COLLECTION_DOMAIN = {
     "nim_curated": "NVIDIA NIM",
     "nemo_usvcs_curated": "NVIDIA NeMo Microservices",
@@ -253,6 +257,87 @@ def read_rows(path: Path) -> list[KVPRow]:
     return [KVPRow.model_validate_json(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def select_passages(passages: list[Passage], source_doc_kind: str) -> list[Passage]:
+    if source_doc_kind == "all":
+        return passages
+    return [passage for passage in passages if passage.doc_kind == source_doc_kind]
+
+
+def filter_rows_by_passage(rows: list[KVPRow], passage_ids: set[str]) -> list[KVPRow]:
+    return [row for row in rows if row.passage_id in passage_ids]
+
+
+def _doc_kind_counts(passages: list[Passage]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for passage in passages:
+        counts[passage.doc_kind] = counts.get(passage.doc_kind, 0) + 1
+    return counts
+
+
+def write_source_filter_artifacts(
+    output_dir: Path,
+    *,
+    source_doc_kind: str,
+    all_passages: list[Passage],
+    selected_passages: list[Passage],
+    raw_stage1a_rows: list[KVPRow],
+    selected_stage1a_rows: list[KVPRow],
+) -> dict[str, Any]:
+    selected_ids = {passage.passage_id for passage in selected_passages}
+    excluded_passages = [
+        passage for passage in all_passages if passage.passage_id not in selected_ids
+    ]
+    output_dir.mkdir(parents=True, exist_ok=True)
+    provenance_dir = output_dir / "provenance"
+    provenance_dir.mkdir(parents=True, exist_ok=True)
+
+    html_stage1a_path = output_dir / "stage1a_le_html.jsonl"
+    with html_stage1a_path.open("w", encoding="utf-8") as stream:
+        for row in selected_stage1a_rows:
+            stream.write(row.model_dump_json() + "\n")
+
+    excluded_path = provenance_dir / "source_filter_excluded_passages.jsonl"
+    with excluded_path.open("w", encoding="utf-8") as stream:
+        for passage in excluded_passages:
+            stream.write(
+                json.dumps(
+                    {
+                        "passage_id": passage.passage_id,
+                        "url": passage.url,
+                        "doc_kind": passage.doc_kind,
+                        "chunk_ids": passage.chunk_ids,
+                    },
+                    sort_keys=True,
+                )
+                + "\n"
+            )
+
+    payload = {
+        "schema_version": "le_downstream.source_filter.v1",
+        "source_doc_kind_filter": source_doc_kind,
+        "passage_counts": {
+            "input": len(all_passages),
+            "selected": len(selected_passages),
+            "excluded": len(excluded_passages),
+            "by_doc_kind": _doc_kind_counts(all_passages),
+        },
+        "stage1a_row_counts": {
+            "input": len(raw_stage1a_rows),
+            "selected": len(selected_stage1a_rows),
+            "excluded": len(raw_stage1a_rows) - len(selected_stage1a_rows),
+        },
+        "outputs": {
+            "html_stage1a_rows": "stage1a_le_html.jsonl",
+            "excluded_passages": "provenance/source_filter_excluded_passages.jsonl",
+        },
+    }
+    (provenance_dir / "source_filter.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return payload
+
+
 def count_jsonl(path: Path) -> int:
     if not path.exists():
         return 0
@@ -275,10 +360,14 @@ def stage_selected(requested: str, stage: str) -> bool:
     return requested == "all" or requested == stage
 
 
-def latest_stage1a_status(output_dir: Path) -> dict[str, int]:
+def latest_stage1a_status(
+    output_dir: Path,
+    *,
+    passage_ids: set[str] | None = None,
+) -> tuple[dict[str, int], int]:
     path = output_dir / "stage1a_passage_results.jsonl"
     if not path.exists():
-        return {}
+        return {}, 0
     latest: dict[str, dict[str, Any]] = {}
     with path.open() as stream:
         for line in stream:
@@ -286,27 +375,36 @@ def latest_stage1a_status(output_dir: Path) -> dict[str, int]:
                 continue
             row = json.loads(line)
             latest[row["passage_id"]] = row
+    missing = 0
+    if passage_ids is not None:
+        missing = len(passage_ids - set(latest))
+        latest = {pid: row for pid, row in latest.items() if pid in passage_ids}
     counts: dict[str, int] = {}
     for row in latest.values():
         status = str(row.get("status") or "unknown")
         counts[status] = counts.get(status, 0) + 1
-    return counts
+    return counts, missing
 
 
-def validate_stage1a_complete(output_dir: Path, *, allow_incomplete: bool) -> None:
-    counts = latest_stage1a_status(output_dir)
-    if not counts:
+def validate_stage1a_complete(
+    output_dir: Path,
+    *,
+    allow_incomplete: bool,
+    passage_ids: set[str] | None = None,
+) -> None:
+    counts, missing = latest_stage1a_status(output_dir, passage_ids=passage_ids)
+    if not counts and not missing:
         log.warning("No stage1a_passage_results.jsonl found; Stage 1A completion cannot be verified")
         return
-    incomplete = sum(
+    incomplete = missing + sum(
         count
         for status, count in counts.items()
         if status not in {"complete", "no_entailments"}
     )
-    log.info("Stage 1A latest status: %s", counts)
+    log.info("Stage 1A latest status for selected passages: %s missing=%d", counts, missing)
     if incomplete and not allow_incomplete:
         raise SystemExit(
-            f"Stage 1A is not complete ({incomplete} retryable passages remain); "
+            f"Selected Stage 1A passages are not complete ({incomplete} retryable/missing passages remain); "
             "rerun recovery or pass --allow-incomplete-stage1a explicitly."
         )
 
@@ -346,7 +444,9 @@ def write_summary(
     *,
     collection: str,
     targets: list[LLMTarget],
+    canonical_model: str,
     temperature: float,
+    source_filter: dict[str, Any],
     completed: set[str],
     manifest: dict[str, Any] | None,
 ) -> None:
@@ -369,8 +469,9 @@ def write_summary(
             {k: v for k, v in asdict(target).items() if k != "api_key"}
             for target in targets
         ],
-        "canonical_model": "nvidia/nvidia/nemotron-3-super-v3",
+        "canonical_model": canonical_model,
         "temperature": temperature,
+        "source_filter": source_filter,
         "counts": counts,
         "dataset_version_id": manifest.get("dataset_version_id") if manifest else None,
     }
@@ -385,12 +486,18 @@ def write_summary(
         f"- Completed stages: `{', '.join(sorted(completed))}`",
         f"- Dataset version: `{payload['dataset_version_id'] or 'not finalized'}`",
         f"- LLM temperature: `{temperature}`",
+        f"- Source filter: `{source_filter.get('source_doc_kind_filter')}`",
         "",
         "## Targets",
     ]
     for target in payload["targets"]:
         max_len = target["max_model_len"] or "uncapped"
         lines.append(f"- `{target['endpoint']}` -> `{target['model']}` (`{max_len}`)")
+    lines.extend(["", "## Source Filter"])
+    passage_counts = source_filter.get("passage_counts", {})
+    stage1a_counts = source_filter.get("stage1a_row_counts", {})
+    lines.append(f"- Passages selected: {passage_counts.get('selected', 0)} / {passage_counts.get('input', 0)}")
+    lines.append(f"- Stage 1A rows selected: {stage1a_counts.get('selected', 0)} / {stage1a_counts.get('input', 0)}")
     lines.extend(["", "## Counts"])
     for key, value in counts.items():
         lines.append(f"- {key}: {value}")
@@ -404,8 +511,15 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--stage", default="all", choices=(*STAGE_ORDER, "all"))
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--allow-incomplete-stage1a", action="store_true")
+    ap.add_argument(
+        "--source-doc-kind",
+        choices=["html", "all"],
+        default=DEFAULT_SOURCE_DOC_KIND,
+        help="Filter source passages and raw KVPs by Stage 0 doc_kind. Default keeps HTML only.",
+    )
     ap.add_argument("--es-host", default=None)
     ap.add_argument("--target", action="append", default=None)
+    ap.add_argument("--canonical-model", default=None)
     ap.add_argument("--api-key", default=None)
     ap.add_argument("--temperature", type=float, default=0.2)
     ap.add_argument("--max-workers", type=int, default=None)
@@ -439,13 +553,42 @@ def main() -> int:
     progress_path = output_dir / "le_downstream_progress.json"
     completed = load_progress(progress_path)
 
-    validate_stage1a_complete(output_dir, allow_incomplete=args.allow_incomplete_stage1a)
-    passages = read_passages(output_dir / "passages.jsonl")
-    stage1a_rows = read_rows(output_dir / "stage1a_le.jsonl")
-    if not passages:
+    all_passages = read_passages(output_dir / "passages.jsonl")
+    if not all_passages:
         raise SystemExit(f"No passages found at {output_dir / 'passages.jsonl'}")
-    if not stage1a_rows:
+    passages = select_passages(all_passages, args.source_doc_kind)
+    if not passages:
+        raise SystemExit(f"No passages matched --source-doc-kind={args.source_doc_kind}")
+    selected_passage_ids = {passage.passage_id for passage in passages}
+    validate_stage1a_complete(
+        output_dir,
+        allow_incomplete=args.allow_incomplete_stage1a,
+        passage_ids=selected_passage_ids,
+    )
+    stage1a_rows_raw = read_rows(output_dir / "stage1a_le.jsonl")
+    stage1a_rows = filter_rows_by_passage(stage1a_rows_raw, selected_passage_ids)
+    if not stage1a_rows_raw:
         raise SystemExit(f"No Stage 1A rows found at {output_dir / 'stage1a_le.jsonl'}")
+    if not stage1a_rows:
+        raise SystemExit(
+            f"No Stage 1A rows matched --source-doc-kind={args.source_doc_kind}"
+        )
+    source_filter = write_source_filter_artifacts(
+        output_dir,
+        source_doc_kind=args.source_doc_kind,
+        all_passages=all_passages,
+        selected_passages=passages,
+        raw_stage1a_rows=stage1a_rows_raw,
+        selected_stage1a_rows=stage1a_rows,
+    )
+    log.info(
+        "Source filter: doc_kind=%s passages=%d/%d stage1a_rows=%d/%d",
+        args.source_doc_kind,
+        len(passages),
+        len(all_passages),
+        len(stage1a_rows),
+        len(stage1a_rows_raw),
+    )
 
     domain = COLLECTION_DOMAIN[args.collection]
     system_prompt = (
@@ -453,9 +596,10 @@ def main() -> int:
         "Answer based on official documentation."
     )
     targets = parse_targets(args.target or list(DEFAULT_TARGETS), explicit_api_key=args.api_key)
+    canonical_model = args.canonical_model or DEFAULT_CANONICAL_MODEL
     llm = TargetAwareLLMClient(
         targets=targets,
-        canonical_model="nvidia/nvidia/nemotron-3-super-v3",
+        canonical_model=canonical_model,
         max_workers=cfg.max_workers,
         min_interval_s=cfg.min_request_interval_s,
         retry_attempts=cfg.retry_attempts,
@@ -498,7 +642,10 @@ def main() -> int:
             )
             completed.add("1b")
             write_progress(progress_path, completed)
-    stage1b_rows = read_rows(output_dir / "stage1b_synthesis.jsonl")
+    stage1b_rows = filter_rows_by_passage(
+        read_rows(output_dir / "stage1b_synthesis.jsonl"),
+        selected_passage_ids,
+    )
 
     if stage_selected(args.stage, "1c"):
         if args.resume and "1c" in completed and (output_dir / "stage1c_instruction.jsonl").exists():
@@ -515,7 +662,10 @@ def main() -> int:
             )
             completed.add("1c")
             write_progress(progress_path, completed)
-    stage1c_rows = read_rows(output_dir / "stage1c_instruction.jsonl")
+    stage1c_rows = filter_rows_by_passage(
+        read_rows(output_dir / "stage1c_instruction.jsonl"),
+        selected_passage_ids,
+    )
 
     if stage_selected(args.stage, "1.5"):
         if args.resume and "1.5" in completed and (output_dir / "stage1_5_gapfill.jsonl").exists():
@@ -537,7 +687,10 @@ def main() -> int:
             )
             completed.add("1.5")
             write_progress(progress_path, completed)
-    stage1_5_rows = read_rows(output_dir / "stage1_5_gapfill.jsonl")
+    stage1_5_rows = filter_rows_by_passage(
+        read_rows(output_dir / "stage1_5_gapfill.jsonl"),
+        selected_passage_ids,
+    )
 
     all_pre_eval = stage1a_rows + stage1b_rows + stage1c_rows + stage1_5_rows
     if stage_selected(args.stage, "2"):
@@ -547,7 +700,10 @@ def main() -> int:
             run_stage2(all_pre_eval, llm, output_dir, max_workers=cfg.max_workers)
             completed.add("2")
             write_progress(progress_path, completed)
-    stage2_rows = read_rows(output_dir / "stage2_eval.jsonl")
+    stage2_rows = filter_rows_by_passage(
+        read_rows(output_dir / "stage2_eval.jsonl"),
+        selected_passage_ids,
+    )
 
     if stage_selected(args.stage, "3"):
         if args.resume and "3" in completed and (output_dir / "training.jsonl").exists():
@@ -598,7 +754,9 @@ def main() -> int:
         output_dir,
         collection=args.collection,
         targets=targets,
+        canonical_model=canonical_model,
         temperature=args.temperature,
+        source_filter=source_filter,
         completed=completed,
         manifest=manifest,
     )
