@@ -22,6 +22,17 @@ def _synthetic_row(sample_id="sample_dd"):
         source_systems=["data_designer"],
         source_kinds=["synthetic_gapfill"],
         modalities=["text"],
+        qa_work_id="stage2qa_123",
+        qa_status="refined",
+        qa_admitted=True,
+        qa_judge_model="nvidia/nvidia/nemotron-3-ultra",
+        qa_judge_endpoints=["https://inference-api.nvidia.com/v1"],
+        qa_execution_surface="curator_llm_quality",
+        qa_grounded=True,
+        qa_answer_fidelity=True,
+        qa_no_hallucination=True,
+        qa_repairable=True,
+        qa_reason="grounded after rewrite",
     )
 
 
@@ -79,6 +90,11 @@ def test_admitted_samples_preserve_data_designer_sidecar_lineage(tmp_path):
     assert sample["lineage"]["data_designer_job_id"] == "dd_job_123"
     assert sample["lineage"]["seed_sample_ids"] == ["sample_seed"]
     assert sample["metadata"]["refined"] is True
+    assert sample["quality"]["judge_model"] == "nvidia/nvidia/nemotron-3-ultra"
+    assert sample["quality"]["qa_status"] == "refined"
+    assert sample["quality"]["qa_execution_surface"] == "curator_llm_quality"
+    assert sample["quality"]["grounding_score"] == 1.0
+    assert sample["quality"]["reason"] == "grounded after rewrite"
     assert sample["metadata"]["gap_manifest_id"] == "gapmanifest_123"
     assert sample["metadata"]["recipe_name"] == "nim-gapfill"
 

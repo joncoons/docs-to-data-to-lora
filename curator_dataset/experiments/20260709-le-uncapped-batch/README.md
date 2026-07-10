@@ -74,9 +74,15 @@ overrides it.
 Stage 2 QA/admission should use a frontier-grade model and should migrate to
 Curator-backed LLM quality filtering/refinement where available. For the
 current experiment, use Nemotron 3 Ultra 550B for this semantic admission
-gate. The direct QA runner remains useful for smoke tests, fallback execution,
-and ablation; Stage 4 should remain independent, for example Claude Sonnet
-4.6 via the NVIDIA-hosted OpenAI-compatible endpoint.
+gate. Operationally, Stage 2 is the pre-Curator semantic gate: it repairs or
+rejects source-grounded QA rows before Stage 3 spends work on deduplication,
+heuristic quality filters, and train/validation splitting. This keeps raw
+LLM-generated rows from polluting the Curator input contract and preserves a
+local admission/rejection reason in `stage2_dropped.jsonl` plus
+`provenance/stage2_quality.jsonl`. The direct QA runner remains useful for
+smoke tests, fallback execution, and ablation; Stage 4 should remain
+independent, for example Claude Sonnet 4.6 via the NVIDIA-hosted
+OpenAI-compatible endpoint.
 
 The runner defaults to all source document kinds for turnkey use. Pass `--source-doc-kind html` only when an experiment intentionally excludes parsed PDFs. When a source filter is active, the runner writes selected KVP and lineage sidecars so Data Store publication can use only the selected provenance.
 

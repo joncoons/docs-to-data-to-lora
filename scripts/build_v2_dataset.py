@@ -63,10 +63,10 @@ def _read_passages(path: Path) -> list[Passage]:
     return [Passage.model_validate_json(line) for line in path.read_text().splitlines() if line]
 
 
-def _parse_endpoints(value: str) -> list[str]:
+def _parse_endpoints(value: str, label: str = "inference") -> list[str]:
     endpoints = [endpoint.strip() for endpoint in value.split(",") if endpoint.strip()]
     if not endpoints:
-        raise ValueError("At least one Stage 1A endpoint is required")
+        raise ValueError(f"At least one {label} endpoint is required")
     return endpoints
 
 
@@ -80,7 +80,7 @@ def _endpoint_requires_api_key(endpoints: list[str]) -> bool:
 
 def _build_stage1a_llm(args: argparse.Namespace, cfg: Config) -> LLMClient:
     if args.stage1a_nim_endpoints:
-        endpoints = _parse_endpoints(args.stage1a_nim_endpoints)
+        endpoints = _parse_endpoints(args.stage1a_nim_endpoints, "Stage 1A")
     else:
         endpoints = cfg.nim_endpoints
 
@@ -117,6 +117,41 @@ def _env_optional_float(name: str) -> float | None:
     if value is None:
         return None
     return float(value)
+
+
+def _env_optional_int(name: str) -> int | None:
+    value = os.getenv(name)
+    if value is None:
+        return None
+    return int(value)
+
+
+def _build_stage2_llm(args: argparse.Namespace, cfg: Config) -> LLMClient:
+    endpoints = (
+        _parse_endpoints(args.stage2_qa_endpoints, "Stage 2 QA")
+        if args.stage2_qa_endpoints
+        else cfg.stage2_qa_endpoints
+    )
+    model = args.stage2_qa_model or cfg.stage2_qa_model
+    temperature = (
+        args.stage2_qa_temperature
+        if args.stage2_qa_temperature is not None
+        else cfg.stage2_qa_temperature
+    )
+    api_key = args.stage2_qa_api_key
+    if api_key is None and _endpoint_requires_api_key(endpoints):
+        api_key = get_external_judge_api_key()
+    return LLMClient(
+        endpoints=endpoints,
+        model=model,
+        api_key=api_key or "local",
+        max_workers=cfg.max_workers,
+        min_interval_s=cfg.min_request_interval_s,
+        retry_attempts=cfg.retry_attempts,
+        retry_base_delay_s=cfg.retry_base_delay_s,
+        no_think=True,
+        temperature=temperature,
+    )
 
 
 def _needs_stage1a_llm_override(args: argparse.Namespace) -> bool:
@@ -180,6 +215,24 @@ def main() -> int:
                     choices=["stratified", "top_density", "all"],
                     default=os.getenv("PIPELINE_STAGE1C_SELECTION_MODE"),
                     help="Stage 1C passage selection mode. Defaults to config/env stratified.")
+    ap.add_argument("--stage2-qa-endpoints",
+                    default=os.getenv("PIPELINE_STAGE2_QA_ENDPOINTS"),
+                    help="Optional comma-separated endpoint override for Stage 2 QA admission.")
+    ap.add_argument("--stage2-qa-model", default=os.getenv("PIPELINE_STAGE2_QA_MODEL"),
+                    help="Optional model override for Stage 2 QA admission, e.g. "
+                         "nvidia/nvidia/nemotron-3-ultra.")
+    ap.add_argument("--stage2-qa-api-key", default=os.getenv("PIPELINE_STAGE2_QA_API_KEY"),
+                    help="Optional API key override for Stage 2 QA admission.")
+    ap.add_argument("--stage2-qa-temperature", type=float,
+                    default=_env_optional_float("PIPELINE_STAGE2_QA_TEMPERATURE"),
+                    help="Optional temperature override for Stage 2 QA admission.")
+    ap.add_argument("--stage2-qa-max-tokens", type=int,
+                    default=_env_optional_int("PIPELINE_STAGE2_QA_MAX_TOKENS"),
+                    help="Stage 2 QA admission completion budget.")
+    ap.add_argument("--stage2-execution-surface",
+                    default=os.getenv("PIPELINE_STAGE2_EXECUTION_SURFACE"),
+                    help="Audit label for Stage 2 QA execution surface, e.g. "
+                         "curator_llm_quality or direct_qa_eval.")
     ap.add_argument("--max-passages", type=int, default=None,
                     help="Subsample to N passages after Stage 0 (for smoke testing)")
     args = ap.parse_args()
@@ -191,6 +244,8 @@ def main() -> int:
         ap.error("--stage1a-le-max-tokens must be >= 1")
     if args.stage1a_batched_kvp_max_tokens < 1:
         ap.error("--stage1a-batched-kvp-max-tokens must be >= 1")
+    if args.stage2_qa_max_tokens is not None and args.stage2_qa_max_tokens < 1:
+        ap.error("--stage2-qa-max-tokens must be >= 1")
 
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(name)s %(message)s",
@@ -341,8 +396,24 @@ def main() -> int:
         if args.resume and progress.is_done("2"):
             stage2_rows = _read_jsonl_rows(args.output / "stage2_eval.jsonl")
         else:
-            stage2_rows, _ = run_stage2(all_pre_eval, llm, args.output,
-                                         max_workers=cfg.max_workers)
+            stage2_llm = _build_stage2_llm(args, cfg)
+            stage2_max_tokens = args.stage2_qa_max_tokens or cfg.stage2_qa_max_tokens
+            stage2_execution_surface = args.stage2_execution_surface or cfg.stage2_execution_surface
+            log.info(
+                "Stage 2: QA admission model=%s endpoints=%s execution_surface=%s",
+                stage2_llm.model,
+                stage2_llm.endpoints,
+                stage2_execution_surface,
+            )
+            stage2_rows, _ = run_stage2(
+                all_pre_eval,
+                stage2_llm,
+                args.output,
+                max_workers=cfg.max_workers,
+                resume=args.resume,
+                execution_surface=stage2_execution_surface,
+                max_tokens=stage2_max_tokens,
+            )
             progress.mark_done("2")
     else:
         stage2_rows = _read_jsonl_rows(args.output / "stage2_eval.jsonl")

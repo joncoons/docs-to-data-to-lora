@@ -127,6 +127,7 @@ def normalize_sample_for_curator(sample: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("dataset sample is missing sample_id")
     lineage = sample.get("lineage") if isinstance(sample.get("lineage"), dict) else {}
     metadata = sample.get("metadata") if isinstance(sample.get("metadata"), dict) else {}
+    quality = sample.get("quality") if isinstance(sample.get("quality"), dict) else {}
     return {
         "id": sample_id,
         "sample_id": sample_id,
@@ -140,6 +141,7 @@ def normalize_sample_for_curator(sample: dict[str, Any]) -> dict[str, Any]:
         "source_kinds": lineage.get("source_kinds") or metadata.get("source_kinds") or [],
         "modalities": lineage.get("modalities") or metadata.get("modalities") or [],
         "lineage": lineage,
+        "quality": quality,
         "metadata": metadata,
     }
 

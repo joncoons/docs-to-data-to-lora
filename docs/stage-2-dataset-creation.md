@@ -636,6 +636,25 @@ LLM quality filtering/refinement rather than a standalone self-eval script. The
 direct `prompt_zoo.qa_eval()` + `QAEvaluation` path remains a compatibility
 fallback and an ablation tool.
 
+Operationally, Stage 2 earns its place before Stage 3 because it prevents raw
+LLM-generated rows from becoming curation inputs before they have been judged
+against their source context. Stage 2 handles semantic admission: repair a weak
+but source-grounded pair, drop an irreparable or ungrounded pair, and write an
+auditable quality decision. Stage 3 then performs structural curation over the
+admitted set: deduplication, heuristic quality filters, and train/validation
+splitting. Keeping this boundary avoids three failure modes:
+
+- Curator deduplication can preserve a polished but ungrounded answer if no
+  earlier semantic gate rejects it.
+- Train/validation splits become polluted if bad rows are only identified after
+  splitting, because removing them later changes split composition and lineage.
+- Expensive native Curator work is wasted on rows that a frontier QA gate could
+  have repaired or rejected first.
+
+The net effect is a cleaner Stage 3 input contract: every row handed to Curator
+has already been admitted by a source-grounded QA gate, and every rejection has a
+local reason in `stage2_dropped.jsonl` plus `provenance/stage2_quality.jsonl`.
+
 ### Per-pair flow
 
 For every pair from Stages 1A + 1B + 1C plus optional Stage 1.5 synthetic rows:
@@ -650,7 +669,9 @@ For every pair from Stages 1A + 1B + 1C plus optional Stage 1.5 synthetic rows:
    - If unchanged → flag `refined: false`, pass through.
 3. Preserve Curator or direct-run quality metadata with each admitted row so
    later dedup, train/val splitting, and audit reports can attribute why a pair
-   was retained or rejected.
+   was retained or rejected. The durable runner appends each admitted row and
+   each quality decision as work finishes so interrupted frontier-model runs can
+   resume without replaying completed rows.
 
 ### Output schema
 
@@ -658,8 +679,13 @@ File: `/mnt/nvme2/peft/datasets/v2/<collection>/stage2_eval.jsonl`
 
 Same schema as Stage 1A, `refined` may now be `true`.
 
-Also: `/mnt/nvme2/peft/datasets/v2/<collection>/stage2_dropped.jsonl`
-(dropped pairs with drop reason, for post-run inspection).
+Also:
+
+- `/mnt/nvme2/peft/datasets/v2/<collection>/stage2_dropped.jsonl` — rejected or
+  retryable failed pairs with QA status and reason.
+- `/mnt/nvme2/peft/datasets/v2/<collection>/provenance/stage2_quality.jsonl` —
+  one append-only decision record per attempted row, including judge model,
+  endpoint labels, admission status, grounding flags, repairability, and reason.
 
 ### Curator migration posture
 
@@ -670,6 +696,14 @@ be the execution surface where possible because it centralizes quality metadata,
 rejection lineage, and downstream curation handoff. The direct Python QA runner
 should remain available for smoke tests, fallback execution, and A/B comparison
 against native Curator quality results.
+
+From an operator's perspective, Stage 2 is the point where model choice matters
+most for dataset integrity. It should use a frontier-grade model such as
+Nemotron 3 Ultra 550B, low temperature, no-think/structured-output controls when
+needed, and durable resume settings appropriate for hosted endpoint rate limits.
+Stage 3 should not be asked to infer source grounding from generic text-quality
+signals; it should consume the Stage 2-admitted rows and the Stage 2 quality
+sidecar.
 
 ### Agreement-bias caveat
 
@@ -841,6 +875,10 @@ Supported flags:
 --max-passages N                       smoke test with N passages
 --stage1a-mode legacy|batched          choose per-premise or batched KVP expansion
 --stage1c-selection-mode MODE          stratified, top_density, or all
+--stage2-qa-endpoints URLS             comma-separated OpenAI-compatible QA endpoints
+--stage2-qa-model MODEL                frontier QA admission model
+--stage2-qa-max-tokens N               QA admission completion budget
+--stage2-execution-surface LABEL       audit label, e.g. curator_llm_quality
 ```
 
 Each stage writes its output file and a checkpoint to `<output>/progress.json`.

@@ -605,6 +605,8 @@ def write_summary(
     targets: list[LLMTarget],
     canonical_model: str,
     temperature: float,
+    stage2_execution_surface: str,
+    stage2_max_tokens: int,
     source_filter: dict[str, Any],
     completed: set[str],
     manifest: dict[str, Any] | None,
@@ -630,6 +632,8 @@ def write_summary(
         ],
         "canonical_model": canonical_model,
         "temperature": temperature,
+        "stage2_execution_surface": stage2_execution_surface,
+        "stage2_max_tokens": stage2_max_tokens,
         "source_filter": source_filter,
         "counts": counts,
         "dataset_version_id": manifest.get("dataset_version_id") if manifest else None,
@@ -645,6 +649,8 @@ def write_summary(
         f"- Completed stages: `{', '.join(sorted(completed))}`",
         f"- Dataset version: `{payload['dataset_version_id'] or 'not finalized'}`",
         f"- LLM temperature: `{temperature}`",
+        f"- Stage 2 execution surface: `{stage2_execution_surface}`",
+        f"- Stage 2 max tokens: `{stage2_max_tokens}`",
         f"- Source filter: `{source_filter.get('source_doc_kind_filter')}`",
         "",
         "## Targets",
@@ -692,6 +698,12 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--retry-attempts", type=int, default=None)
     ap.add_argument("--retry-base-delay-s", type=float, default=None)
     ap.add_argument("--request-timeout-s", type=float, default=600.0)
+    ap.add_argument("--stage2-qa-max-tokens", type=int, default=None)
+    ap.add_argument(
+        "--stage2-execution-surface",
+        default=None,
+        help="Audit label for Stage 2 QA execution surface. Defaults to config.",
+    )
     return ap.parse_args()
 
 
@@ -712,6 +724,10 @@ def main() -> int:
         cfg.retry_attempts = args.retry_attempts
     if args.retry_base_delay_s is not None:
         cfg.retry_base_delay_s = args.retry_base_delay_s
+    if args.stage2_qa_max_tokens is not None and args.stage2_qa_max_tokens < 1:
+        raise SystemExit("--stage2-qa-max-tokens must be >= 1")
+    stage2_max_tokens = args.stage2_qa_max_tokens or cfg.stage2_qa_max_tokens
+    stage2_execution_surface = args.stage2_execution_surface or cfg.stage2_execution_surface
 
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -883,7 +899,15 @@ def main() -> int:
         if args.resume and "2" in completed and (output_dir / "stage2_eval.jsonl").exists():
             log.info("Stage 2: skipping (already done)")
         else:
-            run_stage2(all_pre_eval, llm, output_dir, max_workers=cfg.max_workers)
+            run_stage2(
+                all_pre_eval,
+                llm,
+                output_dir,
+                max_workers=cfg.max_workers,
+                resume=args.resume,
+                execution_surface=stage2_execution_surface,
+                max_tokens=stage2_max_tokens,
+            )
             completed.add("2")
             write_progress(progress_path, completed)
     stage2_rows = filter_rows_by_passage(
@@ -942,6 +966,8 @@ def main() -> int:
         targets=targets,
         canonical_model=canonical_model,
         temperature=args.temperature,
+        stage2_execution_surface=stage2_execution_surface,
+        stage2_max_tokens=stage2_max_tokens,
         source_filter=source_filter,
         completed=completed,
         manifest=manifest,

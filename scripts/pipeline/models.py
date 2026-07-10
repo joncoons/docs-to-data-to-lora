@@ -35,9 +35,20 @@ class QAKeyValuePair(BaseModel):
 
 
 class QAEvaluation(BaseModel):
-    """Output of Stage 2 QA Eval refinement."""
-    prompt: str
-    completion: str
+    """Output of Stage 2 QA admission/refinement.
+
+    ``admit`` defaults to true so legacy QA responses containing only prompt and
+    completion remain valid. Newer frontier-judge prompts can explicitly reject
+    irreparable rows and attach auditable quality signals.
+    """
+    prompt: str = ""
+    completion: str = ""
+    admit: bool = True
+    grounded: bool | None = None
+    answer_fidelity: bool | None = None
+    no_hallucination: bool | None = None
+    repairable: bool | None = None
+    reason: str = ""
 
 
 class SynthesisPair(BaseModel):
@@ -111,3 +122,14 @@ class KVPRow(BaseModel):
     extractor_model: str | None = None
     extractor_prompt_hash: str | None = None
     extractor_temperature: float | None = None
+    qa_work_id: str | None = None
+    qa_status: str | None = None
+    qa_admitted: bool | None = None
+    qa_judge_model: str | None = None
+    qa_judge_endpoints: list[str] | None = None
+    qa_execution_surface: str | None = None
+    qa_grounded: bool | None = None
+    qa_answer_fidelity: bool | None = None
+    qa_no_hallucination: bool | None = None
+    qa_repairable: bool | None = None
+    qa_reason: str | None = None

@@ -26,7 +26,11 @@ def _sample(sample_id, prompt="Question?", completion="Answer.", origin="source_
             "source_kinds": ["web_page"] if origin == "source_entailed" else ["synthetic_gapfill"],
             "modalities": ["text"],
         },
-        "quality": {},
+        "quality": {
+            "judge_model": "nvidia/nvidia/nemotron-3-ultra",
+            "qa_status": "accepted",
+            "qa_execution_surface": "curator_llm_quality",
+        },
         "metadata": {
             "source_url": "https://docs.example.com/source",
             "product_family": "nim",
@@ -74,6 +78,8 @@ def test_normalize_sample_for_curator_uses_text_field_and_lineage():
     assert record["sample_id"] == "sample_1"
     assert record["text"] == "Question: What?\nAnswer: This."
     assert record["source_systems"] == ["web_crawl"]
+    assert record["quality"]["judge_model"] == "nvidia/nvidia/nemotron-3-ultra"
+    assert record["quality"]["qa_execution_surface"] == "curator_llm_quality"
 
 
 def test_run_prepare_writes_curator_input_plan_and_observability(tmp_path):

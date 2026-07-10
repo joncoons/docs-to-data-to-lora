@@ -29,6 +29,18 @@ DEFAULT_EXTERNAL_JUDGE_MODEL = os.environ.get(
     "PIPELINE_EXTERNAL_JUDGE_MODEL",
     "nvidia/llama-3.3-nemotron-super-49b-v1.5",
 )
+DEFAULT_STAGE2_QA_ENDPOINTS: tuple[str, ...] = tuple(
+    endpoint.strip()
+    for endpoint in os.environ.get(
+        "PIPELINE_STAGE2_QA_ENDPOINTS",
+        DEFAULT_EXTERNAL_JUDGE_BASE,
+    ).split(",")
+    if endpoint.strip()
+)
+DEFAULT_STAGE2_QA_MODEL = os.environ.get(
+    "PIPELINE_STAGE2_QA_MODEL",
+    "nvidia/nvidia/nemotron-3-ultra",
+)
 
 
 @dataclass
@@ -37,6 +49,14 @@ class Config:
     nim_endpoints: list[str] = field(default_factory=lambda: list(DEFAULT_NIM_ENDPOINTS))
     external_judge_base_url: str = DEFAULT_EXTERNAL_JUDGE_BASE
     external_judge_model: str = DEFAULT_EXTERNAL_JUDGE_MODEL
+    stage2_qa_endpoints: list[str] = field(default_factory=lambda: list(DEFAULT_STAGE2_QA_ENDPOINTS))
+    stage2_qa_model: str = DEFAULT_STAGE2_QA_MODEL
+    stage2_qa_temperature: float = float(os.environ.get("PIPELINE_STAGE2_QA_TEMPERATURE", "0.0"))
+    stage2_qa_max_tokens: int = int(os.environ.get("PIPELINE_STAGE2_QA_MAX_TOKENS", "2048"))
+    stage2_execution_surface: str = os.environ.get(
+        "PIPELINE_STAGE2_EXECUTION_SURFACE",
+        "curator_llm_quality",
+    )
     super120b_model: str = "nvidia/nemotron-3-super-120b-a12b"
 
     base_output_dir: Path = field(default_factory=lambda: Path("/mnt/nvme2/peft/datasets/v2"))

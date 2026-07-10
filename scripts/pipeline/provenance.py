@@ -707,6 +707,12 @@ def entailments_from_kvp_rows(rows: list[KVPRow]) -> list[Entailment]:
     return list(seen.values())
 
 
+def _bool_score(value: bool | None) -> float | None:
+    if value is None:
+        return None
+    return 1.0 if value else 0.0
+
+
 def dataset_sample_from_kvp_row(row: KVPRow, system_prompt: str | None = None) -> DatasetSample:
     origin = "synthetic_gapfill" if row.stage == "1.5" else "source_entailed"
     if row.qa_type in {"bridging", "contrastive"}:
@@ -738,8 +744,18 @@ def dataset_sample_from_kvp_row(row: KVPRow, system_prompt: str | None = None) -
         lineage=lineage,
         quality={
             "curator_job_id": None,
-            "judge_model": None,
-            "grounding_score": None,
+            "judge_model": row.qa_judge_model,
+            "judge_endpoints": row.qa_judge_endpoints or [],
+            "grounding_score": _bool_score(row.qa_grounded),
+            "qa_work_id": row.qa_work_id,
+            "qa_status": row.qa_status,
+            "qa_admitted": row.qa_admitted,
+            "qa_execution_surface": row.qa_execution_surface,
+            "grounded": row.qa_grounded,
+            "answer_fidelity": row.qa_answer_fidelity,
+            "no_hallucination": row.qa_no_hallucination,
+            "repairable": row.qa_repairable,
+            "reason": row.qa_reason,
         },
         metadata={
             "stage": row.stage,
