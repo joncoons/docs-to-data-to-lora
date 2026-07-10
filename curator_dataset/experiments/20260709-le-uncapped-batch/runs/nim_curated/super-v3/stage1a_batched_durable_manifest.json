@@ -1,0 +1,26 @@
+{
+  "batch_parse_attempts": 2,
+  "batched_kvp_max_tokens": 16384,
+  "completed_before_start": 115,
+  "endpoint": "https://inference-api.nvidia.com/v1",
+  "input_passages": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/passages.jsonl",
+  "le_max_tokens": 16384,
+  "limits": {
+    "max_entailments": null,
+    "max_passages": null,
+    "max_premises": null,
+    "max_premises_per_batch_is_chunk_size_not_drop_cap": true
+  },
+  "max_premises_per_batch": 12,
+  "max_workers": 2,
+  "min_request_interval_s": 2.0,
+  "model": "nvidia/nvidia/nemotron-3-super-v3",
+  "output_dir": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3",
+  "request_timeout_s": 600.0,
+  "retry_attempts": 4,
+  "retry_base_delay_s": 5.0,
+  "schema_version": "le_uncapped_batch.stage1a_durable.v1",
+  "selected_passages": 383,
+  "temperature": 0.95,
+  "updated_at": "2026-07-10T01:45:03.718510Z"
+}
