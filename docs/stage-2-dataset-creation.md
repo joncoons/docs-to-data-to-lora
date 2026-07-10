@@ -36,14 +36,16 @@ The pipeline has eight stages, run in order for each collection:
    SUMMARY / LISTICLE / PROCEDURAL instruction-following examples. The default
    selection mode is stratified across density bands; top-density and all-passage
    modes are available. Output: `stage1c_instruction.jsonl`.
-5. **Stage 1.5 — Bias analysis + Data Designer gap-fill**: measure per-product
-   KVP density; for under-represented products, run RAG-grounded NeMo Data
-   Designer recipes to synthesize additional pairs. Output: `bias_report.json` +
-   `stage1_5_gapfill.jsonl`.
-6. **Stage 2 — QA Eval Refinement**: super-120b self-eval — refine or drop each
-   pair. Output: `stage2_eval.jsonl`.
+5. **Stage 1.5 — Optional Bias analysis + Data Designer gap-fill**: measure
+   per-product KVP density and, only when synthetic augmentation is desired,
+   hand under-represented products to NeMo Data Designer for grounded synthetic
+   generation. Output: `bias_report.json` + optional `stage1_5_gapfill.jsonl`.
+6. **Stage 2 — QA Admission + Refinement**: Curator-backed LLM quality gating
+   with a frontier-grade model — refine or drop each pair based on source
+   grounding and answer fidelity. Output: `stage2_eval.jsonl`.
 7. **Stage 3 — NeMo Curator**: exact dedup, MinHash fuzzy dedup, length filter,
-   quality filter, train/val split. Outputs: `training.jsonl` + `validation.jsonl`.
+   non-LLM quality filters, train/val split. Outputs: `training.jsonl` +
+   `validation.jsonl`.
 8. **Stage 4 — Validation Gate**: an independent external judge spot-checks 100
    pairs per collection on three binary criteria; pipeline passes if grounding
    rate ≥ 90%.
@@ -82,6 +84,17 @@ that materially change dataset coverage, cost, and recovery behavior.
   but the downstream runner accepts any OpenAI-compatible chat-completions
   endpoint/model pair via repeated `--target ENDPOINT=MODEL[@MAX_CONTEXT]`
   arguments.
+- Stage 1.5 is optional. For grounded-only dataset creation, proceed from Stage
+  1C directly to Stage 2. Enable Stage 1.5 when the source-grounded set is small,
+  product coverage is visibly imbalanced, or a controlled synthetic augmentation
+  experiment is explicitly part of the plan. Synthetic generation should use a
+  frontier-grade model, not a small local fallback, because it can otherwise
+  introduce style drift or shallow paraphrases into the training mix.
+- Stage 2 is a required logical quality/admission stage. The preferred execution
+  surface is Curator-backed LLM filtering/refinement using a frontier-grade model
+  such as Nemotron 3 Ultra 550B. The older direct `qa_eval` prompt path remains
+  useful as a local fallback and ablation path, but should not be the canonical
+  production posture when Curator LLM quality tooling is available.
 
 ---
 
@@ -449,7 +462,20 @@ For the default `stratified` mode, approximate yields are **~310 NIM pairs** and
 
 ---
 
-## Stage 1.5: Bias Analysis + Data Designer Handoff
+## Stage 1.5: Optional Bias Analysis + Data Designer Handoff
+
+Stage 1.5 is an optional synthetic-augmentation stage, not a required step for
+every dataset. The default grounded path for the current LE rerun is to skip it
+and continue from Stage 1C to Stage 2. Use it when the grounded dataset is too
+small for the target adapter, when product-family coverage is materially
+imbalanced, or when the experiment is explicitly testing synthetic-data lift.
+
+When Stage 1.5 performs synthetic generation, use a frontier-grade model through
+Data Designer or an equivalent OpenAI-compatible endpoint. The generator should
+be strong enough to preserve source constraints while creating genuinely useful
+new questions, not just superficial paraphrases. Smaller models can be useful
+for smoke testing the handoff mechanics, but they should not be the production
+synthetic generator.
 
 ### Bias analysis
 
@@ -498,7 +524,8 @@ Output files:
 
 Stage 1.5 now stops at a native handoff boundary by default. For each
 under-represented product `T` it writes a gap record and a Data Designer seed
-record instead of directly calling an LLM:
+record instead of directly calling an LLM. If generation is enabled, configure
+Data Designer with a frontier-grade model and preserve all synthetic lineage:
 
 1. **Gap manifest**: `provenance/gap_manifest.json` records `gap_id`, coverage
    dimension, observed count, target count, severity, seed entailment IDs, seed
@@ -517,7 +544,7 @@ The K8s-native handoff job is `deploy/data-designer-gapfill/`. Its `prepare`
 mode creates `data_designer/seed_dataset.csv` and `submission_plan.json`; its
 `collect` mode converts Data Designer result records into `stage1_5_gapfill.jsonl`,
 `data_designer/generated_samples.jsonl`, and `provenance/data_designer_samples.jsonl`.
-After collection, the normal Stage 2 QA/finalization path reads
+After collection, the normal Stage 2 QA admission/finalization path reads
 `stage1_5_gapfill.jsonl` automatically and admits matching
 `provenance/data_designer_samples.jsonl` sidecar records by `sample_id`, so the
 final `provenance/dataset_samples.jsonl` retains Data Designer job IDs, gap IDs,
@@ -525,18 +552,21 @@ seed references, and recipe metadata.
 
 Use `python scripts/build_v2_dataset.py ... --stage1-5-mode legacy-direct` only
 when you intentionally want the older direct LLM fallback to emit synthetic rows
-locally.
+locally. This mode is for controlled experiments or fallback diagnostics; the
+preferred production path is Data Designer handoff with a frontier-grade
+generator.
 
 ### No-think mode and the May 2026 Jinja2 failure mode
 
-Super-120b is a reasoning model. If `reasoning_effort: "minimal"` (or
-`chat_template_kwargs={"enable_thinking": false}` in vLLM 0.7+) is not honored,
-the model wraps its response in `<think>...</think>` blocks. When these land
-inside a Jinja2 template, the `{{ }}` inside the `<think>` block causes a Jinja2
-parse error that silently produces empty output or raises a TemplateError — the
-failure mode observed in May 2026 with NeMo Customizer jobs.
+Many frontier-grade models are reasoning models. If `reasoning_effort:
+"minimal"` (or `chat_template_kwargs={"enable_thinking": false}` in vLLM 0.7+)
+is not honored, the model may wrap its response in `<think>...</think>` blocks.
+When these land inside a Jinja2 template, the `{{ }}` inside the `<think>` block
+causes a Jinja2 parse error that silently produces empty output or raises a
+TemplateError — the failure mode observed in May 2026 with NeMo Customizer jobs.
 
-**Verification**: before running Stage 1.5, probe the super-120b endpoint:
+**Verification**: before running Stage 1.5 generation, probe the configured
+frontier endpoint, for example:
 
 ```bash
 curl -s -X POST http://nim-llm-super-120b-bw:8000/v1/chat/completions \
@@ -552,14 +582,13 @@ If the response contains `<think>...</think>`, no-think mode is not working.
 
 ### Fallback path
 
-If super-120b cannot be coerced into no-think mode, fall back to:
-
-- **Llama-3.1-8B-Instruct** via `nim-llm-8b-blackwell:8000/v1` (deployed on
-  demand from the PEFT cluster), or
-- **Llama-3.3-Nemotron-Super-49B-v1.5** NVFP4 TP1 in non-reasoning mode.
-
-Recipe templates are identical; only the `model` field changes. The non-reasoning
-fallback loses some synthesis nuance but keeps the pipeline deterministic.
+If the chosen frontier-grade generator cannot be coerced into no-think mode,
+prefer switching to another frontier-grade model or provider that can produce
+clean structured output. Smaller non-reasoning models may be acceptable for
+smoke tests of the Data Designer handoff, but they should not be used as the
+production synthetic generator unless an experiment is explicitly measuring that
+tradeoff. Recipe templates are identical; only the `model` and provider fields
+change.
 
 ### Output schema
 
@@ -575,9 +604,10 @@ Default handoff files:
   synthetic rows after generation.
 - `provenance/data_designer_samples.jsonl` carries the exact Data Designer job,
   gap, seed, and recipe lineage for those rows.
-- `provenance/dataset_samples.jsonl` is written after Stage 2 QA and overlays
-  matching Data Designer sidecar records by `sample_id`, preserving native
-  service lineage even when Stage 2 refines the prompt or completion text.
+- `provenance/dataset_samples.jsonl` is written after Stage 2 QA admission and
+  overlays matching Data Designer sidecar records by `sample_id`, preserving
+  native service lineage even when Stage 2 refines the prompt or completion
+  text.
 
 Legacy direct mode still writes `/mnt/nvme2/peft/datasets/v2/<collection>/stage1_5_gapfill.jsonl`
 with the Stage 1A-compatible row schema:
@@ -588,28 +618,39 @@ with the Stage 1A-compatible row schema:
 
 ### Expected yield
 
-Highly variable. The NIM corpus is known to be skewed (LLM-NIM ≈ 88% in the
-April 2026 analysis); expect **~200-400 gap-fill pairs** rebalancing the
-under-represented 30-40 NIM product families. NeMo USvcs is more uniform
-(single-prefix crawl); expect **~50-150 pairs**.
+Optional and highly variable. For grounded-only runs, Stage 1.5 yield is **0**
+by design. When synthetic augmentation is enabled, the NIM corpus is known to be
+skewed (LLM-NIM ≈ 88% in the April 2026 analysis); expect **~200-400 gap-fill
+pairs** rebalancing the under-represented 30-40 NIM product families. NeMo USvcs
+is more uniform (single-prefix crawl); expect **~50-150 pairs**. For very small
+grounded datasets, a larger controlled synthetic ratio may be useful, but keep
+validation/test splits grounded and unchanged.
 
 ---
 
-## Stage 2: QA Eval Refinement
+## Stage 2: QA Admission + Refinement
 
-A direct port of `prompt_zoo.qa_eval()` + `QAEvaluation` Pydantic model.
+This stage is the semantic quality gate for generated Q+A pairs. It is not
+optional, but the preferred implementation should move through Curator-backed
+LLM quality filtering/refinement rather than a standalone self-eval script. The
+direct `prompt_zoo.qa_eval()` + `QAEvaluation` path remains a compatibility
+fallback and an ablation tool.
 
 ### Per-pair flow
 
-For every pair from Stages 1A + 1B + 1C + 1.5:
+For every pair from Stages 1A + 1B + 1C plus optional Stage 1.5 synthetic rows:
 
-1. Call super-120b with the QA-eval prompt (current Q, current A, source
-   `context`).
+1. Call the configured frontier-grade QA model with the QA-eval prompt (current
+   Q, current A, source `context`). For the current NIM/NeMo experiments this
+   should be Nemotron 3 Ultra 550B through an OpenAI-compatible endpoint.
 2. Parse `QAEvaluation`:
    - If the model rewrites Q or A → flag `refined: true`, write the new pair.
    - If the model indicates the pair is ungrounded and cannot be repaired from
      context → drop the pair (log to `stage2_dropped.jsonl` for inspection).
    - If unchanged → flag `refined: false`, pass through.
+3. Preserve Curator or direct-run quality metadata with each admitted row so
+   later dedup, train/val splitting, and audit reports can attribute why a pair
+   was retained or rejected.
 
 ### Output schema
 
@@ -620,35 +661,47 @@ Same schema as Stage 1A, `refined` may now be `true`.
 Also: `/mnt/nvme2/peft/datasets/v2/<collection>/stage2_dropped.jsonl`
 (dropped pairs with drop reason, for post-run inspection).
 
-### Self-eval caveat
+### Curator migration posture
 
-Super-120b is judging its own output here — a known agreement bias: the model
-tends to approve pairs that share its own generation style, even when they
-contain subtle errors. Stage 4 (external judge) compensates by independently
-sampling Stage 2 output. Stage 2 stays in the pipeline because it is cheap,
-removes obviously broken pairs, and reduces the volume the external judge has to
-spot-check.
+Generic Curator filters are not a substitute for source-grounded QA checks by
+themselves. The migrated Stage 2 gate should explicitly score grounding, answer
+fidelity, hallucination risk, repairability, and schema validity. Curator should
+be the execution surface where possible because it centralizes quality metadata,
+rejection lineage, and downstream curation handoff. The direct Python QA runner
+should remain available for smoke tests, fallback execution, and A/B comparison
+against native Curator quality results.
+
+### Agreement-bias caveat
+
+Even with a frontier-grade model, Stage 2 can still inherit agreement bias if the
+same model family generated a substantial share of the rows being judged. Stage
+4 compensates by independently sampling post-Curator output with a separate
+judge model. If Stage 2 uses Nemotron 3 Ultra, Stage 4 should use a different
+frontier-level judge such as Claude Sonnet 4.6 through the NVIDIA-hosted
+OpenAI-compatible endpoint.
 
 ---
 
 ## Stage 3: NeMo Curator
 
-Curator's role in this pipeline is **dedup + quality filtering only**. The
-synthetic-augmentation step that originally lived inside Curator has been moved
-upstream to Stage 1.5, where it is RAG-grounded. Curator here is a dedup and
-quality gate, not a generation step.
+After Stage 2 QA admission, Curator's Stage 3 role is **dedup + structural
+quality filtering + train/val splitting**. Synthetic augmentation is no longer a
+Curator responsibility; when enabled, it is handled as optional Stage 1.5
+RAG-grounded Data Designer handoff before Stage 2. LLM-based QA/refinement is
+treated as the Stage 2 logical gate even when Curator is the native execution
+surface.
 
 ### Pipeline steps
 
 The showcase path uses `scripts/pipeline/curator_handoff.py` and
 `deploy/curator/` to hand native NeMo Curator a normalized
 `curator/input/dataset_samples.jsonl` file. Curator should run exact/fuzzy
-deduplication and quality filters in the official Curator container or
+deduplication and non-LLM quality filters in the official Curator container or
 Curator-backed cluster, then the collect step maps retained/removed records back
 to dataset sample lineage.
 
 1. **Prepare Curator input** from `provenance/dataset_samples.jsonl`.
-2. **Native Curator quality filters** using `configs/curator/sft-dedup-quality.yaml`.
+2. **Native Curator non-LLM quality filters** using `configs/curator/sft-dedup-quality.yaml`.
 3. **Native Curator deduplication** for exact and fuzzy duplicates; semantic dedup
    remains disabled until the embedding model/GPU budget is selected.
 4. **Collect Curator outputs** into `curator/accepted_samples.jsonl`,
@@ -685,13 +738,14 @@ Format (NeMo Customizer SFT convention):
 
 ### Expected final yield
 
-| Collection | Pre-Curator | Post-Curator | Train (90%) | Val (10%) |
+| Collection | Pre-Curator grounded-only | Post-Curator | Train (90%) | Val (10%) |
 |---|---:|---:|---:|---:|
-| `nim_curated` | ~2,360 | ~2,090 | ~1,880 | ~210 |
-| `nemo_usvcs_curated` | ~2,660 | ~2,390 | ~2,150 | ~240 |
+| `nim_curated` | ~2,060 | ~1,850 | ~1,665 | ~185 |
+| `nemo_usvcs_curated` | ~2,560 | ~2,300 | ~2,070 | ~230 |
 
-Pre-Curator totals: Stage 1A (750/930) + 1B at 100% (1,000/1,240) + 1C default
-stratified target (310/390) + 1.5 gap-fill (~300/~100) ≈ 2,360/2,660.
+Pre-Curator grounded-only totals: Stage 1A (750/930) + 1B at 100%
+(1,000/1,240) + 1C default stratified target (310/390) ≈ 2,060/2,560. Optional
+Stage 1.5 synthetic gap-fill can add roughly ~300/~100 rows when enabled.
 Post-Curator assumes ~10% loss to exact/MinHash dedup + length filter.
 
 These totals are smaller than the April 2026 7,049-sample dataset because the
@@ -705,9 +759,9 @@ is quality (smaller, RAG-grounded, less repetitive) over volume.
 
 ### Purpose
 
-Break the closed-loop agreement bias of Stage 2 (super-120b refining
-super-120b output) by validating a sample with an independent model that had no
-role in generating the pairs.
+Break the closed-loop agreement bias of Stage 2 by validating a sample with an
+independent model that had no role in generating, refining, or admitting the
+pairs.
 
 ### Method
 
@@ -727,7 +781,8 @@ role in generating the pairs.
 ### Threshold
 
 **Pass gate if grounding rate ≥ 90%.** Fail otherwise — investigate the failing
-pairs, tighten the Stage 2 QA-eval prompt, and re-run Stage 2 forward.
+pairs, tighten the Stage 2 QA/Curator quality prompt or filters, and re-run
+Stage 2 forward.
 
 The 90% threshold is a deliberate underrun of perfect: some pairs may be
 factually grounded but ambiguously phrased, and the external judge may conservatively
@@ -780,6 +835,7 @@ Supported flags:
 
 ```
 --stage [0|1a|1b|1c|1.5|2|3|4|all]   run a single stage or all in sequence
+                                       use explicit stages to skip optional 1.5
 --resume                               reuse durable outputs and stage progress
 --dry-run                              print stage plan + estimated yield, no LLM calls
 --max-passages N                       smoke test with N passages
@@ -831,8 +887,8 @@ wait
 │   ├── stage1b_passage_results.jsonl  ← Stage 1B: per-passage durable status
 │   ├── stage1c_instruction.jsonl    ← Stage 1C: instruction diversity
 │   ├── stage1c_passage_results.jsonl  ← Stage 1C: per-passage durable status
-│   ├── bias_report.json             ← Stage 1.5: per-product density
-│   ├── stage1_5_gapfill.jsonl       ← Stage 1.5: RAG-grounded gap-fill
+│   ├── bias_report.json             ← Optional Stage 1.5: per-product density
+│   ├── stage1_5_gapfill.jsonl       ← Optional Stage 1.5: RAG-grounded gap-fill
 │   ├── stage2_eval.jsonl            ← Stage 2: refined pairs
 │   ├── stage2_dropped.jsonl         ← Stage 2: dropped pairs (inspection log)
 │   ├── training.jsonl               ← Stage 3 output — registered with Customizer
@@ -864,8 +920,9 @@ The April 2026 pipeline had a gap-fill step (NeMo Data Designer or Curator's
 synthetic-gen) that called the LLM without grounding it in retrieved corpus
 chunks. Super-120b has weak parametric knowledge of NIM/NeMo product minutiae —
 exactly the topics that most need accurate training signal. This pipeline
-eliminates parametric-only generation: every pair, including Stage 1.5 gap-fill,
-uses retrieved chunks as the LLM's sole factual source.
+eliminates parametric-only generation: every pair, including optional Stage
+1.5 gap-fill when enabled, uses retrieved chunks as the LLM's sole factual
+source.
 
 ### Chunk grouping by URL, not token count
 
@@ -878,10 +935,11 @@ model will see at inference time in a RAG setting.
 
 ### External judge for closed-loop avoidance
 
-Stage 2 uses super-120b to evaluate pairs that super-120b generated. The
-agreement bias is real: models tend to approve output that resembles their own
-generation style. Stage 4 breaks this loop by using an independent judge model
-that had no role in generating the data as the final gate.
+Stage 2 uses a frontier-grade model to evaluate and refine rows generated by the
+LE/synthesis stages. Agreement bias is still real when the QA model resembles or
+matches the generation model: models tend to approve output that resembles their
+own generation style. Stage 4 breaks this loop by using an independent judge
+model that had no role in generating or admitting the data as the final gate.
 This pattern follows the `[[feedback_external_frontier_judge]]` principle: for
 LLM-as-judge tasks, independence over self-contained is the priority.
 
@@ -907,9 +965,10 @@ Earlier specs and the April pipeline experimented with NeMo Data Designer as a
 primary generation engine for the whole dataset. That approach was abandoned for
 two reasons: (1) parametric hallucination risk at scale, and (2) the May 2026
 Jinja2/`<think>` failure mode (see Stage 1.5 above). Data Designer is retained
-as a targeted gap-fill tool for under-represented products, where its controlled
-recipe format helps guarantee consistent output structure. The Stages 1A/1B/1C
-LLM calls use direct API calls, not Data Designer.
+as an optional targeted gap-fill tool for under-represented products or small
+grounded datasets, where its controlled recipe format helps guarantee consistent
+output structure. When used, it should be backed by a frontier-grade generator.
+The Stages 1A/1B/1C LLM calls use direct API calls, not Data Designer.
 
 ---
 

@@ -31,7 +31,22 @@ Required generation settings:
 - No entailment count cap
 - No premise count cap
 
-After extraction, continue through the remainder of the LE dataset pipeline, including Curator/Data Designer-compatible downstream steps, before preparing Entity/Data Store registration artifacts.
+After extraction, continue through the remaining grounded LE dataset pipeline.
+For this rerun, Stage 1.5 synthetic gap-fill is intentionally skipped; proceed
+from Stage 1C to Stage 2 unless a later experiment explicitly opts into
+synthetic augmentation.
+
+## Optional Stage 1.5 Synthetic Augmentation
+
+Stage 1.5 is optional. It is most useful when the source-grounded dataset is
+small, product coverage is materially imbalanced, or an experiment explicitly
+tests synthetic-data lift. When enabled, Data Designer or any equivalent
+OpenAI-compatible generation path should use a frontier-grade model so synthetic
+rows preserve source constraints and add useful task diversity. Smaller models
+are acceptable for smoke-testing the handoff mechanics, not for production
+synthetic generation.
+
+The current NIM/NeMo LE rerun skips Stage 1.5.
 
 ## Downstream Runner Defaults
 
@@ -55,6 +70,13 @@ be used, and repeated `--target` values are load-balanced. For this experiment,
 Stage 1B and Stage 1C should use a frontier-level model such as Nemotron 3
 Ultra. Stage 1A extraction should stay on Super unless an experiment explicitly
 overrides it.
+
+Stage 2 QA/admission should use a frontier-grade model and should migrate to
+Curator-backed LLM quality filtering/refinement where available. For the
+current experiment, use Nemotron 3 Ultra 550B for this semantic admission
+gate. The direct QA runner remains useful for smoke tests, fallback execution,
+and ablation; Stage 4 should remain independent, for example Claude Sonnet
+4.6 via the NVIDIA-hosted OpenAI-compatible endpoint.
 
 The runner defaults to all source document kinds for turnkey use. Pass `--source-doc-kind html` only when an experiment intentionally excludes parsed PDFs. When a source filter is active, the runner writes selected KVP and lineage sidecars so Data Store publication can use only the selected provenance.
 
