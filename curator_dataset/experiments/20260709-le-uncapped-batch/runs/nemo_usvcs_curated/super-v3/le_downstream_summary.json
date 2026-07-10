@@ -2,14 +2,15 @@
   "canonical_model": "nvidia/nvidia/nemotron-3-ultra",
   "collection": "nemo_usvcs_curated",
   "completed_stages": [
-    "1b"
+    "1b",
+    "1c"
   ],
   "counts": {
     "passages": 486,
     "stage1_5_rows": 0,
     "stage1a_rows": 9611,
     "stage1b_rows": 972,
-    "stage1c_rows": 0,
+    "stage1c_rows": 262,
     "stage2_dropped_rows": 0,
     "stage2_rows": 0,
     "training_rows": 0,

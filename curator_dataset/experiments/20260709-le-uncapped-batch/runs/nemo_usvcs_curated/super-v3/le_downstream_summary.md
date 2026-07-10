@@ -2,7 +2,7 @@
 
 - Collection: `nemo_usvcs_curated`
 - Output dir: `curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3`
-- Completed stages: `1b`
+- Completed stages: `1b, 1c`
 - Dataset version: `not finalized`
 - LLM temperature: `0.2`
 - Source filter: `html`
@@ -18,7 +18,7 @@
 - passages: 486
 - stage1a_rows: 9611
 - stage1b_rows: 972
-- stage1c_rows: 0
+- stage1c_rows: 262
 - stage1_5_rows: 0
 - stage2_rows: 0
 - stage2_dropped_rows: 0
