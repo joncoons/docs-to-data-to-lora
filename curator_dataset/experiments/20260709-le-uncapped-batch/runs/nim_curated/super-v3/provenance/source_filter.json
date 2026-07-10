@@ -1,0 +1,53 @@
+{
+  "outputs": {
+    "excluded_passages": "provenance/source_filter_excluded_passages.jsonl",
+    "html_stage1a_rows": "stage1a_le_html.jsonl",
+    "selected_lineage_dir": "provenance/html_only"
+  },
+  "passage_counts": {
+    "by_doc_kind": {
+      "html": 431,
+      "pdf": 67
+    },
+    "excluded": 67,
+    "input": 498,
+    "selected": 431
+  },
+  "schema_version": "le_downstream.source_filter.v1",
+  "selected_lineage": {
+    "artifacts": {
+      "entailments": {
+        "excluded": 337,
+        "input": 3049,
+        "path": "provenance/html_only/entailments.jsonl",
+        "selected": 2712
+      },
+      "source_chunks": {
+        "excluded": 67,
+        "input": 498,
+        "path": "provenance/html_only/source_chunks.jsonl",
+        "selected": 431
+      },
+      "source_revisions": {
+        "excluded": 4,
+        "input": 435,
+        "path": "provenance/html_only/source_revisions.jsonl",
+        "selected": 431
+      }
+    },
+    "lineage_dir": "provenance/html_only",
+    "schema_version": "le_downstream.selected_lineage.v1",
+    "selected_entailment_ids": 2712,
+    "selected_passages": 431,
+    "selected_source_chunk_ids": 2080,
+    "selected_source_revision_ids": 431,
+    "selected_stage1a_rows": 8438,
+    "source_doc_kind_filter": "html"
+  },
+  "source_doc_kind_filter": "html",
+  "stage1a_row_counts": {
+    "excluded": 874,
+    "input": 9312,
+    "selected": 8438
+  }
+}

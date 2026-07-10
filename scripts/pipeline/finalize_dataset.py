@@ -46,6 +46,7 @@ SPLIT_FILES = {
 }
 
 ARTIFACT_CANDIDATES = (
+    "stage1a_le_html.jsonl",
     "stage1_5_gapfill.jsonl",
     "stage2_eval.jsonl",
     "training.jsonl",
@@ -56,6 +57,12 @@ ARTIFACT_CANDIDATES = (
     "adapter_val.jsonl",
     "test_kvp_uids.json",
     "manifests/crawl_run.json",
+    "provenance/source_filter.json",
+    "provenance/source_filter_excluded_passages.jsonl",
+    "provenance/html_only/manifest.json",
+    "provenance/html_only/source_revisions.jsonl",
+    "provenance/html_only/source_chunks.jsonl",
+    "provenance/html_only/entailments.jsonl",
     "provenance/source_revisions.jsonl",
     "provenance/source_chunks.jsonl",
     "provenance/entailments.jsonl",
@@ -133,9 +140,27 @@ def file_manifest(path: Path, dataset_dir: Path, artifact_kind: str) -> dict[str
     return manifest
 
 
+HTML_ONLY_LINEAGE_CANONICALS = {
+    "provenance/source_revisions.jsonl",
+    "provenance/source_chunks.jsonl",
+    "provenance/entailments.jsonl",
+}
+
+
+def source_filter_doc_kind(dataset_dir: Path) -> str | None:
+    source_filter = read_json_if_exists(dataset_dir / "provenance" / "source_filter.json")
+    value = source_filter.get("source_doc_kind_filter")
+    return str(value) if value else None
+
+
 def list_existing_artifacts(dataset_dir: Path) -> list[dict[str, Any]]:
     artifacts = []
+    html_only = source_filter_doc_kind(dataset_dir) == "html"
     for rel_path in ARTIFACT_CANDIDATES:
+        if html_only and rel_path in HTML_ONLY_LINEAGE_CANONICALS:
+            filtered = dataset_dir / "provenance" / "html_only" / Path(rel_path).name
+            if filtered.exists():
+                continue
         path = dataset_dir / rel_path
         if path.exists():
             artifacts.append(file_manifest(path, dataset_dir, artifact_kind="dataset_input"))

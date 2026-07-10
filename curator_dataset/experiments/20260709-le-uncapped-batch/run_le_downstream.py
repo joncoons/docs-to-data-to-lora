@@ -267,11 +267,127 @@ def filter_rows_by_passage(rows: list[KVPRow], passage_ids: set[str]) -> list[KV
     return [row for row in rows if row.passage_id in passage_ids]
 
 
+def _list_values(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [str(item) for item in value if str(item)]
+    if isinstance(value, str) and value:
+        return [value]
+    return []
+
+
 def _doc_kind_counts(passages: list[Passage]) -> dict[str, int]:
     counts: dict[str, int] = {}
     for passage in passages:
         counts[passage.doc_kind] = counts.get(passage.doc_kind, 0) + 1
     return counts
+
+
+def _jsonl_projection(
+    input_path: Path,
+    output_path: Path,
+    predicate: Any,
+) -> dict[str, Any]:
+    input_rows = 0
+    selected_rows = 0
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8") as out:
+        if input_path.exists():
+            for line in input_path.read_text().splitlines():
+                if not line.strip():
+                    continue
+                input_rows += 1
+                row = json.loads(line)
+                if predicate(row):
+                    selected_rows += 1
+                    out.write(json.dumps(row, sort_keys=True) + "\n")
+    return {
+        "path": str(output_path.relative_to(output_path.parents[2])),
+        "input": input_rows,
+        "selected": selected_rows,
+        "excluded": input_rows - selected_rows,
+    }
+
+
+def write_selected_lineage_artifacts(
+    output_dir: Path,
+    *,
+    source_doc_kind: str,
+    selected_passages: list[Passage],
+    selected_stage1a_rows: list[KVPRow],
+) -> dict[str, Any]:
+    selected_passage_ids = {passage.passage_id for passage in selected_passages}
+    selected_source_urls = {passage.url for passage in selected_passages}
+    selected_chunk_ids: set[str] = set()
+    selected_source_revision_ids: set[str] = set()
+    selected_entailment_ids: set[str] = set()
+
+    for passage in selected_passages:
+        selected_chunk_ids.update(_list_values(passage.chunk_ids))
+        selected_chunk_ids.update(_list_values(passage.source_chunk_ids))
+        selected_source_revision_ids.update(_list_values(passage.source_revision_id))
+
+    for row in selected_stage1a_rows:
+        selected_chunk_ids.update(_list_values(row.source_chunk_ids))
+        selected_source_revision_ids.update(_list_values(row.source_revision_ids))
+        selected_entailment_ids.update(_list_values(row.entailment_id))
+
+    lineage_dir_name = "html_only" if source_doc_kind == "html" else "selected"
+    lineage_dir = output_dir / "provenance" / lineage_dir_name
+
+    def matching_doc_kind(row_doc_kind: Any) -> bool:
+        return source_doc_kind == "all" or row_doc_kind == source_doc_kind
+
+    source_chunks = _jsonl_projection(
+        output_dir / "provenance" / "source_chunks.jsonl",
+        lineage_dir / "source_chunks.jsonl",
+        lambda row: matching_doc_kind((row.get("metadata") or {}).get("doc_kind"))
+        and (
+            row.get("chunk_id") in selected_chunk_ids
+            or (row.get("metadata") or {}).get("passage_id") in selected_passage_ids
+        ),
+    )
+    source_revisions = _jsonl_projection(
+        output_dir / "provenance" / "source_revisions.jsonl",
+        lineage_dir / "source_revisions.jsonl",
+        lambda row: matching_doc_kind((row.get("classification") or {}).get("doc_kind"))
+        and (
+            row.get("source_revision_id") in selected_source_revision_ids
+            or row.get("canonical_url") in selected_source_urls
+            or row.get("final_url") in selected_source_urls
+        ),
+    )
+    entailments = _jsonl_projection(
+        output_dir / "provenance" / "entailments.jsonl",
+        lineage_dir / "entailments.jsonl",
+        lambda row: (row.get("metadata") or {}).get("passage_id") in selected_passage_ids
+        and (
+            not selected_entailment_ids
+            or row.get("entailment_id") in selected_entailment_ids
+        ),
+    )
+
+    manifest = {
+        "schema_version": "le_downstream.selected_lineage.v1",
+        "source_doc_kind_filter": source_doc_kind,
+        "selected_passages": len(selected_passage_ids),
+        "selected_stage1a_rows": len(selected_stage1a_rows),
+        "selected_source_revision_ids": len(selected_source_revision_ids),
+        "selected_source_chunk_ids": len(selected_chunk_ids),
+        "selected_entailment_ids": len(selected_entailment_ids),
+        "lineage_dir": str(lineage_dir.relative_to(output_dir)),
+        "artifacts": {
+            "source_revisions": source_revisions,
+            "source_chunks": source_chunks,
+            "entailments": entailments,
+        },
+    }
+    (lineage_dir / "manifest.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return manifest
 
 
 def write_source_filter_artifacts(
@@ -295,6 +411,13 @@ def write_source_filter_artifacts(
     with html_stage1a_path.open("w", encoding="utf-8") as stream:
         for row in selected_stage1a_rows:
             stream.write(row.model_dump_json() + "\n")
+
+    selected_lineage = write_selected_lineage_artifacts(
+        output_dir,
+        source_doc_kind=source_doc_kind,
+        selected_passages=selected_passages,
+        selected_stage1a_rows=selected_stage1a_rows,
+    )
 
     excluded_path = provenance_dir / "source_filter_excluded_passages.jsonl"
     with excluded_path.open("w", encoding="utf-8") as stream:
@@ -328,8 +451,10 @@ def write_source_filter_artifacts(
         },
         "outputs": {
             "html_stage1a_rows": "stage1a_le_html.jsonl",
+            "selected_lineage_dir": selected_lineage["lineage_dir"],
             "excluded_passages": "provenance/source_filter_excluded_passages.jsonl",
         },
+        "selected_lineage": selected_lineage,
     }
     (provenance_dir / "source_filter.json").write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n",

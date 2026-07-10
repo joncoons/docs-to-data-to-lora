@@ -99,6 +99,16 @@ LINEAGE_FILE_CANDIDATES = (
         "dataset_samples",
     ),
     LineageFile(
+        Path("provenance/source_filter.json"),
+        "provenance/source_filter.json",
+        "source_filter",
+    ),
+    LineageFile(
+        Path("provenance/html_only/manifest.json"),
+        "provenance/html_only/manifest.json",
+        "html_only_lineage_manifest",
+    ),
+    LineageFile(
         Path("provenance/delta_manifest.json"),
         "provenance/delta_manifest.json",
         "delta_manifest",
@@ -225,6 +235,12 @@ LINEAGE_FILE_CANDIDATES = (
     ),
 )
 
+HTML_ONLY_LINEAGE_OVERRIDES = {
+    Path("provenance/source_revisions.jsonl"): Path("provenance/html_only/source_revisions.jsonl"),
+    Path("provenance/source_chunks.jsonl"): Path("provenance/html_only/source_chunks.jsonl"),
+    Path("provenance/entailments.jsonl"): Path("provenance/html_only/entailments.jsonl"),
+}
+
 
 @dataclass(frozen=True)
 class DatasetSpec:
@@ -332,6 +348,26 @@ def load_json_if_exists(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}
     return json.loads(path.read_text())
+
+
+def source_filter_doc_kind(source_dir: Path) -> str | None:
+    source_filter = load_json_if_exists(source_dir / "provenance" / "source_filter.json")
+    value = source_filter.get("source_doc_kind_filter")
+    return str(value) if value else None
+
+
+def resolve_lineage_candidate(source_dir: Path, candidate: LineageFile) -> LineageFile:
+    if source_filter_doc_kind(source_dir) != "html":
+        return candidate
+    override = HTML_ONLY_LINEAGE_OVERRIDES.get(candidate.source)
+    if not override or not (source_dir / override).exists():
+        return candidate
+    return LineageFile(
+        source=override,
+        repo_path=candidate.repo_path,
+        artifact_kind=f"html_only_{candidate.artifact_kind}",
+        required=candidate.required,
+    )
 
 
 def load_jsonl_if_exists(path: Path) -> list[dict[str, Any]]:
@@ -459,14 +495,15 @@ def default_dataset_specs(
 
 
 def discover_provenance_artifacts(source_dir: Path) -> list[dict[str, Any]]:
+    lineage_candidates = [
+        source_dir / resolve_lineage_candidate(source_dir, item).source
+        for item in LINEAGE_FILE_CANDIDATES
+    ]
     candidates = [
         source_dir / "manifests" / "crawl_run.json",
         source_dir / "manifests" / "dataset_version_manifest.json",
         source_dir / "provenance" / "dataset_version_manifest.json",
-        source_dir / "provenance" / "source_revisions.jsonl",
-        source_dir / "provenance" / "source_chunks.jsonl",
-        source_dir / "provenance" / "entailments.jsonl",
-        source_dir / "provenance" / "dataset_samples.jsonl",
+        *lineage_candidates,
         source_dir / "provenance" / "delta_manifest.json",
         source_dir / "provenance" / "gap_manifest.json",
         source_dir / "data_designer" / "request_manifest.json",
@@ -512,25 +549,27 @@ def load_dataset_version_manifest(source_dir: Path) -> dict[str, Any]:
 def discover_lineage_files(source_dir: Path) -> list[LineageFile]:
     files: list[LineageFile] = []
     for candidate in LINEAGE_FILE_CANDIDATES:
-        source = source_dir / candidate.source
+        resolved = resolve_lineage_candidate(source_dir, candidate)
+        source = source_dir / resolved.source
         if source.exists():
             files.append(
                 LineageFile(
                     source=source,
-                    repo_path=candidate.repo_path,
-                    artifact_kind=candidate.artifact_kind,
-                    required=candidate.required,
+                    repo_path=resolved.repo_path,
+                    artifact_kind=resolved.artifact_kind,
+                    required=resolved.required,
                 )
             )
     return files
 
 
 def missing_required_lineage_files(source_dir: Path) -> list[Path]:
-    return [
-        source_dir / candidate.source
-        for candidate in LINEAGE_FILE_CANDIDATES
-        if candidate.required and not (source_dir / candidate.source).exists()
-    ]
+    missing = []
+    for candidate in LINEAGE_FILE_CANDIDATES:
+        resolved = resolve_lineage_candidate(source_dir, candidate)
+        if resolved.required and not (source_dir / resolved.source).exists():
+            missing.append(source_dir / resolved.source)
+    return missing
 
 
 def build_description(
