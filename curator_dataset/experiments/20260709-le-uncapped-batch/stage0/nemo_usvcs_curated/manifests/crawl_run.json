@@ -1,0 +1,32 @@
+{
+  "completed_at": "2026-07-10T01:06:57Z",
+  "crawl_run_id": "crawlrun_0051872e5909ddd7ea326cd3",
+  "crawler": {
+    "config_hash": "sha256:f7c20d9cd459dab1d98dba3561ae74316339d61ecd05cc56af9cbb35366545b5",
+    "git_commit": "unknown",
+    "name": "docs-to-data-to-lora-stage0",
+    "version": "v1"
+  },
+  "metrics": {
+    "passage_count": 486,
+    "raw_chunk_count": 1289,
+    "url_registry_matched_url_count": 0,
+    "url_registry_record_count": 0
+  },
+  "outputs": {
+    "delta_manifest_uri": null,
+    "source_chunks_uri": "provenance/source_chunks.jsonl",
+    "source_revisions_uri": "provenance/source_revisions.jsonl"
+  },
+  "previous_crawl_run_id": null,
+  "recrawl_reason": "initial",
+  "schema_version": "provenance.v1",
+  "scope": {
+    "allowed_url_prefixes": [],
+    "binary_host_allowlist": [],
+    "excluded_url_patterns": [],
+    "seed_url_set_hash": "sha256:41d592490c85910ba0aef263c75140a470e1824d07ed63837d00cfb92be3f499"
+  },
+  "started_at": "2026-07-10T01:06:55Z",
+  "status": "completed"
+}
