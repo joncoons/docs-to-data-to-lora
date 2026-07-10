@@ -1,7 +1,7 @@
 {
   "batch_parse_attempts": 2,
   "batched_kvp_max_tokens": 16384,
-  "completed_before_start": 461,
+  "completed_before_start": 485,
   "endpoint": "https://inference-api.nvidia.com/v1",
   "failure_payloads": "failure_payloads/stage1a_raw_failures.jsonl",
   "input_passages": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/passages.jsonl",
@@ -42,5 +42,5 @@
     }
   ],
   "temperature": 0.95,
-  "updated_at": "2026-07-10T10:39:18.621438Z"
+  "updated_at": "2026-07-10T10:54:16.233718Z"
 }
