@@ -41,8 +41,10 @@ The pipeline has eight stages, run in order for each collection:
    hand under-represented products to NeMo Data Designer for grounded synthetic
    generation. Output: `bias_report.json` + optional `stage1_5_gapfill.jsonl`.
 6. **Stage 2 — QA Admission + Refinement**: Curator-backed LLM quality gating
-   with a frontier-grade model — refine or drop each pair based on source
-   grounding and answer fidelity. Output: `stage2_eval.jsonl`.
+   with a Super 120B-class or similar model by default — refine or drop each
+   pair based on source grounding and answer fidelity. Escalate to
+   Ultra/foundation-grade only for critical audits or small, high-value
+   datasets. Output: `stage2_eval.jsonl`.
 7. **Stage 3 — NeMo Curator**: exact dedup, MinHash fuzzy dedup, length filter,
    non-LLM quality filters, train/val split. Outputs: `training.jsonl` +
    `validation.jsonl`.
@@ -91,10 +93,13 @@ that materially change dataset coverage, cost, and recovery behavior.
   frontier-grade model, not a small local fallback, because it can otherwise
   introduce style drift or shallow paraphrases into the training mix.
 - Stage 2 is a required logical quality/admission stage. The preferred execution
-  surface is Curator-backed LLM filtering/refinement using a frontier-grade model
-  such as Nemotron 3 Ultra 550B. The older direct `qa_eval` prompt path remains
-  useful as a local fallback and ablation path, but should not be the canonical
-  production posture when Curator LLM quality tooling is available.
+  surface is Curator-backed LLM filtering/refinement using a Super 120B-class
+  model such as Nemotron 3 Super by default. Escalate to Ultra or another
+  foundation/frontier-grade model only when the dataset is small, the audit is
+  critical, or the expected value justifies the higher cost. The older direct
+  `qa_eval` prompt path remains useful as a local fallback and ablation path,
+  but should not be the canonical production posture when Curator LLM quality
+  tooling is available.
 
 ---
 
@@ -648,7 +653,7 @@ splitting. Keeping this boundary avoids three failure modes:
   earlier semantic gate rejects it.
 - Train/validation splits become polluted if bad rows are only identified after
   splitting, because removing them later changes split composition and lineage.
-- Expensive native Curator work is wasted on rows that a frontier QA gate could
+- Expensive native Curator work is wasted on rows that a semantic QA gate could
   have repaired or rejected first.
 
 The net effect is a cleaner Stage 3 input contract: every row handed to Curator
@@ -659,9 +664,12 @@ local reason in `stage2_dropped.jsonl` plus `provenance/stage2_quality.jsonl`.
 
 For every pair from Stages 1A + 1B + 1C plus optional Stage 1.5 synthetic rows:
 
-1. Call the configured frontier-grade QA model with the QA-eval prompt (current
-   Q, current A, source `context`). For the current NIM/NeMo experiments this
-   should be Nemotron 3 Ultra 550B through an OpenAI-compatible endpoint.
+1. Call the configured QA admission model with the QA-eval prompt (current Q,
+   current A, source `context`). The default should be Nemotron 3 Super
+   120B-class or a similar high-quality dense model through an
+   OpenAI-compatible endpoint. Use Nemotron 3 Ultra 550B, or another
+   foundation/frontier-grade model, only for critical admission audits or
+   small high-value datasets where the cost is justified.
 2. Parse `QAEvaluation`:
    - If the model rewrites Q or A → flag `refined: true`, write the new pair.
    - If the model indicates the pair is ungrounded and cannot be repaired from
@@ -698,21 +706,23 @@ should remain available for smoke tests, fallback execution, and A/B comparison
 against native Curator quality results.
 
 From an operator's perspective, Stage 2 is the point where model choice matters
-most for dataset integrity. It should use a frontier-grade model such as
-Nemotron 3 Ultra 550B, low temperature, no-think/structured-output controls when
-needed, and durable resume settings appropriate for hosted endpoint rate limits.
-Stage 3 should not be asked to infer source grounding from generic text-quality
-signals; it should consume the Stage 2-admitted rows and the Stage 2 quality
-sidecar.
+most for dataset integrity and cost. The default should be a Super 120B-class
+model such as Nemotron 3 Super, at low temperature, with
+no-think/structured-output controls when needed and durable resume settings
+appropriate for hosted endpoint rate limits. Escalate to Nemotron 3 Ultra 550B
+or another foundation/frontier-grade model when a critical audit needs the
+extra reasoning margin. Stage 3 should not be asked to infer source grounding
+from generic text-quality signals; it should consume the Stage 2-admitted rows
+and the Stage 2 quality sidecar.
 
 ### Agreement-bias caveat
 
-Even with a frontier-grade model, Stage 2 can still inherit agreement bias if the
-same model family generated a substantial share of the rows being judged. Stage
-4 compensates by independently sampling post-Curator output with a separate
-judge model. If Stage 2 uses Nemotron 3 Ultra, Stage 4 should use a different
-frontier-level judge such as Claude Sonnet 4.6 through the NVIDIA-hosted
-OpenAI-compatible endpoint.
+Even with a strong QA admission model, Stage 2 can still inherit agreement bias
+if the same model family generated a substantial share of the rows being
+judged. Stage 4 compensates by independently sampling post-Curator output with
+a separate judge model. If Stage 2 is escalated to Nemotron 3 Ultra, Stage 4
+should use a different frontier-level judge such as Claude Sonnet 4.6 through
+the NVIDIA-hosted OpenAI-compatible endpoint.
 
 ---
 
@@ -876,9 +886,13 @@ Supported flags:
 --stage1a-mode legacy|batched          choose per-premise or batched KVP expansion
 --stage1c-selection-mode MODE          stratified, top_density, or all
 --stage2-qa-endpoints URLS             comma-separated OpenAI-compatible QA endpoints
---stage2-qa-model MODEL                frontier QA admission model
+--stage2-qa-model MODEL                QA admission model; Super 120B-class by default
 --stage2-qa-max-tokens N               QA admission completion budget
 --stage2-execution-surface LABEL       audit label, e.g. curator_llm_quality
+
+LE experiment runner only:
+--stage2-target ENDPOINT=MODEL[@CTX]   Stage 2 QA endpoint/model override
+--stage2-canonical-model MODEL         canonical Stage 2 model recorded in summaries
 ```
 
 Each stage writes its output file and a checkpoint to `<output>/progress.json`.
@@ -973,11 +987,12 @@ model will see at inference time in a RAG setting.
 
 ### External judge for closed-loop avoidance
 
-Stage 2 uses a frontier-grade model to evaluate and refine rows generated by the
-LE/synthesis stages. Agreement bias is still real when the QA model resembles or
-matches the generation model: models tend to approve output that resembles their
-own generation style. Stage 4 breaks this loop by using an independent judge
-model that had no role in generating or admitting the data as the final gate.
+Stage 2 uses a strong QA admission model to evaluate and refine rows generated
+by the LE/synthesis stages. Agreement bias is still real when the QA model
+resembles or matches the generation model: models tend to approve output that
+resembles their own generation style. Stage 4 breaks this loop by using an
+independent judge model that had no role in generating or admitting the data as
+the final gate.
 This pattern follows the `[[feedback_external_frontier_judge]]` principle: for
 LLM-as-judge tasks, independence over self-contained is the priority.
 

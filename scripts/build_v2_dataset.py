@@ -220,7 +220,8 @@ def main() -> int:
                     help="Optional comma-separated endpoint override for Stage 2 QA admission.")
     ap.add_argument("--stage2-qa-model", default=os.getenv("PIPELINE_STAGE2_QA_MODEL"),
                     help="Optional model override for Stage 2 QA admission, e.g. "
-                         "nvidia/nvidia/nemotron-3-ultra.")
+                         "nvidia/nvidia/nemotron-3-super-v3; use Ultra only for "
+                         "critical audits.")
     ap.add_argument("--stage2-qa-api-key", default=os.getenv("PIPELINE_STAGE2_QA_API_KEY"),
                     help="Optional API key override for Stage 2 QA admission.")
     ap.add_argument("--stage2-qa-temperature", type=float,

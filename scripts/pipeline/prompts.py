@@ -159,7 +159,7 @@ Output JSON (2 or 3 pairs — omit procedural if not applicable):
 # ── Stage 2: QA admission/refinement ─────────────────────────────────────────
 
 QA_EVAL_SYSTEM = (
-    "You are a frontier-grade technical documentation QA gate. Verify and refine "
+    "You are a rigorous technical documentation QA gate. Verify and refine "
     "question-answer pairs against their source text. Return ONLY valid JSON."
 )
 

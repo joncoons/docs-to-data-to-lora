@@ -42,13 +42,17 @@ from scripts.pipeline.stage3_curator import run_stage3  # noqa: E402
 log = logging.getLogger("le_downstream")
 
 STAGE_ORDER = ("1b", "1c", "1.5", "2", "3", "finalize")
-# This runner starts after Stage 1A. These defaults apply only to downstream
-# augmentation/audit calls; raw LE extraction/KVP generation stays with the
-# existing Stage 1A Super output in stage1a_le.jsonl.
+# This runner starts after Stage 1A. Synthesis defaults remain on Ultra-class
+# targets, while Stage 2 QA admission has a separate Super 120B-class default to
+# keep the required admission pass cost-conscious.
 DEFAULT_TARGETS = (
     "https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-ultra",
 )
 DEFAULT_CANONICAL_MODEL = "nvidia/nvidia/nemotron-3-ultra"
+DEFAULT_STAGE2_TARGETS = (
+    "https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-super-v3",
+)
+DEFAULT_STAGE2_CANONICAL_MODEL = "nvidia/nvidia/nemotron-3-super-v3"
 DEFAULT_SOURCE_DOC_KIND = "all"
 COLLECTION_DOMAIN = {
     "nim_curated": "NVIDIA NIM",
@@ -604,6 +608,8 @@ def write_summary(
     collection: str,
     targets: list[LLMTarget],
     canonical_model: str,
+    stage2_targets: list[LLMTarget],
+    stage2_canonical_model: str,
     temperature: float,
     stage2_execution_surface: str,
     stage2_max_tokens: int,
@@ -631,6 +637,11 @@ def write_summary(
             for target in targets
         ],
         "canonical_model": canonical_model,
+        "stage2_targets": [
+            {k: v for k, v in asdict(target).items() if k != "api_key"}
+            for target in stage2_targets
+        ],
+        "stage2_canonical_model": stage2_canonical_model,
         "temperature": temperature,
         "stage2_execution_surface": stage2_execution_surface,
         "stage2_max_tokens": stage2_max_tokens,
@@ -653,9 +664,13 @@ def write_summary(
         f"- Stage 2 max tokens: `{stage2_max_tokens}`",
         f"- Source filter: `{source_filter.get('source_doc_kind_filter')}`",
         "",
-        "## Targets",
+        "## Synthesis Targets",
     ]
     for target in payload["targets"]:
+        max_len = target["max_model_len"] or "uncapped"
+        lines.append(f"- `{target['endpoint']}` -> `{target['model']}` (`{max_len}`)")
+    lines.extend(["", "## Stage 2 QA Targets"])
+    for target in payload["stage2_targets"]:
         max_len = target["max_model_len"] or "uncapped"
         lines.append(f"- `{target['endpoint']}` -> `{target['model']}` (`{max_len}`)")
     lines.extend(["", "## Source Filter"])
@@ -685,6 +700,16 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--es-host", default=None)
     ap.add_argument("--target", action="append", default=None)
     ap.add_argument("--canonical-model", default=None)
+    ap.add_argument(
+        "--stage2-target",
+        action="append",
+        default=None,
+        help=(
+            "Stage 2 QA target override as ENDPOINT=MODEL[@MAX_CONTEXT_TOKENS]. "
+            "Defaults to hosted Nemotron 3 Super; repeat for load balancing."
+        ),
+    )
+    ap.add_argument("--stage2-canonical-model", default=None)
     ap.add_argument("--api-key", default=None)
     ap.add_argument("--temperature", type=float, default=0.2)
     ap.add_argument(
@@ -807,15 +832,32 @@ def main() -> int:
         temperature=args.temperature,
         request_timeout_s=args.request_timeout_s,
     )
+    stage2_targets = parse_targets(
+        args.stage2_target or list(DEFAULT_STAGE2_TARGETS),
+        explicit_api_key=args.api_key,
+    )
+    stage2_canonical_model = args.stage2_canonical_model or DEFAULT_STAGE2_CANONICAL_MODEL
+    stage2_llm = TargetAwareLLMClient(
+        targets=stage2_targets,
+        canonical_model=stage2_canonical_model,
+        max_workers=cfg.max_workers,
+        min_interval_s=cfg.min_request_interval_s,
+        retry_attempts=cfg.retry_attempts,
+        retry_base_delay_s=cfg.retry_base_delay_s,
+        no_think=True,
+        temperature=args.temperature,
+        request_timeout_s=args.request_timeout_s,
+    )
     es = make_es_client(cfg.es_host, get_es_password())
 
     log.info(
-        "LE downstream start: collection=%s output=%s stage=%s resume=%s targets=%s",
+        "LE downstream start: collection=%s output=%s stage=%s resume=%s targets=%s stage2_targets=%s",
         args.collection,
         output_dir,
         args.stage,
         args.resume,
         [(target.endpoint, target.model, target.max_model_len) for target in targets],
+        [(target.endpoint, target.model, target.max_model_len) for target in stage2_targets],
     )
 
     manifest: dict[str, Any] | None = None
@@ -900,7 +942,7 @@ def main() -> int:
             log.info("Stage 2: progress is marked done; checking durable row-level resume")
         run_stage2(
             all_pre_eval,
-            llm,
+            stage2_llm,
             output_dir,
             max_workers=cfg.max_workers,
             resume=args.resume,
@@ -964,6 +1006,8 @@ def main() -> int:
         collection=args.collection,
         targets=targets,
         canonical_model=canonical_model,
+        stage2_targets=stage2_targets,
+        stage2_canonical_model=stage2_canonical_model,
         temperature=args.temperature,
         stage2_execution_surface=stage2_execution_surface,
         stage2_max_tokens=stage2_max_tokens,

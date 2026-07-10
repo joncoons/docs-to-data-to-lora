@@ -37,9 +37,12 @@ DEFAULT_STAGE2_QA_ENDPOINTS: tuple[str, ...] = tuple(
     ).split(",")
     if endpoint.strip()
 )
+# Stage 2 defaults to Super 120B-class QA for cost. Override with Ultra or
+# another foundation/frontier-grade model only when the admission pass is
+# operationally critical enough to justify the extra spend.
 DEFAULT_STAGE2_QA_MODEL = os.environ.get(
     "PIPELINE_STAGE2_QA_MODEL",
-    "nvidia/nvidia/nemotron-3-ultra",
+    "nvidia/nvidia/nemotron-3-super-v3",
 )
 
 

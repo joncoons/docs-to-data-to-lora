@@ -71,14 +71,21 @@ Stage 1B and Stage 1C should use a frontier-level model such as Nemotron 3
 Ultra. Stage 1A extraction should stay on Super unless an experiment explicitly
 overrides it.
 
-Stage 2 QA/admission should use a frontier-grade model and should migrate to
-Curator-backed LLM quality filtering/refinement where available. For the
-current experiment, use Nemotron 3 Ultra 550B for this semantic admission
-gate. Operationally, Stage 2 is the pre-Curator semantic gate: it repairs or
-rejects source-grounded QA rows before Stage 3 spends work on deduplication,
-heuristic quality filters, and train/validation splitting. This keeps raw
-LLM-generated rows from polluting the Curator input contract and preserves a
-local admission/rejection reason in `stage2_dropped.jsonl` plus
+Stage 2 has separate target knobs so QA admission can stay cost-conscious even
+when Stage 1B/1C synthesis uses a frontier target. Use `--stage2-target` and
+`--stage2-canonical-model` to override the default hosted Super target or to
+load-balance Stage 2 across several compatible endpoints.
+
+Stage 2 QA/admission should default to a Super 120B-class model such as
+Nemotron 3 Super, while retaining an explicit option to escalate to Nemotron 3
+Ultra 550B or another foundation/frontier-grade model for critical audits or
+small high-value datasets. The execution surface should migrate to
+Curator-backed LLM quality filtering/refinement where available.
+Operationally, Stage 2 is the pre-Curator semantic gate: it repairs or rejects
+source-grounded QA rows before Stage 3 spends work on deduplication, heuristic
+quality filters, and train/validation splitting. This keeps raw LLM-generated
+rows from polluting the Curator input contract and preserves a local
+admission/rejection reason in `stage2_dropped.jsonl` plus
 `provenance/stage2_quality.jsonl`. The direct QA runner remains useful for
 smoke tests, fallback execution, and ablation; Stage 4 should remain
 independent, for example Claude Sonnet 4.6 via the NVIDIA-hosted
