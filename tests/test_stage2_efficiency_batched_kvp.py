@@ -1,31 +1,11 @@
-"""Tests for the isolated Stage 1A batched-KVP prototype."""
+"""Tests for Stage 1A batched-KVP expansion."""
 from __future__ import annotations
 
-import importlib.util
 import json
-import sys
-from pathlib import Path
 from unittest.mock import MagicMock
 
+import scripts.pipeline.stage1a_batched_kvp as batched
 from scripts.pipeline.models import Passage
-
-
-def _load_module():
-    module_path = (
-        Path(__file__).resolve().parents[1]
-        / "refactors"
-        / "stage2-efficiency"
-        / "stage1a_batched_kvp.py"
-    )
-    spec = importlib.util.spec_from_file_location("stage1a_batched_kvp_refactor", module_path)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    assert spec.loader is not None
-    spec.loader.exec_module(module)
-    return module
-
-
-batched = _load_module()
 
 
 def _passage() -> Passage:
@@ -103,12 +83,54 @@ def test_process_passage_uses_one_batch_call_for_multiple_premises():
     rows = batched.process_passage_1a_batched(_passage(), llm)
 
     assert len(rows) == 2
+    assert llm.call.call_args_list[0].kwargs["max_tokens"] == 16384
     assert llm.call.call_count == 2
     assert [row.premise_index for row in rows] == [0, 1]
     assert all(row.entailment_index == 0 for row in rows)
     assert all(row.entailment_id for row in rows)
     assert all(row.source_revision_ids == ["srcrev_test"] for row in rows)
     assert all(row.source_chunk_ids == ["chunk_test"] for row in rows)
+
+
+def test_process_passage_batches_all_premises_without_cap():
+    llm = MagicMock()
+    llm.model = "model"
+    llm.temperature = 0.2
+    premises = [f"NIM premise {idx}." for idx in range(5)]
+    le_resp = json.dumps({
+        "entailments": [
+            {
+                "conclusion": "NIM runtime behavior can be configured.",
+                "premises": premises,
+            }
+        ]
+    })
+    batch_responses = [
+        json.dumps({
+            "pairs": [
+                {
+                    "entailment_index": 0,
+                    "premise_index": premise_index,
+                    "question": f"Question {premise_index}?",
+                    "answer": f"Answer {premise_index}.",
+                }
+                for premise_index in premise_indexes
+            ]
+        })
+        for premise_indexes in ([0, 1], [2, 3], [4])
+    ]
+    llm.call.side_effect = [le_resp, *batch_responses]
+
+    rows = batched.process_passage_1a_batched(
+        _passage(),
+        llm,
+        max_premises_per_batch=2,
+    )
+
+    assert len(rows) == 5
+    assert llm.call.call_count == 4
+    assert [row.premise_index for row in rows] == [0, 1, 2, 3, 4]
+    assert all(row.extractor_prompt_hash == batched.BATCHED_PROMPT_HASH for row in rows)
 
 
 def test_process_passage_falls_back_for_missing_batched_pair():

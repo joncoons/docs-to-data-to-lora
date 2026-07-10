@@ -816,6 +816,7 @@ def main() -> int:
                 num_candidates=cfg.knn_num_candidates,
                 top_neighbors=cfg.knn_top_neighbors,
                 max_context_tokens=cfg.knn_max_context_tokens,
+                resume=args.resume,
             )
             completed.add("1b")
             write_progress(progress_path, completed)

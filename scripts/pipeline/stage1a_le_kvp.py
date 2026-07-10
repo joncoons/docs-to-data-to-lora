@@ -134,7 +134,7 @@ def process_passage_1a(passage: Passage, llm: LLMClient) -> list[KVPRow]:
     """Run logical entailment extraction and KVP expansion on one passage."""
     rows: list[KVPRow] = []
 
-    le_raw = llm.call(LE_SYSTEM, LE_USER.format(text=passage.text), max_tokens=8192)
+    le_raw = llm.call(LE_SYSTEM, LE_USER.format(text=passage.text), max_tokens=16384)
     if not le_raw:
         return rows
     le_list = parse_le_response(le_raw)
@@ -158,7 +158,7 @@ def process_passage_1a(passage: Passage, llm: LLMClient) -> list[KVPRow]:
         source_systems = passage_source_systems(passage)
         source_kinds = passage_source_kinds(passage)
         modalities = passage_modalities(passage)
-        for prem_idx, premise in enumerate(ent.premises[:3]):
+        for prem_idx, premise in enumerate(ent.premises):
             kvp_raw = llm.call(
                 KVP_SYSTEM,
                 KVP_USER.format(premise=premise, conclusion=ent.conclusion, text=passage.text),

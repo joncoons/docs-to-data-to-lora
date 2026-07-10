@@ -17,8 +17,8 @@ A passage may cover multiple topics — each warrants its own entailment.
 
 For each entailment:
 - conclusion: the central claim or main topic of that thread (one sentence)
-- premises: 1-3 supporting facts that logically justify this conclusion;
-  derive from the text if not explicit
+- premises: one or more supporting facts that logically justify this conclusion;
+  derive from the text if not explicit, and include all facts needed for support
 - context: ancillary technical details specific to this entailment (1-2 sentences)
 - entities: comma-separated list of notable entities for this entailment
 
@@ -26,8 +26,8 @@ Rules:
 - All content must come ONLY from the passage — no outside knowledge
 - Ensure every truth assignment satisfying the premises also satisfies the
   corresponding conclusion
-- Return 1 to 10 entailments depending on how many distinct topics the
-  passage covers
+- Return as many entailments as needed to cover the distinct topics the
+  passage contains
 
 Note: 'recommendations' field exists in LogEntailment with default="" for
 downstream compatibility; not requested here to keep output tight.

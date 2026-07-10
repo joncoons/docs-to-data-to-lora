@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -37,6 +38,7 @@ from scripts.pipeline.models import KVPRow, Passage  # noqa: E402
 from scripts.pipeline.progress import Progress  # noqa: E402
 from scripts.pipeline.provenance_io import write_jsonl  # noqa: E402
 from scripts.pipeline.stage0_corpus_prep import run_stage0  # noqa: E402
+from scripts.pipeline.stage1a_batched_kvp import run_stage1a_batched  # noqa: E402
 from scripts.pipeline.stage1a_le_kvp import run_stage1a  # noqa: E402
 from scripts.pipeline.stage1b_synthesis import run_stage1b  # noqa: E402
 from scripts.pipeline.stage1c_instruction import run_stage1c  # noqa: E402
@@ -44,6 +46,11 @@ from scripts.pipeline.stage1_5_gapfill import run_stage1_5  # noqa: E402
 from scripts.pipeline.stage2_qa_eval import run_stage2  # noqa: E402
 from scripts.pipeline.stage3_curator import run_stage3  # noqa: E402
 from scripts.pipeline.stage4_validation import run_stage4  # noqa: E402
+
+
+DEFAULT_STAGE1A_BATCHED_ENDPOINTS = "https://inference-api.nvidia.com/v1"
+DEFAULT_STAGE1A_BATCHED_MODEL = "nvidia/nvidia/nemotron-3-ultra"
+DEFAULT_STAGE1A_BATCHED_TEMPERATURE = 0.95
 
 
 def _read_jsonl_rows(path: Path) -> list[KVPRow]:
@@ -56,6 +63,80 @@ def _read_passages(path: Path) -> list[Passage]:
     if not path.exists():
         return []
     return [Passage.model_validate_json(line) for line in path.read_text().splitlines() if line]
+
+
+def _parse_endpoints(value: str) -> list[str]:
+    endpoints = [endpoint.strip() for endpoint in value.split(",") if endpoint.strip()]
+    if not endpoints:
+        raise ValueError("At least one Stage 1A endpoint is required")
+    return endpoints
+
+
+def _endpoint_requires_api_key(endpoints: list[str]) -> bool:
+    return any(
+        "inference-api.nvidia.com" in endpoint
+        or "integrate.api.nvidia.com" in endpoint
+        for endpoint in endpoints
+    )
+
+
+def _build_stage1a_llm(args: argparse.Namespace, cfg: Config) -> LLMClient:
+    if args.stage1a_nim_endpoints:
+        endpoints = _parse_endpoints(args.stage1a_nim_endpoints)
+    elif args.stage1a_mode == "batched":
+        endpoints = [DEFAULT_STAGE1A_BATCHED_ENDPOINTS]
+    else:
+        endpoints = cfg.nim_endpoints
+
+    if args.stage1a_model:
+        model = args.stage1a_model
+    elif args.stage1a_mode == "batched":
+        model = DEFAULT_STAGE1A_BATCHED_MODEL
+    else:
+        model = cfg.super120b_model
+
+    if args.stage1a_temperature is not None:
+        temperature = args.stage1a_temperature
+    elif args.stage1a_mode == "batched":
+        temperature = DEFAULT_STAGE1A_BATCHED_TEMPERATURE
+    else:
+        temperature = 0.2
+
+    api_key = args.stage1a_api_key
+    if api_key is None and _endpoint_requires_api_key(endpoints):
+        api_key = get_external_judge_api_key()
+    return LLMClient(
+        endpoints=endpoints,
+        model=model,
+        api_key=api_key or "local",
+        max_workers=cfg.max_workers,
+        min_interval_s=cfg.min_request_interval_s,
+        retry_attempts=cfg.retry_attempts,
+        retry_base_delay_s=cfg.retry_base_delay_s,
+        no_think=True,
+        temperature=temperature,
+    )
+
+
+def _env_optional_float(name: str) -> float | None:
+    value = os.getenv(name)
+    if value is None:
+        return None
+    return float(value)
+
+
+def _needs_stage1a_llm_override(args: argparse.Namespace) -> bool:
+    if args.stage1a_mode == "batched":
+        return True
+    return any(
+        value is not None
+        for value in (
+            args.stage1a_nim_endpoints,
+            args.stage1a_model,
+            args.stage1a_api_key,
+            args.stage1a_temperature,
+        )
+    )
 
 
 def main() -> int:
@@ -73,9 +154,45 @@ def main() -> int:
                     default="manifest",
                     help="Stage 1.5 default writes gap_manifest/Data Designer inputs; "
                          "legacy-direct preserves the older direct LLM generator")
+    ap.add_argument("--stage1a-mode", choices=["legacy", "batched"],
+                    default=os.getenv("PIPELINE_STAGE1A_MODE", "legacy"),
+                    help="Stage 1A implementation. legacy preserves one KVP call per "
+                         "premise; batched uses conservative batched KVP expansion "
+                         "with fallback.")
+    ap.add_argument("--stage1a-nim-endpoints",
+                    default=os.getenv("PIPELINE_STAGE1A_NIM_ENDPOINTS"),
+                    help="Optional comma-separated endpoint override for Stage 1A only.")
+    ap.add_argument("--stage1a-model", default=os.getenv("PIPELINE_STAGE1A_MODEL"),
+                    help="Optional model override for Stage 1A only, e.g. "
+                         "nvidia/nvidia/nemotron-3-ultra.")
+    ap.add_argument("--stage1a-api-key", default=os.getenv("PIPELINE_STAGE1A_API_KEY"),
+                    help="Optional API key override for Stage 1A only.")
+    ap.add_argument("--stage1a-temperature", type=float,
+                    default=_env_optional_float("PIPELINE_STAGE1A_TEMPERATURE"),
+                    help="Optional temperature override for Stage 1A only.")
+    ap.add_argument("--stage1a-max-premises-per-batch", type=int,
+                    default=int(os.getenv("PIPELINE_STAGE1A_MAX_PREMISES_PER_BATCH", "12")),
+                    help="Maximum premise/conclusion items per batched Stage 1A KVP call.")
+    ap.add_argument("--stage1a-batch-parse-attempts", type=int,
+                    default=int(os.getenv("PIPELINE_STAGE1A_BATCH_PARSE_ATTEMPTS", "2")),
+                    help="Batched KVP parse attempts before per-premise fallback.")
+    ap.add_argument("--stage1a-le-max-tokens", type=int,
+                    default=int(os.getenv("PIPELINE_STAGE1A_LE_MAX_TOKENS", "16384")),
+                    help="Stage 1A logical-entailment completion budget.")
+    ap.add_argument("--stage1a-batched-kvp-max-tokens", type=int,
+                    default=int(os.getenv("PIPELINE_STAGE1A_BATCHED_KVP_MAX_TOKENS", "16384")),
+                    help="Stage 1A batched KVP completion budget.")
     ap.add_argument("--max-passages", type=int, default=None,
                     help="Subsample to N passages after Stage 0 (for smoke testing)")
     args = ap.parse_args()
+    if args.stage1a_max_premises_per_batch < 1:
+        ap.error("--stage1a-max-premises-per-batch must be >= 1")
+    if args.stage1a_batch_parse_attempts < 1:
+        ap.error("--stage1a-batch-parse-attempts must be >= 1")
+    if args.stage1a_le_max_tokens < 1:
+        ap.error("--stage1a-le-max-tokens must be >= 1")
+    if args.stage1a_batched_kvp_max_tokens < 1:
+        ap.error("--stage1a-batched-kvp-max-tokens must be >= 1")
 
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(name)s %(message)s",
@@ -139,8 +256,27 @@ def main() -> int:
         if args.resume and progress.is_done("1a"):
             stage1a_rows = _read_jsonl_rows(args.output / "stage1a_le.jsonl")
         else:
-            stage1a_rows = run_stage1a(passages, llm, args.output,
-                                       max_workers=cfg.max_workers)
+            stage1a_llm = (
+                _build_stage1a_llm(args, cfg)
+                if _needs_stage1a_llm_override(args)
+                else llm
+            )
+            log.info("Stage 1A: mode=%s model=%s",
+                     args.stage1a_mode, stage1a_llm.model)
+            if args.stage1a_mode == "batched":
+                stage1a_rows = run_stage1a_batched(
+                    passages,
+                    stage1a_llm,
+                    args.output,
+                    max_workers=cfg.max_workers,
+                    max_premises_per_batch=args.stage1a_max_premises_per_batch,
+                    batch_parse_attempts=args.stage1a_batch_parse_attempts,
+                    le_max_tokens=args.stage1a_le_max_tokens,
+                    batched_kvp_max_tokens=args.stage1a_batched_kvp_max_tokens,
+                )
+            else:
+                stage1a_rows = run_stage1a(passages, stage1a_llm, args.output,
+                                           max_workers=cfg.max_workers)
             progress.mark_done("1a")
     else:
         stage1a_rows = _read_jsonl_rows(args.output / "stage1a_le.jsonl")
@@ -160,7 +296,8 @@ def main() -> int:
                                         knn_k=cfg.knn_k,
                                         num_candidates=cfg.knn_num_candidates,
                                         top_neighbors=cfg.knn_top_neighbors,
-                                        max_context_tokens=cfg.knn_max_context_tokens)
+                                        max_context_tokens=cfg.knn_max_context_tokens,
+                                        resume=args.resume)
             progress.mark_done("1b")
     else:
         stage1b_rows = _read_jsonl_rows(args.output / "stage1b_synthesis.jsonl")

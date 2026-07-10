@@ -131,26 +131,52 @@ with the Pydantic schemas `LogEntailment` and `QAKeyValuePair`.
 1. Call super-120b with the LE prompt; parse `LogEntailment` (conclusion,
    premises[], context, entities, recommendations).
 2. If `conclusion` is empty OR `premises` is empty/missing → skip this passage.
-3. For each premise (up to 3): call super-120b with the KVP prompt (premise +
+3. For each premise: call super-120b with the KVP prompt (premise +
    conclusion + source text); parse `QAKeyValuePair`.
 4. Emit one row per successful (premise, conclusion) → (question, answer) pair.
 
+The default production path preserves this one-KVP-call-per-premise behavior. An
+optional conservative efficiency path is available with `--stage1a-mode batched`.
+It keeps the LE call unchanged, batches only the KVP expansion over parsed
+premises, and falls back to the original per-premise KVP prompt for missing or
+invalid batched rows. The batched path writes the same canonical outputs:
+`stage1a_le.jsonl` and `provenance/entailments.jsonl`.
+
+Example:
+
+```bash
+python scripts/build_v2_dataset.py \
+  --collection nim_curated \
+  --output /mnt/nvme2/peft/datasets/v2/nim_curated \
+  --stage 1a \
+  --stage1a-mode batched
+```
+
 ### LLM details
 
-- Endpoint: round-robin over `nim-llm-super-120b-bw` pod IPs. Falls back to the
-  ClusterIP service if pod discovery fails.
-- Model: `nvidia/nemotron-3-super-120b-a12b`
-- Temperature: 0.2
+- Legacy endpoint: round-robin over `nim-llm-super-120b-bw` pod IPs. Falls back to
+  the ClusterIP service if pod discovery fails.
+- Legacy model: `nvidia/nemotron-3-super-120b-a12b`
+- Legacy temperature: 0.2
+- Optional batched defaults: `https://inference-api.nvidia.com/v1`,
+  `nvidia/nvidia/nemotron-3-ultra`, temperature 0.95. Override with
+  `--stage1a-nim-endpoints`, `--stage1a-model`, `--stage1a-api-key`, and
+  `--stage1a-temperature`.
+- Batched KVP controls: `--stage1a-max-premises-per-batch`,
+  `--stage1a-batch-parse-attempts`, `--stage1a-le-max-tokens`, and
+  `--stage1a-batched-kvp-max-tokens`. The default completion budget is 16,384
+  tokens for LE and batched KVP calls; this is an operational budget, not a
+  schema cap.
 - `MAX_WORKERS=5`, `MIN_INTERVAL=0.5s`, 3 retries with linear backoff (5s × attempt).
 
 ### Multi-premise expansion
 
-The LE step extracts up to 3 premises per passage. Each premise independently
-supports the passage's main conclusion and generates its own Q+A pair. This
-multi-premise expansion is the mechanism that allows a 500-passage corpus to
-produce ~750-930 pairs at Stage 1A — ratio of ~1.5 pairs/passage on the smaller
-by-URL passages (compared to ~2.5 on the April 2026 900-token passages, which
-often spanned multiple logical claims).
+The LE step extracts all premises needed for each entailment. Each premise
+independently supports its entailment's conclusion and generates its own Q+A
+pair. This multi-premise expansion is the mechanism that allows a 500-passage
+corpus to produce ~750-930 pairs at Stage 1A — ratio of ~1.5 pairs/passage on
+the smaller by-URL passages (compared to ~2.5 on the April 2026 900-token
+passages, which often spanned multiple logical claims).
 
 ### Output schema
 

@@ -28,3 +28,26 @@ Required generation settings:
 - No premise count cap
 
 After extraction, continue through the remainder of the LE dataset pipeline, including Curator/Data Designer-compatible downstream steps, before preparing Entity/Data Store registration artifacts.
+
+## Downstream Runner Defaults
+
+`run_le_downstream.py` is intended to stay runnable with either one inference endpoint or several.
+Use repeated `--target` arguments to add targets:
+
+```bash
+# Single endpoint
+python run_le_downstream.py   --collection nim_curated   --output-dir runs/nim_curated/super-v3   --stage 1b   --resume   --target http://10.43.114.25:8000/v1=nvidia/nemotron-3-super-120b-a12b@32768
+
+# Local plus hosted endpoints
+python run_le_downstream.py   --collection nim_curated   --output-dir runs/nim_curated/super-v3   --stage 1b   --resume   --target http://10.43.114.25:8000/v1=nvidia/nemotron-3-super-120b-a12b@32768   --target https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-ultra
+```
+
+Target format is `ENDPOINT=MODEL` or `ENDPOINT=MODEL@MAX_CONTEXT_TOKENS`. Hosted NVIDIA endpoints use the configured external API key; local OpenAI-compatible endpoints use a placeholder `local` key unless `--api-key` is supplied.
+
+The runner defaults to all source document kinds for turnkey use. Pass `--source-doc-kind html` only when an experiment intentionally excludes parsed PDFs. When a source filter is active, the runner writes selected KVP and lineage sidecars so Data Store publication can use only the selected provenance.
+
+If `--allow-incomplete-stage1a` is supplied, selected passages whose latest Stage 1A status is incomplete are excluded from downstream stages and recorded in `provenance/source_filter_excluded_passages.jsonl` with a `stage1a_*` reason. This keeps downstream augmentation grounded in completed Stage 1A rows without deleting the raw extraction artifacts.
+
+Stage 1B is durable: `stage1b_synthesis.jsonl` is appended as each passage finishes, and `stage1b_passage_results.jsonl` records per-passage status. Resume runs skip passages that already have persisted rows or terminal no-work statuses.
+
+Stage 1B retrieves kNN neighbors from the target corpus Elasticsearch index selected by `--collection`; for example, `nim_curated` neighbors come from `nim_curated`, not from the NeMo Microservices corpus.

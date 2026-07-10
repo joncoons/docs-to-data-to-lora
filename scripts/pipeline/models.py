@@ -10,8 +10,8 @@ from pydantic import BaseModel, Field
 class LogEntailment(BaseModel):
     """Output of Stage 1A entailment extraction."""
     conclusion: str = Field(description="Identified theme, concept or topic")
-    premises: list[str] = Field(min_length=1, max_length=3,
-                                description="1-3 logical premises supporting the conclusion")
+    premises: list[str] = Field(min_length=1,
+                                description="Logical premises supporting the conclusion")
     context: str = Field(default="", description="Ancillary details supporting the main theme")
     entities: str = Field(default="", description="Identified noteworthy entities")
     recommendations: str = Field(default="", description="Additional suggested actions")
@@ -25,7 +25,7 @@ class LogEntailmentList(BaseModel):
     notebook handled this via semantic sub-chunking; we collapse the
     same intent into a single LLM call returning a list.
     """
-    entailments: list[LogEntailment] = Field(min_length=1, max_length=10)
+    entailments: list[LogEntailment] = Field(min_length=1)
 
 
 class QAKeyValuePair(BaseModel):
