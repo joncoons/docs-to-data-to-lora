@@ -2,14 +2,15 @@
   "canonical_model": "nvidia/nvidia/nemotron-3-ultra",
   "collection": "nim_curated",
   "completed_stages": [
-    "1b"
+    "1b",
+    "1c"
   ],
   "counts": {
     "passages": 498,
     "stage1_5_rows": 0,
     "stage1a_rows": 9312,
     "stage1b_rows": 858,
-    "stage1c_rows": 0,
+    "stage1c_rows": 252,
     "stage2_dropped_rows": 0,
     "stage2_rows": 0,
     "training_rows": 0,
@@ -20,8 +21,8 @@
   "source_filter": {
     "outputs": {
       "excluded_passages": "provenance/source_filter_excluded_passages.jsonl",
-      "html_stage1a_rows": "stage1a_le_html.jsonl",
-      "selected_lineage_dir": "provenance/html_only"
+      "selected_lineage_dir": "provenance/html_only",
+      "selected_stage1a_rows": "stage1a_le_html.jsonl"
     },
     "passage_counts": {
       "by_doc_kind": {
