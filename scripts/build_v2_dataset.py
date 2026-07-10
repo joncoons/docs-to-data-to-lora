@@ -394,27 +394,26 @@ def main() -> int:
     all_pre_eval = stage1a_rows + stage1b_rows + stage1c_rows + stage1_5_rows
     if args.stage in ("2", "all"):
         if args.resume and progress.is_done("2"):
-            stage2_rows = _read_jsonl_rows(args.output / "stage2_eval.jsonl")
-        else:
-            stage2_llm = _build_stage2_llm(args, cfg)
-            stage2_max_tokens = args.stage2_qa_max_tokens or cfg.stage2_qa_max_tokens
-            stage2_execution_surface = args.stage2_execution_surface or cfg.stage2_execution_surface
-            log.info(
-                "Stage 2: QA admission model=%s endpoints=%s execution_surface=%s",
-                stage2_llm.model,
-                stage2_llm.endpoints,
-                stage2_execution_surface,
-            )
-            stage2_rows, _ = run_stage2(
-                all_pre_eval,
-                stage2_llm,
-                args.output,
-                max_workers=cfg.max_workers,
-                resume=args.resume,
-                execution_surface=stage2_execution_surface,
-                max_tokens=stage2_max_tokens,
-            )
-            progress.mark_done("2")
+            log.info("Stage 2: progress is marked done; checking durable row-level resume")
+        stage2_llm = _build_stage2_llm(args, cfg)
+        stage2_max_tokens = args.stage2_qa_max_tokens or cfg.stage2_qa_max_tokens
+        stage2_execution_surface = args.stage2_execution_surface or cfg.stage2_execution_surface
+        log.info(
+            "Stage 2: QA admission model=%s endpoints=%s execution_surface=%s",
+            stage2_llm.model,
+            stage2_llm.endpoints,
+            stage2_execution_surface,
+        )
+        stage2_rows, _ = run_stage2(
+            all_pre_eval,
+            stage2_llm,
+            args.output,
+            max_workers=cfg.max_workers,
+            resume=args.resume,
+            execution_surface=stage2_execution_surface,
+            max_tokens=stage2_max_tokens,
+        )
+        progress.mark_done("2")
     else:
         stage2_rows = _read_jsonl_rows(args.output / "stage2_eval.jsonl")
 

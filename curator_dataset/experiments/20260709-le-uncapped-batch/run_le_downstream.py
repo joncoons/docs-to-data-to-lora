@@ -896,20 +896,19 @@ def main() -> int:
 
     all_pre_eval = stage1a_rows + stage1b_rows + stage1c_rows + stage1_5_rows
     if stage_selected(args.stage, "2"):
-        if args.resume and "2" in completed and (output_dir / "stage2_eval.jsonl").exists():
-            log.info("Stage 2: skipping (already done)")
-        else:
-            run_stage2(
-                all_pre_eval,
-                llm,
-                output_dir,
-                max_workers=cfg.max_workers,
-                resume=args.resume,
-                execution_surface=stage2_execution_surface,
-                max_tokens=stage2_max_tokens,
-            )
-            completed.add("2")
-            write_progress(progress_path, completed)
+        if args.resume and "2" in completed:
+            log.info("Stage 2: progress is marked done; checking durable row-level resume")
+        run_stage2(
+            all_pre_eval,
+            llm,
+            output_dir,
+            max_workers=cfg.max_workers,
+            resume=args.resume,
+            execution_surface=stage2_execution_surface,
+            max_tokens=stage2_max_tokens,
+        )
+        completed.add("2")
+        write_progress(progress_path, completed)
     stage2_rows = filter_rows_by_passage(
         read_rows(output_dir / "stage2_eval.jsonl"),
         selected_passage_ids,
