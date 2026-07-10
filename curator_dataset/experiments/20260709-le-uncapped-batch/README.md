@@ -11,12 +11,15 @@ Purpose: rerun logical-entailment dataset generation after removing the inherite
 
 Stage 0 used `PIPELINE_ES_HOST=https://10.43.233.46:9200` and the in-cluster `rag-eck-elasticsearch-es-elastic-user` secret.
 
-## Planned Stage 1A Rerun
+## Stage 1A Rerun
 
-Run both corpora with both generator models:
+Run both corpora with Nemotron 3 Super for logical-entailment extraction and
+KVP expansion. Treat `nvidia/nvidia/nemotron-3-super-v3` and
+`nvidia/nemotron-3-super-120b-a12b` as the same Super 120B model for this work.
 
-- Super: `nvidia/nvidia/nemotron-3-super-v3`
-- Ultra: `nvidia/nvidia/nemotron-3-ultra`
+Ultra 550B is parked for Stage 1A. It remains appropriate for downstream audit
+or augmentation stages when explicitly targeted, but it is not the default
+logical-entailment extraction model.
 
 Required generation settings:
 
@@ -38,16 +41,18 @@ Use repeated `--target` arguments to add targets:
 # Single endpoint
 python run_le_downstream.py   --collection nim_curated   --output-dir runs/nim_curated/super-v3   --stage 1b   --resume   --target http://10.43.114.25:8000/v1=nvidia/nemotron-3-super-120b-a12b@32768
 
-# Local plus hosted endpoints
+# Local plus hosted endpoints for downstream augmentation/audit
 python run_le_downstream.py   --collection nim_curated   --output-dir runs/nim_curated/super-v3   --stage 1b   --resume   --target http://10.43.114.25:8000/v1=nvidia/nemotron-3-super-120b-a12b@32768   --target https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-ultra
 ```
 
-Target format is `ENDPOINT=MODEL` or `ENDPOINT=MODEL@MAX_CONTEXT_TOKENS`. Hosted NVIDIA endpoints use the configured external API key; local OpenAI-compatible endpoints use a placeholder `local` key unless `--api-key` is supplied.
+Target format is `ENDPOINT=MODEL` or `ENDPOINT=MODEL@MAX_CONTEXT_TOKENS`. Hosted NVIDIA endpoints use the configured external API key; local OpenAI-compatible endpoints use a placeholder `local` key unless `--api-key` is supplied. The multi-target path is for downstream augmentation/audit stages; Stage 1A extraction should stay on Super unless an experiment explicitly overrides it.
 
 The runner defaults to all source document kinds for turnkey use. Pass `--source-doc-kind html` only when an experiment intentionally excludes parsed PDFs. When a source filter is active, the runner writes selected KVP and lineage sidecars so Data Store publication can use only the selected provenance.
 
 If `--allow-incomplete-stage1a` is supplied, selected passages whose latest Stage 1A status is incomplete are excluded from downstream stages and recorded in `provenance/source_filter_excluded_passages.jsonl` with a `stage1a_*` reason. This keeps downstream augmentation grounded in completed Stage 1A rows without deleting the raw extraction artifacts.
 
 Stage 1B is durable: `stage1b_synthesis.jsonl` is appended as each passage finishes, and `stage1b_passage_results.jsonl` records per-passage status. Resume runs skip passages that already have persisted rows or terminal no-work statuses.
+
+Stage 1C is durable the same way: `stage1c_instruction.jsonl` is appended as passages finish, and `stage1c_passage_results.jsonl` records per-passage status. The default selection mode is `stratified`; pass `--stage1c-selection-mode top_density` for legacy high-density-only behavior or `--stage1c-selection-mode all` for full instruction augmentation coverage.
 
 Stage 1B retrieves kNN neighbors from the target corpus Elasticsearch index selected by `--collection`; for example, `nim_curated` neighbors come from `nim_curated`, not from the NeMo Microservices corpus.

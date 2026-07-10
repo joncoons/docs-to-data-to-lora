@@ -20,6 +20,7 @@ def test_config_thresholds():
     cfg = Config()
     assert cfg.min_passage_tokens == 60
     assert cfg.train_val_split == 0.90
+    assert cfg.stage1c_selection_mode == "stratified"
     assert cfg.stage1c_top_percent == 0.25
     assert cfg.stage1c_min_passages == 100
     assert cfg.bias_threshold_factor == 0.5

@@ -34,8 +34,8 @@ def test_cli_dry_run_accepts_batched_stage1a_mode(tmp_path):
     assert "DRY RUN" in result.stderr or "DRY RUN" in result.stdout
 
 
-def test_stage1a_batched_llm_uses_ultra_defaults(monkeypatch):
-    monkeypatch.setattr(build_v2, "get_external_judge_api_key", lambda: "api-key")
+def test_stage1a_batched_llm_uses_super_defaults():
+    cfg = Config()
     args = argparse.Namespace(
         stage1a_mode="batched",
         stage1a_nim_endpoints=None,
@@ -44,10 +44,10 @@ def test_stage1a_batched_llm_uses_ultra_defaults(monkeypatch):
         stage1a_temperature=None,
     )
 
-    llm = build_v2._build_stage1a_llm(args, Config())
+    llm = build_v2._build_stage1a_llm(args, cfg)
 
-    assert llm.endpoints == ["https://inference-api.nvidia.com/v1"]
-    assert llm.model == "nvidia/nvidia/nemotron-3-ultra"
+    assert llm.endpoints == cfg.nim_endpoints
+    assert llm.model == cfg.super120b_model
     assert llm.temperature == 0.95
 
 

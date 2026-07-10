@@ -52,6 +52,7 @@ class Config:
     knn_max_context_tokens: int = 1200
 
     # Stage 1C
+    stage1c_selection_mode: str = os.environ.get("PIPELINE_STAGE1C_SELECTION_MODE", "stratified")
     stage1c_top_percent: float = 0.25
     stage1c_min_passages: int = 100
 

@@ -32,9 +32,10 @@ The pipeline has eight stages, run in order for each collection:
    k-nearest neighbor chunks and generate BRIDGING and CONTRASTIVE questions
    whose answers require synthesizing across passages. Output:
    `stage1b_synthesis.jsonl`.
-4. **Stage 1C — Instruction Diversity Pass**: for the highest-density 25% of
-   passages, generate SUMMARY / LISTICLE / PROCEDURAL instruction-following
-   examples. Output: `stage1c_instruction.jsonl`.
+4. **Stage 1C — Instruction Diversity Pass**: for selected passages, generate
+   SUMMARY / LISTICLE / PROCEDURAL instruction-following examples. The default
+   selection mode is stratified across density bands; top-density and all-passage
+   modes are available. Output: `stage1c_instruction.jsonl`.
 5. **Stage 1.5 — Bias analysis + Data Designer gap-fill**: measure per-product
    KVP density; for under-represented products, run RAG-grounded NeMo Data
    Designer recipes to synthesize additional pairs. Output: `bias_report.json` +
@@ -46,6 +47,36 @@ The pipeline has eight stages, run in order for each collection:
 8. **Stage 4 — Validation Gate**: an independent external judge spot-checks 100
    pairs per collection on three binary criteria; pipeline passes if grounding
    rate ≥ 90%.
+
+### Operational levers
+
+The main runner is designed to be runnable as-is, while still exposing the knobs
+that materially change dataset coverage, cost, and recovery behavior.
+
+- `--stage` runs one stage or the full pipeline; `--resume` reuses durable stage
+  artifacts and skips completed work where the stage supports per-passage
+  status. `--max-passages` is the smoke-test lever.
+- `--stage1a-mode legacy|batched` chooses the original one-KVP-call-per-premise
+  path or the batched KVP expansion path. Both paths extract all entailments and
+  all premises; there is no artificial entailment or premise cap.
+- `--stage1a-nim-endpoints`, `--stage1a-model`, `--stage1a-temperature`,
+  `--stage1a-le-max-tokens`, `--stage1a-batched-kvp-max-tokens`,
+  `--stage1a-max-premises-per-batch`, and `--stage1a-batch-parse-attempts`
+  control Stage 1A endpoint placement, model selection, recall temperature,
+  response budget, batch size, and fallback behavior. The project default for
+  Stage 1A is Nemotron 3 Super 120B; Ultra 550B is reserved for downstream audit
+  or augmentation unless explicitly requested for an experiment.
+- `--stage1c-selection-mode stratified|top_density|all` controls how much
+  instruction diversity is added. `stratified` is the default because it keeps
+  high-density passages represented without making Stage 1C a narrow
+  high-density-only sample.
+- Source-kind filtering is optional. The canonical pipeline can use all Stage 0
+  passages; experiment runners may expose `--source-doc-kind html` when a run
+  intentionally excludes parsed PDFs for publication or comparison.
+- Stage 1B and Stage 1C append rows as each passage finishes and write
+  `stage1b_passage_results.jsonl` / `stage1c_passage_results.jsonl`. Interrupted
+  runs can resume without replaying completed passages or losing already written
+  rows.
 
 ---
 
@@ -154,14 +185,19 @@ python scripts/build_v2_dataset.py \
 
 ### LLM details
 
-- Legacy endpoint: round-robin over `nim-llm-super-120b-bw` pod IPs. Falls back to
-  the ClusterIP service if pod discovery fails.
-- Legacy model: `nvidia/nemotron-3-super-120b-a12b`
-- Legacy temperature: 0.2
-- Optional batched defaults: `https://inference-api.nvidia.com/v1`,
-  `nvidia/nvidia/nemotron-3-ultra`, temperature 0.95. Override with
-  `--stage1a-nim-endpoints`, `--stage1a-model`, `--stage1a-api-key`, and
-  `--stage1a-temperature`.
+- Default endpoint: the configured Nemotron 3 Super endpoint list from
+  `PIPELINE_NIM_ENDPOINTS` / `Config.nim_endpoints`, usually the local
+  `nim-llm-super-120b-bw` service. Multiple endpoints are round-robined by the
+  shared LLM client.
+- Default model: `nvidia/nemotron-3-super-120b-a12b`. The hosted alias
+  `nvidia/nvidia/nemotron-3-super-v3` is the same model family for this work and
+  can be supplied with `--stage1a-model` when using NVIDIA-hosted inference.
+- Legacy temperature: 0.2. Batched mode defaults to 0.95 for higher-recall
+  extraction, unless `--stage1a-temperature` overrides it.
+- Endpoint/model overrides: use `--stage1a-nim-endpoints`, `--stage1a-model`,
+  and `--stage1a-api-key` when an experiment needs hosted inference or a
+  local-plus-hosted endpoint mix. Ultra 550B is not the default Stage 1A
+  extraction model; use it here only as an explicit experiment.
 - Batched KVP controls: `--stage1a-max-premises-per-batch`,
   `--stage1a-batch-parse-attempts`, `--stage1a-le-max-tokens`, and
   `--stage1a-batched-kvp-max-tokens`. The default completion budget is 16,384
@@ -256,9 +292,20 @@ Output JSON:
 
 ### Coverage
 
-Stage 1B runs on **all** Stage 0 passages — full coverage, no subsampling. The
-kNN retrieval with `num_candidates=50` is the only meaningful cost; on the two
-corpora (500-620 passages each), the full pass completes in ~30-45 min per
+Stage 1B runs on **all** Stage 0 passages selected for the run - full
+coverage, no subsampling. The kNN retrieval with `num_candidates=50` is scoped
+to the active `--collection`, so NIM passages retrieve NIM neighbors and NeMo
+Microservices passages retrieve NeMo Microservices neighbors.
+
+Rows are appended to `stage1b_synthesis.jsonl` as each passage finishes.
+`stage1b_passage_results.jsonl` records per-passage status, row count, source
+URL, finish time, and any exception text. With `--resume`, passages that already
+have persisted rows, no seed vector, or no neighbors are skipped; transient
+exceptions remain retryable. This avoids holding the whole stage in memory and
+prevents an interrupted run from discarding completed work.
+
+The kNN retrieval with `num_candidates=50` is the only meaningful cost; on the
+two corpora (500-620 passages each), the full pass completes in ~30-45 min per
 collection.
 
 ### Output schema
@@ -281,7 +328,7 @@ Same schema as Stage 1A, with:
 
 ### Selection
 
-Rank passages by **chunk-index span × unique product-term hit density**:
+Stage 1C uses the same density score as the earlier high-density-only design:
 
 ```
 density_score = (max_chunk_index - min_chunk_index + 1)
@@ -290,12 +337,26 @@ density_score = (max_chunk_index - min_chunk_index + 1)
 
 where `unique_product_terms` is the count of distinct values from
 `metadata.product_family` + `metadata.product_name` + anchor-tagged section
-headings that appear in the body. The top **25% of passages per collection, with
-an absolute floor of 100 passages**, advance to Stage 1C.
+headings that appear in the body. Raw token count is intentionally NOT used as
+the primary heuristic because it breaks down on the smaller by-URL passages
+produced by Stage 0.
+
+The default selection mode is `stratified`: compute a target count using
+`max(stage1c_min_passages, int(stage1c_top_percent * passage_count))`, cap it at
+the corpus size, then select across density bands. This keeps dense technical
+pages in the sample while allowing lower-density but still useful documentation
+pages to contribute summary/list/procedure behavior.
+
+Selection is controlled with `--stage1c-selection-mode` or
+`PIPELINE_STAGE1C_SELECTION_MODE`:
+
+- `stratified` - default; span density bands up to the configured target count.
+- `top_density` - legacy behavior; choose the highest-density passages only.
+- `all` - run instruction generation for every selected Stage 0 passage.
 
 The floor prevents small corpora from producing too few instruction-format pairs.
-Raw token count is intentionally NOT used here — that heuristic breaks down on
-the smaller by-URL passages produced by Stage 0.
+`stage1c_top_percent` remains the cost-control knob, and `stage1c_min_passages`
+remains the minimum-coverage knob for non-`all` modes.
 
 ### Prompts
 
@@ -341,10 +402,24 @@ Same schema as Stage 1A, with:
 - `stage: "1c"`
 - `instr_type: "summary"|"listicle"|"procedural"`
 
+Rows are appended as each passage finishes. `stage1c_passage_results.jsonl`
+records per-passage status and row count. With `--resume`, passages with
+existing rows or terminal no-work statuses (`no_pairs`, `no_valid_pairs`) are
+skipped; passages with transient exceptions remain retryable.
+
 ### Expected yield
 
-- NIM: top 25% of ~500 passages = 125 passages × 2.5 avg types = **~310 pairs**.
-- NeMo USvcs: top 25% of ~620 = 155 × 2.5 = **~390 pairs**.
+Yield depends on `--stage1c-selection-mode`:
+
+- `stratified` default: target count is max(25% of passages, 100), capped by
+  corpus size, times ~2.5 instruction rows per passage.
+- `top_density`: same target count, but concentrated in the highest-density
+  passages.
+- `all`: every selected Stage 0 passage, times ~2.5 instruction rows per
+  passage.
+
+For the default `stratified` mode, approximate yields are **~310 NIM pairs** and
+**~390 NeMo USvcs pairs**.
 
 ---
 
@@ -589,9 +664,9 @@ Format (NeMo Customizer SFT convention):
 | `nim_curated` | ~2,360 | ~2,090 | ~1,880 | ~210 |
 | `nemo_usvcs_curated` | ~2,660 | ~2,390 | ~2,150 | ~240 |
 
-Pre-Curator totals: Stage 1A (750/930) + 1B at 100% (1,000/1,240) + 1C at 25%
-(310/390) + 1.5 gap-fill (~300/~100) ≈ 2,360/2,660. Post-Curator assumes ~10%
-loss to exact/MinHash dedup + length filter.
+Pre-Curator totals: Stage 1A (750/930) + 1B at 100% (1,000/1,240) + 1C default
+stratified target (310/390) + 1.5 gap-fill (~300/~100) ≈ 2,360/2,660.
+Post-Curator assumes ~10% loss to exact/MinHash dedup + length filter.
 
 These totals are smaller than the April 2026 7,049-sample dataset because the
 source corpora are roughly half the size (2,086 and 1,289 chunks vs. 7,189 in the
@@ -679,14 +754,17 @@ Supported flags:
 
 ```
 --stage [0|1a|1b|1c|1.5|2|3|4|all]   run a single stage or all in sequence
---resume                               skip stages whose output file already exists
+--resume                               reuse durable outputs and stage progress
 --dry-run                              print stage plan + estimated yield, no LLM calls
 --max-passages N                       smoke test with N passages
+--stage1a-mode legacy|batched          choose per-premise or batched KVP expansion
+--stage1c-selection-mode MODE          stratified, top_density, or all
 ```
 
 Each stage writes its output file and a checkpoint to `<output>/progress.json`.
-Resume re-reads `progress.json` and skips already-completed work units (by
-`passage_id` or `pair_id`), so interrupted runs pick up where they left off.
+Stages with per-passage status files re-read those files on resume and skip
+already-completed work units, so interrupted runs pick up where they left off
+without replaying completed passages.
 
 ### Two parallel runs
 
@@ -724,7 +802,9 @@ wait
 │   ├── passages.jsonl               ← Stage 0 output
 │   ├── stage1a_le.jsonl             ← Stage 1A: LE → KVP
 │   ├── stage1b_synthesis.jsonl      ← Stage 1B: kNN synthesis
+│   ├── stage1b_passage_results.jsonl  ← Stage 1B: per-passage durable status
 │   ├── stage1c_instruction.jsonl    ← Stage 1C: instruction diversity
+│   ├── stage1c_passage_results.jsonl  ← Stage 1C: per-passage durable status
 │   ├── bias_report.json             ← Stage 1.5: per-product density
 │   ├── stage1_5_gapfill.jsonl       ← Stage 1.5: RAG-grounded gap-fill
 │   ├── stage2_eval.jsonl            ← Stage 2: refined pairs
@@ -732,7 +812,7 @@ wait
 │   ├── training.jsonl               ← Stage 3 output — registered with Customizer
 │   ├── validation.jsonl             ← Stage 3 output
 │   ├── validation_report.json       ← Stage 4: external-judge report
-│   └── progress.json               ← checkpoint for --resume
+│   └── progress.json                ← checkpoint for --resume
 └── nemo/
     └── (same structure)
 ```
@@ -785,6 +865,15 @@ The April pipeline used 95/5. Post-Curator pair counts for these smaller corpora
 are ~2,000-2,400, which yields only ~100-120 val pairs at 5% — too few for
 stable val_loss curves during LoRA training. 10% gives ~200-240 val pairs, which
 is sufficient.
+
+### Durable recovery as a first-class control
+
+The generation-heavy stages are expected to run against local or hosted NIM
+endpoints where transient failures, rate limits, and user interruptions are
+normal operational events. Stage 1B and Stage 1C therefore append completed rows
+immediately and record per-passage status. The net effect is that retry policy,
+endpoint fanout, and `--resume` can be used as operational controls instead of
+requiring a full rerun after every interruption.
 
 ### Data Designer role: gap-fill only, not primary generation
 

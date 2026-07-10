@@ -681,6 +681,12 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--canonical-model", default=None)
     ap.add_argument("--api-key", default=None)
     ap.add_argument("--temperature", type=float, default=0.2)
+    ap.add_argument(
+        "--stage1c-selection-mode",
+        choices=["stratified", "top_density", "all"],
+        default=None,
+        help="Stage 1C passage selection mode. Defaults to pipeline config.",
+    )
     ap.add_argument("--max-workers", type=int, default=None)
     ap.add_argument("--min-request-interval-s", type=float, default=None)
     ap.add_argument("--retry-attempts", type=int, default=None)
@@ -837,6 +843,8 @@ def main() -> int:
                 top_percent=cfg.stage1c_top_percent,
                 min_passages=cfg.stage1c_min_passages,
                 max_workers=cfg.max_workers,
+                selection_mode=args.stage1c_selection_mode or cfg.stage1c_selection_mode,
+                resume=args.resume,
             )
             completed.add("1c")
             write_progress(progress_path, completed)

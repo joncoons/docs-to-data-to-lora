@@ -48,8 +48,6 @@ from scripts.pipeline.stage3_curator import run_stage3  # noqa: E402
 from scripts.pipeline.stage4_validation import run_stage4  # noqa: E402
 
 
-DEFAULT_STAGE1A_BATCHED_ENDPOINTS = "https://inference-api.nvidia.com/v1"
-DEFAULT_STAGE1A_BATCHED_MODEL = "nvidia/nvidia/nemotron-3-ultra"
 DEFAULT_STAGE1A_BATCHED_TEMPERATURE = 0.95
 
 
@@ -83,15 +81,11 @@ def _endpoint_requires_api_key(endpoints: list[str]) -> bool:
 def _build_stage1a_llm(args: argparse.Namespace, cfg: Config) -> LLMClient:
     if args.stage1a_nim_endpoints:
         endpoints = _parse_endpoints(args.stage1a_nim_endpoints)
-    elif args.stage1a_mode == "batched":
-        endpoints = [DEFAULT_STAGE1A_BATCHED_ENDPOINTS]
     else:
         endpoints = cfg.nim_endpoints
 
     if args.stage1a_model:
         model = args.stage1a_model
-    elif args.stage1a_mode == "batched":
-        model = DEFAULT_STAGE1A_BATCHED_MODEL
     else:
         model = cfg.super120b_model
 
@@ -164,7 +158,7 @@ def main() -> int:
                     help="Optional comma-separated endpoint override for Stage 1A only.")
     ap.add_argument("--stage1a-model", default=os.getenv("PIPELINE_STAGE1A_MODEL"),
                     help="Optional model override for Stage 1A only, e.g. "
-                         "nvidia/nvidia/nemotron-3-ultra.")
+                         "nvidia/nvidia/nemotron-3-super-v3.")
     ap.add_argument("--stage1a-api-key", default=os.getenv("PIPELINE_STAGE1A_API_KEY"),
                     help="Optional API key override for Stage 1A only.")
     ap.add_argument("--stage1a-temperature", type=float,
@@ -182,6 +176,10 @@ def main() -> int:
     ap.add_argument("--stage1a-batched-kvp-max-tokens", type=int,
                     default=int(os.getenv("PIPELINE_STAGE1A_BATCHED_KVP_MAX_TOKENS", "16384")),
                     help="Stage 1A batched KVP completion budget.")
+    ap.add_argument("--stage1c-selection-mode",
+                    choices=["stratified", "top_density", "all"],
+                    default=os.getenv("PIPELINE_STAGE1C_SELECTION_MODE"),
+                    help="Stage 1C passage selection mode. Defaults to config/env stratified.")
     ap.add_argument("--max-passages", type=int, default=None,
                     help="Subsample to N passages after Stage 0 (for smoke testing)")
     args = ap.parse_args()
@@ -310,7 +308,9 @@ def main() -> int:
             stage1c_rows = run_stage1c(passages, domain, llm, args.output,
                                         top_percent=cfg.stage1c_top_percent,
                                         min_passages=cfg.stage1c_min_passages,
-                                        max_workers=cfg.max_workers)
+                                        max_workers=cfg.max_workers,
+                                        selection_mode=args.stage1c_selection_mode or cfg.stage1c_selection_mode,
+                                        resume=args.resume)
             progress.mark_done("1c")
     else:
         stage1c_rows = _read_jsonl_rows(args.output / "stage1c_instruction.jsonl")
