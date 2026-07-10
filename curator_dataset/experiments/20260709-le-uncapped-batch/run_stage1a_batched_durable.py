@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import itertools
 import json
+from dataclasses import dataclass
 import logging
 import re
 import threading
@@ -55,13 +56,20 @@ def strip_think_blocks(content: str) -> str:
     return content.strip()
 
 
+@dataclass(frozen=True)
+class LLMTarget:
+    endpoint: str
+    model: str
+    api_key: str
+    max_model_len: int | None = None
+
+
 class TimeoutLLMClient:
     def __init__(
         self,
         *,
-        endpoints: list[str],
-        model: str,
-        api_key: str,
+        targets: list[LLMTarget],
+        canonical_model: str,
         max_workers: int,
         min_interval_s: float,
         retry_attempts: int,
@@ -70,8 +78,14 @@ class TimeoutLLMClient:
         temperature: float,
         request_timeout_s: float,
     ) -> None:
-        self.endpoints = endpoints
-        self.model = model
+        if not targets:
+            raise ValueError("at least one LLM target is required")
+        self.targets = targets
+        self.endpoints = [target.endpoint for target in targets]
+        # KVP rows keep the canonical model for downstream comparisons; target
+        # model IDs are recorded in the manifest because local and external
+        # Super endpoints expose exact-equivalent models under different names.
+        self.model = canonical_model
         self.no_think = no_think
         self.temperature = temperature
         self.retry_attempts = retry_attempts
@@ -81,11 +95,32 @@ class TimeoutLLMClient:
         self._last_call_lock = threading.Lock()
         self._min_interval = min_interval_s
         self._counter = itertools.count()
-        self._clients = [OpenAI(base_url=ep, api_key=api_key, timeout=request_timeout_s) for ep in endpoints]
+        self._clients = [
+            OpenAI(base_url=target.endpoint, api_key=target.api_key, timeout=request_timeout_s)
+            for target in targets
+        ]
 
-    def _next_client(self) -> tuple[OpenAI, str]:
-        index = next(self._counter) % len(self._clients)
-        return self._clients[index], self.endpoints[index]
+    @staticmethod
+    def _estimated_prompt_tokens(system: str, user: str) -> int:
+        text = system + "\n" + user
+        return max(len(text.split()), len(text) // 4)
+
+    @staticmethod
+    def _target_fits(target: LLMTarget, prompt_tokens: int, max_tokens: int) -> bool:
+        if target.max_model_len is None:
+            return True
+        return prompt_tokens + max_tokens <= target.max_model_len - 512
+
+    def _next_client(self, system: str, user: str, max_tokens: int) -> tuple[OpenAI, LLMTarget]:
+        prompt_tokens = self._estimated_prompt_tokens(system, user)
+        start = next(self._counter)
+        fallback_index = start % len(self._clients)
+        for offset in range(len(self._clients)):
+            index = (start + offset) % len(self._clients)
+            target = self.targets[index]
+            if self._target_fits(target, prompt_tokens, max_tokens):
+                return self._clients[index], target
+        return self._clients[fallback_index], self.targets[fallback_index]
 
     @staticmethod
     def _no_think_extra_body(endpoint: str) -> dict:
@@ -100,11 +135,11 @@ class TimeoutLLMClient:
                     elapsed = time.time() - self._last_call[0]
                     if elapsed < self._min_interval:
                         time.sleep(self._min_interval - elapsed)
-                    client, endpoint = self._next_client()
+                    client, target = self._next_client(system, user, max_tokens)
                     self._last_call[0] = time.time()
                 try:
                     kwargs = {
-                        "model": self.model,
+                        "model": target.model,
                         "messages": [
                             {"role": "system", "content": system},
                             {"role": "user", "content": user},
@@ -113,7 +148,7 @@ class TimeoutLLMClient:
                         "max_tokens": max_tokens,
                     }
                     if self.no_think:
-                        kwargs["extra_body"] = self._no_think_extra_body(endpoint)
+                        kwargs["extra_body"] = self._no_think_extra_body(target.endpoint)
                     response = client.chat.completions.create(**kwargs)
                     return strip_think_blocks(response.choices[0].message.content or "")
                 except Exception as exc:  # noqa: BLE001 - durable generation records failures per passage.
@@ -271,7 +306,64 @@ def append_rows(path: Path, rows: list[KVPRow]) -> None:
             stream.flush()
 
 
+def endpoint_api_key(endpoint: str, explicit_api_key: str | None = None) -> str:
+    if explicit_api_key is not None:
+        return explicit_api_key
+    if "inference-api.nvidia.com" in endpoint or "integrate.api.nvidia.com" in endpoint:
+        return get_external_judge_api_key()
+    return "local"
+
+
+def parse_targets(args: argparse.Namespace) -> list[LLMTarget]:
+    if args.target:
+        targets: list[LLMTarget] = []
+        for raw in args.target:
+            if "=" not in raw:
+                raise ValueError("--target must be ENDPOINT=MODEL or ENDPOINT=MODEL@MAX_CONTEXT_TOKENS")
+            endpoint, model = raw.split("=", 1)
+            endpoint = endpoint.strip()
+            model = model.strip()
+            max_model_len: int | None = None
+            if "@" in model:
+                model, raw_max_model_len = model.rsplit("@", 1)
+                max_model_len = int(raw_max_model_len)
+            elif "inference-api.nvidia.com" not in endpoint and "integrate.api.nvidia.com" not in endpoint:
+                max_model_len = 32768
+            if not endpoint or not model:
+                raise ValueError("--target must include non-empty endpoint and model")
+            targets.append(
+                LLMTarget(
+                    endpoint=endpoint,
+                    model=model,
+                    api_key=endpoint_api_key(endpoint, args.api_key),
+                    max_model_len=max_model_len,
+                )
+            )
+        return targets
+    if not args.model:
+        raise ValueError("--model is required unless --target is supplied")
+    max_model_len = None
+    if "inference-api.nvidia.com" not in args.endpoint and "integrate.api.nvidia.com" not in args.endpoint:
+        max_model_len = 32768
+    return [
+        LLMTarget(
+            endpoint=args.endpoint,
+            model=args.model,
+            api_key=endpoint_api_key(args.endpoint, args.api_key),
+            max_model_len=max_model_len,
+        )
+    ]
+
+
+def manifest_targets(args: argparse.Namespace) -> list[dict[str, str]]:
+    return [
+        {"endpoint": target.endpoint, "model": target.model, "max_model_len": target.max_model_len}
+        for target in parse_targets(args)
+    ]
+
+
 def write_run_manifest(path: Path, args: argparse.Namespace, selected_count: int, completed_count: int) -> None:
+    targets = manifest_targets(args)
     payload = {
         "schema_version": "le_uncapped_batch.stage1a_durable.v1",
         "updated_at": utc_now(),
@@ -281,6 +373,7 @@ def write_run_manifest(path: Path, args: argparse.Namespace, selected_count: int
         "completed_before_start": completed_count,
         "endpoint": args.endpoint,
         "model": args.model,
+        "targets": targets,
         "temperature": args.temperature,
         "max_workers": args.max_workers,
         "min_request_interval_s": args.min_request_interval_s,
@@ -306,7 +399,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input-passages", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--endpoint", default="https://inference-api.nvidia.com/v1")
-    parser.add_argument("--model", required=True)
+    parser.add_argument("--model", help="Canonical extractor model recorded on KVP rows; required unless --target is supplied.")
+    parser.add_argument(
+        "--target",
+        action="append",
+        help="Endpoint-specific target as ENDPOINT=MODEL or ENDPOINT=MODEL@MAX_CONTEXT_TOKENS. Repeat to round-robin across exact-equivalent endpoints.",
+    )
     parser.add_argument("--api-key")
     parser.add_argument("--temperature", type=float, default=0.95)
     parser.add_argument("--max-workers", type=int, default=5)
@@ -345,9 +443,8 @@ def main() -> int:
     log.info("Stage 1A durable: %d passages selected, %d already completed", len(selected), len(completed))
 
     llm = TimeoutLLMClient(
-        endpoints=[args.endpoint],
-        model=args.model,
-        api_key=args.api_key or get_external_judge_api_key(),
+        targets=parse_targets(args),
+        canonical_model=args.model or parse_targets(args)[0].model,
         max_workers=args.max_workers,
         min_interval_s=args.min_request_interval_s,
         retry_attempts=args.retry_attempts,
