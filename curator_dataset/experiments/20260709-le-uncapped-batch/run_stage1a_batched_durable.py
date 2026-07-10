@@ -334,7 +334,24 @@ def _call_batched_kvp_durable(
                 )
             )
             continue
-        parsed = parse_batched_kvp_response(raw)
+        try:
+            parsed = parse_batched_kvp_response(raw)
+        except Exception as exc:  # noqa: BLE001 - raw payload is persisted for RCA.
+            failures.append(
+                failure_payload(
+                    passage=passage,
+                    llm=llm,
+                    prompt_type="batched_kvp",
+                    reason="parse_exception",
+                    raw_response=raw,
+                    extra={
+                        "attempt": attempt + 1,
+                        "batch_size": len(items),
+                        "error": repr(exc),
+                    },
+                )
+            )
+            continue
         if parsed is not None and parsed.pairs:
             return parsed, raw
         failures.append(
