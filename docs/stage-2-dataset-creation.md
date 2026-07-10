@@ -77,6 +77,11 @@ that materially change dataset coverage, cost, and recovery behavior.
   `stage1b_passage_results.jsonl` / `stage1c_passage_results.jsonl`. Interrupted
   runs can resume without replaying completed passages or losing already written
   rows.
+- Stage 1B and Stage 1C should use a frontier-level synthesis model. The
+  current experiments use Nemotron 3 Ultra 550B through NVIDIA-hosted inference,
+  but the downstream runner accepts any OpenAI-compatible chat-completions
+  endpoint/model pair via repeated `--target ENDPOINT=MODEL[@MAX_CONTEXT]`
+  arguments.
 
 ---
 
@@ -247,8 +252,8 @@ File: `/mnt/nvme2/peft/datasets/v2/<collection>/stage1a_le.jsonl`
    chunks sharing the same `content_url`.
 3. Trim neighbors to top-3 by score. Combine seed passage + top-3 neighbor chunks
    into a context capped at ~1,200 tokens.
-4. Call super-120b with the synthesis prompt (BRIDGING + CONTRASTIVE in a single
-   request, structured JSON output).
+4. Call the configured frontier-level synthesis model with the synthesis prompt
+   (BRIDGING + CONTRASTIVE in a single request, structured JSON output).
 5. Emit one row per question (typically 2 per neighborhood).
 
 ### Prompts
@@ -290,6 +295,17 @@ Output JSON:
 }
 ```
 
+### Model and endpoint guidance
+
+Stage 1B is a synthesis step, not raw entailment extraction. Use a
+frontier-level instruction/reasoning model for this stage so cross-passage
+bridging and contrastive questions are not bottlenecked by a smaller local model.
+The current experiment uses `nvidia/nvidia/nemotron-3-ultra`, but the downstream
+runner is model-agnostic as long as the endpoint implements OpenAI-compatible
+chat completions. Use repeated `--target ENDPOINT=MODEL[@MAX_CONTEXT]` arguments
+to choose one or more endpoints; non-NVIDIA secured endpoints can use
+`--api-key`, and NVIDIA-hosted inference reads the configured Kubernetes secret.
+
 ### Coverage
 
 Stage 1B runs on **all** Stage 0 passages selected for the run - full
@@ -325,6 +341,16 @@ Same schema as Stage 1A, with:
 ---
 
 ## Stage 1C: Instruction Diversity Pass
+
+### Model and endpoint guidance
+
+Stage 1C should use the same frontier-level model posture as Stage 1B. Its job
+is to rewrite grounded passage content into diverse instruction formats, so the
+model should be strong enough to preserve factual boundaries while changing task
+shape. The active downstream runner uses the same `--target
+ENDPOINT=MODEL[@MAX_CONTEXT]` mechanism described for Stage 1B; examples may
+name Nemotron 3 Ultra, but any OpenAI-compatible endpoint/model pair can be
+used when it meets the quality bar.
 
 ### Selection
 
