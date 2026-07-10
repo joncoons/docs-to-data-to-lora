@@ -1,8 +1,8 @@
 {
   "outputs": {
     "excluded_passages": "provenance/source_filter_excluded_passages.jsonl",
-    "html_stage1a_rows": "stage1a_le_html.jsonl",
-    "selected_lineage_dir": "provenance/html_only"
+    "selected_lineage_dir": "provenance/html_only",
+    "selected_stage1a_rows": "stage1a_le_html.jsonl"
   },
   "passage_counts": {
     "by_doc_kind": {

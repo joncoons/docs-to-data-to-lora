@@ -1,0 +1,1352 @@
+2026-07-10 09:15:20,335 INFO le_downstream - Stage 1A latest status for selected passages: {'complete': 486} missing=0
+2026-07-10 09:15:21,152 INFO le_downstream - Source filter: doc_kind=html passages=486/486 stage1a_rows=9611/9611
+2026-07-10 09:15:21,262 INFO le_downstream - LE downstream start: collection=nemo_usvcs_curated output=curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3 stage=1b resume=True targets=[('https://inference-api.nvidia.com/v1', 'nvidia/nvidia/nemotron-3-ultra', None)]
+2026-07-10 09:15:21,720 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search?scroll=5m [status:200 duration:0.457s]
+2026-07-10 09:15:22,103 INFO elastic_transport.transport - POST https://10.43.233.46:9200/_search/scroll [status:200 duration:0.121s]
+2026-07-10 09:15:22,180 INFO elastic_transport.transport - DELETE https://10.43.233.46:9200/_search/scroll [status:200 duration:0.001s]
+2026-07-10 09:15:22,180 INFO le_downstream - Stage 1B seed vectors: 486/486 passages, 1159/1159 chunk IDs
+2026-07-10 09:15:22,204 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.016s]
+Stage 1B:   0%|          | 0/486 [00:00<?, ?it/s]2026-07-10 09:15:22,210 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.020s]
+2026-07-10 09:15:22,211 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.022s]
+2026-07-10 09:15:22,216 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.023s]
+2026-07-10 09:15:22,217 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.025s]
+2026-07-10 09:15:24,802 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:24,814 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   0%|          | 1/486 [00:02<21:07,  2.61s/it]2026-07-10 09:15:25,422 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:25,432 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.008s]
+Stage 1B:   0%|          | 2/486 [00:03<11:35,  1.44s/it]2026-07-10 09:15:25,860 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:25,868 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.007s]
+Stage 1B:   1%|          | 3/486 [00:03<07:52,  1.02it/s]2026-07-10 09:15:26,366 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:26,372 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   1%|          | 4/486 [00:04<06:22,  1.26it/s]2026-07-10 09:15:26,838 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:26,845 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   1%|          | 5/486 [00:04<05:25,  1.48it/s]2026-07-10 09:15:27,378 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:27,383 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   1%|          | 6/486 [00:05<05:02,  1.59it/s]2026-07-10 09:15:29,480 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:29,481 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:29,487 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.007s]
+2026-07-10 09:15:29,490 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.008s]
+Stage 1B:   1%|▏         | 7/486 [00:07<08:52,  1.11s/it]2026-07-10 09:15:30,514 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:30,523 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.007s]
+Stage 1B:   2%|▏         | 9/486 [00:08<06:33,  1.21it/s]2026-07-10 09:15:31,214 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:31,221 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   2%|▏         | 10/486 [00:09<06:17,  1.26it/s]2026-07-10 09:15:31,631 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:31,638 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   2%|▏         | 11/486 [00:09<05:28,  1.45it/s]2026-07-10 09:15:31,932 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:31,938 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   2%|▏         | 12/486 [00:09<04:36,  1.71it/s]2026-07-10 09:15:33,041 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:33,046 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:   3%|▎         | 13/486 [00:10<05:46,  1.36it/s]2026-07-10 09:15:33,267 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:33,274 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   3%|▎         | 14/486 [00:11<04:36,  1.70it/s]2026-07-10 09:15:33,385 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:33,390 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:   3%|▎         | 15/486 [00:11<03:31,  2.23it/s]2026-07-10 09:15:33,898 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:33,905 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   3%|▎         | 16/486 [00:11<03:40,  2.13it/s]2026-07-10 09:15:34,111 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:34,117 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   3%|▎         | 17/486 [00:11<03:03,  2.55it/s]2026-07-10 09:15:35,435 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:35,442 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   4%|▎         | 18/486 [00:13<05:13,  1.49it/s]2026-07-10 09:15:36,722 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:36,727 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   4%|▍         | 19/486 [00:14<06:38,  1.17it/s]2026-07-10 09:15:37,286 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:37,294 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   4%|▍         | 20/486 [00:15<05:57,  1.30it/s]2026-07-10 09:15:37,783 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:37,789 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   4%|▍         | 21/486 [00:15<05:19,  1.46it/s]2026-07-10 09:15:37,967 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:37,973 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   5%|▍         | 22/486 [00:15<04:08,  1.87it/s]2026-07-10 09:15:38,395 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:38,400 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   5%|▍         | 23/486 [00:16<03:53,  1.99it/s]2026-07-10 09:15:39,637 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:39,644 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   5%|▍         | 24/486 [00:17<05:34,  1.38it/s]2026-07-10 09:15:40,394 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:40,400 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   5%|▌         | 25/486 [00:18<05:38,  1.36it/s]2026-07-10 09:15:42,217 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:42,224 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   5%|▌         | 26/486 [00:20<08:08,  1.06s/it]2026-07-10 09:15:42,510 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:42,517 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   6%|▌         | 27/486 [00:20<06:21,  1.20it/s]2026-07-10 09:15:43,194 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:43,200 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   6%|▌         | 28/486 [00:20<06:00,  1.27it/s]2026-07-10 09:15:43,968 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:43,974 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   6%|▌         | 29/486 [00:21<05:57,  1.28it/s]2026-07-10 09:15:44,647 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:44,653 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   6%|▌         | 30/486 [00:22<05:42,  1.33it/s]2026-07-10 09:15:44,729 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:44,736 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+2026-07-10 09:15:45,511 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:45,517 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   7%|▋         | 32/486 [00:23<04:34,  1.65it/s]2026-07-10 09:15:45,783 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:45,788 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:   7%|▋         | 33/486 [00:23<03:56,  1.92it/s]2026-07-10 09:15:45,880 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:45,886 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:15:47,345 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:47,350 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:   7%|▋         | 35/486 [00:25<04:43,  1.59it/s]2026-07-10 09:15:48,225 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:48,231 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   7%|▋         | 36/486 [00:26<05:09,  1.46it/s]2026-07-10 09:15:49,046 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:49,053 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   8%|▊         | 37/486 [00:26<05:22,  1.39it/s]2026-07-10 09:15:49,379 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:49,385 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:   8%|▊         | 38/486 [00:27<04:37,  1.62it/s]2026-07-10 09:15:51,826 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:51,832 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   8%|▊         | 39/486 [00:29<08:18,  1.11s/it]2026-07-10 09:15:51,990 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:51,996 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   8%|▊         | 40/486 [00:29<06:18,  1.18it/s]2026-07-10 09:15:52,135 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:52,142 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:   8%|▊         | 41/486 [00:29<04:48,  1.54it/s]2026-07-10 09:15:52,365 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:52,371 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:   9%|▊         | 42/486 [00:30<03:54,  1.90it/s]2026-07-10 09:15:53,015 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:53,020 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:   9%|▉         | 43/486 [00:30<04:09,  1.78it/s]2026-07-10 09:15:54,963 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:54,969 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:   9%|▉         | 44/486 [00:32<07:09,  1.03it/s]2026-07-10 09:15:55,483 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:55,489 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   9%|▉         | 45/486 [00:33<06:09,  1.19it/s]2026-07-10 09:15:56,085 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:56,091 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:   9%|▉         | 46/486 [00:33<05:37,  1.30it/s]2026-07-10 09:15:56,117 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:56,124 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+2026-07-10 09:15:56,175 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:56,180 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:15:57,523 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:57,529 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  10%|█         | 49/486 [00:35<04:24,  1.65it/s]2026-07-10 09:15:58,262 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:58,269 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  10%|█         | 50/486 [00:36<04:36,  1.58it/s]2026-07-10 09:15:58,578 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:58,583 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  10%|█         | 51/486 [00:36<04:03,  1.78it/s]2026-07-10 09:15:59,282 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:15:59,289 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  11%|█         | 52/486 [00:37<04:18,  1.68it/s]2026-07-10 09:16:00,552 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:00,557 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  11%|█         | 53/486 [00:38<05:34,  1.29it/s]2026-07-10 09:16:01,014 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:01,022 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  11%|█         | 54/486 [00:38<04:57,  1.45it/s]2026-07-10 09:16:01,486 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:01,491 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  11%|█▏        | 55/486 [00:39<04:30,  1.59it/s]2026-07-10 09:16:02,432 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:02,437 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  12%|█▏        | 56/486 [00:40<05:08,  1.39it/s]2026-07-10 09:16:02,628 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:02,635 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  12%|█▏        | 57/486 [00:40<04:03,  1.76it/s]2026-07-10 09:16:03,622 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:03,630 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  12%|█▏        | 58/486 [00:41<04:56,  1.44it/s]2026-07-10 09:16:04,841 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:04,847 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  12%|█▏        | 59/486 [00:42<06:01,  1.18it/s]2026-07-10 09:16:04,881 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:04,887 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:16:05,332 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:05,337 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  13%|█▎        | 61/486 [00:43<04:03,  1.75it/s]2026-07-10 09:16:06,039 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:06,046 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  13%|█▎        | 62/486 [00:43<04:16,  1.65it/s]2026-07-10 09:16:07,018 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:07,025 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  13%|█▎        | 63/486 [00:44<04:57,  1.42it/s]2026-07-10 09:16:09,949 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:09,954 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  13%|█▎        | 64/486 [00:47<09:11,  1.31s/it]2026-07-10 09:16:10,416 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:10,422 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  13%|█▎        | 65/486 [00:48<07:31,  1.07s/it]2026-07-10 09:16:11,788 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:11,795 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  14%|█▎        | 66/486 [00:49<08:06,  1.16s/it]2026-07-10 09:16:12,400 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:12,406 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  14%|█▍        | 67/486 [00:50<06:58,  1.00it/s]2026-07-10 09:16:14,430 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:14,438 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  14%|█▍        | 68/486 [00:52<09:03,  1.30s/it]2026-07-10 09:16:15,088 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:15,097 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.007s]
+Stage 1B:  14%|█▍        | 69/486 [00:52<07:43,  1.11s/it]2026-07-10 09:16:15,889 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:15,895 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  14%|█▍        | 70/486 [00:53<07:04,  1.02s/it]2026-07-10 09:16:16,777 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:16,783 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  15%|█▍        | 71/486 [00:54<06:46,  1.02it/s]2026-07-10 09:16:17,543 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:17,548 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  15%|█▍        | 72/486 [00:55<06:19,  1.09it/s]2026-07-10 09:16:19,109 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:19,116 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  15%|█▌        | 73/486 [00:56<07:38,  1.11s/it]2026-07-10 09:16:21,280 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:21,285 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  15%|█▌        | 74/486 [00:59<09:47,  1.43s/it]2026-07-10 09:16:22,182 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:22,188 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  15%|█▌        | 75/486 [00:59<08:42,  1.27s/it]2026-07-10 09:16:22,240 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:22,245 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:16:22,472 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:22,478 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  16%|█▌        | 77/486 [01:00<05:07,  1.33it/s]2026-07-10 09:16:23,181 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:23,187 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  16%|█▌        | 78/486 [01:00<05:02,  1.35it/s]2026-07-10 09:16:24,714 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:24,719 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  16%|█▋        | 79/486 [01:02<06:25,  1.05it/s]2026-07-10 09:16:25,668 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:25,676 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  16%|█▋        | 80/486 [01:03<06:25,  1.05it/s]2026-07-10 09:16:25,894 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:25,899 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  17%|█▋        | 81/486 [01:03<05:02,  1.34it/s]2026-07-10 09:16:26,500 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:26,506 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  17%|█▋        | 82/486 [01:04<04:45,  1.41it/s]2026-07-10 09:16:28,089 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:28,096 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  17%|█▋        | 83/486 [01:05<06:27,  1.04it/s]2026-07-10 09:16:28,256 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:28,262 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  17%|█▋        | 84/486 [01:06<04:53,  1.37it/s]2026-07-10 09:16:29,184 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:29,189 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  17%|█▋        | 85/486 [01:06<05:15,  1.27it/s]2026-07-10 09:16:29,252 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:29,256 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:16:29,424 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:29,431 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  18%|█▊        | 87/486 [01:07<03:12,  2.07it/s]2026-07-10 09:16:31,430 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:31,435 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  18%|█▊        | 88/486 [01:09<05:41,  1.17it/s]2026-07-10 09:16:32,432 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:32,438 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  18%|█▊        | 89/486 [01:10<05:55,  1.12it/s]2026-07-10 09:16:32,737 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:32,742 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  19%|█▊        | 90/486 [01:10<04:51,  1.36it/s]2026-07-10 09:16:33,791 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:33,797 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  19%|█▊        | 91/486 [01:11<05:25,  1.21it/s]2026-07-10 09:16:34,155 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:34,160 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  19%|█▉        | 92/486 [01:11<04:33,  1.44it/s]2026-07-10 09:16:34,691 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:34,696 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  19%|█▉        | 93/486 [01:12<04:14,  1.54it/s]2026-07-10 09:16:34,915 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:34,921 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  19%|█▉        | 94/486 [01:12<03:25,  1.91it/s]2026-07-10 09:16:35,962 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:35,973 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.010s]
+Stage 1B:  20%|█▉        | 95/486 [01:13<04:24,  1.48it/s]2026-07-10 09:16:36,640 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:36,646 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  20%|█▉        | 96/486 [01:14<04:24,  1.48it/s]2026-07-10 09:16:37,388 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:37,394 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  20%|█▉        | 97/486 [01:15<04:31,  1.43it/s]2026-07-10 09:16:38,097 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:38,103 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  20%|██        | 98/486 [01:15<04:32,  1.42it/s]2026-07-10 09:16:38,554 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:38,560 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  20%|██        | 99/486 [01:16<04:03,  1.59it/s]2026-07-10 09:16:38,808 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:38,814 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  21%|██        | 100/486 [01:16<03:19,  1.93it/s]2026-07-10 09:16:39,395 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:39,400 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  21%|██        | 101/486 [01:17<03:26,  1.86it/s]2026-07-10 09:16:40,371 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:40,377 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  21%|██        | 102/486 [01:18<04:16,  1.50it/s]2026-07-10 09:16:41,137 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:41,143 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  21%|██        | 103/486 [01:18<04:27,  1.43it/s]2026-07-10 09:16:41,167 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:41,172 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:16:41,177 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:41,182 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.003s]
+2026-07-10 09:16:42,507 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:42,513 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  22%|██▏       | 106/486 [01:20<03:33,  1.78it/s]2026-07-10 09:16:43,190 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:43,195 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  22%|██▏       | 107/486 [01:20<03:42,  1.70it/s]2026-07-10 09:16:43,889 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:43,895 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  22%|██▏       | 108/486 [01:21<03:51,  1.63it/s]2026-07-10 09:16:44,614 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:44,619 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  22%|██▏       | 109/486 [01:22<04:01,  1.56it/s]2026-07-10 09:16:45,124 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:45,129 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  23%|██▎       | 110/486 [01:22<03:48,  1.65it/s]2026-07-10 09:16:46,101 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:46,108 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  23%|██▎       | 111/486 [01:23<04:25,  1.41it/s]2026-07-10 09:16:46,897 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:46,902 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  23%|██▎       | 112/486 [01:24<04:33,  1.37it/s]2026-07-10 09:16:47,543 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:47,548 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  23%|██▎       | 113/486 [01:25<04:23,  1.41it/s]2026-07-10 09:16:49,259 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:49,264 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  23%|██▎       | 114/486 [01:27<06:12,  1.00s/it]2026-07-10 09:16:50,262 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:50,267 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  24%|██▎       | 115/486 [01:28<06:11,  1.00s/it]2026-07-10 09:16:51,846 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:51,852 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  24%|██▍       | 116/486 [01:29<07:14,  1.17s/it]2026-07-10 09:16:52,120 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:52,125 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:16:52,127 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:52,132 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  24%|██▍       | 117/486 [01:29<05:34,  1.10it/s]2026-07-10 09:16:52,193 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:52,198 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:16:52,476 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:52,481 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  25%|██▍       | 120/486 [01:30<02:50,  2.15it/s]2026-07-10 09:16:55,209 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:55,215 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  25%|██▍       | 121/486 [01:33<05:44,  1.06it/s]2026-07-10 09:16:55,558 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:55,565 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  25%|██▌       | 122/486 [01:33<04:53,  1.24it/s]2026-07-10 09:16:55,572 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:55,577 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:16:56,073 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:56,080 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  26%|██▌       | 124/486 [01:33<03:32,  1.70it/s]2026-07-10 09:16:56,190 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:56,195 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  26%|██▌       | 125/486 [01:33<02:54,  2.07it/s]2026-07-10 09:16:58,344 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:58,351 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  26%|██▌       | 126/486 [01:36<05:18,  1.13it/s]2026-07-10 09:16:59,686 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:59,691 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  26%|██▌       | 127/486 [01:37<05:59,  1.00s/it]2026-07-10 09:16:59,729 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:16:59,734 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:17:00,451 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:00,457 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  27%|██▋       | 129/486 [01:38<04:24,  1.35it/s]2026-07-10 09:17:00,483 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:00,488 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:17:01,374 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:01,378 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  27%|██▋       | 131/486 [01:39<03:45,  1.57it/s]2026-07-10 09:17:02,931 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:02,936 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  27%|██▋       | 132/486 [01:40<04:54,  1.20it/s]2026-07-10 09:17:03,743 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:03,748 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  27%|██▋       | 133/486 [01:41<04:51,  1.21it/s]2026-07-10 09:17:03,780 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:03,785 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:17:04,418 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:04,423 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  28%|██▊       | 135/486 [01:42<03:41,  1.58it/s]2026-07-10 09:17:05,705 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:05,710 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  28%|██▊       | 136/486 [01:43<04:31,  1.29it/s]2026-07-10 09:17:07,058 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:07,063 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  28%|██▊       | 137/486 [01:44<05:19,  1.09it/s]2026-07-10 09:17:08,028 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:08,034 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  28%|██▊       | 138/486 [01:45<05:23,  1.08it/s]2026-07-10 09:17:08,640 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:08,646 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  29%|██▊       | 139/486 [01:46<04:52,  1.18it/s]2026-07-10 09:17:08,821 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:08,826 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  29%|██▉       | 140/486 [01:46<03:48,  1.51it/s]2026-07-10 09:17:09,439 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:09,446 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  29%|██▉       | 141/486 [01:47<03:43,  1.54it/s]2026-07-10 09:17:10,514 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:10,519 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  29%|██▉       | 142/486 [01:48<04:25,  1.30it/s]2026-07-10 09:17:10,948 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:10,953 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  29%|██▉       | 143/486 [01:48<03:50,  1.49it/s]2026-07-10 09:17:11,138 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:11,144 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  30%|██▉       | 144/486 [01:48<03:01,  1.88it/s]2026-07-10 09:17:12,573 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:12,579 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  30%|██▉       | 145/486 [01:50<04:32,  1.25it/s]2026-07-10 09:17:13,528 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:13,533 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  30%|███       | 146/486 [01:51<04:46,  1.18it/s]2026-07-10 09:17:14,052 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:14,060 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  30%|███       | 147/486 [01:51<04:14,  1.33it/s]2026-07-10 09:17:14,434 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:14,439 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  30%|███       | 148/486 [01:52<03:36,  1.56it/s]2026-07-10 09:17:15,626 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:15,633 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  31%|███       | 149/486 [01:53<04:31,  1.24it/s]2026-07-10 09:17:15,752 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:15,757 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  31%|███       | 150/486 [01:53<03:22,  1.66it/s]2026-07-10 09:17:16,364 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:16,369 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  31%|███       | 151/486 [01:54<03:22,  1.65it/s]2026-07-10 09:17:17,205 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:17,210 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  31%|███▏      | 152/486 [01:55<03:45,  1.48it/s]2026-07-10 09:17:17,228 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:17,233 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:17:18,753 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:18,758 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  32%|███▏      | 154/486 [01:56<03:59,  1.39it/s]2026-07-10 09:17:20,013 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:20,019 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  32%|███▏      | 155/486 [01:57<04:42,  1.17it/s]2026-07-10 09:17:20,319 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:20,324 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  32%|███▏      | 156/486 [01:58<03:54,  1.41it/s]2026-07-10 09:17:21,380 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:21,386 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  32%|███▏      | 157/486 [01:59<04:25,  1.24it/s]2026-07-10 09:17:22,749 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:22,755 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  33%|███▎      | 158/486 [02:00<05:16,  1.04it/s]2026-07-10 09:17:23,813 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:23,819 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  33%|███▎      | 159/486 [02:01<05:24,  1.01it/s]2026-07-10 09:17:25,503 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:25,508 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  33%|███▎      | 160/486 [02:03<06:29,  1.19s/it]2026-07-10 09:17:26,320 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:26,325 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  33%|███▎      | 161/486 [02:04<05:52,  1.08s/it]2026-07-10 09:17:26,796 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:26,802 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  33%|███▎      | 162/486 [02:04<04:52,  1.11it/s]2026-07-10 09:17:27,452 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:27,458 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  34%|███▎      | 163/486 [02:05<04:28,  1.20it/s]2026-07-10 09:17:29,248 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:29,253 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  34%|███▎      | 164/486 [02:07<05:59,  1.12s/it]2026-07-10 09:17:29,370 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:29,376 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  34%|███▍      | 165/486 [02:07<04:23,  1.22it/s]2026-07-10 09:17:29,562 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:29,567 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  34%|███▍      | 166/486 [02:07<03:22,  1.58it/s]2026-07-10 09:17:31,671 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:31,676 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  34%|███▍      | 167/486 [02:09<05:42,  1.07s/it]2026-07-10 09:17:32,626 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:32,632 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  35%|███▍      | 168/486 [02:10<05:30,  1.04s/it]2026-07-10 09:17:33,250 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:33,254 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  35%|███▍      | 169/486 [02:11<04:49,  1.09it/s]2026-07-10 09:17:33,491 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:33,496 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  35%|███▍      | 170/486 [02:11<03:45,  1.40it/s]2026-07-10 09:17:35,326 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:35,332 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  35%|███▌      | 171/486 [02:13<05:30,  1.05s/it]2026-07-10 09:17:35,399 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:35,405 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:17:36,025 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:36,030 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  36%|███▌      | 173/486 [02:13<03:47,  1.38it/s]2026-07-10 09:17:37,757 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:37,763 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  36%|███▌      | 174/486 [02:15<05:04,  1.02it/s]2026-07-10 09:17:37,784 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:37,791 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:17:38,511 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:38,517 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  36%|███▌      | 176/486 [02:16<03:45,  1.37it/s]2026-07-10 09:17:39,896 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:39,901 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  36%|███▋      | 177/486 [02:17<04:31,  1.14it/s]2026-07-10 09:17:41,156 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:41,162 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  37%|███▋      | 178/486 [02:18<04:59,  1.03it/s]2026-07-10 09:17:41,446 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:41,452 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  37%|███▋      | 179/486 [02:19<04:03,  1.26it/s]2026-07-10 09:17:42,519 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:42,524 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  37%|███▋      | 180/486 [02:20<04:26,  1.15it/s]2026-07-10 09:17:42,644 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:42,649 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  37%|███▋      | 181/486 [02:20<03:21,  1.51it/s]2026-07-10 09:17:43,810 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:43,815 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  37%|███▋      | 182/486 [02:21<04:04,  1.24it/s]2026-07-10 09:17:44,417 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:44,422 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  38%|███▊      | 183/486 [02:22<03:46,  1.34it/s]2026-07-10 09:17:45,238 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:45,244 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  38%|███▊      | 184/486 [02:23<03:52,  1.30it/s]2026-07-10 09:17:45,817 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:45,823 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  38%|███▊      | 185/486 [02:23<03:34,  1.40it/s]2026-07-10 09:17:46,179 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:46,184 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  38%|███▊      | 186/486 [02:23<03:02,  1.64it/s]2026-07-10 09:17:48,638 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:48,644 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  38%|███▊      | 187/486 [02:26<05:46,  1.16s/it]2026-07-10 09:17:48,661 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:48,666 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:17:49,254 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:49,260 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  39%|███▉      | 189/486 [02:27<03:48,  1.30it/s]2026-07-10 09:17:51,200 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:51,200 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:51,206 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:17:51,207 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  39%|███▉      | 190/486 [02:29<05:13,  1.06s/it]2026-07-10 09:17:51,384 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:51,390 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  40%|███▉      | 192/486 [02:29<03:13,  1.52it/s]2026-07-10 09:17:52,099 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:52,105 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  40%|███▉      | 193/486 [02:29<03:16,  1.49it/s]2026-07-10 09:17:52,718 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:52,723 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  40%|███▉      | 194/486 [02:30<03:12,  1.52it/s]2026-07-10 09:17:53,671 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:53,677 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  40%|████      | 195/486 [02:31<03:33,  1.36it/s]2026-07-10 09:17:55,679 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:55,684 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  40%|████      | 196/486 [02:33<05:13,  1.08s/it]2026-07-10 09:17:55,799 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:55,804 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  41%|████      | 197/486 [02:33<03:54,  1.23it/s]2026-07-10 09:17:55,812 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:55,817 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:17:56,820 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:56,825 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  41%|████      | 199/486 [02:34<03:14,  1.47it/s]2026-07-10 09:17:56,873 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:56,879 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:17:59,736 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:59,741 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  41%|████▏     | 201/486 [02:37<04:39,  1.02it/s]2026-07-10 09:17:59,767 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:17:59,772 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:18:01,051 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:01,056 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  42%|████▏     | 203/486 [02:38<04:04,  1.16it/s]2026-07-10 09:18:01,572 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:01,577 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  42%|████▏     | 204/486 [02:39<03:44,  1.26it/s]2026-07-10 09:18:03,059 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:03,064 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  42%|████▏     | 205/486 [02:40<04:27,  1.05it/s]2026-07-10 09:18:03,360 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:03,365 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  42%|████▏     | 206/486 [02:41<03:42,  1.26it/s]2026-07-10 09:18:03,541 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:03,546 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  43%|████▎     | 207/486 [02:41<02:57,  1.57it/s]2026-07-10 09:18:04,275 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:04,280 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  43%|████▎     | 208/486 [02:42<03:04,  1.51it/s]2026-07-10 09:18:05,460 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:05,465 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  43%|████▎     | 209/486 [02:43<03:43,  1.24it/s]2026-07-10 09:18:05,585 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:05,590 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  43%|████▎     | 210/486 [02:43<02:49,  1.63it/s]2026-07-10 09:18:05,645 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:05,650 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:18:05,674 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:05,679 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:18:06,688 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:06,693 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  44%|████▍     | 213/486 [02:44<02:10,  2.09it/s]2026-07-10 09:18:08,105 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:08,110 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  44%|████▍     | 214/486 [02:45<03:03,  1.49it/s]2026-07-10 09:18:08,380 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:08,385 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  44%|████▍     | 215/486 [02:46<02:37,  1.72it/s]2026-07-10 09:18:09,781 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:09,786 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  44%|████▍     | 216/486 [02:47<03:31,  1.28it/s]2026-07-10 09:18:10,897 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:10,905 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.007s]
+Stage 1B:  45%|████▍     | 217/486 [02:48<03:54,  1.15it/s]2026-07-10 09:18:11,650 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:11,655 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  45%|████▍     | 218/486 [02:49<03:44,  1.19it/s]2026-07-10 09:18:11,882 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:11,887 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  45%|████▌     | 219/486 [02:49<02:58,  1.50it/s]2026-07-10 09:18:13,410 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:13,415 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  45%|████▌     | 220/486 [02:51<04:03,  1.09it/s]2026-07-10 09:18:14,640 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:14,645 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  45%|████▌     | 221/486 [02:52<04:26,  1.01s/it]2026-07-10 09:18:15,434 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:15,439 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  46%|████▌     | 222/486 [02:53<04:09,  1.06it/s]2026-07-10 09:18:16,881 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:16,885 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  46%|████▌     | 223/486 [02:54<04:47,  1.09s/it]2026-07-10 09:18:17,029 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:17,034 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  46%|████▌     | 224/486 [02:54<03:32,  1.23it/s]2026-07-10 09:18:17,271 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:17,276 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  46%|████▋     | 225/486 [02:55<02:47,  1.56it/s]2026-07-10 09:18:17,738 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:17,743 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  47%|████▋     | 226/486 [02:55<02:33,  1.69it/s]2026-07-10 09:18:17,802 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:17,808 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:18:19,924 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:19,929 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  47%|████▋     | 228/486 [02:57<03:31,  1.22it/s]2026-07-10 09:18:20,056 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:20,061 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  47%|████▋     | 229/486 [02:57<02:47,  1.54it/s]2026-07-10 09:18:22,073 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:22,078 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  47%|████▋     | 230/486 [02:59<04:17,  1.01s/it]2026-07-10 09:18:22,810 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:22,815 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  48%|████▊     | 231/486 [03:00<03:58,  1.07it/s]2026-07-10 09:18:22,828 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:22,834 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:18:23,144 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:23,149 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  48%|████▊     | 233/486 [03:00<02:31,  1.67it/s]2026-07-10 09:18:24,197 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:24,202 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  48%|████▊     | 234/486 [03:02<02:58,  1.41it/s]2026-07-10 09:18:24,589 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:24,594 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  48%|████▊     | 235/486 [03:02<02:37,  1.60it/s]2026-07-10 09:18:25,974 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:25,979 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  49%|████▊     | 236/486 [03:03<03:27,  1.21it/s]2026-07-10 09:18:26,274 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:26,279 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  49%|████▉     | 237/486 [03:04<02:50,  1.46it/s]2026-07-10 09:18:27,562 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:27,567 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  49%|████▉     | 238/486 [03:05<03:31,  1.17it/s]2026-07-10 09:18:27,904 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:27,910 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  49%|████▉     | 239/486 [03:05<02:54,  1.41it/s]2026-07-10 09:18:28,585 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:28,590 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  49%|████▉     | 240/486 [03:06<02:52,  1.43it/s]2026-07-10 09:18:29,949 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:29,955 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  50%|████▉     | 241/486 [03:07<03:39,  1.12it/s]2026-07-10 09:18:30,404 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:30,410 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  50%|████▉     | 242/486 [03:08<03:06,  1.31it/s]2026-07-10 09:18:30,630 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:30,635 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  50%|█████     | 243/486 [03:08<02:26,  1.65it/s]2026-07-10 09:18:31,163 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:31,168 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  50%|█████     | 244/486 [03:08<02:21,  1.71it/s]2026-07-10 09:18:31,187 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:31,192 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:18:32,130 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:32,135 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  51%|█████     | 246/486 [03:09<02:09,  1.86it/s]2026-07-10 09:18:32,465 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:32,470 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  51%|█████     | 247/486 [03:10<01:56,  2.05it/s]2026-07-10 09:18:33,314 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:33,319 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  51%|█████     | 248/486 [03:11<02:18,  1.72it/s]2026-07-10 09:18:33,563 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:33,569 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  51%|█████     | 249/486 [03:11<01:56,  2.03it/s]2026-07-10 09:18:35,125 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:35,130 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  51%|█████▏    | 250/486 [03:12<03:06,  1.27it/s]2026-07-10 09:18:35,372 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:35,377 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  52%|█████▏    | 251/486 [03:13<02:29,  1.57it/s]2026-07-10 09:18:36,449 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:36,454 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  52%|█████▏    | 252/486 [03:14<02:58,  1.31it/s]2026-07-10 09:18:38,774 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:38,780 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  52%|█████▏    | 253/486 [03:16<04:44,  1.22s/it]2026-07-10 09:18:38,999 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:39,004 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  52%|█████▏    | 254/486 [03:16<03:35,  1.08it/s]2026-07-10 09:18:39,382 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:39,387 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  52%|█████▏    | 255/486 [03:17<02:56,  1.31it/s]2026-07-10 09:18:39,737 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:39,743 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  53%|█████▎    | 256/486 [03:17<02:28,  1.55it/s]2026-07-10 09:18:40,667 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:40,672 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  53%|█████▎    | 257/486 [03:18<02:46,  1.37it/s]2026-07-10 09:18:41,915 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:41,921 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  53%|█████▎    | 258/486 [03:19<03:21,  1.13it/s]2026-07-10 09:18:43,674 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:43,681 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  53%|█████▎    | 259/486 [03:21<04:20,  1.15s/it]2026-07-10 09:18:44,081 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:44,085 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:18:44,092 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1B:  53%|█████▎    | 260/486 [03:21<03:28,  1.08it/s]2026-07-10 09:18:44,097 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:18:44,475 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:44,480 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  54%|█████▍    | 262/486 [03:22<02:11,  1.70it/s]2026-07-10 09:18:45,074 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:45,078 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  54%|█████▍    | 263/486 [03:22<02:11,  1.69it/s]2026-07-10 09:18:46,523 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:46,528 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  54%|█████▍    | 264/486 [03:24<03:01,  1.23it/s]2026-07-10 09:18:46,863 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:46,870 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  55%|█████▍    | 265/486 [03:24<02:31,  1.46it/s]2026-07-10 09:18:47,922 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:47,928 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  55%|█████▍    | 266/486 [03:25<02:53,  1.26it/s]2026-07-10 09:18:48,865 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:48,871 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  55%|█████▍    | 267/486 [03:26<03:02,  1.20it/s]2026-07-10 09:18:49,781 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:49,787 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  55%|█████▌    | 268/486 [03:27<03:07,  1.17it/s]2026-07-10 09:18:50,522 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:50,528 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  55%|█████▌    | 269/486 [03:28<02:58,  1.21it/s]2026-07-10 09:18:50,686 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:50,691 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  56%|█████▌    | 270/486 [03:28<02:15,  1.59it/s]2026-07-10 09:18:50,778 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:50,784 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:18:52,109 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:52,115 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  56%|█████▌    | 272/486 [03:29<02:22,  1.50it/s]2026-07-10 09:18:54,311 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:54,317 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  56%|█████▌    | 273/486 [03:32<03:42,  1.04s/it]2026-07-10 09:18:54,361 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:54,367 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:18:54,663 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:54,669 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  57%|█████▋    | 275/486 [03:32<02:24,  1.46it/s]2026-07-10 09:18:55,019 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:55,025 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  57%|█████▋    | 276/486 [03:32<02:08,  1.64it/s]2026-07-10 09:18:55,881 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:55,886 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  57%|█████▋    | 277/486 [03:33<02:20,  1.49it/s]2026-07-10 09:18:56,125 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:56,130 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  57%|█████▋    | 278/486 [03:33<01:56,  1.78it/s]2026-07-10 09:18:58,353 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:58,358 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  57%|█████▋    | 279/486 [03:36<03:29,  1.01s/it]2026-07-10 09:18:58,426 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:58,432 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:18:59,083 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:18:59,088 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  58%|█████▊    | 281/486 [03:36<02:29,  1.37it/s]2026-07-10 09:19:00,567 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:00,573 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  58%|█████▊    | 282/486 [03:38<03:05,  1.10it/s]2026-07-10 09:19:00,586 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:00,591 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:19:01,332 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:01,338 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  58%|█████▊    | 284/486 [03:39<02:20,  1.44it/s]2026-07-10 09:19:01,432 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:01,437 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:19:02,621 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:02,628 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  59%|█████▉    | 286/486 [03:40<02:15,  1.48it/s]2026-07-10 09:19:03,305 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:03,310 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  59%|█████▉    | 287/486 [03:41<02:15,  1.47it/s]2026-07-10 09:19:03,794 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:03,800 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  59%|█████▉    | 288/486 [03:41<02:05,  1.57it/s]2026-07-10 09:19:04,246 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:04,254 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  59%|█████▉    | 289/486 [03:42<01:56,  1.69it/s]2026-07-10 09:19:04,849 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:04,855 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  60%|█████▉    | 290/486 [03:42<01:56,  1.68it/s]2026-07-10 09:19:05,338 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:05,343 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  60%|█████▉    | 291/486 [03:43<01:50,  1.77it/s]2026-07-10 09:19:05,514 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:05,519 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  60%|██████    | 292/486 [03:43<01:28,  2.19it/s]2026-07-10 09:19:07,227 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:07,232 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  60%|██████    | 293/486 [03:45<02:37,  1.23it/s]2026-07-10 09:19:09,031 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:09,038 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  60%|██████    | 294/486 [03:46<03:31,  1.10s/it]2026-07-10 09:19:09,497 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:09,502 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  61%|██████    | 295/486 [03:47<02:54,  1.09it/s]2026-07-10 09:19:09,779 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:09,784 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  61%|██████    | 296/486 [03:47<02:18,  1.37it/s]2026-07-10 09:19:10,644 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:10,649 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  61%|██████    | 297/486 [03:48<02:25,  1.30it/s]2026-07-10 09:19:10,910 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:10,916 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  61%|██████▏   | 298/486 [03:48<01:56,  1.61it/s]2026-07-10 09:19:13,017 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:13,022 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  62%|██████▏   | 299/486 [03:50<03:18,  1.06s/it]2026-07-10 09:19:13,283 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:13,288 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  62%|██████▏   | 300/486 [03:51<02:33,  1.21it/s]2026-07-10 09:19:13,852 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:13,858 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  62%|██████▏   | 301/486 [03:51<02:18,  1.34it/s]2026-07-10 09:19:14,317 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:14,322 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  62%|██████▏   | 302/486 [03:52<02:02,  1.51it/s]2026-07-10 09:19:14,422 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:14,428 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  62%|██████▏   | 303/486 [03:52<01:30,  2.02it/s]2026-07-10 09:19:15,124 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:15,130 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  63%|██████▎   | 304/486 [03:52<01:41,  1.79it/s]2026-07-10 09:19:15,592 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:15,598 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  63%|██████▎   | 305/486 [03:53<01:36,  1.88it/s]2026-07-10 09:19:16,419 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:16,424 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  63%|██████▎   | 306/486 [03:54<01:51,  1.61it/s]2026-07-10 09:19:18,007 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:18,012 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  63%|██████▎   | 307/486 [03:55<02:42,  1.10it/s]2026-07-10 09:19:18,350 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:18,356 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  63%|██████▎   | 308/486 [03:56<02:11,  1.35it/s]2026-07-10 09:19:18,999 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:19,004 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  64%|██████▎   | 309/486 [03:56<02:06,  1.40it/s]2026-07-10 09:19:19,356 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:19,361 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  64%|██████▍   | 310/486 [03:57<01:46,  1.65it/s]2026-07-10 09:19:21,435 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:21,442 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  64%|██████▍   | 311/486 [03:59<03:03,  1.05s/it]2026-07-10 09:19:21,517 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:21,524 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+2026-07-10 09:19:22,415 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:22,420 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  64%|██████▍   | 313/486 [04:00<02:16,  1.27it/s]2026-07-10 09:19:22,609 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:22,614 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  65%|██████▍   | 314/486 [04:00<01:50,  1.56it/s]2026-07-10 09:19:22,788 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:22,792 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  65%|██████▍   | 315/486 [04:00<01:29,  1.92it/s]2026-07-10 09:19:25,145 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:25,152 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  65%|██████▌   | 316/486 [04:02<02:53,  1.02s/it]2026-07-10 09:19:25,310 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:25,316 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  65%|██████▌   | 317/486 [04:03<02:12,  1.28it/s]2026-07-10 09:19:25,917 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:25,923 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  65%|██████▌   | 318/486 [04:03<02:02,  1.37it/s]2026-07-10 09:19:26,199 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:26,204 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  66%|██████▌   | 319/486 [04:04<01:40,  1.66it/s]2026-07-10 09:19:27,868 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:27,874 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  66%|██████▌   | 320/486 [04:05<02:31,  1.09it/s]2026-07-10 09:19:28,495 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:28,500 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  66%|██████▌   | 321/486 [04:06<02:16,  1.21it/s]2026-07-10 09:19:29,682 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:29,687 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  66%|██████▋   | 322/486 [04:07<02:33,  1.07it/s]2026-07-10 09:19:29,776 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:29,781 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:19:31,462 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:31,466 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  67%|██████▋   | 324/486 [04:09<02:28,  1.09it/s]2026-07-10 09:19:31,591 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:31,596 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  67%|██████▋   | 325/486 [04:09<01:56,  1.39it/s]2026-07-10 09:19:32,073 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:32,079 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  67%|██████▋   | 326/486 [04:09<01:45,  1.52it/s]2026-07-10 09:19:33,278 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:33,283 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  67%|██████▋   | 327/486 [04:11<02:08,  1.24it/s]2026-07-10 09:19:34,003 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:34,011 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  67%|██████▋   | 328/486 [04:11<02:03,  1.28it/s]2026-07-10 09:19:34,536 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:34,541 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  68%|██████▊   | 329/486 [04:12<01:51,  1.40it/s]2026-07-10 09:19:34,651 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:34,656 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  68%|██████▊   | 330/486 [04:12<01:24,  1.86it/s]2026-07-10 09:19:35,341 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:35,347 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  68%|██████▊   | 331/486 [04:13<01:30,  1.71it/s]2026-07-10 09:19:35,373 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:35,378 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:19:36,323 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:36,329 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  69%|██████▊   | 333/486 [04:14<01:22,  1.85it/s]2026-07-10 09:19:37,929 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:37,935 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  69%|██████▊   | 334/486 [04:15<02:02,  1.25it/s]2026-07-10 09:19:38,870 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:38,875 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  69%|██████▉   | 335/486 [04:16<02:06,  1.19it/s]2026-07-10 09:19:39,043 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:39,048 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:19:39,053 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1B:  69%|██████▉   | 336/486 [04:16<01:38,  1.52it/s]2026-07-10 09:19:39,058 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:19:39,317 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:39,322 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  70%|██████▉   | 338/486 [04:17<01:03,  2.32it/s]2026-07-10 09:19:40,859 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:40,864 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  70%|██████▉   | 339/486 [04:18<01:42,  1.44it/s]2026-07-10 09:19:42,411 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:42,418 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  70%|██████▉   | 340/486 [04:20<02:13,  1.10it/s]2026-07-10 09:19:42,817 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:42,822 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  70%|███████   | 341/486 [04:20<01:52,  1.29it/s]2026-07-10 09:19:43,102 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:43,107 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  70%|███████   | 342/486 [04:20<01:32,  1.56it/s]2026-07-10 09:19:43,400 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:43,407 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  71%|███████   | 343/486 [04:21<01:18,  1.83it/s]2026-07-10 09:19:43,803 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:43,808 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  71%|███████   | 344/486 [04:21<01:11,  1.98it/s]2026-07-10 09:19:44,229 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:44,235 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  71%|███████   | 345/486 [04:22<01:07,  2.08it/s]2026-07-10 09:19:46,248 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:46,253 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  71%|███████   | 346/486 [04:24<02:10,  1.07it/s]2026-07-10 09:19:46,547 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:46,553 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  71%|███████▏  | 347/486 [04:24<01:43,  1.34it/s]2026-07-10 09:19:46,675 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:46,681 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  72%|███████▏  | 348/486 [04:24<01:17,  1.78it/s]2026-07-10 09:19:47,708 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:47,715 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.006s]
+Stage 1B:  72%|███████▏  | 349/486 [04:25<01:36,  1.42it/s]2026-07-10 09:19:48,374 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:48,380 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  72%|███████▏  | 350/486 [04:26<01:34,  1.45it/s]2026-07-10 09:19:48,415 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:48,420 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:19:49,607 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:49,612 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  72%|███████▏  | 352/486 [04:27<01:27,  1.52it/s]2026-07-10 09:19:50,901 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:50,906 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  73%|███████▎  | 353/486 [04:28<01:48,  1.23it/s]2026-07-10 09:19:52,344 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:52,350 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  73%|███████▎  | 354/486 [04:30<02:09,  1.02it/s]2026-07-10 09:19:53,074 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:53,080 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  73%|███████▎  | 355/486 [04:30<01:59,  1.10it/s]2026-07-10 09:19:53,132 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:53,137 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+2026-07-10 09:19:54,907 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:54,912 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  73%|███████▎  | 357/486 [04:32<01:57,  1.09it/s]2026-07-10 09:19:56,151 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:56,158 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  74%|███████▎  | 358/486 [04:33<02:07,  1.01it/s]2026-07-10 09:19:56,507 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:56,512 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  74%|███████▍  | 359/486 [04:34<01:45,  1.20it/s]2026-07-10 09:19:56,697 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:56,703 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  74%|███████▍  | 360/486 [04:34<01:23,  1.51it/s]2026-07-10 09:19:56,825 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:56,830 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  74%|███████▍  | 361/486 [04:34<01:04,  1.95it/s]2026-07-10 09:19:58,727 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:58,732 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  74%|███████▍  | 362/486 [04:36<01:52,  1.10it/s]2026-07-10 09:19:59,260 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:59,266 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  75%|███████▍  | 363/486 [04:37<01:38,  1.25it/s]2026-07-10 09:19:59,821 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:19:59,826 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  75%|███████▍  | 364/486 [04:37<01:28,  1.37it/s]2026-07-10 09:20:00,138 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:20:00,143 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  75%|███████▌  | 365/486 [04:37<01:13,  1.64it/s]2026-07-10 09:20:00,378 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:00,378 INFO openai._base_client - Retrying request to /chat/completions in 0.478498 seconds
+2026-07-10 09:20:00,740 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:20:00,746 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  75%|███████▌  | 366/486 [04:38<01:12,  1.65it/s]2026-07-10 09:20:00,877 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:00,878 INFO openai._base_client - Retrying request to /chat/completions in 0.390795 seconds
+2026-07-10 09:20:00,907 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:00,907 INFO openai._base_client - Retrying request to /chat/completions in 0.821965 seconds
+2026-07-10 09:20:01,318 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:01,318 INFO openai._base_client - Retrying request to /chat/completions in 0.753052 seconds
+2026-07-10 09:20:01,779 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:01,779 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:02,121 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:02,121 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:02,453 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:20:02,458 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  76%|███████▌  | 367/486 [04:40<01:51,  1.07it/s]2026-07-10 09:20:02,509 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:02,509 INFO openai._base_client - Retrying request to /chat/completions in 0.444022 seconds
+2026-07-10 09:20:03,003 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:03,003 INFO openai._base_client - Retrying request to /chat/completions in 0.770745 seconds
+2026-07-10 09:20:03,822 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:20:03,823 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:03,823 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:03,827 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  76%|███████▌  | 368/486 [04:41<02:05,  1.06s/it]2026-07-10 09:20:03,878 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:03,878 INFO openai._base_client - Retrying request to /chat/completions in 0.383493 seconds
+2026-07-10 09:20:04,215 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 09:20:04,222 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  76%|███████▌  | 369/486 [04:42<01:41,  1.16it/s]2026-07-10 09:20:04,312 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:04,313 INFO openai._base_client - Retrying request to /chat/completions in 0.786412 seconds
+2026-07-10 09:20:04,378 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:04,378 INFO openai._base_client - Retrying request to /chat/completions in 0.486507 seconds
+2026-07-10 09:20:04,915 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:04,915 INFO openai._base_client - Retrying request to /chat/completions in 0.877326 seconds
+2026-07-10 09:20:05,149 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:05,149 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:05,843 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:05,843 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:06,830 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:06,830 INFO openai._base_client - Retrying request to /chat/completions in 0.441554 seconds
+2026-07-10 09:20:07,321 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:07,321 INFO openai._base_client - Retrying request to /chat/completions in 0.767366 seconds
+2026-07-10 09:20:07,331 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:07,331 INFO openai._base_client - Retrying request to /chat/completions in 0.491464 seconds
+2026-07-10 09:20:07,873 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:07,873 INFO openai._base_client - Retrying request to /chat/completions in 0.895494 seconds
+2026-07-10 09:20:08,138 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:08,138 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:08,818 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:08,818 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:08,874 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:08,874 INFO openai._base_client - Retrying request to /chat/completions in 0.387637 seconds
+2026-07-10 09:20:09,312 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:09,312 INFO openai._base_client - Retrying request to /chat/completions in 0.871292 seconds
+2026-07-10 09:20:10,199 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:10,199 INFO openai._base_client - Retrying request to /chat/completions in 0.380733 seconds
+2026-07-10 09:20:10,235 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:10,236 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:10,630 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:10,630 INFO openai._base_client - Retrying request to /chat/completions in 0.876891 seconds
+2026-07-10 09:20:10,894 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:10,894 INFO openai._base_client - Retrying request to /chat/completions in 0.376729 seconds
+2026-07-10 09:20:11,320 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:11,320 INFO openai._base_client - Retrying request to /chat/completions in 0.922224 seconds
+2026-07-10 09:20:11,557 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:11,557 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:12,292 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:12,293 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:18,383 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:18,384 INFO openai._base_client - Retrying request to /chat/completions in 0.406084 seconds
+2026-07-10 09:20:18,840 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:18,840 INFO openai._base_client - Retrying request to /chat/completions in 0.874265 seconds
+2026-07-10 09:20:18,977 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:18,978 INFO openai._base_client - Retrying request to /chat/completions in 0.446169 seconds
+2026-07-10 09:20:19,474 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:19,474 INFO openai._base_client - Retrying request to /chat/completions in 0.785354 seconds
+2026-07-10 09:20:19,765 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:19,765 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+Stage 1B:  76%|███████▌  | 370/486 [04:57<10:09,  5.25s/it]2026-07-10 09:20:19,770 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+2026-07-10 09:20:19,822 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:19,822 INFO openai._base_client - Retrying request to /chat/completions in 0.407690 seconds
+2026-07-10 09:20:20,280 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:20,280 INFO openai._base_client - Retrying request to /chat/completions in 0.770595 seconds
+2026-07-10 09:20:20,314 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:20,315 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:20:20,320 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  76%|███████▋  | 371/486 [04:58<07:22,  3.84s/it]2026-07-10 09:20:20,425 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:20,425 INFO openai._base_client - Retrying request to /chat/completions in 0.384762 seconds
+2026-07-10 09:20:20,822 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:20,822 INFO openai._base_client - Retrying request to /chat/completions in 0.386009 seconds
+2026-07-10 09:20:20,867 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:20,867 INFO openai._base_client - Retrying request to /chat/completions in 0.777597 seconds
+2026-07-10 09:20:21,101 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:21,101 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:21,258 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:21,258 INFO openai._base_client - Retrying request to /chat/completions in 0.855765 seconds
+2026-07-10 09:20:21,608 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:21,608 INFO openai._base_client - Retrying request to /chat/completions in 0.382437 seconds
+2026-07-10 09:20:21,695 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:21,695 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:20:21,700 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  77%|███████▋  | 372/486 [04:59<05:54,  3.11s/it]2026-07-10 09:20:22,042 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:22,042 INFO openai._base_client - Retrying request to /chat/completions in 0.994211 seconds
+2026-07-10 09:20:22,108 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:22,108 INFO openai._base_client - Retrying request to /chat/completions in 0.494670 seconds
+2026-07-10 09:20:22,162 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:22,163 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:22,607 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:22,608 INFO openai._base_client - Retrying request to /chat/completions in 0.415598 seconds
+2026-07-10 09:20:22,658 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:22,659 INFO openai._base_client - Retrying request to /chat/completions in 0.810689 seconds
+2026-07-10 09:20:23,073 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:23,074 INFO openai._base_client - Retrying request to /chat/completions in 0.895648 seconds
+2026-07-10 09:20:23,091 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:23,091 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:20:23,096 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  77%|███████▋  | 373/486 [05:00<04:53,  2.59s/it]2026-07-10 09:20:23,146 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:23,147 INFO openai._base_client - Retrying request to /chat/completions in 0.428119 seconds
+2026-07-10 09:20:23,519 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:23,519 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:23,627 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:23,627 INFO openai._base_client - Retrying request to /chat/completions in 0.890302 seconds
+2026-07-10 09:20:24,019 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:24,019 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:20:24,024 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  77%|███████▋  | 374/486 [05:01<03:54,  2.09s/it]2026-07-10 09:20:24,075 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:24,075 INFO openai._base_client - Retrying request to /chat/completions in 0.385547 seconds
+2026-07-10 09:20:24,510 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:24,510 INFO openai._base_client - Retrying request to /chat/completions in 0.774802 seconds
+2026-07-10 09:20:24,566 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:24,567 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:25,335 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:25,336 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:26,152 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:26,152 INFO openai._base_client - Retrying request to /chat/completions in 0.408628 seconds
+2026-07-10 09:20:26,612 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:26,612 INFO openai._base_client - Retrying request to /chat/completions in 0.975325 seconds
+2026-07-10 09:20:27,213 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:27,213 INFO openai._base_client - Retrying request to /chat/completions in 0.430087 seconds
+2026-07-10 09:20:27,638 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:27,638 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:27,693 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:27,693 INFO openai._base_client - Retrying request to /chat/completions in 0.986327 seconds
+2026-07-10 09:20:28,569 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:28,570 INFO openai._base_client - Retrying request to /chat/completions in 0.476235 seconds
+2026-07-10 09:20:28,729 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:28,729 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:29,096 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:29,096 INFO openai._base_client - Retrying request to /chat/completions in 0.825735 seconds
+2026-07-10 09:20:29,617 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:29,617 INFO openai._base_client - Retrying request to /chat/completions in 0.381763 seconds
+2026-07-10 09:20:29,972 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:29,972 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:30,048 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:30,048 INFO openai._base_client - Retrying request to /chat/completions in 0.795028 seconds
+2026-07-10 09:20:30,386 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:30,386 INFO openai._base_client - Retrying request to /chat/completions in 0.393076 seconds
+2026-07-10 09:20:30,829 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:30,830 INFO openai._base_client - Retrying request to /chat/completions in 0.815994 seconds
+2026-07-10 09:20:30,893 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:30,893 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:31,696 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:31,696 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:37,795 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:37,796 INFO openai._base_client - Retrying request to /chat/completions in 0.389816 seconds
+2026-07-10 09:20:38,240 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:38,241 INFO openai._base_client - Retrying request to /chat/completions in 0.813826 seconds
+2026-07-10 09:20:38,785 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:38,786 INFO openai._base_client - Retrying request to /chat/completions in 0.446673 seconds
+2026-07-10 09:20:39,111 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:39,111 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:20:39,116 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  77%|███████▋  | 375/486 [05:16<11:05,  5.99s/it]2026-07-10 09:20:39,281 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:39,281 INFO openai._base_client - Retrying request to /chat/completions in 0.423723 seconds
+2026-07-10 09:20:39,389 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:39,389 INFO openai._base_client - Retrying request to /chat/completions in 0.874276 seconds
+2026-07-10 09:20:39,756 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:39,756 INFO openai._base_client - Retrying request to /chat/completions in 0.846674 seconds
+2026-07-10 09:20:40,024 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:40,024 INFO openai._base_client - Retrying request to /chat/completions in 0.381315 seconds
+2026-07-10 09:20:40,315 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:40,315 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:20:40,321 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  77%|███████▋  | 376/486 [05:18<08:21,  4.56s/it]2026-07-10 09:20:40,457 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:40,457 INFO openai._base_client - Retrying request to /chat/completions in 0.887841 seconds
+2026-07-10 09:20:40,528 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:40,528 INFO openai._base_client - Retrying request to /chat/completions in 0.404117 seconds
+2026-07-10 09:20:40,659 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:40,659 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:40,984 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:40,985 INFO openai._base_client - Retrying request to /chat/completions in 0.979537 seconds
+2026-07-10 09:20:41,025 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:41,026 INFO openai._base_client - Retrying request to /chat/completions in 0.475778 seconds
+2026-07-10 09:20:41,395 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:41,395 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:20:41,400 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  78%|███████▊  | 377/486 [05:19<06:22,  3.51s/it]2026-07-10 09:20:41,524 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:41,524 INFO openai._base_client - Retrying request to /chat/completions in 0.419349 seconds
+2026-07-10 09:20:41,553 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:41,553 INFO openai._base_client - Retrying request to /chat/completions in 0.750631 seconds
+2026-07-10 09:20:41,994 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:41,994 INFO openai._base_client - Retrying request to /chat/completions in 0.999700 seconds
+2026-07-10 09:20:42,016 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:42,017 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:42,127 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:42,127 INFO openai._base_client - Retrying request to /chat/completions in 0.449714 seconds
+2026-07-10 09:20:42,355 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:42,355 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:20:42,361 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  78%|███████▊  | 378/486 [05:20<04:56,  2.75s/it]2026-07-10 09:20:42,525 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:42,525 INFO openai._base_client - Retrying request to /chat/completions in 0.376247 seconds
+2026-07-10 09:20:42,628 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:42,628 INFO openai._base_client - Retrying request to /chat/completions in 0.976390 seconds
+2026-07-10 09:20:42,953 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:42,954 INFO openai._base_client - Retrying request to /chat/completions in 0.909036 seconds
+2026-07-10 09:20:43,044 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:43,044 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:43,655 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:43,655 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:20:43,660 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  78%|███████▊  | 379/486 [05:21<04:07,  2.31s/it]2026-07-10 09:20:43,712 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:43,712 INFO openai._base_client - Retrying request to /chat/completions in 0.472782 seconds
+2026-07-10 09:20:43,914 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:43,914 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:44,236 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:44,236 INFO openai._base_client - Retrying request to /chat/completions in 0.760497 seconds
+2026-07-10 09:20:45,048 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:45,048 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:20:45,710 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:45,710 INFO openai._base_client - Retrying request to /chat/completions in 0.409717 seconds
+2026-07-10 09:20:46,170 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:46,170 INFO openai._base_client - Retrying request to /chat/completions in 0.812468 seconds
+2026-07-10 09:20:47,035 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:47,036 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:47,074 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:47,074 INFO openai._base_client - Retrying request to /chat/completions in 0.489468 seconds
+2026-07-10 09:20:47,613 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:47,614 INFO openai._base_client - Retrying request to /chat/completions in 0.875822 seconds
+2026-07-10 09:20:48,097 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:48,097 INFO openai._base_client - Retrying request to /chat/completions in 0.449717 seconds
+2026-07-10 09:20:48,539 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:48,540 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:48,598 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:48,598 INFO openai._base_client - Retrying request to /chat/completions in 0.968423 seconds
+2026-07-10 09:20:48,966 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:48,966 INFO openai._base_client - Retrying request to /chat/completions in 0.431732 seconds
+2026-07-10 09:20:49,449 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:49,449 INFO openai._base_client - Retrying request to /chat/completions in 0.771143 seconds
+2026-07-10 09:20:49,618 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:49,619 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:50,100 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:50,101 INFO openai._base_client - Retrying request to /chat/completions in 0.426733 seconds
+2026-07-10 09:20:50,271 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:50,271 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:50,578 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:50,578 INFO openai._base_client - Retrying request to /chat/completions in 0.892934 seconds
+2026-07-10 09:20:51,522 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:51,522 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:20:57,192 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:57,192 INFO openai._base_client - Retrying request to /chat/completions in 0.413363 seconds
+2026-07-10 09:20:57,660 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:57,660 INFO openai._base_client - Retrying request to /chat/completions in 0.883722 seconds
+2026-07-10 09:20:58,593 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:58,593 INFO openai._base_client - Retrying request to /chat/completions in 0.397684 seconds
+2026-07-10 09:20:58,701 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:58,701 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:20:58,707 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  78%|███████▊  | 380/486 [05:36<10:50,  6.13s/it]2026-07-10 09:20:59,044 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:59,044 INFO openai._base_client - Retrying request to /chat/completions in 0.852922 seconds
+2026-07-10 09:20:59,096 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:59,096 INFO openai._base_client - Retrying request to /chat/completions in 0.470054 seconds
+2026-07-10 09:20:59,621 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:59,621 INFO openai._base_client - Retrying request to /chat/completions in 0.929381 seconds
+2026-07-10 09:20:59,675 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:59,675 INFO openai._base_client - Retrying request to /chat/completions in 0.462528 seconds
+2026-07-10 09:20:59,950 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:20:59,951 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:20:59,955 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  78%|███████▊  | 381/486 [05:37<08:10,  4.67s/it]2026-07-10 09:21:00,170 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:00,170 INFO openai._base_client - Retrying request to /chat/completions in 0.484478 seconds
+2026-07-10 09:21:00,190 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:00,190 INFO openai._base_client - Retrying request to /chat/completions in 0.897074 seconds
+2026-07-10 09:21:00,603 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:00,603 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:00,670 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:00,670 INFO openai._base_client - Retrying request to /chat/completions in 0.415648 seconds
+2026-07-10 09:21:00,705 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:00,705 INFO openai._base_client - Retrying request to /chat/completions in 0.907911 seconds
+2026-07-10 09:21:01,135 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:01,135 INFO openai._base_client - Retrying request to /chat/completions in 0.987490 seconds
+2026-07-10 09:21:01,138 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:01,138 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:01,143 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  79%|███████▊  | 382/486 [05:38<06:16,  3.62s/it]2026-07-10 09:21:01,193 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:01,193 INFO openai._base_client - Retrying request to /chat/completions in 0.438314 seconds
+2026-07-10 09:21:01,663 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:01,663 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:01,682 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:01,683 INFO openai._base_client - Retrying request to /chat/completions in 0.978710 seconds
+2026-07-10 09:21:01,797 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:01,797 INFO openai._base_client - Retrying request to /chat/completions in 0.499593 seconds
+2026-07-10 09:21:02,172 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:02,172 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:02,177 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  79%|███████▉  | 383/486 [05:39<04:53,  2.85s/it]2026-07-10 09:21:02,227 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:02,228 INFO openai._base_client - Retrying request to /chat/completions in 0.481877 seconds
+2026-07-10 09:21:02,346 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:02,346 INFO openai._base_client - Retrying request to /chat/completions in 0.813589 seconds
+2026-07-10 09:21:02,711 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:02,711 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:02,764 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:02,764 INFO openai._base_client - Retrying request to /chat/completions in 0.960297 seconds
+2026-07-10 09:21:03,210 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:03,210 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:03,214 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  79%|███████▉  | 384/486 [05:41<03:55,  2.30s/it]2026-07-10 09:21:03,265 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:03,265 INFO openai._base_client - Retrying request to /chat/completions in 0.432977 seconds
+2026-07-10 09:21:03,747 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:03,747 INFO openai._base_client - Retrying request to /chat/completions in 0.861753 seconds
+2026-07-10 09:21:03,775 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:03,775 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:04,658 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:04,659 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:05,654 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:05,654 INFO openai._base_client - Retrying request to /chat/completions in 0.379128 seconds
+2026-07-10 09:21:06,083 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:06,083 INFO openai._base_client - Retrying request to /chat/completions in 0.912042 seconds
+2026-07-10 09:21:06,713 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:06,713 INFO openai._base_client - Retrying request to /chat/completions in 0.464748 seconds
+2026-07-10 09:21:07,045 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:07,045 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:07,228 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:07,228 INFO openai._base_client - Retrying request to /chat/completions in 0.751534 seconds
+2026-07-10 09:21:07,761 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:07,761 INFO openai._base_client - Retrying request to /chat/completions in 0.458527 seconds
+2026-07-10 09:21:08,029 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:08,029 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:08,269 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:08,269 INFO openai._base_client - Retrying request to /chat/completions in 0.953297 seconds
+2026-07-10 09:21:08,825 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:08,825 INFO openai._base_client - Retrying request to /chat/completions in 0.483771 seconds
+2026-07-10 09:21:09,272 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:09,272 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:09,359 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:09,360 INFO openai._base_client - Retrying request to /chat/completions in 0.811174 seconds
+2026-07-10 09:21:09,708 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:09,709 INFO openai._base_client - Retrying request to /chat/completions in 0.406069 seconds
+2026-07-10 09:21:10,163 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:10,163 INFO openai._base_client - Retrying request to /chat/completions in 0.898823 seconds
+2026-07-10 09:21:10,219 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:10,219 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:11,111 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:11,112 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:17,198 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:17,198 INFO openai._base_client - Retrying request to /chat/completions in 0.413180 seconds
+2026-07-10 09:21:17,662 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:17,663 INFO openai._base_client - Retrying request to /chat/completions in 0.943035 seconds
+2026-07-10 09:21:18,080 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:18,080 INFO openai._base_client - Retrying request to /chat/completions in 0.420714 seconds
+2026-07-10 09:21:18,551 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:18,552 INFO openai._base_client - Retrying request to /chat/completions in 0.790988 seconds
+2026-07-10 09:21:18,656 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:18,658 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:18,663 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  79%|███████▉  | 385/486 [05:56<10:30,  6.25s/it]2026-07-10 09:21:18,714 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:18,715 INFO openai._base_client - Retrying request to /chat/completions in 0.412244 seconds
+2026-07-10 09:21:19,177 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:19,177 INFO openai._base_client - Retrying request to /chat/completions in 0.904444 seconds
+2026-07-10 09:21:19,323 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:19,323 INFO openai._base_client - Retrying request to /chat/completions in 0.388699 seconds
+2026-07-10 09:21:19,393 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:19,393 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:19,398 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  79%|███████▉  | 386/486 [05:57<07:39,  4.59s/it]2026-07-10 09:21:19,762 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:19,762 INFO openai._base_client - Retrying request to /chat/completions in 0.809047 seconds
+2026-07-10 09:21:19,822 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:19,822 INFO openai._base_client - Retrying request to /chat/completions in 0.398418 seconds
+2026-07-10 09:21:20,131 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:20,132 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:20,271 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:20,271 INFO openai._base_client - Retrying request to /chat/completions in 0.820198 seconds
+2026-07-10 09:21:20,323 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:20,323 INFO openai._base_client - Retrying request to /chat/completions in 0.419035 seconds
+2026-07-10 09:21:20,622 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:20,622 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:20,627 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  80%|███████▉  | 387/486 [05:58<05:54,  3.58s/it]2026-07-10 09:21:20,792 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:20,792 INFO openai._base_client - Retrying request to /chat/completions in 0.814005 seconds
+2026-07-10 09:21:20,999 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:20,999 INFO openai._base_client - Retrying request to /chat/completions in 0.375083 seconds
+2026-07-10 09:21:21,141 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:21,141 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:21,323 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:21,323 INFO openai._base_client - Retrying request to /chat/completions in 0.399109 seconds
+2026-07-10 09:21:21,424 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:21,424 INFO openai._base_client - Retrying request to /chat/completions in 0.924062 seconds
+2026-07-10 09:21:21,656 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:21,656 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:21,661 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  80%|███████▉  | 388/486 [05:59<04:36,  2.82s/it]2026-07-10 09:21:21,772 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:21,772 INFO openai._base_client - Retrying request to /chat/completions in 0.817680 seconds
+2026-07-10 09:21:21,823 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:21,824 INFO openai._base_client - Retrying request to /chat/completions in 0.454640 seconds
+2026-07-10 09:21:22,329 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:22,329 INFO openai._base_client - Retrying request to /chat/completions in 0.988278 seconds
+2026-07-10 09:21:22,399 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:22,399 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:22,639 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:22,639 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:22,644 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  80%|████████  | 389/486 [06:00<03:40,  2.27s/it]2026-07-10 09:21:22,696 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:22,696 INFO openai._base_client - Retrying request to /chat/completions in 0.405467 seconds
+2026-07-10 09:21:23,151 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:23,152 INFO openai._base_client - Retrying request to /chat/completions in 0.967120 seconds
+2026-07-10 09:21:23,367 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:23,367 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:24,168 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:24,168 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:25,182 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:25,183 INFO openai._base_client - Retrying request to /chat/completions in 0.400532 seconds
+2026-07-10 09:21:25,633 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:25,633 INFO openai._base_client - Retrying request to /chat/completions in 0.969352 seconds
+2026-07-10 09:21:26,192 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:26,192 INFO openai._base_client - Retrying request to /chat/completions in 0.403747 seconds
+2026-07-10 09:21:26,646 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:26,646 INFO openai._base_client - Retrying request to /chat/completions in 0.777718 seconds
+2026-07-10 09:21:26,757 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:26,758 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:27,449 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:27,449 INFO openai._base_client - Retrying request to /chat/completions in 0.400474 seconds
+2026-07-10 09:21:27,478 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:27,479 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:27,900 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:27,900 INFO openai._base_client - Retrying request to /chat/completions in 0.922753 seconds
+2026-07-10 09:21:28,421 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:28,421 INFO openai._base_client - Retrying request to /chat/completions in 0.431272 seconds
+2026-07-10 09:21:28,874 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:28,874 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:28,902 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:28,902 INFO openai._base_client - Retrying request to /chat/completions in 0.953822 seconds
+2026-07-10 09:21:29,219 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:29,219 INFO openai._base_client - Retrying request to /chat/completions in 0.382445 seconds
+2026-07-10 09:21:29,652 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:29,652 INFO openai._base_client - Retrying request to /chat/completions in 0.841158 seconds
+2026-07-10 09:21:29,906 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:29,906 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:30,543 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:30,543 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:36,910 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:36,911 INFO openai._base_client - Retrying request to /chat/completions in 0.378064 seconds
+2026-07-10 09:21:37,344 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:37,345 INFO openai._base_client - Retrying request to /chat/completions in 0.844888 seconds
+2026-07-10 09:21:37,534 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:37,535 INFO openai._base_client - Retrying request to /chat/completions in 0.395411 seconds
+2026-07-10 09:21:37,981 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:37,981 INFO openai._base_client - Retrying request to /chat/completions in 0.804203 seconds
+2026-07-10 09:21:38,243 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:38,243 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:38,249 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  80%|████████  | 390/486 [06:16<10:01,  6.27s/it]2026-07-10 09:21:38,301 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:38,302 INFO openai._base_client - Retrying request to /chat/completions in 0.480242 seconds
+2026-07-10 09:21:38,833 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:38,834 INFO openai._base_client - Retrying request to /chat/completions in 0.934523 seconds
+2026-07-10 09:21:38,925 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:38,925 INFO openai._base_client - Retrying request to /chat/completions in 0.454351 seconds
+2026-07-10 09:21:38,940 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:38,940 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:38,945 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  80%|████████  | 391/486 [06:16<07:16,  4.60s/it]2026-07-10 09:21:39,425 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:39,425 INFO openai._base_client - Retrying request to /chat/completions in 0.466060 seconds
+2026-07-10 09:21:39,431 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:39,431 INFO openai._base_client - Retrying request to /chat/completions in 0.954147 seconds
+2026-07-10 09:21:39,818 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:39,818 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:39,942 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:39,942 INFO openai._base_client - Retrying request to /chat/completions in 0.820285 seconds
+2026-07-10 09:21:39,958 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:39,959 INFO openai._base_client - Retrying request to /chat/completions in 0.436274 seconds
+2026-07-10 09:21:40,436 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:40,436 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:40,441 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  81%|████████  | 392/486 [06:18<05:44,  3.67s/it]2026-07-10 09:21:40,447 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:40,447 INFO openai._base_client - Retrying request to /chat/completions in 0.986422 seconds
+2026-07-10 09:21:40,492 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:40,492 INFO openai._base_client - Retrying request to /chat/completions in 0.404276 seconds
+2026-07-10 09:21:40,813 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:40,813 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:40,946 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:40,946 INFO openai._base_client - Retrying request to /chat/completions in 0.849270 seconds
+2026-07-10 09:21:40,997 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:40,997 INFO openai._base_client - Retrying request to /chat/completions in 0.456867 seconds
+2026-07-10 09:21:41,484 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:41,484 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:41,489 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  81%|████████  | 393/486 [06:19<04:27,  2.88s/it]2026-07-10 09:21:41,505 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:41,506 INFO openai._base_client - Retrying request to /chat/completions in 0.956299 seconds
+2026-07-10 09:21:41,540 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:41,541 INFO openai._base_client - Retrying request to /chat/completions in 0.409104 seconds
+2026-07-10 09:21:41,845 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:41,846 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:42,001 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:42,001 INFO openai._base_client - Retrying request to /chat/completions in 0.861966 seconds
+2026-07-10 09:21:42,512 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:42,513 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:42,517 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  81%|████████  | 394/486 [06:20<03:33,  2.33s/it]2026-07-10 09:21:42,568 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:42,568 INFO openai._base_client - Retrying request to /chat/completions in 0.436483 seconds
+2026-07-10 09:21:42,930 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:42,930 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:43,055 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:43,055 INFO openai._base_client - Retrying request to /chat/completions in 0.965765 seconds
+2026-07-10 09:21:44,072 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:44,072 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:44,870 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:44,870 INFO openai._base_client - Retrying request to /chat/completions in 0.475414 seconds
+2026-07-10 09:21:45,395 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:45,395 INFO openai._base_client - Retrying request to /chat/completions in 0.982632 seconds
+2026-07-10 09:21:45,865 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:45,866 INFO openai._base_client - Retrying request to /chat/completions in 0.473729 seconds
+2026-07-10 09:21:46,390 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:46,390 INFO openai._base_client - Retrying request to /chat/completions in 0.874753 seconds
+2026-07-10 09:21:46,430 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:46,430 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:46,896 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:46,896 INFO openai._base_client - Retrying request to /chat/completions in 0.441673 seconds
+2026-07-10 09:21:47,315 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:47,315 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:47,388 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:47,389 INFO openai._base_client - Retrying request to /chat/completions in 0.814422 seconds
+2026-07-10 09:21:47,981 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:47,982 INFO openai._base_client - Retrying request to /chat/completions in 0.474837 seconds
+2026-07-10 09:21:48,253 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:48,254 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:48,506 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:48,507 INFO openai._base_client - Retrying request to /chat/completions in 0.772394 seconds
+2026-07-10 09:21:49,122 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:49,123 INFO openai._base_client - Retrying request to /chat/completions in 0.378647 seconds
+2026-07-10 09:21:49,329 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:49,330 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:49,551 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:49,551 INFO openai._base_client - Retrying request to /chat/completions in 0.934896 seconds
+2026-07-10 09:21:50,536 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:50,536 WARNING le_downstream - LLM call attempt 2/3 failed: Error code: 429
+2026-07-10 09:21:56,588 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:56,589 INFO openai._base_client - Retrying request to /chat/completions in 0.392478 seconds
+2026-07-10 09:21:57,033 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:57,033 INFO openai._base_client - Retrying request to /chat/completions in 0.777222 seconds
+2026-07-10 09:21:57,370 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:57,370 INFO openai._base_client - Retrying request to /chat/completions in 0.477927 seconds
+2026-07-10 09:21:57,865 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:57,865 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:57,870 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  81%|████████▏ | 395/486 [06:35<09:27,  6.23s/it]2026-07-10 09:21:57,925 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:57,926 INFO openai._base_client - Retrying request to /chat/completions in 0.442508 seconds
+2026-07-10 09:21:58,009 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:58,009 INFO openai._base_client - Retrying request to /chat/completions in 0.975656 seconds
+2026-07-10 09:21:58,421 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:58,422 INFO openai._base_client - Retrying request to /chat/completions in 0.926880 seconds
+2026-07-10 09:21:58,428 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:58,428 INFO openai._base_client - Retrying request to /chat/completions in 0.386414 seconds
+2026-07-10 09:21:58,865 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:58,866 INFO openai._base_client - Retrying request to /chat/completions in 0.982710 seconds
+2026-07-10 09:21:59,035 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:59,035 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:59,040 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  81%|████████▏ | 396/486 [06:36<07:04,  4.71s/it]2026-07-10 09:21:59,091 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:59,091 INFO openai._base_client - Retrying request to /chat/completions in 0.379976 seconds
+2026-07-10 09:21:59,399 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:59,399 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:21:59,520 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:59,520 INFO openai._base_client - Retrying request to /chat/completions in 0.991150 seconds
+2026-07-10 09:21:59,590 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:59,590 INFO openai._base_client - Retrying request to /chat/completions in 0.480693 seconds
+2026-07-10 09:21:59,898 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:21:59,898 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:21:59,903 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  82%|████████▏ | 397/486 [06:37<05:16,  3.56s/it]2026-07-10 09:22:00,091 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:00,091 INFO openai._base_client - Retrying request to /chat/completions in 0.392779 seconds
+2026-07-10 09:22:00,122 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:00,122 INFO openai._base_client - Retrying request to /chat/completions in 0.791898 seconds
+2026-07-10 09:22:00,533 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:00,533 INFO openai._base_client - Retrying request to /chat/completions in 0.812532 seconds
+2026-07-10 09:22:00,566 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:00,566 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:22:00,590 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:00,590 INFO openai._base_client - Retrying request to /chat/completions in 0.396517 seconds
+2026-07-10 09:22:00,964 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:00,964 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:22:00,968 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.004s]
+Stage 1B:  82%|████████▏ | 398/486 [06:38<04:07,  2.81s/it]2026-07-10 09:22:01,036 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:01,036 INFO openai._base_client - Retrying request to /chat/completions in 0.861998 seconds
+2026-07-10 09:22:01,091 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:01,092 INFO openai._base_client - Retrying request to /chat/completions in 0.492481 seconds
+2026-07-10 09:22:01,395 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:01,395 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:22:01,634 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:01,634 INFO openai._base_client - Retrying request to /chat/completions in 0.884542 seconds
+2026-07-10 09:22:01,948 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:01,948 WARNING le_downstream - LLM call attempt 3/3 failed: Error code: 429
+2026-07-10 09:22:01,954 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nemo_usvcs_curated/_search [status:200 duration:0.005s]
+Stage 1B:  82%|████████▏ | 399/486 [06:39<03:16,  2.26s/it]2026-07-10 09:22:02,005 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:02,005 INFO openai._base_client - Retrying request to /chat/completions in 0.394772 seconds
+2026-07-10 09:22:02,450 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:02,450 INFO openai._base_client - Retrying request to /chat/completions in 0.916390 seconds
+2026-07-10 09:22:02,568 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:02,568 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:22:03,416 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:03,416 WARNING le_downstream - LLM call attempt 1/3 failed: Error code: 429
+2026-07-10 09:22:04,449 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-07-10 09:22:04,449 INFO openai._base_client - Retrying request to /chat/completions in 0.414613 seconds
