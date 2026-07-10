@@ -356,6 +356,12 @@ def source_filter_doc_kind(source_dir: Path) -> str | None:
     return str(value) if value else None
 
 
+def lineage_candidate_enabled(source_dir: Path, candidate: LineageFile) -> bool:
+    if str(candidate.source).startswith("provenance/html_only/"):
+        return source_filter_doc_kind(source_dir) == "html"
+    return True
+
+
 def resolve_lineage_candidate(source_dir: Path, candidate: LineageFile) -> LineageFile:
     if source_filter_doc_kind(source_dir) != "html":
         return candidate
@@ -368,6 +374,14 @@ def resolve_lineage_candidate(source_dir: Path, candidate: LineageFile) -> Linea
         artifact_kind=f"html_only_{candidate.artifact_kind}",
         required=candidate.required,
     )
+
+
+def resolved_lineage_candidates(source_dir: Path) -> list[LineageFile]:
+    return [
+        resolve_lineage_candidate(source_dir, candidate)
+        for candidate in LINEAGE_FILE_CANDIDATES
+        if lineage_candidate_enabled(source_dir, candidate)
+    ]
 
 
 def load_jsonl_if_exists(path: Path) -> list[dict[str, Any]]:
@@ -496,8 +510,8 @@ def default_dataset_specs(
 
 def discover_provenance_artifacts(source_dir: Path) -> list[dict[str, Any]]:
     lineage_candidates = [
-        source_dir / resolve_lineage_candidate(source_dir, item).source
-        for item in LINEAGE_FILE_CANDIDATES
+        source_dir / item.source
+        for item in resolved_lineage_candidates(source_dir)
     ]
     candidates = [
         source_dir / "manifests" / "crawl_run.json",
@@ -548,8 +562,7 @@ def load_dataset_version_manifest(source_dir: Path) -> dict[str, Any]:
 
 def discover_lineage_files(source_dir: Path) -> list[LineageFile]:
     files: list[LineageFile] = []
-    for candidate in LINEAGE_FILE_CANDIDATES:
-        resolved = resolve_lineage_candidate(source_dir, candidate)
+    for resolved in resolved_lineage_candidates(source_dir):
         source = source_dir / resolved.source
         if source.exists():
             files.append(
@@ -565,8 +578,7 @@ def discover_lineage_files(source_dir: Path) -> list[LineageFile]:
 
 def missing_required_lineage_files(source_dir: Path) -> list[Path]:
     missing = []
-    for candidate in LINEAGE_FILE_CANDIDATES:
-        resolved = resolve_lineage_candidate(source_dir, candidate)
+    for resolved in resolved_lineage_candidates(source_dir):
         if resolved.required and not (source_dir / resolved.source).exists():
             missing.append(source_dir / resolved.source)
     return missing

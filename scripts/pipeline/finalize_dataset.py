@@ -157,6 +157,8 @@ def list_existing_artifacts(dataset_dir: Path) -> list[dict[str, Any]]:
     artifacts = []
     html_only = source_filter_doc_kind(dataset_dir) == "html"
     for rel_path in ARTIFACT_CANDIDATES:
+        if rel_path.startswith("provenance/html_only/") and not html_only:
+            continue
         if html_only and rel_path in HTML_ONLY_LINEAGE_CANONICALS:
             filtered = dataset_dir / "provenance" / "html_only" / Path(rel_path).name
             if filtered.exists():

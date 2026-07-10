@@ -49,7 +49,7 @@ DEFAULT_TARGETS = (
     "https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-ultra",
 )
 DEFAULT_CANONICAL_MODEL = "nvidia/nvidia/nemotron-3-ultra"
-DEFAULT_SOURCE_DOC_KIND = "html"
+DEFAULT_SOURCE_DOC_KIND = "all"
 COLLECTION_DOMAIN = {
     "nim_curated": "NVIDIA NIM",
     "nemo_usvcs_curated": "NVIDIA NeMo Microservices",
@@ -409,8 +409,11 @@ def write_source_filter_artifacts(
     provenance_dir = output_dir / "provenance"
     provenance_dir.mkdir(parents=True, exist_ok=True)
 
-    html_stage1a_path = output_dir / "stage1a_le_html.jsonl"
-    with html_stage1a_path.open("w", encoding="utf-8") as stream:
+    selected_stage1a_name = (
+        "stage1a_le_html.jsonl" if source_doc_kind == "html" else "stage1a_le_selected.jsonl"
+    )
+    selected_stage1a_path = output_dir / selected_stage1a_name
+    with selected_stage1a_path.open("w", encoding="utf-8") as stream:
         for row in selected_stage1a_rows:
             stream.write(row.model_dump_json() + "\n")
 
@@ -456,7 +459,7 @@ def write_source_filter_artifacts(
             "excluded": len(raw_stage1a_rows) - len(selected_stage1a_rows),
         },
         "outputs": {
-            "html_stage1a_rows": "stage1a_le_html.jsonl",
+            "selected_stage1a_rows": selected_stage1a_name,
             "selected_lineage_dir": selected_lineage["lineage_dir"],
             "excluded_passages": "provenance/source_filter_excluded_passages.jsonl",
         },
@@ -671,7 +674,7 @@ def parse_args() -> argparse.Namespace:
         "--source-doc-kind",
         choices=["html", "all"],
         default=DEFAULT_SOURCE_DOC_KIND,
-        help="Filter source passages and raw KVPs by Stage 0 doc_kind. Default keeps HTML only.",
+        help="Filter source passages and raw KVPs by Stage 0 doc_kind. Default keeps all source kinds.",
     )
     ap.add_argument("--es-host", default=None)
     ap.add_argument("--target", action="append", default=None)
