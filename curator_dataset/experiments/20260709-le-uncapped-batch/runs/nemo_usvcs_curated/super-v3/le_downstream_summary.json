@@ -6,7 +6,8 @@
     "1c",
     "2",
     "3",
-    "4"
+    "4",
+    "finalize"
   ],
   "counts": {
     "passages": 486,
@@ -22,7 +23,7 @@
     "training_rows": 7171,
     "validation_rows": 799
   },
-  "dataset_version_id": null,
+  "dataset_version_id": "dsv_bb7448083bb6685ee3dbdab4",
   "output_dir": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3",
   "source_filter": {
     "outputs": {

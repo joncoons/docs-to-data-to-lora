@@ -6,7 +6,8 @@
     "1c",
     "2",
     "3",
-    "4"
+    "4",
+    "finalize"
   ],
   "counts": {
     "passages": 498,
@@ -22,7 +23,7 @@
     "training_rows": 7905,
     "validation_rows": 880
   },
-  "dataset_version_id": null,
+  "dataset_version_id": "dsv_178223936b9918e346f3c4c5",
   "output_dir": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3",
   "source_filter": {
     "outputs": {
