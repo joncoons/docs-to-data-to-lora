@@ -1,0 +1,190 @@
+{
+  "corpora": {
+    "NIM": {
+      "delta_final_curated_rows": 2304,
+      "delta_training_rows": 2074,
+      "delta_validation_rows": 230,
+      "initial": {
+        "exact": 9334,
+        "input": 9404,
+        "length": 6481,
+        "min_a": 25,
+        "min_q": 8,
+        "minhash": 9098,
+        "subset": 6481,
+        "tokenizer": "tiktoken cl100k_base",
+        "train": 5831,
+        "val": 650
+      },
+      "revised": {
+        "counts": {
+          "after_exact_dedup": 9334,
+          "after_length_filter": 8787,
+          "after_minhash_dedup": 9098,
+          "after_subset_filter": 8785,
+          "input_rows": 9404,
+          "training_rows": 7905,
+          "validation_rows": 880
+        },
+        "execution_surface": "python_curator_fallback",
+        "parameters": {
+          "min_answer_tokens": 8,
+          "min_question_tokens": 12,
+          "minhash_threshold": 0.85,
+          "tokenizer_class": "TokenizersBackend",
+          "tokenizer_name_or_path": "/mnt/nvme4/nim_cache/nim/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling",
+          "train_ratio": 0.9
+        },
+        "reductions": [
+          {
+            "after_rows": 9334,
+            "before_rows": 9404,
+            "cause": "Duplicate questions after case/whitespace normalization",
+            "name": "exact_question_dedup",
+            "removed_pct_of_stage_input": 0.7444,
+            "removed_pct_of_step_input": 0.7444,
+            "removed_rows": 70
+          },
+          {
+            "after_rows": 9098,
+            "before_rows": 9334,
+            "cause": "Near-duplicate question+answer pairs by MinHash LSH",
+            "name": "minhash_fuzzy_dedup",
+            "removed_pct_of_stage_input": 2.5096,
+            "removed_pct_of_step_input": 2.5284,
+            "removed_rows": 236
+          },
+          {
+            "after_rows": 8787,
+            "before_rows": 9098,
+            "cause": "Question tokens < 12 or answer tokens < 8",
+            "name": "length_filter",
+            "removed_pct_of_stage_input": 3.3071,
+            "removed_pct_of_step_input": 3.4183,
+            "removed_rows": 311
+          },
+          {
+            "after_rows": 8785,
+            "before_rows": 8787,
+            "cause": "Answer text normalizes to a substring of the question",
+            "name": "answer_subset_filter",
+            "removed_pct_of_stage_input": 0.0213,
+            "removed_pct_of_step_input": 0.0228,
+            "removed_rows": 2
+          }
+        ],
+        "retention": {
+          "final_curated_rows": 8785,
+          "removed_pct_of_input": 6.5823,
+          "removed_rows": 619,
+          "retained_pct_of_input": 93.4177
+        },
+        "split": {
+          "note": "Train/validation split is not a Curator reduction cause.",
+          "training_rows": 7905,
+          "validation_rows": 880
+        },
+        "stage": "3"
+      }
+    },
+    "NeMo Microservices": {
+      "delta_final_curated_rows": 2855,
+      "delta_training_rows": 2569,
+      "delta_validation_rows": 286,
+      "initial": {
+        "exact": 9405,
+        "input": 10712,
+        "length": 5115,
+        "min_a": 25,
+        "min_q": 8,
+        "minhash": 8730,
+        "subset": 5115,
+        "tokenizer": "tiktoken cl100k_base",
+        "train": 4602,
+        "val": 513
+      },
+      "revised": {
+        "counts": {
+          "after_exact_dedup": 9405,
+          "after_length_filter": 7970,
+          "after_minhash_dedup": 8730,
+          "after_subset_filter": 7970,
+          "input_rows": 10712,
+          "training_rows": 7171,
+          "validation_rows": 799
+        },
+        "execution_surface": "python_curator_fallback",
+        "parameters": {
+          "min_answer_tokens": 8,
+          "min_question_tokens": 12,
+          "minhash_threshold": 0.85,
+          "tokenizer_class": "TokenizersBackend",
+          "tokenizer_name_or_path": "/mnt/nvme4/nim_cache/nim/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling",
+          "train_ratio": 0.9
+        },
+        "reductions": [
+          {
+            "after_rows": 9405,
+            "before_rows": 10712,
+            "cause": "Duplicate questions after case/whitespace normalization",
+            "name": "exact_question_dedup",
+            "removed_pct_of_stage_input": 12.2013,
+            "removed_pct_of_step_input": 12.2013,
+            "removed_rows": 1307
+          },
+          {
+            "after_rows": 8730,
+            "before_rows": 9405,
+            "cause": "Near-duplicate question+answer pairs by MinHash LSH",
+            "name": "minhash_fuzzy_dedup",
+            "removed_pct_of_stage_input": 6.3013,
+            "removed_pct_of_step_input": 7.177,
+            "removed_rows": 675
+          },
+          {
+            "after_rows": 7970,
+            "before_rows": 8730,
+            "cause": "Question tokens < 12 or answer tokens < 8",
+            "name": "length_filter",
+            "removed_pct_of_stage_input": 7.0948,
+            "removed_pct_of_step_input": 8.7056,
+            "removed_rows": 760
+          },
+          {
+            "after_rows": 7970,
+            "before_rows": 7970,
+            "cause": "Answer text normalizes to a substring of the question",
+            "name": "answer_subset_filter",
+            "removed_pct_of_stage_input": 0.0,
+            "removed_pct_of_step_input": 0.0,
+            "removed_rows": 0
+          }
+        ],
+        "retention": {
+          "final_curated_rows": 7970,
+          "removed_pct_of_input": 25.5975,
+          "removed_rows": 2742,
+          "retained_pct_of_input": 74.4025
+        },
+        "split": {
+          "note": "Train/validation split is not a Curator reduction cause.",
+          "training_rows": 7171,
+          "validation_rows": 799
+        },
+        "stage": "3"
+      }
+    }
+  },
+  "previous_policy": {
+    "min_answer_tokens": 25,
+    "min_question_tokens": 8,
+    "tokenizer": "tiktoken cl100k_base"
+  },
+  "rationale": "Replace generic cl100k_base length filtering with the production Llama 3.1 8B tokenizer and revised QA-shaped cutoffs.",
+  "revised_policy": {
+    "min_answer_tokens": 8,
+    "min_question_tokens": 12,
+    "tokenizer": "/mnt/nvme4/nim_cache/nim/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling"
+  },
+  "schema_version": "stage3_curator_reduction_comparison.v1"
+}

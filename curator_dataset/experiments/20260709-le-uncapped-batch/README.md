@@ -91,6 +91,15 @@ smoke tests, fallback execution, and ablation; Stage 4 should remain
 independent, for example Claude Sonnet 4.6 via the NVIDIA-hosted
 OpenAI-compatible endpoint.
 
+Stage 3 length filtering uses the production tokenizer, not a generic proxy. For
+this Llama 3.1 8B Customizer experiment, the default resolves from the NIM cache
+at `$LOCAL_NIM_CACHE/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`;
+this run used `/mnt/nvme4/nim_cache/nim/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`
+with
+`--stage3-min-question-tokens 12 --stage3-min-answer-tokens 8`. The initial
+`cl100k_base`/`question >= 8`/`answer >= 25` filter over-dropped concise
+technical answers; the revised run is captured in `stage3_curator_reductions.md`.
+
 The runner defaults to all source document kinds for turnkey use. Pass `--source-doc-kind html` only when an experiment intentionally excludes parsed PDFs. When a source filter is active, the runner writes selected KVP and lineage sidecars so Data Store publication can use only the selected provenance.
 
 If `--allow-incomplete-stage1a` is supplied, selected passages whose latest Stage 1A status is incomplete are excluded from downstream stages and recorded in `provenance/source_filter_excluded_passages.jsonl` with a `stage1a_*` reason. This keeps downstream augmentation grounded in completed Stage 1A rows without deleting the raw extraction artifacts.

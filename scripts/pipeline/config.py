@@ -7,6 +7,8 @@ import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from scripts.pipeline.stage3_tokenizer import default_stage3_tokenizer_name_or_path
+
 
 # Defaults assume in-cluster pod DNS. Override via env vars when running from
 # a host that can't resolve cluster service names (e.g., from ubuntu-local-dev,
@@ -89,8 +91,11 @@ class Config:
     # Stage 3
     train_val_split: float = 0.90
     minhash_threshold: float = 0.85
-    min_question_tokens: int = 8
-    min_answer_tokens: int = 25
+    stage3_tokenizer_name_or_path: str = field(
+        default_factory=default_stage3_tokenizer_name_or_path
+    )
+    min_question_tokens: int = int(os.environ.get("PIPELINE_STAGE3_MIN_QUESTION_TOKENS", "12"))
+    min_answer_tokens: int = int(os.environ.get("PIPELINE_STAGE3_MIN_ANSWER_TOKENS", "8"))
 
     # Stage 4
     judge_sample_size: int = 100

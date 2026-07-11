@@ -15,8 +15,8 @@
     "stage1c_rows": 262,
     "stage2_dropped_rows": 142,
     "stage2_rows": 10712,
-    "training_rows": 4602,
-    "validation_rows": 513
+    "training_rows": 7171,
+    "validation_rows": 799
   },
   "dataset_version_id": null,
   "output_dir": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3",
@@ -72,14 +72,14 @@
       "selected": 9611
     }
   },
-  "stage2_canonical_model": "nvidia/nvidia/nemotron-3-ultra",
+  "stage2_canonical_model": "nvidia/nvidia/nemotron-3-super-v3",
   "stage2_execution_surface": "curator_llm_quality",
   "stage2_max_tokens": 2048,
   "stage2_targets": [
     {
       "endpoint": "https://inference-api.nvidia.com/v1",
       "max_model_len": null,
-      "model": "nvidia/nvidia/nemotron-3-ultra"
+      "model": "nvidia/nvidia/nemotron-3-super-v3"
     }
   ],
   "targets": [
@@ -89,5 +89,5 @@
       "model": "nvidia/nvidia/nemotron-3-ultra"
     }
   ],
-  "temperature": 0.0
+  "temperature": 0.2
 }

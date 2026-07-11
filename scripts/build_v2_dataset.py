@@ -234,6 +234,14 @@ def main() -> int:
                     default=os.getenv("PIPELINE_STAGE2_EXECUTION_SURFACE"),
                     help="Audit label for Stage 2 QA execution surface, e.g. "
                          "curator_llm_quality or direct_qa_eval.")
+    ap.add_argument("--stage3-tokenizer", default=os.getenv("PIPELINE_STAGE3_TOKENIZER"),
+                    help="Production tokenizer path/model for Stage 3 length filtering.")
+    ap.add_argument("--stage3-min-question-tokens", type=int,
+                    default=_env_optional_int("PIPELINE_STAGE3_MIN_QUESTION_TOKENS"),
+                    help="Minimum production-tokenizer question tokens for Stage 3.")
+    ap.add_argument("--stage3-min-answer-tokens", type=int,
+                    default=_env_optional_int("PIPELINE_STAGE3_MIN_ANSWER_TOKENS"),
+                    help="Minimum production-tokenizer answer tokens for Stage 3.")
     ap.add_argument("--max-passages", type=int, default=None,
                     help="Subsample to N passages after Stage 0 (for smoke testing)")
     args = ap.parse_args()
@@ -247,6 +255,10 @@ def main() -> int:
         ap.error("--stage1a-batched-kvp-max-tokens must be >= 1")
     if args.stage2_qa_max_tokens is not None and args.stage2_qa_max_tokens < 1:
         ap.error("--stage2-qa-max-tokens must be >= 1")
+    if args.stage3_min_question_tokens is not None and args.stage3_min_question_tokens < 1:
+        ap.error("--stage3-min-question-tokens must be >= 1")
+    if args.stage3_min_answer_tokens is not None and args.stage3_min_answer_tokens < 1:
+        ap.error("--stage3-min-answer-tokens must be >= 1")
 
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(name)s %(message)s",
@@ -426,8 +438,9 @@ def main() -> int:
             run_stage3(stage2_rows, args.output, system_prompt,
                        train_ratio=cfg.train_val_split,
                        minhash_threshold=cfg.minhash_threshold,
-                       min_q_tokens=cfg.min_question_tokens,
-                       min_a_tokens=cfg.min_answer_tokens)
+                       min_q_tokens=args.stage3_min_question_tokens or cfg.min_question_tokens,
+                       min_a_tokens=args.stage3_min_answer_tokens or cfg.min_answer_tokens,
+                       tokenizer_name_or_path=args.stage3_tokenizer or cfg.stage3_tokenizer_name_or_path)
             progress.mark_done("3")
 
     # --- Stage 4 ---

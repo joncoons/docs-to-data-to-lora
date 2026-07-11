@@ -754,7 +754,21 @@ to dataset sample lineage.
 
 The older pure-Python `scripts/pipeline/stage3_curator.py` path remains a local
 offline fallback for exact dedup, MinHash, token length filters, substring
-checks, and split writing.
+checks, and split writing. Its token length filter must use the production
+training/serving tokenizer, not a generic tokenizer. For the current Llama 3.1
+8B Customizer target, the default tokenizer resolves from the local NIM cache at
+`$LOCAL_NIM_CACHE/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`;
+if `LOCAL_NIM_CACHE` is unset, the resolver uses the standard
+`~/.cache/nim` NIM layout. Override it with `PIPELINE_STAGE3_TOKENIZER` or
+`--stage3-tokenizer` when targeting another base model, or set
+`PIPELINE_STAGE3_TOKENIZER_SNAPSHOT` when the same NIM cache has a different
+production snapshot. The default QA-shaped cutoffs are `question >= 12` and
+`answer >= 8` production-tokenizer tokens, because concise grounded technical
+answers are valid and should not be dropped merely for being short.
+
+The local fallback writes `stage3_curator_summary.json` and
+`stage3_curator_summary.md` so every run records exact dedup, MinHash, length
+filter, answer-subset filter, and split counts.
 
 The 10% val split (vs. the April-era 5%) is intentional: the smaller
 post-Curator counts (~2,000-2,400 per collection) would yield only ~100-120 val
@@ -790,7 +804,9 @@ Format (NeMo Customizer SFT convention):
 Pre-Curator grounded-only totals: Stage 1A (750/930) + 1B at 100%
 (1,000/1,240) + 1C default stratified target (310/390) ≈ 2,060/2,560. Optional
 Stage 1.5 synthetic gap-fill can add roughly ~300/~100 rows when enabled.
-Post-Curator assumes ~10% loss to exact/MinHash dedup + length filter.
+Post-Curator yield depends on duplicate density and the production-tokenizer
+length filter. Do not estimate retention from a generic tokenizer; record the
+per-step Curator summary sidecars for each run.
 
 These totals are smaller than the April 2026 7,049-sample dataset because the
 source corpora are roughly half the size (2,086 and 1,289 chunks vs. 7,189 in the
@@ -889,6 +905,9 @@ Supported flags:
 --stage2-qa-model MODEL                QA admission model; Super 120B-class by default
 --stage2-qa-max-tokens N               QA admission completion budget
 --stage2-execution-surface LABEL       audit label, e.g. curator_llm_quality
+--stage3-tokenizer PATH_OR_MODEL       override production tokenizer directory/model
+--stage3-min-question-tokens N         default 12 with the production tokenizer
+--stage3-min-answer-tokens N           default 8 with the production tokenizer
 
 LE experiment runner only:
 --stage2-target ENDPOINT=MODEL[@CTX]   Stage 2 QA endpoint/model override

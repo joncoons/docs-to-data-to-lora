@@ -729,6 +729,13 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Audit label for Stage 2 QA execution surface. Defaults to config.",
     )
+    ap.add_argument(
+        "--stage3-tokenizer",
+        default=None,
+        help="Production tokenizer path/model for Stage 3 length filtering. Defaults to config.",
+    )
+    ap.add_argument("--stage3-min-question-tokens", type=int, default=None)
+    ap.add_argument("--stage3-min-answer-tokens", type=int, default=None)
     return ap.parse_args()
 
 
@@ -751,8 +758,15 @@ def main() -> int:
         cfg.retry_base_delay_s = args.retry_base_delay_s
     if args.stage2_qa_max_tokens is not None and args.stage2_qa_max_tokens < 1:
         raise SystemExit("--stage2-qa-max-tokens must be >= 1")
+    if args.stage3_min_question_tokens is not None and args.stage3_min_question_tokens < 1:
+        raise SystemExit("--stage3-min-question-tokens must be >= 1")
+    if args.stage3_min_answer_tokens is not None and args.stage3_min_answer_tokens < 1:
+        raise SystemExit("--stage3-min-answer-tokens must be >= 1")
     stage2_max_tokens = args.stage2_qa_max_tokens or cfg.stage2_qa_max_tokens
     stage2_execution_surface = args.stage2_execution_surface or cfg.stage2_execution_surface
+    stage3_tokenizer = args.stage3_tokenizer or cfg.stage3_tokenizer_name_or_path
+    stage3_min_question_tokens = args.stage3_min_question_tokens or cfg.min_question_tokens
+    stage3_min_answer_tokens = args.stage3_min_answer_tokens or cfg.min_answer_tokens
 
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -968,8 +982,9 @@ def main() -> int:
                 system_prompt,
                 train_ratio=cfg.train_val_split,
                 minhash_threshold=cfg.minhash_threshold,
-                min_q_tokens=cfg.min_question_tokens,
-                min_a_tokens=cfg.min_answer_tokens,
+                min_q_tokens=stage3_min_question_tokens,
+                min_a_tokens=stage3_min_answer_tokens,
+                tokenizer_name_or_path=stage3_tokenizer,
             )
             completed.add("3")
             write_progress(progress_path, completed)
