@@ -159,3 +159,16 @@ Ada GPU cleanup has been completed: the NeMo Retriever GPU deployments on
 `nvidia.com/gpu` is zero. Before submitting 3B, decide whether to temporarily
 remove/reduce `ubuntu2` time-slicing so the scheduler exposes 2 physical GPU
 slots instead of 10 logical shared slots.
+
+## Stage 5 8B r32 Export Recovery - 2026-07-11
+
+The 8B r32 Customizer jobs reached 5/5 epochs and 100%, but their post-training
+entity handlers failed to pull `nvcr.io/nvidia/nemo-microservices/nds-v2-huggingface-cli:25.12`
+due an `nvcr.io` DNS timeout. The trained adapter directories remained on
+`peft-workspace-pvc`, so the adapters were recovered with export-only retry Jobs
+instead of retraining.
+
+Both r32 adapters now have Entity Store `artifact.status=upload_completed`; the
+Customizer job records still show `cancelled` because the original export handler
+failed after training completed. Details are in
+`stage5_8b_export_recovery_20260711.md`.
