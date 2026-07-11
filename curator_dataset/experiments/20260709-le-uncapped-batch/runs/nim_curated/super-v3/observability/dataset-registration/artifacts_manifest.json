@@ -1,0 +1,154 @@
+{
+  "artifacts": [
+    {
+      "artifact_kind": "uploaded_dataset_file",
+      "bytes": 3477345,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/training.jsonl",
+      "repo_path": "training.jsonl",
+      "rows": 7905,
+      "sha256": "sha256:5cfbe58ba48f9217b5ec6f60837ecd7c365037d4170874db8563c7393e4492c4",
+      "split": "training",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_dataset_file",
+      "bytes": 383766,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/validation.jsonl",
+      "repo_path": "validation.jsonl",
+      "rows": 880,
+      "sha256": "sha256:1586194888508e60c431db2926a7fdc6bb166fc875587ba9faa95636b24eaf97",
+      "split": "validation",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "manifests/crawl_run.json",
+      "bytes": 1013,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/manifests/crawl_run.json",
+      "repo_path": "manifests/crawl_run.json",
+      "sha256": "sha256:014b33548f9eb5c558db9c5edaa9b16faaecd04fa578610b38a8a2cdc6d5b195",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "manifests/dataset_version_manifest.json",
+      "bytes": 146235,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/manifests/dataset_version_manifest.json",
+      "repo_path": "manifests/dataset_version_manifest.json",
+      "sha256": "sha256:b646397b9ec20cedaaf7b05c6fd5e4ab311b9b046fc496cb49c71d00c2d381e6",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "manifests/dataset_version_manifest.json",
+      "bytes": 146235,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/manifests/dataset_version_manifest.json",
+      "repo_path": "manifests/dataset_version_manifest.json",
+      "sha256": "sha256:b646397b9ec20cedaaf7b05c6fd5e4ab311b9b046fc496cb49c71d00c2d381e6",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "manifests/crawl_run.json",
+      "bytes": 1013,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/manifests/crawl_run.json",
+      "repo_path": "manifests/crawl_run.json",
+      "sha256": "sha256:014b33548f9eb5c558db9c5edaa9b16faaecd04fa578610b38a8a2cdc6d5b195",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "provenance_or_report",
+      "artifact_path": "provenance/html_only/source_revisions.jsonl",
+      "bytes": 936787,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/provenance/html_only/source_revisions.jsonl",
+      "repo_path": "provenance/html_only/source_revisions.jsonl",
+      "rows": 430,
+      "sha256": "sha256:8f3e8f1796aa8f2ef04233e8f31252ae8541320755716762c40c9582c847c32d",
+      "uploaded_to_data_store": false
+    },
+    {
+      "artifact_kind": "provenance_or_report",
+      "artifact_path": "provenance/html_only/source_chunks.jsonl",
+      "bytes": 4735255,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/provenance/html_only/source_chunks.jsonl",
+      "repo_path": "provenance/html_only/source_chunks.jsonl",
+      "rows": 430,
+      "sha256": "sha256:120eec2400c257687988ed01ab7b2f52eda6916746cfc952cbffd4044f033fd4",
+      "uploaded_to_data_store": false
+    },
+    {
+      "artifact_kind": "provenance_or_report",
+      "artifact_path": "provenance/html_only/entailments.jsonl",
+      "bytes": 3977006,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/provenance/html_only/entailments.jsonl",
+      "repo_path": "provenance/html_only/entailments.jsonl",
+      "rows": 2712,
+      "sha256": "sha256:fc07151dcc0e1fc8542fbe864b2d85e18ef109e13cb387b80da54fce41d8275c",
+      "uploaded_to_data_store": false
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "provenance/dataset_samples.jsonl",
+      "bytes": 16572224,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/provenance/dataset_samples.jsonl",
+      "repo_path": "provenance/dataset_samples.jsonl",
+      "rows": 9404,
+      "sha256": "sha256:6e66960daaad0d551fb807cec6fc3ed9688775c900bf32b2042be700cf04b06d",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "provenance/source_filter.json",
+      "bytes": 1406,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/provenance/source_filter.json",
+      "repo_path": "provenance/source_filter.json",
+      "sha256": "sha256:ca1f26bf6b9ee4ead37e2f25a1d1298f3fc2c4e76a34765a5121833d8187086d",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "provenance/html_only/manifest.json",
+      "bytes": 790,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/provenance/html_only/manifest.json",
+      "repo_path": "provenance/html_only/manifest.json",
+      "sha256": "sha256:6cd6de98671b1cc75800bc5d24fb73ea173ffadd628420b3c8a7e816da83e8d7",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "provenance_or_report",
+      "artifact_path": "validation_report.json",
+      "bytes": 1559,
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/validation_report.json",
+      "repo_path": "validation_report.json",
+      "sha256": "sha256:642b3cfaf9575606b509834e253bb2f1a33f2a4d849c3066da90cdde0dd2fe2d",
+      "uploaded_to_data_store": false
+    }
+  ],
+  "schema_version": "observability.v1"
+}

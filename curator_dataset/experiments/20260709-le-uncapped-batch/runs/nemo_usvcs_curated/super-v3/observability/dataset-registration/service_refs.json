@@ -1,0 +1,53 @@
+{
+  "datasets": [
+    {
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "dataset_role": "augmented_training",
+      "dataset_version_id": "dsv_bb7448083bb6685ee3dbdab4",
+      "entity_ref": "default/stage3-nemo-usvcs-curated-le-super-v3",
+      "entity_status": "created",
+      "files_url": "hf://datasets/default/stage3-nemo-usvcs-curated-le-super-v3",
+      "git_status": "pushed",
+      "hf_endpoint": "http://nemo-data-store:3000/v1/hf",
+      "lineage_files": [
+        "manifests/crawl_run.json",
+        "manifests/dataset_version_manifest.json",
+        "provenance/dataset_samples.jsonl",
+        "provenance/entailments.jsonl",
+        "provenance/html_only/manifest.json",
+        "provenance/source_chunks.jsonl",
+        "provenance/source_filter.json",
+        "provenance/source_revisions.jsonl"
+      ],
+      "repo_status": "exists",
+      "source_composition": {
+        "entailment_count": 3039,
+        "grounded_sample_count": 10712,
+        "modality_counts": {
+          "unknown": 10712
+        },
+        "sample_count": 10712,
+        "source_chunk_count": 486,
+        "source_kind_counts": {
+          "unknown": 10712
+        },
+        "source_revision_count": 486,
+        "source_system_counts": {
+          "web_crawl": 10712
+        },
+        "source_url_count": 486,
+        "synthetic_ratio": 0.0,
+        "synthetic_sample_count": 0
+      }
+    }
+  ],
+  "schema_version": "observability.v1",
+  "services": {
+    "data_store_git_base": "http://192.168.1.187:30912",
+    "data_store_hf_endpoint": "http://nemo-data-store:3000/v1/hf",
+    "data_store_url": "http://192.168.1.187:30912",
+    "entity_store_url": "http://192.168.1.187:30911",
+    "namespace": "default"
+  }
+}

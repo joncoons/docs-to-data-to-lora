@@ -1,0 +1,154 @@
+{
+  "artifacts": [
+    {
+      "artifact_kind": "uploaded_dataset_file",
+      "bytes": 3129809,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/training.jsonl",
+      "repo_path": "training.jsonl",
+      "rows": 7171,
+      "sha256": "sha256:a11cdc704852a92aa0b3d455d1de539a1a0641e156e0d399d510ccfefa5723d7",
+      "split": "training",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_dataset_file",
+      "bytes": 351905,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/validation.jsonl",
+      "repo_path": "validation.jsonl",
+      "rows": 799,
+      "sha256": "sha256:3287861103111571bcb2e97c93315e614b92b504e2f3c6d951c37996f5cd27db",
+      "split": "validation",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "manifests/crawl_run.json",
+      "bytes": 1013,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/manifests/crawl_run.json",
+      "repo_path": "manifests/crawl_run.json",
+      "sha256": "sha256:687d35dffb858967766052a8d11cf854d38a475dd23c2d4d59afbce15e6449c1",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "manifests/dataset_version_manifest.json",
+      "bytes": 163564,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/manifests/dataset_version_manifest.json",
+      "repo_path": "manifests/dataset_version_manifest.json",
+      "sha256": "sha256:5b1b7c4df662f489f0ccf73cca4043808858433ae8c63c56fba0afb42f1615d2",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "manifests/dataset_version_manifest.json",
+      "bytes": 163564,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/manifests/dataset_version_manifest.json",
+      "repo_path": "manifests/dataset_version_manifest.json",
+      "sha256": "sha256:5b1b7c4df662f489f0ccf73cca4043808858433ae8c63c56fba0afb42f1615d2",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "manifests/crawl_run.json",
+      "bytes": 1013,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/manifests/crawl_run.json",
+      "repo_path": "manifests/crawl_run.json",
+      "sha256": "sha256:687d35dffb858967766052a8d11cf854d38a475dd23c2d4d59afbce15e6449c1",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "provenance_or_report",
+      "artifact_path": "provenance/html_only/source_revisions.jsonl",
+      "bytes": 1074334,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/provenance/html_only/source_revisions.jsonl",
+      "repo_path": "provenance/html_only/source_revisions.jsonl",
+      "rows": 486,
+      "sha256": "sha256:2600a5fe289b7b91d7ee5afb93836f159712b5f65e59e9dd461869afe68f9c9d",
+      "uploaded_to_data_store": false
+    },
+    {
+      "artifact_kind": "provenance_or_report",
+      "artifact_path": "provenance/html_only/source_chunks.jsonl",
+      "bytes": 3480483,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/provenance/html_only/source_chunks.jsonl",
+      "repo_path": "provenance/html_only/source_chunks.jsonl",
+      "rows": 486,
+      "sha256": "sha256:270c312ef5f14a95f8153c1e29b19886a44eea9f0ffbff5ac5fd2b90d5b4a51d",
+      "uploaded_to_data_store": false
+    },
+    {
+      "artifact_kind": "provenance_or_report",
+      "artifact_path": "provenance/html_only/entailments.jsonl",
+      "bytes": 4593203,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/provenance/html_only/entailments.jsonl",
+      "repo_path": "provenance/html_only/entailments.jsonl",
+      "rows": 3051,
+      "sha256": "sha256:53f5615b195c8e64b64da17a5e552797fed25998b67407fdc4ffe0ad49e8f67c",
+      "uploaded_to_data_store": false
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "provenance/dataset_samples.jsonl",
+      "bytes": 19096541,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/provenance/dataset_samples.jsonl",
+      "repo_path": "provenance/dataset_samples.jsonl",
+      "rows": 10712,
+      "sha256": "sha256:cc8f74eecd15c0e9ba15d87ad0d320c9f4a0bda8f2274c9f67c6edafb1b66eae",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "provenance/source_filter.json",
+      "bytes": 1383,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/provenance/source_filter.json",
+      "repo_path": "provenance/source_filter.json",
+      "sha256": "sha256:38189ad87137d93ea9431315d8a2738c6235c4e4257d96342fc71bfbc6df9899",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "uploaded_lineage_file",
+      "artifact_path": "provenance/html_only/manifest.json",
+      "bytes": 787,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/provenance/html_only/manifest.json",
+      "repo_path": "provenance/html_only/manifest.json",
+      "sha256": "sha256:559fbb2b89cc99874108dbb80d90ede89872add06ef0830ddbb92ee9e7b4c47e",
+      "uploaded_to_data_store": true
+    },
+    {
+      "artifact_kind": "provenance_or_report",
+      "artifact_path": "validation_report.json",
+      "bytes": 2656,
+      "collection": "nemo_usvcs_curated",
+      "dataset": "stage3-nemo-usvcs-curated-le-super-v3",
+      "path": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/validation_report.json",
+      "repo_path": "validation_report.json",
+      "sha256": "sha256:8d74fd9640549c5206ffbcdb483921565f90a5a69f08e220edda07d51fc98e6f",
+      "uploaded_to_data_store": false
+    }
+  ],
+  "schema_version": "observability.v1"
+}
