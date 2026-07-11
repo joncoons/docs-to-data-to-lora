@@ -79,3 +79,24 @@ Planned 3B jobs, after the time-slicing decision:
 | NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 16 | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711` |
 | NIM | `default/stage3-nim-curated-le-super-v3` | 32 | `default/lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711` |
 | NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 32 | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711` |
+
+## Temporary Ada Time-Slicing Change - 2026-07-11
+
+`ubuntu2` time-slicing was temporarily removed for 3B adapter training so the
+scheduler exposes physical Ada GPU capacity instead of logical shared slots.
+The raw pre-change ConfigMap backup is local-only under `.local_archive/`:
+
+`time-slicing-config-pre-ubuntu2-physical-gpu-20260711T121751.yaml`
+
+Post-change verification:
+
+- `nvidia.com/gpu.count=2`
+- `nvidia.com/gpu.replicas=1`
+- `nvidia.com/gpu.sharing-strategy=none`
+- Capacity `nvidia.com/gpu: 2`
+- Allocatable `nvidia.com/gpu: 2`
+- Allocated `nvidia.com/gpu: 0`
+
+After 3B training completes, restore the `ubuntu2` `timeSlicing.replicas: 5`
+entry from the local backup if the Retriever/NIM services need their previous
+shared-GPU scheduling behavior.

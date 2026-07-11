@@ -172,3 +172,12 @@ Both r32 adapters now have Entity Store `artifact.status=upload_completed`; the
 Customizer job records still show `cancelled` because the original export handler
 failed after training completed. Details are in
 `stage5_8b_export_recovery_20260711.md`.
+
+## Temporary Ada Time-Slicing Change - 2026-07-11
+
+For upcoming 3B LoRA SFT on `ubuntu2`, GPU time-slicing was temporarily removed
+from the GPU Operator config. The node now advertises physical Ada capacity:
+`nvidia.com/gpu: 2`, `nvidia.com/gpu.replicas=1`, and
+`nvidia.com/gpu.sharing-strategy=none`, with zero GPUs allocated. Restore the
+local `.local_archive/` backup after 3B training if the shared-GPU service layout
+is needed again.
