@@ -118,3 +118,30 @@ Stage 1B is durable: `stage1b_synthesis.jsonl` is appended as each passage finis
 Stage 1C is durable the same way: `stage1c_instruction.jsonl` is appended as passages finish, and `stage1c_passage_results.jsonl` records per-passage status. The default selection mode is `stratified`; pass `--stage1c-selection-mode top_density` for legacy high-density-only behavior or `--stage1c-selection-mode all` for full instruction augmentation coverage.
 
 Stage 1B retrieves kNN neighbors from the target corpus Elasticsearch index selected by `--collection`; for example, `nim_curated` neighbors come from `nim_curated`, not from the NeMo Microservices corpus.
+
+## Stage 5 Customizer Training - 2026-07-11
+
+The finalized LE datasets were registered in Entity/Data Store and submitted to
+Customizer for 5-epoch LoRA SFT on `meta/llama-3.1-8b-instruct` using the
+`meta/llama-3.1-8b-instruct@v1.0.0+80GB` template. The selected template is
+single-GPU LoRA SFT: `num_gpus=1`, `tensor_parallel_size=1`, and
+`data_parallel_size=1`.
+
+Before submission, non-critical GPU serving was scaled down and stale pods were
+cleaned:
+
+- `runai-rag/nim-devstral-small-fp8` scaled to `0` replicas.
+- Stale terminating pod `nrl265-durable-isolated/durable-isolated-durable-ingest-caption-bf47b5688-lgcrs` force deleted.
+- Customizer `training.nodeSelectors` and `training.container_defaults.nodeSelector` patched to `ubuntu-local-dev`; the pre-patch cluster backup is local-only under `.local_archive/`.
+
+Submitted jobs:
+
+| Corpus | Dataset entity | Rank | Job ID | Output model entity | Initial runtime state |
+| --- | --- | ---: | --- | --- | --- |
+| NIM | `default/stage3-nim-curated-le-super-v3` | 16 | `cust-VM3mbWVx7FcPdtTG84UiJs` | `default/lora-nim-le-super-v3-e5-llama-3.1-8b-r16-20260711` | running on `ubuntu-local-dev` |
+| NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 16 | `cust-5HqsCLjwYzyy2AyiW3EiNW` | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r16-20260711` | running on `ubuntu-local-dev` |
+| NIM | `default/stage3-nim-curated-le-super-v3` | 32 | `cust-BBbUtEYXHNW2zjzGZhqMpY` | `default/lora-nim-le-super-v3-e5-llama-3.1-8b-r32-20260711` | pending for GPU capacity |
+| NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 32 | `cust-8GE3t81yPq76FhK3b4b7Ts` | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r32-20260711` | pending for GPU capacity |
+
+The submission artifact with full request payloads, observed statuses, and pod
+placement is `stage5_customizer_training_5epoch_20260711.json`.
