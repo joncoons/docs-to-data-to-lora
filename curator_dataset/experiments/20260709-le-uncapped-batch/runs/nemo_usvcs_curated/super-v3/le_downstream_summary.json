@@ -5,7 +5,8 @@
     "1b",
     "1c",
     "2",
-    "3"
+    "3",
+    "4"
   ],
   "counts": {
     "passages": 486,
@@ -15,6 +16,9 @@
     "stage1c_rows": 262,
     "stage2_dropped_rows": 142,
     "stage2_rows": 10712,
+    "stage4_pass_rate": 0.99,
+    "stage4_passed": true,
+    "stage4_sample_size": 100,
     "training_rows": 7171,
     "validation_rows": 799
   },
@@ -89,5 +93,41 @@
       "model": "nvidia/nvidia/nemotron-3-ultra"
     }
   ],
-  "temperature": 0.2
+  "temperature": 0.2,
+  "validation_report": {
+    "all_three_count": 99,
+    "answer_fidelity_count": 100,
+    "collection": "nemo_usvcs_curated",
+    "failures": [
+      {
+        "answer": "The documentation outlines dataset format requirements for training models in NVIDIA NeMo Microservices. Training data must be saved as .jsonl files with one JSON object per line, and each record is validated against a schema based on the training_type (SFT or DPO). Supported model types include Embedding Models, OpenAI Chat Models, OpenAI Chat with Tool, DPO (Raw Request and OpenAI Message Format), Basic Prompt Completion, and SFT Legacy Conversational. Each model type has a specific required schema with defined fields. For Embedding Models, the schema requires query, pos_doc, and neg_doc fields for contrastive learning. OpenAI Chat Models require a messages array with role and content. DPO formats require prompt, chosen_response, and rejected_response fields. Basic Prompt Completion uses prompt and completion fields, while SFT Legacy Conversational uses system and conversations arrays with from and value fields.",
+        "ordinal": 42,
+        "passage_id": "https://docs.nvidia.com/nemo/microservices/latest/fine-tune/models/data-format.html#p0",
+        "question": "Summarize the key points of dataset format requirements for NVIDIA NeMo Microservices from the following documentation.",
+        "reason": "The answer incorrectly states that DPO formats require 'rejected_response' as a field name, when the source text uses 'rejected_response' correctly, but more critically the answer omits the 'OpenAI Chat With Tool' format (which requires both 'messages' and 'tools' fields) and incorrectly simplifies the DPO OpenAI Message Format by not distinguishing it from DPO Raw Request (the prompt field is an array of objects in one and a string in the other), and also incorrectly describes neg_doc as simply requiring 'neg_doc fields' without noting it is an array of strings.",
+        "sample_id": "sample_d2e245b68151fae250f263d0",
+        "source_url": "https://docs.nvidia.com/nemo/microservices/latest/fine-tune/models/data-format.html",
+        "stage": "1c"
+      }
+    ],
+    "grounded_count": 99,
+    "judge": {
+      "api_key_source": "k8s_secret",
+      "endpoint": "https://inference-api.nvidia.com/v1",
+      "max_tokens": 512,
+      "model": "azure/anthropic/claude-sonnet-4-6",
+      "retry_attempts": 3,
+      "retry_base_delay_s": 5.0,
+      "temperature": 0.0
+    },
+    "judgments_path": "validation_judgments.jsonl",
+    "no_hallucination_count": 99,
+    "pass_rate": 0.99,
+    "passed": true,
+    "sample_path": "validation_sample.jsonl",
+    "sample_seed": 42,
+    "sample_size": 100,
+    "source_rows": 7171,
+    "threshold": 0.9
+  }
 }

@@ -106,6 +106,8 @@ prompt/completion back to `stage2_eval.jsonl`, then judges a stratified sample
 with Claude Sonnet 4.6 via `https://inference-api.nvidia.com/v1` using
 `azure/anthropic/claude-sonnet-4-6`. Outputs are `validation_report.json`,
 `validation_sample.jsonl`, and `validation_judgments.jsonl`.
+The completed 100-row-per-corpus validation passed for both corpora; see
+`stage4_validation_summary.md` for the comparison and sampled failure notes.
 
 The runner defaults to all source document kinds for turnkey use. Pass `--source-doc-kind html` only when an experiment intentionally excludes parsed PDFs. When a source filter is active, the runner writes selected KVP and lineage sidecars so Data Store publication can use only the selected provenance.
 

@@ -2,7 +2,7 @@
 
 - Collection: `nim_curated`
 - Output dir: `curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3`
-- Completed stages: `1b, 1c, 2, 3`
+- Completed stages: `1b, 1c, 2, 3, 4`
 - Dataset version: `not finalized`
 - LLM temperature: `0.2`
 - Stage 2 execution surface: `curator_llm_quality`
@@ -29,3 +29,6 @@
 - stage2_dropped_rows: 149
 - training_rows: 7905
 - validation_rows: 880
+- stage4_sample_size: 100
+- stage4_passed: True
+- stage4_pass_rate: 0.99
