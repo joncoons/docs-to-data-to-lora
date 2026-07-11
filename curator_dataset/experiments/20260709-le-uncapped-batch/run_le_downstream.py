@@ -27,6 +27,7 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from scripts.pipeline.config import Config, get_es_password, get_external_judge_api_key  # noqa: E402
+from scripts.pipeline.external_judge_client import ExternalJudge  # noqa: E402
 from scripts.pipeline.dataset_admission import admitted_dataset_samples_from_kvp_rows  # noqa: E402
 from scripts.pipeline.es_client import make_es_client, scroll_all_chunks  # noqa: E402
 from scripts.pipeline.finalize_dataset import finalize_dataset  # noqa: E402
@@ -37,11 +38,15 @@ from scripts.pipeline.stage1b_synthesis import run_stage1b  # noqa: E402
 from scripts.pipeline.stage1c_instruction import run_stage1c  # noqa: E402
 from scripts.pipeline.stage2_qa_eval import run_stage2  # noqa: E402
 from scripts.pipeline.stage3_curator import run_stage3  # noqa: E402
+from scripts.pipeline.stage4_validation import (  # noqa: E402
+    join_customizer_rows_to_kvp,
+    run_stage4,
+)
 
 
 log = logging.getLogger("le_downstream")
 
-STAGE_ORDER = ("1b", "1c", "1.5", "2", "3", "finalize")
+STAGE_ORDER = ("1b", "1c", "1.5", "2", "3", "4", "finalize")
 # This runner starts after Stage 1A. Synthesis defaults remain on Ultra-class
 # targets, while Stage 2 QA admission has a separate Super 120B-class default to
 # keep the required admission pass cost-conscious.
@@ -54,6 +59,8 @@ DEFAULT_STAGE2_TARGETS = (
 )
 DEFAULT_STAGE2_CANONICAL_MODEL = "nvidia/nvidia/nemotron-3-super-v3"
 DEFAULT_SOURCE_DOC_KIND = "all"
+DEFAULT_STAGE4_JUDGE_ENDPOINT = "https://inference-api.nvidia.com/v1"
+DEFAULT_STAGE4_JUDGE_MODEL = "azure/anthropic/claude-sonnet-4-6"
 COLLECTION_DOMAIN = {
     "nim_curated": "NVIDIA NIM",
     "nemo_usvcs_curated": "NVIDIA NeMo Microservices",
@@ -259,6 +266,21 @@ def read_rows(path: Path) -> list[KVPRow]:
     if not path.exists():
         return []
     return [KVPRow.model_validate_json(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def read_jsonl_dicts(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def load_stage4_training_rows(output_dir: Path, source_rows: list[KVPRow]) -> list[KVPRow]:
+    training_rows = read_jsonl_dicts(output_dir / "training.jsonl")
+    if not training_rows:
+        raise SystemExit("Stage 4 requires finalized Stage 3 training.jsonl rows")
+    if not source_rows:
+        raise SystemExit("Stage 4 requires stage2_eval.jsonl rows for source context")
+    return join_customizer_rows_to_kvp(training_rows, source_rows)
 
 
 def select_passages(passages: list[Passage], source_doc_kind: str) -> list[Passage]:
@@ -628,6 +650,16 @@ def write_summary(
         "training_rows": count_jsonl(output_dir / "training.jsonl"),
         "validation_rows": count_jsonl(output_dir / "validation.jsonl"),
     }
+    validation_report_path = output_dir / "validation_report.json"
+    validation_report = (
+        json.loads(validation_report_path.read_text())
+        if validation_report_path.exists()
+        else None
+    )
+    if validation_report:
+        counts["stage4_sample_size"] = validation_report.get("sample_size", 0)
+        counts["stage4_passed"] = validation_report.get("passed", False)
+        counts["stage4_pass_rate"] = validation_report.get("pass_rate", 0)
     payload = {
         "collection": collection,
         "output_dir": str(output_dir),
@@ -647,6 +679,7 @@ def write_summary(
         "stage2_max_tokens": stage2_max_tokens,
         "source_filter": source_filter,
         "counts": counts,
+        "validation_report": validation_report,
         "dataset_version_id": manifest.get("dataset_version_id") if manifest else None,
     }
     (output_dir / "le_downstream_summary.json").write_text(
@@ -736,6 +769,15 @@ def parse_args() -> argparse.Namespace:
     )
     ap.add_argument("--stage3-min-question-tokens", type=int, default=None)
     ap.add_argument("--stage3-min-answer-tokens", type=int, default=None)
+    ap.add_argument("--stage4-judge-endpoint", default=DEFAULT_STAGE4_JUDGE_ENDPOINT)
+    ap.add_argument("--stage4-judge-model", default=DEFAULT_STAGE4_JUDGE_MODEL)
+    ap.add_argument("--stage4-judge-api-key", default=None)
+    ap.add_argument("--stage4-sample-size", type=int, default=None)
+    ap.add_argument("--stage4-threshold", type=float, default=None)
+    ap.add_argument("--stage4-seed", type=int, default=42)
+    ap.add_argument("--stage4-max-tokens", type=int, default=512)
+    ap.add_argument("--stage4-retry-attempts", type=int, default=None)
+    ap.add_argument("--stage4-retry-base-delay-s", type=float, default=None)
     return ap.parse_args()
 
 
@@ -762,11 +804,23 @@ def main() -> int:
         raise SystemExit("--stage3-min-question-tokens must be >= 1")
     if args.stage3_min_answer_tokens is not None and args.stage3_min_answer_tokens < 1:
         raise SystemExit("--stage3-min-answer-tokens must be >= 1")
+    if args.stage4_sample_size is not None and args.stage4_sample_size < 1:
+        raise SystemExit("--stage4-sample-size must be >= 1")
+    if args.stage4_max_tokens < 1:
+        raise SystemExit("--stage4-max-tokens must be >= 1")
+    if args.stage4_retry_attempts is not None and args.stage4_retry_attempts < 1:
+        raise SystemExit("--stage4-retry-attempts must be >= 1")
+    if args.stage4_threshold is not None and not (0.0 <= args.stage4_threshold <= 1.0):
+        raise SystemExit("--stage4-threshold must be between 0 and 1")
     stage2_max_tokens = args.stage2_qa_max_tokens or cfg.stage2_qa_max_tokens
     stage2_execution_surface = args.stage2_execution_surface or cfg.stage2_execution_surface
     stage3_tokenizer = args.stage3_tokenizer or cfg.stage3_tokenizer_name_or_path
     stage3_min_question_tokens = args.stage3_min_question_tokens or cfg.min_question_tokens
     stage3_min_answer_tokens = args.stage3_min_answer_tokens or cfg.min_answer_tokens
+    stage4_sample_size = args.stage4_sample_size or cfg.judge_sample_size
+    stage4_threshold = args.stage4_threshold if args.stage4_threshold is not None else cfg.judge_pass_threshold
+    stage4_retry_attempts = args.stage4_retry_attempts or cfg.retry_attempts
+    stage4_retry_base_delay_s = args.stage4_retry_base_delay_s or cfg.retry_base_delay_s
 
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -987,6 +1041,40 @@ def main() -> int:
                 tokenizer_name_or_path=stage3_tokenizer,
             )
             completed.add("3")
+            write_progress(progress_path, completed)
+
+    if stage_selected(args.stage, "4"):
+        if args.resume and "4" in completed and (output_dir / "validation_report.json").exists():
+            log.info("Stage 4: skipping (already done)")
+        else:
+            stage4_rows = load_stage4_training_rows(output_dir, stage2_rows)
+            judge = ExternalJudge(
+                base_url=args.stage4_judge_endpoint,
+                api_key=args.stage4_judge_api_key or args.api_key or get_external_judge_api_key(),
+                model=args.stage4_judge_model,
+                max_retries=stage4_retry_attempts,
+                retry_base_s=stage4_retry_base_delay_s,
+            )
+            run_stage4(
+                stage4_rows,
+                judge,
+                output_dir,
+                args.collection,
+                sample_size=stage4_sample_size,
+                threshold=stage4_threshold,
+                seed=args.stage4_seed,
+                max_tokens=args.stage4_max_tokens,
+                judge_metadata={
+                    "endpoint": args.stage4_judge_endpoint,
+                    "model": args.stage4_judge_model,
+                    "max_tokens": args.stage4_max_tokens,
+                    "temperature": 0.0,
+                    "retry_attempts": stage4_retry_attempts,
+                    "retry_base_delay_s": stage4_retry_base_delay_s,
+                    "api_key_source": "argument" if args.stage4_judge_api_key or args.api_key else "k8s_secret",
+                },
+            )
+            completed.add("4")
             write_progress(progress_path, completed)
 
     if stage_selected(args.stage, "finalize"):

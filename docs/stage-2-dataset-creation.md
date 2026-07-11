@@ -825,11 +825,15 @@ pairs.
 
 ### Method
 
-1. Random stratified sample of 100 pairs per collection from Stage 3
-   `training.jsonl` (stratified by `stage` so all generation strategies are
-   represented).
+1. Random stratified sample of 100 pairs per collection from finalized Stage 3
+   `training.jsonl`. The local runner joins each prompt/completion back to
+   `stage2_eval.jsonl` so the judge sees the exact curated row plus its original
+   source context and generation stage.
 2. For each sampled pair, call the configured independent judge endpoint with
    the validation prompt. API key material is read from a Kubernetes Secret.
+   For the LE comparison run, the default judge is Claude Sonnet 4.6 through
+   `https://inference-api.nvidia.com/v1` as
+   `azure/anthropic/claude-sonnet-4-6`.
 3. Score each pair on three binary criteria:
    - **Grounded**: every factual claim in the answer is supported by the source
      `context`.
@@ -851,7 +855,13 @@ systematically hallucinated batches.
 
 ### Output schema
 
-File: `/mnt/nvme2/peft/datasets/v2/<collection>/validation_report.json`
+Primary file: `/mnt/nvme2/peft/datasets/v2/<collection>/validation_report.json`
+
+The local runner also writes:
+
+- `validation_sample.jsonl`: sampled rows with restored context.
+- `validation_judgments.jsonl`: one row per judge decision with row identifiers
+  and failure reasons.
 
 ```json
 {
@@ -908,6 +918,10 @@ Supported flags:
 --stage3-tokenizer PATH_OR_MODEL       override production tokenizer directory/model
 --stage3-min-question-tokens N         default 12 with the production tokenizer
 --stage3-min-answer-tokens N           default 8 with the production tokenizer
+--stage4-judge-endpoint URL            default https://inference-api.nvidia.com/v1
+--stage4-judge-model MODEL             default azure/anthropic/claude-sonnet-4-6
+--stage4-sample-size N                 default 100
+--stage4-threshold FLOAT               default 0.90
 
 LE experiment runner only:
 --stage2-target ENDPOINT=MODEL[@CTX]   Stage 2 QA endpoint/model override

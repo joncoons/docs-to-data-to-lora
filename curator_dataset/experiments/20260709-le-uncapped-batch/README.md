@@ -100,6 +100,13 @@ with
 `cl100k_base`/`question >= 8`/`answer >= 25` filter over-dropped concise
 technical answers; the revised run is captured in `stage3_curator_reductions.md`.
 
+Stage 4 validates the finalized Stage 3 `training.jsonl`, not the full pre-Curator
+Stage 2 set. The runner restores source context by joining each curated
+prompt/completion back to `stage2_eval.jsonl`, then judges a stratified sample
+with Claude Sonnet 4.6 via `https://inference-api.nvidia.com/v1` using
+`azure/anthropic/claude-sonnet-4-6`. Outputs are `validation_report.json`,
+`validation_sample.jsonl`, and `validation_judgments.jsonl`.
+
 The runner defaults to all source document kinds for turnkey use. Pass `--source-doc-kind html` only when an experiment intentionally excludes parsed PDFs. When a source filter is active, the runner writes selected KVP and lineage sidecars so Data Store publication can use only the selected provenance.
 
 If `--allow-incomplete-stage1a` is supplied, selected passages whose latest Stage 1A status is incomplete are excluded from downstream stages and recorded in `provenance/source_filter_excluded_passages.jsonl` with a `stage1a_*` reason. This keeps downstream augmentation grounded in completed Stage 1A rows without deleting the raw extraction artifacts.
