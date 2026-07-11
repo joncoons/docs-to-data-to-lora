@@ -181,3 +181,23 @@ from the GPU Operator config. The node now advertises physical Ada capacity:
 `nvidia.com/gpu.sharing-strategy=none`, with zero GPUs allocated. Restore the
 local `.local_archive/` backup after 3B training if the shared-GPU service layout
 is needed again.
+
+## Stage 5 3B Customizer Training - 2026-07-11
+
+The 3B LE LoRA SFT jobs were submitted on the Ada node `ubuntu2` using
+`meta/llama-3.2-3b-instruct@v1.0.0+40GB`. The selected template is single-GPU
+LoRA SFT: `num_gpus=1`, `tensor_parallel_size=1`, and `data_parallel_size=1`.
+Customizer training placement was patched from `ubuntu-local-dev` to `ubuntu2`
+before submission.
+
+Submitted jobs:
+
+| Corpus | Dataset entity | Rank | Job ID | Output model entity | Initial runtime state |
+| --- | --- | ---: | --- | --- | --- |
+| NIM | `default/stage3-nim-curated-le-super-v3` | 16 | `cust-BzdKGpC6VTXw2Ae5CRwQGY` | `default/lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711` | running on `ubuntu2` |
+| NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 16 | `cust-FsetGu5ZHRDNKtzng4jcbL` | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711` | running on `ubuntu2` |
+| NIM | `default/stage3-nim-curated-le-super-v3` | 32 | `cust-Lfp1giyRrX6BYiKheFKbfn` | `default/lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711` | pending for GPU capacity |
+| NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 32 | `cust-JdKTPm7DuYBY6fzyT58HSg` | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711` | pending for GPU capacity |
+
+The submission artifact with request payloads, observed statuses, and pod
+placement is `stage5_customizer_training_3b_5epoch_20260711.json`.

@@ -1,0 +1,439 @@
+{
+  "base_model": "meta/llama-3.2-3b-instruct",
+  "base_template": "meta/llama-3.2-3b-instruct@v1.0.0+40GB",
+  "customizer_url": "http://192.168.1.187:30910",
+  "epochs": 5,
+  "jobs": [
+    {
+      "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711",
+      "alpha": 32,
+      "collection": "nim_curated",
+      "dataset_entity": "default/stage3-nim-curated-le-super-v3",
+      "description": "Stage 5 LE LoRA SFT - NIM corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r16, 5 epochs",
+      "initial_status": "queued",
+      "job_id": "cust-BzdKGpC6VTXw2Ae5CRwQGY",
+      "observed_status": "running",
+      "output_model_entity": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711",
+      "pods": [
+        {
+          "name": "cust-bzdkgpc6vtxw2ae5crwqgy-entity-handler-0-sl9w5",
+          "node": "ubuntu2",
+          "phase": "Succeeded",
+          "ready": false
+        },
+        {
+          "name": "cust-bzdkgpc6vtxw2ae5crwqgy-training-job-worker-0",
+          "node": "ubuntu2",
+          "phase": "Running",
+          "ready": true
+        }
+      ],
+      "rank": 16,
+      "request": {
+        "config": "meta/llama-3.2-3b-instruct@v1.0.0+40GB",
+        "dataset": "default/stage3-nim-curated-le-super-v3",
+        "description": "Stage 5 LE LoRA SFT - NIM corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r16, 5 epochs",
+        "hyperparameters": {
+          "adam_beta1": 0.9,
+          "adam_beta2": 0.99,
+          "batch_size": 16,
+          "epochs": 5,
+          "finetuning_type": "lora",
+          "learning_rate": 0.0001,
+          "log_every_n_steps": 10,
+          "lora": {
+            "adapter_dim": 16,
+            "adapter_dropout": null,
+            "alpha": 32,
+            "target_modules": null
+          },
+          "max_steps": -1,
+          "optimizer": "adamw_with_cosine_annealing",
+          "seed": 42,
+          "sequence_packing_enabled": false,
+          "training_type": "sft",
+          "warmup_steps": 30
+        },
+        "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711"
+      },
+      "status_details": {
+        "created_at": "2026-07-11T21:24:43.834859",
+        "elapsed_time": 148.368844,
+        "epochs_completed": 0,
+        "percentage_done": 0.0,
+        "status_logs": [
+          {
+            "message": "EntityHandler_0_Created",
+            "updated_at": "2026-07-11T21:24:43"
+          },
+          {
+            "message": "EntityHandler_0_Running",
+            "updated_at": "2026-07-11T21:24:43"
+          },
+          {
+            "message": "container in pod cust-bzdkgpc6vtxw2ae5crwqgy-entity-handler-0-sl9w5 is waiting because ContainerCreating: None",
+            "updated_at": "2026-07-11T21:24:43"
+          },
+          {
+            "message": "created",
+            "updated_at": "2026-07-11T21:24:43.834859"
+          },
+          {
+            "detail": "The training job is pending",
+            "message": "TrainingJobPending",
+            "updated_at": "2026-07-11T21:24:43.834859"
+          },
+          {
+            "message": "EntityHandler_0_Pending",
+            "updated_at": "2026-07-11T21:24:50"
+          },
+          {
+            "message": "EntityHandler_0_Completed",
+            "updated_at": "2026-07-11T21:24:50"
+          },
+          {
+            "message": "TrainingJobPending",
+            "updated_at": "2026-07-11T21:24:50"
+          },
+          {
+            "message": "TrainingJobRunning",
+            "updated_at": "2026-07-11T21:24:53"
+          }
+        ],
+        "steps_completed": 0,
+        "updated_at": "2026-07-11T21:24:43.834859"
+      },
+      "submitted_at": "2026-07-11T21:24:40+00:00",
+      "wave": "r16"
+    },
+    {
+      "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711",
+      "alpha": 32,
+      "collection": "nemo_usvcs_curated",
+      "dataset_entity": "default/stage3-nemo-usvcs-curated-le-super-v3",
+      "description": "Stage 5 LE LoRA SFT - NeMo Microservices corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r16, 5 epochs",
+      "initial_status": "queued",
+      "job_id": "cust-FsetGu5ZHRDNKtzng4jcbL",
+      "observed_status": "running",
+      "output_model_entity": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711",
+      "pods": [
+        {
+          "name": "cust-fsetgu5zhrdnktzng4jcbl-entity-handler-0-7z965",
+          "node": "ubuntu2",
+          "phase": "Succeeded",
+          "ready": false
+        },
+        {
+          "name": "cust-fsetgu5zhrdnktzng4jcbl-training-job-worker-0",
+          "node": "ubuntu2",
+          "phase": "Running",
+          "ready": true
+        }
+      ],
+      "rank": 16,
+      "request": {
+        "config": "meta/llama-3.2-3b-instruct@v1.0.0+40GB",
+        "dataset": "default/stage3-nemo-usvcs-curated-le-super-v3",
+        "description": "Stage 5 LE LoRA SFT - NeMo Microservices corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r16, 5 epochs",
+        "hyperparameters": {
+          "adam_beta1": 0.9,
+          "adam_beta2": 0.99,
+          "batch_size": 16,
+          "epochs": 5,
+          "finetuning_type": "lora",
+          "learning_rate": 0.0001,
+          "log_every_n_steps": 10,
+          "lora": {
+            "adapter_dim": 16,
+            "adapter_dropout": null,
+            "alpha": 32,
+            "target_modules": null
+          },
+          "max_steps": -1,
+          "optimizer": "adamw_with_cosine_annealing",
+          "seed": 42,
+          "sequence_packing_enabled": false,
+          "training_type": "sft",
+          "warmup_steps": 30
+        },
+        "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711"
+      },
+      "status_details": {
+        "created_at": "2026-07-11T21:24:47.111670",
+        "elapsed_time": 145.12395,
+        "epochs_completed": 0,
+        "percentage_done": 0.0,
+        "status_logs": [
+          {
+            "message": "EntityHandler_0_Created",
+            "updated_at": "2026-07-11T21:24:47"
+          },
+          {
+            "message": "created",
+            "updated_at": "2026-07-11T21:24:47.111670"
+          },
+          {
+            "detail": "The training job is pending",
+            "message": "TrainingJobPending",
+            "updated_at": "2026-07-11T21:24:47.111670"
+          },
+          {
+            "message": "EntityHandler_0_Pending",
+            "updated_at": "2026-07-11T21:24:53"
+          },
+          {
+            "message": "EntityHandler_0_Completed",
+            "updated_at": "2026-07-11T21:24:53"
+          },
+          {
+            "message": "TrainingJobCreated",
+            "updated_at": "2026-07-11T21:24:53"
+          },
+          {
+            "message": "TrainingJobRunning",
+            "updated_at": "2026-07-11T21:24:56"
+          }
+        ],
+        "steps_completed": 0,
+        "updated_at": "2026-07-11T21:24:47.111670"
+      },
+      "submitted_at": "2026-07-11T21:24:43+00:00",
+      "wave": "r16"
+    },
+    {
+      "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711",
+      "alpha": 64,
+      "collection": "nim_curated",
+      "dataset_entity": "default/stage3-nim-curated-le-super-v3",
+      "description": "Stage 5 LE LoRA SFT - NIM corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r32, 5 epochs",
+      "initial_status": "queued",
+      "job_id": "cust-Lfp1giyRrX6BYiKheFKbfn",
+      "observed_status": "running",
+      "output_model_entity": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711",
+      "pods": [
+        {
+          "name": "cust-lfp1giyrrx6byikhefkbfn-entity-handler-0-9dzrv",
+          "node": "ubuntu2",
+          "phase": "Succeeded",
+          "ready": false
+        },
+        {
+          "name": "cust-lfp1giyrrx6byikhefkbfn-training-job-worker-0",
+          "node": null,
+          "phase": "Pending",
+          "ready": false
+        }
+      ],
+      "rank": 32,
+      "request": {
+        "config": "meta/llama-3.2-3b-instruct@v1.0.0+40GB",
+        "dataset": "default/stage3-nim-curated-le-super-v3",
+        "description": "Stage 5 LE LoRA SFT - NIM corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r32, 5 epochs",
+        "hyperparameters": {
+          "adam_beta1": 0.9,
+          "adam_beta2": 0.99,
+          "batch_size": 16,
+          "epochs": 5,
+          "finetuning_type": "lora",
+          "learning_rate": 0.0001,
+          "log_every_n_steps": 10,
+          "lora": {
+            "adapter_dim": 32,
+            "adapter_dropout": null,
+            "alpha": 64,
+            "target_modules": null
+          },
+          "max_steps": -1,
+          "optimizer": "adamw_with_cosine_annealing",
+          "seed": 42,
+          "sequence_packing_enabled": false,
+          "training_type": "sft",
+          "warmup_steps": 30
+        },
+        "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711"
+      },
+      "status_details": {
+        "created_at": "2026-07-11T21:24:50.364887",
+        "elapsed_time": 141.924384,
+        "epochs_completed": 0,
+        "percentage_done": 0.0,
+        "status_logs": [
+          {
+            "message": "EntityHandler_0_Created",
+            "updated_at": "2026-07-11T21:24:50"
+          },
+          {
+            "message": "EntityHandler_0_Pending",
+            "updated_at": "2026-07-11T21:24:50"
+          },
+          {
+            "message": "container in pod cust-lfp1giyrrx6byikhefkbfn-entity-handler-0-9dzrv is waiting because ContainerCreating: None",
+            "updated_at": "2026-07-11T21:24:50"
+          },
+          {
+            "message": "EntityHandler_0_Running",
+            "updated_at": "2026-07-11T21:24:50"
+          },
+          {
+            "message": "created",
+            "updated_at": "2026-07-11T21:24:50.364887"
+          },
+          {
+            "detail": "The training job is pending",
+            "message": "TrainingJobPending",
+            "updated_at": "2026-07-11T21:24:50.364887"
+          },
+          {
+            "message": "EntityHandler_0_Pending",
+            "updated_at": "2026-07-11T21:24:57"
+          },
+          {
+            "message": "EntityHandler_0_Completed",
+            "updated_at": "2026-07-11T21:24:57"
+          },
+          {
+            "message": "TrainingJobCreated",
+            "updated_at": "2026-07-11T21:24:57"
+          },
+          {
+            "message": "TrainingJobPending",
+            "updated_at": "2026-07-11T21:24:57"
+          }
+        ],
+        "steps_completed": 0,
+        "updated_at": "2026-07-11T21:24:50.364887"
+      },
+      "submitted_at": "2026-07-11T21:24:47+00:00",
+      "wave": "r32"
+    },
+    {
+      "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711",
+      "alpha": 64,
+      "collection": "nemo_usvcs_curated",
+      "dataset_entity": "default/stage3-nemo-usvcs-curated-le-super-v3",
+      "description": "Stage 5 LE LoRA SFT - NeMo Microservices corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r32, 5 epochs",
+      "initial_status": "queued",
+      "job_id": "cust-JdKTPm7DuYBY6fzyT58HSg",
+      "observed_status": "running",
+      "output_model_entity": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711",
+      "pods": [
+        {
+          "name": "cust-jdktpm7duyby6fzyt58hsg-entity-handler-0-s9jfp",
+          "node": "ubuntu2",
+          "phase": "Succeeded",
+          "ready": false
+        },
+        {
+          "name": "cust-jdktpm7duyby6fzyt58hsg-training-job-worker-0",
+          "node": null,
+          "phase": "Pending",
+          "ready": false
+        }
+      ],
+      "rank": 32,
+      "request": {
+        "config": "meta/llama-3.2-3b-instruct@v1.0.0+40GB",
+        "dataset": "default/stage3-nemo-usvcs-curated-le-super-v3",
+        "description": "Stage 5 LE LoRA SFT - NeMo Microservices corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r32, 5 epochs",
+        "hyperparameters": {
+          "adam_beta1": 0.9,
+          "adam_beta2": 0.99,
+          "batch_size": 16,
+          "epochs": 5,
+          "finetuning_type": "lora",
+          "learning_rate": 0.0001,
+          "log_every_n_steps": 10,
+          "lora": {
+            "adapter_dim": 32,
+            "adapter_dropout": null,
+            "alpha": 64,
+            "target_modules": null
+          },
+          "max_steps": -1,
+          "optimizer": "adamw_with_cosine_annealing",
+          "seed": 42,
+          "sequence_packing_enabled": false,
+          "training_type": "sft",
+          "warmup_steps": 30
+        },
+        "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711"
+      },
+      "status_details": {
+        "created_at": "2026-07-11T21:24:53.725184",
+        "elapsed_time": 138.616834,
+        "epochs_completed": 0,
+        "percentage_done": 0.0,
+        "status_logs": [
+          {
+            "message": "EntityHandler_0_Created",
+            "updated_at": "2026-07-11T21:24:53"
+          },
+          {
+            "message": "EntityHandler_0_Running",
+            "updated_at": "2026-07-11T21:24:53"
+          },
+          {
+            "message": "container in pod cust-jdktpm7duyby6fzyt58hsg-entity-handler-0-s9jfp is waiting because ContainerCreating: None",
+            "updated_at": "2026-07-11T21:24:53"
+          },
+          {
+            "message": "created",
+            "updated_at": "2026-07-11T21:24:53.725184"
+          },
+          {
+            "detail": "The training job is pending",
+            "message": "TrainingJobPending",
+            "updated_at": "2026-07-11T21:24:53.725184"
+          },
+          {
+            "message": "EntityHandler_0_Pending",
+            "updated_at": "2026-07-11T21:25:00"
+          },
+          {
+            "message": "EntityHandler_0_Completed",
+            "updated_at": "2026-07-11T21:25:00"
+          },
+          {
+            "message": "TrainingJobCreated",
+            "updated_at": "2026-07-11T21:25:00"
+          },
+          {
+            "message": "TrainingJobPending",
+            "updated_at": "2026-07-11T21:25:00"
+          }
+        ],
+        "steps_completed": 0,
+        "updated_at": "2026-07-11T21:24:53.725184"
+      },
+      "submitted_at": "2026-07-11T21:24:50+00:00",
+      "wave": "r32"
+    }
+  ],
+  "last_observed_at": "2026-07-11T21:27:12+00:00",
+  "node": "ubuntu2",
+  "node_gpu": "NVIDIA RTX 6000 Ada Generation",
+  "runtime_observation": {
+    "active_gpu_workers_expected": 2,
+    "active_gpu_workers_observed": 2,
+    "gpu_request_per_training_worker": 1,
+    "kubernetes_node": "ubuntu2",
+    "node_allocated_nvidia_gpu": 2,
+    "node_capacity_nvidia_gpu": 2,
+    "rank_order": "r16 workers running first; r32 workers pending for GPU capacity"
+  },
+  "schema_version": "stage5_customizer_training_submission.v1",
+  "submission_order": [
+    "nim r16",
+    "nemo_usvcs r16",
+    "nim r32",
+    "nemo_usvcs r32"
+  ],
+  "submitted_at": "2026-07-11T21:24:40+00:00",
+  "template_assertions": {
+    "data_parallel_size": 1,
+    "finetuning_type": "lora",
+    "num_gpus": 1,
+    "tensor_parallel_size": 1,
+    "training_type": "sft"
+  }
+}
