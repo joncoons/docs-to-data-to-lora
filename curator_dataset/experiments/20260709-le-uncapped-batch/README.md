@@ -145,3 +145,17 @@ Submitted jobs:
 
 The submission artifact with full request payloads, observed statuses, and pod
 placement is `stage5_customizer_training_5epoch_20260711.json`.
+
+## Stage 5 Follow-on 1B/3B Plan - 2026-07-11
+
+Follow-on training is captured in `stage5_followon_1b_3b_plan_20260711.md`.
+The 1B jobs should run on Blackwell after all 8B jobs complete. The 3B jobs
+should run on `ubuntu2` with the Ada-safe `meta/llama-3.2-3b-instruct@v1.0.0+40GB`
+template; the `+80GB` 3B template is DP5 in the live Customizer config and is
+not the desired single-GPU TP1/DP1 path.
+
+Ada GPU cleanup has been completed: the NeMo Retriever GPU deployments on
+`ubuntu2` are scaled to zero, `ubuntu2` has no GPU-requesting pods, and allocated
+`nvidia.com/gpu` is zero. Before submitting 3B, decide whether to temporarily
+remove/reduce `ubuntu2` time-slicing so the scheduler exposes 2 physical GPU
+slots instead of 10 logical shared slots.
