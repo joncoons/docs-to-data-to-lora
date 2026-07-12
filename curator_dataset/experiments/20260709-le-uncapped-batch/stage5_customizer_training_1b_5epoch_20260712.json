@@ -1,0 +1,574 @@
+{
+  "schema_version": "stage5_customizer_training_submission.v1",
+  "submitted_at": "2026-07-12T06:53:03.544650+00:00",
+  "customizer_url": "http://192.168.1.187:30910",
+  "node": "ubuntu-local-dev",
+  "node_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "base_model": "meta/llama-3.2-1b-instruct",
+  "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+  "epochs": 5,
+  "template_assertions": {
+    "num_gpus": 1,
+    "tensor_parallel_size": 1,
+    "data_parallel_size": 1,
+    "finetuning_type": "lora",
+    "training_type": "sft"
+  },
+  "pre_submission_cleanup": {
+    "blackwell_gpu_allocation_before_submission": 0,
+    "blackwell_targeted_nimservices_replicas": "all zero",
+    "deleted_completed_jobs": [
+      "nemo-peft/customizer-downloader-meta-llama-3-1-8b-instruct-2-0",
+      "nemo-peft/customizer-downloader-meta-llama-3-2-1b-instruct-2-0",
+      "nemo-peft/customizer-downloader-meta-llama-3-2-3b-instruct-2-0",
+      "nemo-peft/customizer-downloader-nvidia-nemotron-3-nano-30b-a3b-1-0",
+      "nemo-peft/export-r32-nemo-8b-retry-20260711",
+      "nemo-peft/export-r32-nim-8b-retry-20260711"
+    ],
+    "gpu_requesting_pods_before_corrected_submission": 0,
+    "blackwell_gpu_allocation_before_corrected_submission": 0,
+    "ada_gpu_allocation_after_cancellation": 0
+  },
+  "submission_order": [
+    "nim r16",
+    "nemo_usvcs r16",
+    "nim r32",
+    "nemo_usvcs r32"
+  ],
+  "jobs": [
+    {
+      "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712",
+      "alpha": 32,
+      "collection": "nim_curated",
+      "corpus": "NIM",
+      "dataset_entity": "default/stage3-nim-curated-le-super-v3",
+      "description": "Stage 5 LE LoRA SFT - NIM corpus, Super-v3 LE dataset, Llama 3.2 1B, Blackwell TP1/DP1, r16, 5 epochs",
+      "initial_status": "queued",
+      "job_id": "cust-NhJNQLndXu54aXQWEQ8171",
+      "output_model_entity": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712",
+      "rank": 16,
+      "request": {
+        "description": "Stage 5 LE LoRA SFT - NIM corpus, Super-v3 LE dataset, Llama 3.2 1B, Blackwell TP1/DP1, r16, 5 epochs",
+        "dataset": "default/stage3-nim-curated-le-super-v3",
+        "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712",
+        "config": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+        "hyperparameters": {
+          "finetuning_type": "lora",
+          "training_type": "sft",
+          "warmup_steps": 30,
+          "seed": 42,
+          "max_steps": -1,
+          "optimizer": "adamw_with_cosine_annealing",
+          "adam_beta1": 0.9,
+          "adam_beta2": 0.99,
+          "batch_size": 16,
+          "epochs": 5,
+          "learning_rate": 0.0001,
+          "log_every_n_steps": 10,
+          "lora": {
+            "adapter_dim": 16,
+            "alpha": 32,
+            "adapter_dropout": null,
+            "target_modules": null
+          },
+          "sequence_packing_enabled": false
+        }
+      },
+      "submitted_at": "2026-07-12T06:53:06.839675+00:00",
+      "wave": "r16",
+      "final_status": "cancelled",
+      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=ubuntu2; cancelled and replaced by -20260712-bw submission."
+    },
+    {
+      "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712",
+      "alpha": 32,
+      "collection": "nemo_usvcs_curated",
+      "corpus": "NeMo Microservices",
+      "dataset_entity": "default/stage3-nemo-usvcs-curated-le-super-v3",
+      "description": "Stage 5 LE LoRA SFT - NeMo Microservices corpus, Super-v3 LE dataset, Llama 3.2 1B, Blackwell TP1/DP1, r16, 5 epochs",
+      "initial_status": "queued",
+      "job_id": "cust-JvqyTDLAJMHz6haPq5tCHk",
+      "output_model_entity": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712",
+      "rank": 16,
+      "request": {
+        "description": "Stage 5 LE LoRA SFT - NeMo Microservices corpus, Super-v3 LE dataset, Llama 3.2 1B, Blackwell TP1/DP1, r16, 5 epochs",
+        "dataset": "default/stage3-nemo-usvcs-curated-le-super-v3",
+        "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712",
+        "config": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+        "hyperparameters": {
+          "finetuning_type": "lora",
+          "training_type": "sft",
+          "warmup_steps": 30,
+          "seed": 42,
+          "max_steps": -1,
+          "optimizer": "adamw_with_cosine_annealing",
+          "adam_beta1": 0.9,
+          "adam_beta2": 0.99,
+          "batch_size": 16,
+          "epochs": 5,
+          "learning_rate": 0.0001,
+          "log_every_n_steps": 10,
+          "lora": {
+            "adapter_dim": 16,
+            "alpha": 32,
+            "adapter_dropout": null,
+            "target_modules": null
+          },
+          "sequence_packing_enabled": false
+        }
+      },
+      "submitted_at": "2026-07-12T06:53:09.969777+00:00",
+      "wave": "r16",
+      "final_status": "cancelled",
+      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=ubuntu2; cancelled and replaced by -20260712-bw submission."
+    },
+    {
+      "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712",
+      "alpha": 64,
+      "collection": "nim_curated",
+      "corpus": "NIM",
+      "dataset_entity": "default/stage3-nim-curated-le-super-v3",
+      "description": "Stage 5 LE LoRA SFT - NIM corpus, Super-v3 LE dataset, Llama 3.2 1B, Blackwell TP1/DP1, r32, 5 epochs",
+      "initial_status": "queued",
+      "job_id": "cust-UTFCUHVfPNcYD2FeHciRHb",
+      "output_model_entity": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712",
+      "rank": 32,
+      "request": {
+        "description": "Stage 5 LE LoRA SFT - NIM corpus, Super-v3 LE dataset, Llama 3.2 1B, Blackwell TP1/DP1, r32, 5 epochs",
+        "dataset": "default/stage3-nim-curated-le-super-v3",
+        "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712",
+        "config": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+        "hyperparameters": {
+          "finetuning_type": "lora",
+          "training_type": "sft",
+          "warmup_steps": 30,
+          "seed": 42,
+          "max_steps": -1,
+          "optimizer": "adamw_with_cosine_annealing",
+          "adam_beta1": 0.9,
+          "adam_beta2": 0.99,
+          "batch_size": 16,
+          "epochs": 5,
+          "learning_rate": 0.0001,
+          "log_every_n_steps": 10,
+          "lora": {
+            "adapter_dim": 32,
+            "alpha": 64,
+            "adapter_dropout": null,
+            "target_modules": null
+          },
+          "sequence_packing_enabled": false
+        }
+      },
+      "submitted_at": "2026-07-12T06:53:13.060721+00:00",
+      "wave": "r32",
+      "final_status": "cancelled",
+      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=ubuntu2; cancelled and replaced by -20260712-bw submission."
+    },
+    {
+      "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712",
+      "alpha": 64,
+      "collection": "nemo_usvcs_curated",
+      "corpus": "NeMo Microservices",
+      "dataset_entity": "default/stage3-nemo-usvcs-curated-le-super-v3",
+      "description": "Stage 5 LE LoRA SFT - NeMo Microservices corpus, Super-v3 LE dataset, Llama 3.2 1B, Blackwell TP1/DP1, r32, 5 epochs",
+      "initial_status": "queued",
+      "job_id": "cust-Wz7UprrENjJPccnjCGK2TV",
+      "output_model_entity": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712",
+      "rank": 32,
+      "request": {
+        "description": "Stage 5 LE LoRA SFT - NeMo Microservices corpus, Super-v3 LE dataset, Llama 3.2 1B, Blackwell TP1/DP1, r32, 5 epochs",
+        "dataset": "default/stage3-nemo-usvcs-curated-le-super-v3",
+        "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712",
+        "config": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+        "hyperparameters": {
+          "finetuning_type": "lora",
+          "training_type": "sft",
+          "warmup_steps": 30,
+          "seed": 42,
+          "max_steps": -1,
+          "optimizer": "adamw_with_cosine_annealing",
+          "adam_beta1": 0.9,
+          "adam_beta2": 0.99,
+          "batch_size": 16,
+          "epochs": 5,
+          "learning_rate": 0.0001,
+          "log_every_n_steps": 10,
+          "lora": {
+            "adapter_dim": 32,
+            "alpha": 64,
+            "adapter_dropout": null,
+            "target_modules": null
+          },
+          "sequence_packing_enabled": false
+        }
+      },
+      "submitted_at": "2026-07-12T06:53:16.218587+00:00",
+      "wave": "r32",
+      "final_status": "cancelled",
+      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=ubuntu2; cancelled and replaced by -20260712-bw submission."
+    }
+  ],
+  "corrected_blackwell_submission": {
+    "submitted_at": "2026-07-12T06:57:34.257389+00:00",
+    "reason": "Resubmitted after restarting Customizer so live training placement picked up ubuntu-local-dev node selectors.",
+    "suffix": "20260712-bw",
+    "jobs": [
+      {
+        "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+        "alpha": 32,
+        "base_model": "meta/llama-3.2-1b-instruct",
+        "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+        "collection": "nim_curated",
+        "corpus": "NIM",
+        "dataset_entity": "default/stage3-nim-curated-le-super-v3",
+        "dataset_kind": "LE Stage 3 Curator finalized dataset",
+        "description": "Stage 5 1B LoRA SFT on NIM LE dataset; rank=16, alpha=32, epochs=5, Blackwell TP1/DP1",
+        "epochs": 5,
+        "expected_node": "ubuntu-local-dev",
+        "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+        "finetuning_type": "lora",
+        "job_id": "cust-WD6ABFknJMfsqLivWJ4v3X",
+        "output_model_entity": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+        "rank": 16,
+        "sequence_packing_enabled": false,
+        "status_at_submission": "submitted",
+        "submitted_at": "2026-07-12T06:57:24.461113+00:00",
+        "tensor_parallel_size": 1,
+        "data_parallel_size": 1,
+        "training_type": "sft",
+        "customizer_status_after_submission": "running",
+        "kubernetes_worker_pod": "cust-wd6abfknjmfsqlivwj4v3x-training-job-worker-0",
+        "kubernetes_worker_status_after_submission": "Running",
+        "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
+        "verified_node_selector": {
+          "kubernetes.io/hostname": "ubuntu-local-dev"
+        }
+      },
+      {
+        "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+        "alpha": 32,
+        "base_model": "meta/llama-3.2-1b-instruct",
+        "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+        "collection": "nemo_usvcs_curated",
+        "corpus": "NeMo microservices",
+        "dataset_entity": "default/stage3-nemo-usvcs-curated-le-super-v3",
+        "dataset_kind": "LE Stage 3 Curator finalized dataset",
+        "description": "Stage 5 1B LoRA SFT on NeMo microservices LE dataset; rank=16, alpha=32, epochs=5, Blackwell TP1/DP1",
+        "epochs": 5,
+        "expected_node": "ubuntu-local-dev",
+        "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+        "finetuning_type": "lora",
+        "job_id": "cust-XgA7mdwQpKb7spFUMDAEAE",
+        "output_model_entity": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+        "rank": 16,
+        "sequence_packing_enabled": false,
+        "status_at_submission": "submitted",
+        "submitted_at": "2026-07-12T06:57:27.684755+00:00",
+        "tensor_parallel_size": 1,
+        "data_parallel_size": 1,
+        "training_type": "sft",
+        "customizer_status_after_submission": "running",
+        "kubernetes_worker_pod": "cust-xga7mdwqpkb7spfumdaeae-training-job-worker-0",
+        "kubernetes_worker_status_after_submission": "Running",
+        "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
+        "verified_node_selector": {
+          "kubernetes.io/hostname": "ubuntu-local-dev"
+        }
+      },
+      {
+        "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+        "alpha": 64,
+        "base_model": "meta/llama-3.2-1b-instruct",
+        "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+        "collection": "nim_curated",
+        "corpus": "NIM",
+        "dataset_entity": "default/stage3-nim-curated-le-super-v3",
+        "dataset_kind": "LE Stage 3 Curator finalized dataset",
+        "description": "Stage 5 1B LoRA SFT on NIM LE dataset; rank=32, alpha=64, epochs=5, Blackwell TP1/DP1",
+        "epochs": 5,
+        "expected_node": "ubuntu-local-dev",
+        "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+        "finetuning_type": "lora",
+        "job_id": "cust-B7zL5FK8ucueV4xuYK5Cxn",
+        "output_model_entity": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+        "rank": 32,
+        "sequence_packing_enabled": false,
+        "status_at_submission": "submitted",
+        "submitted_at": "2026-07-12T06:57:30.852798+00:00",
+        "tensor_parallel_size": 1,
+        "data_parallel_size": 1,
+        "training_type": "sft",
+        "customizer_status_after_submission": "running",
+        "kubernetes_worker_pod": "cust-b7zl5fk8ucuev4xuyk5cxn-training-job-worker-0",
+        "kubernetes_worker_status_after_submission": "Pending",
+        "kubernetes_worker_node_after_submission": null,
+        "verified_node_selector": {
+          "kubernetes.io/hostname": "ubuntu-local-dev"
+        }
+      },
+      {
+        "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+        "alpha": 64,
+        "base_model": "meta/llama-3.2-1b-instruct",
+        "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+        "collection": "nemo_usvcs_curated",
+        "corpus": "NeMo microservices",
+        "dataset_entity": "default/stage3-nemo-usvcs-curated-le-super-v3",
+        "dataset_kind": "LE Stage 3 Curator finalized dataset",
+        "description": "Stage 5 1B LoRA SFT on NeMo microservices LE dataset; rank=32, alpha=64, epochs=5, Blackwell TP1/DP1",
+        "epochs": 5,
+        "expected_node": "ubuntu-local-dev",
+        "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+        "finetuning_type": "lora",
+        "job_id": "cust-SgCPgRNEp9dzZ685zfSE7X",
+        "output_model_entity": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+        "rank": 32,
+        "sequence_packing_enabled": false,
+        "status_at_submission": "submitted",
+        "submitted_at": "2026-07-12T06:57:34.257191+00:00",
+        "tensor_parallel_size": 1,
+        "data_parallel_size": 1,
+        "training_type": "sft",
+        "customizer_status_after_submission": "running",
+        "kubernetes_worker_pod": "cust-sgcpgrnep9dzz685zfse7x-training-job-worker-0",
+        "kubernetes_worker_status_after_submission": "Pending",
+        "kubernetes_worker_node_after_submission": null,
+        "verified_node_selector": {
+          "kubernetes.io/hostname": "ubuntu-local-dev"
+        }
+      }
+    ],
+    "verification": {
+      "verified_at": "2026-07-12T06:58:49.458885+00:00",
+      "customizer_status": {
+        "cust-WD6ABFknJMfsqLivWJ4v3X": "running",
+        "cust-XgA7mdwQpKb7spFUMDAEAE": "running",
+        "cust-B7zL5FK8ucueV4xuYK5Cxn": "running",
+        "cust-SgCPgRNEp9dzZ685zfSE7X": "running"
+      },
+      "kubernetes_workers": {
+        "cust-WD6ABFknJMfsqLivWJ4v3X": {
+          "pod": "cust-wd6abfknjmfsqlivwj4v3x-training-job-worker-0",
+          "k8s_status": "Running",
+          "node": "ubuntu-local-dev"
+        },
+        "cust-XgA7mdwQpKb7spFUMDAEAE": {
+          "pod": "cust-xga7mdwqpkb7spfumdaeae-training-job-worker-0",
+          "k8s_status": "Running",
+          "node": "ubuntu-local-dev"
+        },
+        "cust-B7zL5FK8ucueV4xuYK5Cxn": {
+          "pod": "cust-b7zl5fk8ucuev4xuyk5cxn-training-job-worker-0",
+          "k8s_status": "Pending",
+          "node": null
+        },
+        "cust-SgCPgRNEp9dzZ685zfSE7X": {
+          "pod": "cust-sgcpgrnep9dzz685zfse7x-training-job-worker-0",
+          "k8s_status": "Pending",
+          "node": null
+        }
+      },
+      "blackwell_allocated_gpus_after_submission": 2,
+      "expected_queueing": "Two r16 workers run immediately on the two Blackwell GPUs; two r32 workers remain pending until GPUs free.",
+      "node_selector_verified_on_training_crs": {
+        "kubernetes.io/hostname": "ubuntu-local-dev"
+      }
+    }
+  },
+  "jobs_corrected_blackwell": [
+    {
+      "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+      "alpha": 32,
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+      "collection": "nim_curated",
+      "corpus": "NIM",
+      "dataset_entity": "default/stage3-nim-curated-le-super-v3",
+      "dataset_kind": "LE Stage 3 Curator finalized dataset",
+      "description": "Stage 5 1B LoRA SFT on NIM LE dataset; rank=16, alpha=32, epochs=5, Blackwell TP1/DP1",
+      "epochs": 5,
+      "expected_node": "ubuntu-local-dev",
+      "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "finetuning_type": "lora",
+      "job_id": "cust-WD6ABFknJMfsqLivWJ4v3X",
+      "output_model_entity": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+      "rank": 16,
+      "sequence_packing_enabled": false,
+      "status_at_submission": "submitted",
+      "submitted_at": "2026-07-12T06:57:24.461113+00:00",
+      "tensor_parallel_size": 1,
+      "data_parallel_size": 1,
+      "training_type": "sft",
+      "customizer_status_after_submission": "running",
+      "kubernetes_worker_pod": "cust-wd6abfknjmfsqlivwj4v3x-training-job-worker-0",
+      "kubernetes_worker_status_after_submission": "Running",
+      "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
+      "verified_node_selector": {
+        "kubernetes.io/hostname": "ubuntu-local-dev"
+      }
+    },
+    {
+      "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+      "alpha": 32,
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+      "collection": "nemo_usvcs_curated",
+      "corpus": "NeMo microservices",
+      "dataset_entity": "default/stage3-nemo-usvcs-curated-le-super-v3",
+      "dataset_kind": "LE Stage 3 Curator finalized dataset",
+      "description": "Stage 5 1B LoRA SFT on NeMo microservices LE dataset; rank=16, alpha=32, epochs=5, Blackwell TP1/DP1",
+      "epochs": 5,
+      "expected_node": "ubuntu-local-dev",
+      "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "finetuning_type": "lora",
+      "job_id": "cust-XgA7mdwQpKb7spFUMDAEAE",
+      "output_model_entity": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+      "rank": 16,
+      "sequence_packing_enabled": false,
+      "status_at_submission": "submitted",
+      "submitted_at": "2026-07-12T06:57:27.684755+00:00",
+      "tensor_parallel_size": 1,
+      "data_parallel_size": 1,
+      "training_type": "sft",
+      "customizer_status_after_submission": "running",
+      "kubernetes_worker_pod": "cust-xga7mdwqpkb7spfumdaeae-training-job-worker-0",
+      "kubernetes_worker_status_after_submission": "Running",
+      "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
+      "verified_node_selector": {
+        "kubernetes.io/hostname": "ubuntu-local-dev"
+      }
+    },
+    {
+      "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+      "alpha": 64,
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+      "collection": "nim_curated",
+      "corpus": "NIM",
+      "dataset_entity": "default/stage3-nim-curated-le-super-v3",
+      "dataset_kind": "LE Stage 3 Curator finalized dataset",
+      "description": "Stage 5 1B LoRA SFT on NIM LE dataset; rank=32, alpha=64, epochs=5, Blackwell TP1/DP1",
+      "epochs": 5,
+      "expected_node": "ubuntu-local-dev",
+      "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "finetuning_type": "lora",
+      "job_id": "cust-B7zL5FK8ucueV4xuYK5Cxn",
+      "output_model_entity": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+      "rank": 32,
+      "sequence_packing_enabled": false,
+      "status_at_submission": "submitted",
+      "submitted_at": "2026-07-12T06:57:30.852798+00:00",
+      "tensor_parallel_size": 1,
+      "data_parallel_size": 1,
+      "training_type": "sft",
+      "customizer_status_after_submission": "running",
+      "kubernetes_worker_pod": "cust-b7zl5fk8ucuev4xuyk5cxn-training-job-worker-0",
+      "kubernetes_worker_status_after_submission": "Pending",
+      "kubernetes_worker_node_after_submission": null,
+      "verified_node_selector": {
+        "kubernetes.io/hostname": "ubuntu-local-dev"
+      }
+    },
+    {
+      "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+      "alpha": 64,
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+      "collection": "nemo_usvcs_curated",
+      "corpus": "NeMo microservices",
+      "dataset_entity": "default/stage3-nemo-usvcs-curated-le-super-v3",
+      "dataset_kind": "LE Stage 3 Curator finalized dataset",
+      "description": "Stage 5 1B LoRA SFT on NeMo microservices LE dataset; rank=32, alpha=64, epochs=5, Blackwell TP1/DP1",
+      "epochs": 5,
+      "expected_node": "ubuntu-local-dev",
+      "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "finetuning_type": "lora",
+      "job_id": "cust-SgCPgRNEp9dzZ685zfSE7X",
+      "output_model_entity": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+      "rank": 32,
+      "sequence_packing_enabled": false,
+      "status_at_submission": "submitted",
+      "submitted_at": "2026-07-12T06:57:34.257191+00:00",
+      "tensor_parallel_size": 1,
+      "data_parallel_size": 1,
+      "training_type": "sft",
+      "customizer_status_after_submission": "running",
+      "kubernetes_worker_pod": "cust-sgcpgrnep9dzz685zfse7x-training-job-worker-0",
+      "kubernetes_worker_status_after_submission": "Pending",
+      "kubernetes_worker_node_after_submission": null,
+      "verified_node_selector": {
+        "kubernetes.io/hostname": "ubuntu-local-dev"
+      }
+    }
+  ],
+  "cancelled_initial_submission": {
+    "submitted_at": "2026-07-12T06:53:03.544650+00:00",
+    "root_cause": "Customizer deployment had stale in-memory training placement from before the ConfigMap node selector patch, so NemoTrainingJobs were created with kubernetes.io/hostname=ubuntu2 instead of ubuntu-local-dev.",
+    "impact": "The four initial 1B jobs were cancelled before proceeding so Blackwell-only placement could be enforced.",
+    "observed_bad_placement": {
+      "node_selector": {
+        "kubernetes.io/hostname": "ubuntu2"
+      },
+      "node": "ubuntu2"
+    },
+    "cancellation_method": "POST /v1/customization/jobs/{job_id}/cancel",
+    "jobs": [
+      {
+        "job_id": "cust-NhJNQLndXu54aXQWEQ8171",
+        "corpus": "NIM",
+        "rank": 16,
+        "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712",
+        "final_status": "cancelled"
+      },
+      {
+        "job_id": "cust-JvqyTDLAJMHz6haPq5tCHk",
+        "corpus": "NeMo microservices",
+        "rank": 16,
+        "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712",
+        "final_status": "cancelled"
+      },
+      {
+        "job_id": "cust-UTFCUHVfPNcYD2FeHciRHb",
+        "corpus": "NIM",
+        "rank": 32,
+        "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712",
+        "final_status": "cancelled"
+      },
+      {
+        "job_id": "cust-Wz7UprrENjJPccnjCGK2TV",
+        "corpus": "NeMo microservices",
+        "rank": 32,
+        "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712",
+        "final_status": "cancelled"
+      }
+    ],
+    "cancelled_observed_before": "2026-07-12T06:54:42Z",
+    "cancelled_time_note": "Observed cancelled before the Customizer restart/rollout that completed at 2026-07-12T06:54:42Z."
+  },
+  "customizer_placement_reload": {
+    "completed_at": "2026-07-12T06:54:42Z",
+    "method": "scripts/ops/patch_customizer_training_node.py --node ubuntu-local-dev --restart --backup-dir .local_archive/cluster-backups",
+    "backup_path": ".local_archive/cluster-backups/nemo-platform-customizer-config-pre-node-ubuntu-local-dev-20260712T015442.yaml",
+    "rollout_status": "deployment/nemo-platform-customizer successfully rolled out",
+    "effective_training_node_selector": {
+      "kubernetes.io/hostname": "ubuntu-local-dev"
+    },
+    "effective_container_default_node_selector": {
+      "kubernetes.io/hostname": "ubuntu-local-dev"
+    }
+  },
+  "latest_status": {
+    "updated_at": "2026-07-12T06:58:49.458915+00:00",
+    "state": "submitted_and_verified_on_blackwell",
+    "running_workers": [
+      "cust-wd6abfknjmfsqlivwj4v3x-training-job-worker-0",
+      "cust-xga7mdwqpkb7spfumdaeae-training-job-worker-0"
+    ],
+    "pending_workers": [
+      "cust-b7zl5fk8ucuev4xuyk5cxn-training-job-worker-0",
+      "cust-sgcpgrnep9dzz685zfse7x-training-job-worker-0"
+    ],
+    "blackwell_gpu_allocation": "2/2"
+  }
+}
