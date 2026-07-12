@@ -74,6 +74,18 @@
       "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.7259588241577148,
+        "elapsed_time_seconds": 1736.429635,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nim-cqa-e5-llama32-1b-r16-20260712-bw@cust-5mXjLLoVBN4kpnmpUhgedW",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
       }
     },
     {
@@ -105,6 +117,18 @@
       "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.7155851125717163,
+        "elapsed_time_seconds": 1023.400193,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nemo-cqa-e5-llama32-1b-r16-20260712-bw@cust-9fzUTq1KHnvUii2mZ5Pjop",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
       }
     },
     {
@@ -136,6 +160,18 @@
       "kubernetes_worker_node_after_submission": null,
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.6970833539962769,
+        "elapsed_time_seconds": 2775.882017,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nim-cqa-e5-llama32-1b-r32-20260712-bw@cust-HZ3QepjwFzP7Z3SgEjWULd",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
       }
     },
     {
@@ -167,21 +203,32 @@
       "kubernetes_worker_node_after_submission": null,
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.6934744119644165,
+        "elapsed_time_seconds": 2773.898755,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nemo-cqa-e5-llama32-1b-r32-20260712-bw@cust-9CK259NS4y7mCVeuv5Rj2Z",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
       }
     }
   ],
   "latest_status": {
-    "updated_at": "2026-07-12T08:07:27.535518+00:00",
-    "state": "submitted_and_verified_on_blackwell",
-    "running_workers": [
-      "cust-5mxjllovbn4kpnmpuhgedw-training-job-worker-0",
-      "cust-9fzutq1khnvuii2mz5pjop-training-job-worker-0"
+    "updated_at": "2026-07-12T08:54:26.527333+00:00",
+    "state": "completed",
+    "completed_jobs": [
+      "cust-5mXjLLoVBN4kpnmpUhgedW",
+      "cust-9CK259NS4y7mCVeuv5Rj2Z",
+      "cust-9fzUTq1KHnvUii2mZ5Pjop",
+      "cust-HZ3QepjwFzP7Z3SgEjWULd"
     ],
-    "pending_workers": [
-      "cust-hz3qepjwfzp7z3sgejwuld-training-job-worker-0",
-      "cust-9ck259ns4y7mcveuv5rj2z-training-job-worker-0"
-    ],
-    "next_action": "Monitor to completion before switching Customizer to ubuntu2 for 3B Curator DiverseQA."
+    "blackwell_worker_node": "ubuntu-local-dev",
+    "next_action": "Switch Customizer to ubuntu2 and submit 3B Curator DiverseQA LoRA SFT r16/r32 for NIM and NeMo Microservices."
   },
   "placement_verification": {
     "verified_at": "2026-07-12T08:07:27.535508+00:00",
@@ -222,5 +269,27 @@
         "worker_node": null
       }
     }
+  },
+  "final_verification": {
+    "verified_at": "2026-07-12T08:54:26.527320+00:00",
+    "customizer_status": {
+      "cust-5mXjLLoVBN4kpnmpUhgedW": "completed",
+      "cust-9fzUTq1KHnvUii2mZ5Pjop": "completed",
+      "cust-HZ3QepjwFzP7Z3SgEjWULd": "completed",
+      "cust-9CK259NS4y7mCVeuv5Rj2Z": "completed"
+    },
+    "worker_node": {
+      "cust-5mXjLLoVBN4kpnmpUhgedW": "ubuntu-local-dev",
+      "cust-9fzUTq1KHnvUii2mZ5Pjop": "ubuntu-local-dev",
+      "cust-HZ3QepjwFzP7Z3SgEjWULd": "ubuntu-local-dev",
+      "cust-9CK259NS4y7mCVeuv5Rj2Z": "ubuntu-local-dev"
+    },
+    "worker_phase": {
+      "cust-5mXjLLoVBN4kpnmpUhgedW": "Succeeded",
+      "cust-9fzUTq1KHnvUii2mZ5Pjop": "Succeeded",
+      "cust-HZ3QepjwFzP7Z3SgEjWULd": "Succeeded",
+      "cust-9CK259NS4y7mCVeuv5Rj2Z": "Succeeded"
+    },
+    "all_output_models_reported": true
   }
 }
