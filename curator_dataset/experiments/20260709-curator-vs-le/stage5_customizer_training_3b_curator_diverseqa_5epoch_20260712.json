@@ -73,6 +73,18 @@
       "kubernetes_worker_node_after_submission": "ubuntu2",
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu2"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.5666687488555908,
+        "elapsed_time_seconds": 3298.215594,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nim-cqa-e5-llama32-3b-r16-20260712-ada@cust-PCqbz8W6F6Uop2fhuYkcee",
+        "worker_node": "ubuntu2",
+        "worker_phase": "Succeeded"
       }
     },
     {
@@ -104,6 +116,18 @@
       "kubernetes_worker_node_after_submission": "ubuntu2",
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu2"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.5598747730255127,
+        "elapsed_time_seconds": 1929.841709,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nemo-cqa-e5-llama32-3b-r16-20260712-ada@cust-KY79TSzsNdUjJAADoDRzGQ",
+        "worker_node": "ubuntu2",
+        "worker_phase": "Succeeded"
       }
     },
     {
@@ -135,6 +159,18 @@
       "kubernetes_worker_node_after_submission": null,
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu2"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.5523818731307983,
+        "elapsed_time_seconds": 5207.382816,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nim-cqa-e5-llama32-3b-r32-20260712-ada@cust-CxYRLbLQowgRZQC2Hnho9v",
+        "worker_node": "ubuntu2",
+        "worker_phase": "Succeeded"
       }
     },
     {
@@ -166,21 +202,32 @@
       "kubernetes_worker_node_after_submission": null,
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu2"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.5285743474960327,
+        "elapsed_time_seconds": 5172.440414,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nemo-cqa-e5-llama32-3b-r32-20260712-ada@cust-8sTfudSSh2s2EAkKmH6XCs",
+        "worker_node": "ubuntu2",
+        "worker_phase": "Succeeded"
       }
     }
   ],
   "latest_status": {
-    "updated_at": "2026-07-12T08:57:06.610663+00:00",
-    "state": "submitted_and_verified_on_ada",
-    "running_workers": [
-      "cust-pcqbz8w6f6uop2fhuykcee-training-job-worker-0",
-      "cust-ky79tszsndujjaadodrzgq-training-job-worker-0"
+    "updated_at": "2026-07-12T10:25:45.403981+00:00",
+    "state": "completed",
+    "completed_jobs": [
+      "cust-8sTfudSSh2s2EAkKmH6XCs",
+      "cust-CxYRLbLQowgRZQC2Hnho9v",
+      "cust-KY79TSzsNdUjJAADoDRzGQ",
+      "cust-PCqbz8W6F6Uop2fhuYkcee"
     ],
-    "pending_workers": [
-      "cust-cxyrlblqowgrzqc2hnho9v-training-job-worker-0",
-      "cust-8stfudssh2s2eakkmh6xcs-training-job-worker-0"
-    ],
-    "next_action": "Monitor 3B Curator DiverseQA jobs to completion."
+    "ada_worker_node": "ubuntu2",
+    "note": "Customizer placement remains set to ubuntu2 after the completed 3B Curator DiverseQA run."
   },
   "placement_verification": {
     "verified_at": "2026-07-12T08:57:06.610654+00:00",
@@ -222,5 +269,27 @@
       }
     },
     "status_note": "Customizer REST may report queued NemoTrainingJobs as running; Kubernetes worker pod phase/node is used for placement verification."
+  },
+  "final_verification": {
+    "verified_at": "2026-07-12T10:25:45.403971+00:00",
+    "customizer_status": {
+      "cust-PCqbz8W6F6Uop2fhuYkcee": "completed",
+      "cust-KY79TSzsNdUjJAADoDRzGQ": "completed",
+      "cust-CxYRLbLQowgRZQC2Hnho9v": "completed",
+      "cust-8sTfudSSh2s2EAkKmH6XCs": "completed"
+    },
+    "worker_node": {
+      "cust-PCqbz8W6F6Uop2fhuYkcee": "ubuntu2",
+      "cust-KY79TSzsNdUjJAADoDRzGQ": "ubuntu2",
+      "cust-CxYRLbLQowgRZQC2Hnho9v": "ubuntu2",
+      "cust-8sTfudSSh2s2EAkKmH6XCs": "ubuntu2"
+    },
+    "worker_phase": {
+      "cust-PCqbz8W6F6Uop2fhuYkcee": "Succeeded",
+      "cust-KY79TSzsNdUjJAADoDRzGQ": "Succeeded",
+      "cust-CxYRLbLQowgRZQC2Hnho9v": "Succeeded",
+      "cust-8sTfudSSh2s2EAkKmH6XCs": "Succeeded"
+    },
+    "all_output_models_reported": true
   }
 }
