@@ -1,0 +1,588 @@
+{
+  "adapters": [
+    {
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 22574152,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-9fzUTq1KHnvUii2mZ5Pjop",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nemo-usvcs-cqa-e5-llama-3.2-1b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-1b/lora-nemo-usvcs-cqa-e5-llama-3.2-1b-r16",
+      "original_adapter_name": "lora-nemo-cqa-e5-llama32-1b-r16-20260712-bw",
+      "output_model": "default/lora-nemo-cqa-e5-llama32-1b-r16-20260712-bw@cust-9fzUTq1KHnvUii2mZ5Pjop",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 45118648,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-9CK259NS4y7mCVeuv5Rj2Z",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nemo-usvcs-cqa-e5-llama-3.2-1b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-1b/lora-nemo-usvcs-cqa-e5-llama-3.2-1b-r32",
+      "original_adapter_name": "lora-nemo-cqa-e5-llama32-1b-r32-20260712-bw",
+      "output_model": "default/lora-nemo-cqa-e5-llama32-1b-r32-20260712-bw@cust-9CK259NS4y7mCVeuv5Rj2Z",
+      "rank": 32
+    },
+    {
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 22574152,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-XgA7mdwQpKb7spFUMDAEAE",
+      "method": "LE",
+      "model_alias": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-1b/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16",
+      "original_adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+      "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-XgA7mdwQpKb7spFUMDAEAE",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 45118648,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-SgCPgRNEp9dzZ685zfSE7X",
+      "method": "LE",
+      "model_alias": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-1b/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32",
+      "original_adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+      "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-SgCPgRNEp9dzZ685zfSE7X",
+      "rank": 32
+    },
+    {
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 48680136,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-KY79TSzsNdUjJAADoDRzGQ",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nemo-usvcs-cqa-e5-llama-3.2-3b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-3b/lora-nemo-usvcs-cqa-e5-llama-3.2-3b-r16",
+      "original_adapter_name": "lora-nemo-cqa-e5-llama32-3b-r16-20260712-ada",
+      "output_model": "default/lora-nemo-cqa-e5-llama32-3b-r16-20260712-ada@cust-KY79TSzsNdUjJAADoDRzGQ",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 97307936,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-8sTfudSSh2s2EAkKmH6XCs",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nemo-usvcs-cqa-e5-llama-3.2-3b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-3b/lora-nemo-usvcs-cqa-e5-llama-3.2-3b-r32",
+      "original_adapter_name": "lora-nemo-cqa-e5-llama32-3b-r32-20260712-ada",
+      "output_model": "default/lora-nemo-cqa-e5-llama32-3b-r32-20260712-ada@cust-8sTfudSSh2s2EAkKmH6XCs",
+      "rank": 32
+    },
+    {
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 48680136,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-FsetGu5ZHRDNKtzng4jcbL",
+      "method": "LE",
+      "model_alias": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-3b/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16",
+      "original_adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711",
+      "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711@cust-FsetGu5ZHRDNKtzng4jcbL",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 97307936,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-JdKTPm7DuYBY6fzyT58HSg",
+      "method": "LE",
+      "model_alias": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-3b/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32",
+      "original_adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711",
+      "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711@cust-JdKTPm7DuYBY6fzyT58HSg",
+      "rank": 32
+    },
+    {
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1165,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 83946192,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-CiQrMdjTEBqr73zvLXzM7o",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nemo-usvcs-cqa-e5-llama-3.1-8b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-8b/lora-nemo-usvcs-cqa-e5-llama-3.1-8b-r16",
+      "original_adapter_name": "lora-nemo-ms-curator-e5-llama31-8b-r16-bw-20260709",
+      "output_model": "default/lora-nemo-ms-curator-e5-llama31-8b-r16-bw-20260709@cust-CiQrMdjTEBqr73zvLXzM7o",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1165,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 167832688,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-XJ7f4T6DF8oRQzcukph5Kb",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nemo-usvcs-cqa-e5-llama-3.1-8b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-8b/lora-nemo-usvcs-cqa-e5-llama-3.1-8b-r32",
+      "original_adapter_name": "lora-nemo-ms-curator-e5-llama31-8b-r32-bw-20260709",
+      "output_model": "default/lora-nemo-ms-curator-e5-llama31-8b-r32-bw-20260709@cust-XJ7f4T6DF8oRQzcukph5Kb",
+      "rank": 32
+    },
+    {
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1165,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 83946192,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-5HqsCLjwYzyy2AyiW3EiNW",
+      "method": "LE",
+      "model_alias": "lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-8b/lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r16",
+      "original_adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r16-20260711",
+      "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r16-20260711@cust-5HqsCLjwYzyy2AyiW3EiNW",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 22574152,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-5mXjLLoVBN4kpnmpUhgedW",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nim-cqa-e5-llama-3.2-1b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-1b/lora-nim-cqa-e5-llama-3.2-1b-r16",
+      "original_adapter_name": "lora-nim-cqa-e5-llama32-1b-r16-20260712-bw",
+      "output_model": "default/lora-nim-cqa-e5-llama32-1b-r16-20260712-bw@cust-5mXjLLoVBN4kpnmpUhgedW",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 45118648,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-HZ3QepjwFzP7Z3SgEjWULd",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nim-cqa-e5-llama-3.2-1b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-1b/lora-nim-cqa-e5-llama-3.2-1b-r32",
+      "original_adapter_name": "lora-nim-cqa-e5-llama32-1b-r32-20260712-bw",
+      "output_model": "default/lora-nim-cqa-e5-llama32-1b-r32-20260712-bw@cust-HZ3QepjwFzP7Z3SgEjWULd",
+      "rank": 32
+    },
+    {
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 22574152,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-WD6ABFknJMfsqLivWJ4v3X",
+      "method": "LE",
+      "model_alias": "lora-nim-le-super-v3-e5-llama-3.2-1b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-1b/lora-nim-le-super-v3-e5-llama-3.2-1b-r16",
+      "original_adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+      "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-WD6ABFknJMfsqLivWJ4v3X",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 45118648,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-B7zL5FK8ucueV4xuYK5Cxn",
+      "method": "LE",
+      "model_alias": "lora-nim-le-super-v3-e5-llama-3.2-1b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-1b/lora-nim-le-super-v3-e5-llama-3.2-1b-r32",
+      "original_adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+      "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-B7zL5FK8ucueV4xuYK5Cxn",
+      "rank": 32
+    },
+    {
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 48680136,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-PCqbz8W6F6Uop2fhuYkcee",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nim-cqa-e5-llama-3.2-3b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-3b/lora-nim-cqa-e5-llama-3.2-3b-r16",
+      "original_adapter_name": "lora-nim-cqa-e5-llama32-3b-r16-20260712-ada",
+      "output_model": "default/lora-nim-cqa-e5-llama32-3b-r16-20260712-ada@cust-PCqbz8W6F6Uop2fhuYkcee",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 97307936,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-CxYRLbLQowgRZQC2Hnho9v",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nim-cqa-e5-llama-3.2-3b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-3b/lora-nim-cqa-e5-llama-3.2-3b-r32",
+      "original_adapter_name": "lora-nim-cqa-e5-llama32-3b-r32-20260712-ada",
+      "output_model": "default/lora-nim-cqa-e5-llama32-3b-r32-20260712-ada@cust-CxYRLbLQowgRZQC2Hnho9v",
+      "rank": 32
+    },
+    {
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 48680136,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-BzdKGpC6VTXw2Ae5CRwQGY",
+      "method": "LE",
+      "model_alias": "lora-nim-le-super-v3-e5-llama-3.2-3b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-3b/lora-nim-le-super-v3-e5-llama-3.2-3b-r16",
+      "original_adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711",
+      "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711@cust-BzdKGpC6VTXw2Ae5CRwQGY",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1163,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 97307936,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-Lfp1giyRrX6BYiKheFKbfn",
+      "method": "LE",
+      "model_alias": "lora-nim-le-super-v3-e5-llama-3.2-3b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-3b/lora-nim-le-super-v3-e5-llama-3.2-3b-r32",
+      "original_adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711",
+      "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711@cust-Lfp1giyRrX6BYiKheFKbfn",
+      "rank": 32
+    },
+    {
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1165,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 83946192,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-6cpWwCz38TzoDCmZcMJK6U",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nim-cqa-e5-llama-3.1-8b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-8b/lora-nim-cqa-e5-llama-3.1-8b-r16",
+      "original_adapter_name": "lora-nim-curator-e5-llama31-8b-r16-20260629",
+      "output_model": "default/lora-nim-curator-e5-llama31-8b-r16-20260629@cust-6cpWwCz38TzoDCmZcMJK6U",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1165,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 167832688,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-EqsxmYZskEV95oRQzqjZRA",
+      "method": "Curator DiverseQA",
+      "model_alias": "lora-nim-cqa-e5-llama-3.1-8b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-8b/lora-nim-cqa-e5-llama-3.1-8b-r32",
+      "original_adapter_name": "lora-nim-curator-e5-llama31-8b-r32-20260629",
+      "output_model": "default/lora-nim-curator-e5-llama31-8b-r32-20260629@cust-EqsxmYZskEV95oRQzqjZRA",
+      "rank": 32
+    },
+    {
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1165,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 83946192,
+          "source": "datastore",
+          "url_kind": "lfs-location"
+        }
+      },
+      "job_id": "cust-VM3mbWVx7FcPdtTG84UiJs",
+      "method": "LE",
+      "model_alias": "lora-nim-le-super-v3-e5-llama-3.1-8b-r16",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-8b/lora-nim-le-super-v3-e5-llama-3.1-8b-r16",
+      "original_adapter_name": "lora-nim-le-super-v3-e5-llama-3.1-8b-r16-20260711",
+      "output_model": "default/lora-nim-le-super-v3-e5-llama-3.1-8b-r16-20260711@cust-VM3mbWVx7FcPdtTG84UiJs",
+      "rank": 16
+    },
+    {
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nim_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1165,
+          "path": "/mnt/nvme2/peft/cust-bbbuteyxhnw2zjzgzhqmpy/trained/adapter_config.json",
+          "source": "local-trained-dir"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 167832688,
+          "path": "/mnt/nvme2/peft/cust-bbbuteyxhnw2zjzgzhqmpy/trained/adapter_model.safetensors",
+          "source": "local-trained-dir"
+        }
+      },
+      "job_id": "cust-BBbUtEYXHNW2zjzGZhqMpY",
+      "method": "LE",
+      "model_alias": "lora-nim-le-super-v3-e5-llama-3.1-8b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-8b/lora-nim-le-super-v3-e5-llama-3.1-8b-r32",
+      "original_adapter_name": "lora-nim-le-super-v3-e5-llama-3.1-8b-r32-20260711",
+      "output_model": "default/lora-nim-le-super-v3-e5-llama-3.1-8b-r32-20260711@cust-BBbUtEYXHNW2zjzGZhqMpY",
+      "rank": 32
+    },
+    {
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nemo_usvcs_curated",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1165,
+          "path": "/mnt/nvme2/peft/cust-8ge3t81ypq76fhk3b4b7ts/trained/adapter_config.json",
+          "source": "local-trained-dir"
+        },
+        "adapter_model.safetensors": {
+          "bytes": 167832688,
+          "path": "/mnt/nvme2/peft/cust-8ge3t81ypq76fhk3b4b7ts/trained/adapter_model.safetensors",
+          "source": "local-trained-dir"
+        }
+      },
+      "job_id": "cust-8GE3t81yPq76FhK3b4b7Ts",
+      "method": "LE",
+      "model_alias": "lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r32",
+      "nim_peft_dir": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-8b/lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r32",
+      "original_adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r32-20260711",
+      "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r32-20260711@cust-8GE3t81yPq76FhK3b4b7Ts",
+      "rank": 32
+    }
+  ],
+  "created_for": "golden-v1 question-only LoRA completion collection",
+  "data_store_endpoint": "http://192.168.1.187:30912",
+  "roots": {
+    "1B": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-1b",
+    "3B": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-3b",
+    "8B": "/mnt/nvme4/nim_cache/nim/lora-adapters-golden-8b"
+  },
+  "schema_version": "nim-peft-source-materialization/v1"
+}
