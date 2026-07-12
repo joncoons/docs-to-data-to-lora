@@ -49,14 +49,16 @@ Treat rebuilt output as a new artifact version unless the checksums are unchange
 
 ## Evaluation Matrix
 
-Single-axis evaluation measures standalone model efficacy on the frozen context-baked rows. Use the direct Kimi single-axis scorer over saved completion files, with axes already implemented as accuracy, completeness, faithfulness, and clarity.
+The formal winner evaluation is no-RAG. Model answers are collected from `test_set.jsonl` question-only prompts, then judged against the immutable golden reference answer. The judge must not receive retrieved context or context-baked prompts for the primary LE-vs-Curator comparison.
+
+Single-axis evaluation measures standalone model efficacy with the direct Kimi scorer over saved completion files. The active rubric axes are accuracy, completeness, reference-grounded faithfulness, and clarity. Here, faithfulness means the model avoids contradictions or unsupported additions relative to the golden reference answer; it is not a RAG/source-context metric.
 
 Pairwise evaluation has two layers:
 
 1. Matched LE vs Curator comparisons by corpus, base size, and LoRA rank.
 2. The best LoRA winner from that context against the dense Llama 3.3 70B reference target.
 
-Use position-swapped pairwise judging for all pairwise runs. Select the winner primarily by pairwise win rate; use single-axis composite as a tie breaker.
+Use position-swapped pairwise judging for all pairwise runs. Select the winner primarily by pairwise win rate; use single-axis composite as a tie breaker. Export every scoring run both to repo-local artifacts and to MLflow.
 
 ## Judge And Reference Models
 
@@ -105,35 +107,65 @@ Repeat for `nemo_usvcs_curated/test_set.jsonl`.
 
 Local LoRA completions require serving the matching base NIM and syncing the target adapters into that NIM's `NIM_PEFT_SOURCE`. The 2026-07-12 answer collection used direct ClusterIP calls to the NIMServices, not `rag-oai-proxy`, so route staleness in the proxy cannot affect the saved answer sets.
 
-## Kimi Scoring
+## No-RAG Kimi Scoring
 
-Single-axis scoring over saved completions:
+Single-axis scoring over saved question-only completions:
 
 ```bash
+export NVIDIA_API_KEY="$(kubectl get secret -n runai-rag nvidia-inference-key -o jsonpath='{.data.api-key}' | base64 -d)"
 /home/joncoons/anaconda3/bin/python scripts/eval/run_direct_kimi_singleaxis.py \
-  --responses /mnt/nvme2/peft/evals/completions/<dataset>/<base>/<target>/<rank>/<run>/responses.jsonl \
+  --responses /mnt/nvme2/peft/evals/completions-question-only/<dataset>/<base>/<target>/<rank>/<run>/responses.jsonl \
+  --completions-root /mnt/nvme2/peft/evals/completions-question-only \
+  --output-root /mnt/nvme2/peft/evals/singleaxis-kimi-norag \
   --judge-api-url https://inference-api.nvidia.com/v1 \
   --judge-model azure/moonshotai/kimi-k2.6 \
   --judge-api-key-env NVIDIA_API_KEY \
-  --eval-run-id golden-v1-kimi-20260712 \
+  --eval-run-id golden-v1-kimi-norag-20260712 \
   --resume \
   --concurrency 1
 ```
 
-Pairwise scoring over saved completions:
+Pairwise scoring over saved question-only completions:
 
 ```bash
 /home/joncoons/anaconda3/bin/python scripts/eval/run_direct_kimi_pairwise.py \
   --pair le-r32 /path/to/le/responses.jsonl curator-r32 /path/to/curator/responses.jsonl \
+  --output-root /mnt/nvme2/peft/evals/pairwise-kimi-norag \
   --judge-api-url https://inference-api.nvidia.com/v1 \
   --judge-model azure/moonshotai/kimi-k2.6 \
   --judge-api-key-env NVIDIA_API_KEY \
-  --eval-run-id golden-v1-kimi-pairwise-20260712 \
+  --eval-run-id golden-v1-kimi-norag-pairwise-20260712 \
   --position-swap \
   --resume \
   --concurrency 1
 ```
 
+Both direct Kimi scorers write compact repo-local summaries and export the full local run directory to MLflow by default:
+
+- Repo summaries: `golden_eval/kimi_norag_20260712/<eval_run_id>/*.json`
+- Full local artifacts: `/mnt/nvme2/peft/evals/singleaxis-kimi-norag/` and `/mnt/nvme2/peft/evals/pairwise-kimi-norag/`
+- MLflow tracking URI: `http://10.43.102.80:5000`
+- MLflow experiment: `docs-to-data-to-lora-golden-eval`
+- MLflow artifact location: `file:///mnt/nvme2/peft/mlflow-artifacts/golden-eval`
+
+Use `--no-mlflow` only for local parser/debug runs that should not publish telemetry.
+
+## No-RAG Smoke Result
+
+A one-row direct Kimi smoke was run on 2026-07-12 to validate the no-RAG scoring path, repo summary capture, and MLflow artifact export. This is not a formal winner result.
+
+| Scope | Dataset | Comparison target | Rows | Failures | Result | MLflow run |
+| --- | --- | --- | ---: | ---: | --- | --- |
+| Single-axis | `nim_curated_golden_v1_question_only` | `llama-3.2-1b` / `lora-nim-le-super-v3-e5` / `r16` | 1 | 0 | accuracy 1.0, completeness 2.0, faithfulness 1.0, clarity 5.0 | `47c7fc926c864a5186ce0a43f20e5eb6` |
+| Pairwise | `nim_curated_golden_v1_question_only` | `le-r16` vs `curator-r16` | 1 | 0 | left/LE won; position-swap agreement `agree` | `5067ae704f5e420cab8e47148cf2cef5` |
+
+Repo summaries are under `kimi_norag_20260712/golden-v1-kimi-norag-smoke-20260712/` and `kimi_norag_20260712/golden-v1-kimi-norag-pairwise-smoke-20260712/`.
+
+## Optional RAGAS Follow-Up
+
+NeMo Evaluator RAGAS remains useful as a later diagnostic, but it is not part of the formal LE-vs-Curator winner selection because RAGAS is context/retrieval-oriented. Running RAGAS requires context-backed rows and, for `response_relevancy`, an embedding judge endpoint such as `nemoretriever-embedding-ms` with `input_type=query` support.
+
+The optional runner is `scripts/eval/run_nemo_evaluator_saved_responses.py`. Keep its outputs under `/mnt/nvme2/peft/evals/nemo-evaluator-kimi/` and repo summaries under `evaluator_kimi_20260712/`. A one-row 2026-07-12 smoke reached Evaluator and MLflow but was intentionally stopped for formal evaluation because it would move the experiment back into RAGAS semantics.
 
 ## Hosted Smoke Result
 
@@ -148,4 +180,4 @@ The smoke summary is captured in `hosted_70b_kimi_smoke_20260712.json`; raw comp
 
 ## Current Status
 
-The golden dataset, target catalog, hosted 70B reference model ID, Kimi judge ID, LoRA answer-set materialization, and no-RAG completion outputs are captured. Next, run Kimi single-axis and position-swapped pairwise scoring from the saved `responses.jsonl` files.
+The golden dataset, target catalog, hosted 70B reference model ID, Kimi judge ID, LoRA answer-set materialization, and no-RAG completion outputs are captured. The active scoring path is no-RAG direct Kimi judging from saved `responses.jsonl` files, with repo-local artifacts and MLflow export. NeMo Evaluator RAGAS is retained only as an optional later diagnostic.

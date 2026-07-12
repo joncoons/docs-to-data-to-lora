@@ -31,6 +31,14 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from scripts.eval.mlflow_export import (  # noqa: E402
+    DEFAULT_MLFLOW_ARTIFACT_LOCATION,
+    DEFAULT_MLFLOW_EXPERIMENT,
+    DEFAULT_MLFLOW_TRACKING_URI,
+    log_eval_artifacts,
+    write_repo_summary,
+)
+
 log = logging.getLogger(__name__)
 
 DEFAULT_JUDGE_API_URL = os.getenv(
@@ -42,6 +50,7 @@ DEFAULT_JUDGE_API_KEY_ENV = os.getenv("JUDGE_API_KEY_ENV", "KIMI_KEY")
 DEFAULT_OUTPUT_ROOT = Path(
     os.getenv("PAIRWISE_OUTPUT_ROOT", "/mnt/nvme2/peft/evals/pairwise-kimi")
 )
+DEFAULT_REPO_SUMMARY_DIR = _REPO_ROOT / "curator_dataset" / "experiments" / "20260709-curator-vs-le" / "golden_eval" / "kimi_norag_20260712"
 REASONING_GENERATION_BUDGET = 8192
 RETRYABLE_STATUS_CODES = {408, 409, 425, 429, 500, 502, 503, 504}
 
@@ -51,8 +60,8 @@ _THINK_PRELUDE = re.compile(r"^.*?</think>\s*", re.DOTALL | re.IGNORECASE)
 
 JUDGE_SYSTEM = (
     "You are an independent pairwise evaluation judge for NVIDIA technical QA. "
-    "Compare only the supplied source context, reference answer, and model "
-    "answers. Return JSON only."
+    "Compare only the supplied question, immutable reference answer, and model "
+    "answers. Do not use retrieval context or external knowledge. Return JSON only."
 )
 
 JUDGE_USER_TEMPLATE = """\
@@ -61,10 +70,7 @@ Compare two answers (A and B) to the same question.
 Question:
 {question}
 
-Source context:
-{context}
-
-Reference answer:
+Immutable reference answer:
 {reference}
 
 Answer A:
@@ -76,7 +82,7 @@ Answer B:
 Choose the better answer using this priority order:
 - factual accuracy against the reference answer
 - completeness against the reference answer
-- faithfulness to the source context
+- lack of contradictions or unsupported additions relative to the reference answer
 - clarity and concision
 
 Return JSON only:
@@ -294,7 +300,6 @@ def build_judge_user(left: dict[str, Any], right: dict[str, Any], *, swapped: bo
     )
     return JUDGE_USER_TEMPLATE.format(
         question=prompt_parts["question"],
-        context=prompt_parts["context"],
         reference=str(left.get("reference_completion") or right.get("reference_completion") or ""),
         answer_a=answer_a,
         answer_b=answer_b,
@@ -688,6 +693,10 @@ def run_one_pair(
             "retry_backoff_max_s": judge_config.retry_backoff_max_s,
             "retry_jitter_s": judge_config.retry_jitter_s,
         },
+        "rubric": {
+            "mode": "golden_reference_no_rag",
+            "uses_source_context": False,
+        },
         "resume": {
             "enabled": resume,
             "existing_pairwise": len(completed),
@@ -721,6 +730,88 @@ def run_one_pair(
     manifest["summary"] = summary
     write_json(manifest_path, manifest)
     return out_dir
+
+
+def mlflow_metrics_from_pairwise(summary: dict[str, Any]) -> dict[str, Any]:
+    wins = summary.get("wins") or {}
+    total = summary.get("rows_compared") or 0
+    metrics: dict[str, Any] = {
+        "rows.compared": summary.get("rows_compared"),
+        "rows.failed": summary.get("rows_failed"),
+        "rows.error_attempts": summary.get("row_error_attempts"),
+        "wins.left": wins.get("left"),
+        "wins.right": wins.get("right"),
+        "wins.tie": wins.get("tie"),
+        "tokens.target_total": (summary.get("target_generation") or {}).get("combined_total_tokens_raw"),
+        "tokens.judge_total": (summary.get("judge_scoring") or {}).get("total_tokens_raw"),
+        "tokens.combined_total": summary.get("combined_total_tokens_raw"),
+    }
+    if total:
+        metrics["win_rate.left"] = (wins.get("left") or 0) / total
+        metrics["win_rate.right"] = (wins.get("right") or 0) / total
+        metrics["tie_rate"] = (wins.get("tie") or 0) / total
+    return metrics
+
+
+def log_pairwise_to_mlflow(
+    out_dir: Path,
+    *,
+    args: argparse.Namespace,
+    judge_config: JudgeConfig,
+) -> str | None:
+    manifest = read_json(out_dir / "manifest.json")
+    summary = read_json(out_dir / "summary.json")
+    run_id = log_eval_artifacts(
+        enabled=not args.no_mlflow,
+        tracking_uri=args.mlflow_tracking_uri,
+        experiment_name=args.mlflow_experiment,
+        artifact_location=args.mlflow_artifact_location,
+        run_name=f"{args.eval_run_id}/pairwise/{out_dir.parent.name}",
+        artifact_dir=out_dir,
+        tags={
+            "pipeline": "docs-to-data-to-lora",
+            "pipeline.stage": "golden-evaluation",
+            "eval.engine": "direct-kimi",
+            "eval.scope": "pairwise",
+            "eval.no_rag": "true",
+            "eval.rubric": "golden_reference_no_rag",
+            "eval.run_id": args.eval_run_id,
+            "eval.judge.model": judge_config.judge_model,
+            "eval.dataset_slug": out_dir.parent.parent.name if len(out_dir.parts) >= 2 else None,
+            "eval.left_label": (manifest.get("left") or {}).get("label"),
+            "eval.right_label": (manifest.get("right") or {}).get("label"),
+            "eval.position_swap": str(args.position_swap),
+        },
+        params={
+            "left_responses_path": (manifest.get("left") or {}).get("responses_path"),
+            "right_responses_path": (manifest.get("right") or {}).get("responses_path"),
+            "output_dir": manifest.get("output_dir"),
+            "judge_api_url": judge_config.judge_api_url,
+            "judge_max_tokens": judge_config.max_tokens,
+            "judge_temperature": judge_config.temperature,
+            "rows_compared": summary.get("rows_compared"),
+            "rows_failed": summary.get("rows_failed"),
+        },
+        metrics=mlflow_metrics_from_pairwise(summary),
+    )
+    if run_id:
+        manifest["mlflow"] = {
+            "tracking_uri": args.mlflow_tracking_uri,
+            "experiment": args.mlflow_experiment,
+            "artifact_location": args.mlflow_artifact_location,
+            "run_id": run_id,
+        }
+        write_json(out_dir / "manifest.json", manifest)
+    if args.repo_summary_dir:
+        write_repo_summary(
+            repo_summary_dir=args.repo_summary_dir,
+            eval_run_id=args.eval_run_id,
+            scope="pairwise",
+            artifact_dir=out_dir,
+            manifest=manifest,
+            summary=summary,
+        )
+    return run_id
 
 
 def parse_pair(value: list[str]) -> PairSpec:
@@ -757,6 +848,11 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--concurrency", type=int, default=1)
     ap.add_argument("--log-every", type=int, default=25)
     ap.add_argument("--position-swap", action=argparse.BooleanOptionalAction, default=True)
+    ap.add_argument("--mlflow-tracking-uri", default=DEFAULT_MLFLOW_TRACKING_URI)
+    ap.add_argument("--mlflow-experiment", default=DEFAULT_MLFLOW_EXPERIMENT)
+    ap.add_argument("--mlflow-artifact-location", default=DEFAULT_MLFLOW_ARTIFACT_LOCATION)
+    ap.add_argument("--repo-summary-dir", type=Path, default=DEFAULT_REPO_SUMMARY_DIR)
+    ap.add_argument("--no-mlflow", action="store_true")
     ap.add_argument("--log-level", default="INFO")
     return ap
 
@@ -780,20 +876,26 @@ def main(argv: list[str] | None = None) -> int:
         retry_jitter_s=max(0.0, args.retry_jitter_s),
     )
     pairs = [parse_pair(pair_args) for pair_args in args.pair]
-    out_dirs = [
-        run_one_pair(
-            pair,
-            output_root=args.output_root,
-            eval_run_id=args.eval_run_id,
-            judge_config=judge_config,
-            limit=args.limit,
-            resume=args.resume,
-            concurrency=max(1, args.concurrency),
-            log_every=args.log_every,
-            position_swap=args.position_swap,
+    out_dirs = []
+    for pair in pairs:
+        out_dirs.append(
+            run_one_pair(
+                pair,
+                output_root=args.output_root,
+                eval_run_id=args.eval_run_id,
+                judge_config=judge_config,
+                limit=args.limit,
+                resume=args.resume,
+                concurrency=max(1, args.concurrency),
+                log_every=args.log_every,
+                position_swap=args.position_swap,
+            )
         )
-        for pair in pairs
-    ]
+        log_pairwise_to_mlflow(
+            out_dirs[-1],
+            args=args,
+            judge_config=judge_config,
+        )
     for out_dir in out_dirs:
         print(out_dir)
     return 0

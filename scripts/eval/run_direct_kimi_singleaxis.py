@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Run a direct Kimi K2 single-axis judge over saved completion files.
+"""Run no-RAG direct Kimi K2 single-axis judging over saved completions.
 
-This is a fallback for cases where NeMo Evaluator live RAGAS cannot reach the
-external judge endpoint. It intentionally consumes durable ``responses.jsonl``
-files from ``collect_completions.py`` so no GPU completions are regenerated.
+This consumes durable ``responses.jsonl`` files from ``collect_completions.py``
+and compares each saved model answer to the immutable golden reference answer.
+No retrieval context is sent to the judge for the formal winner evaluation.
 """
 from __future__ import annotations
 
@@ -30,6 +30,14 @@ except ModuleNotFoundError:  # pragma: no cover - handled in minimal test envs.
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
+
+from scripts.eval.mlflow_export import (  # noqa: E402
+    DEFAULT_MLFLOW_ARTIFACT_LOCATION,
+    DEFAULT_MLFLOW_EXPERIMENT,
+    DEFAULT_MLFLOW_TRACKING_URI,
+    log_eval_artifacts,
+    write_repo_summary,
+)
 
 
 _THINK_BALANCED = re.compile(r"<think>.*?</think>\s*", re.DOTALL | re.IGNORECASE)
@@ -66,6 +74,7 @@ DEFAULT_JUDGE_API_KEY_ENV = os.getenv("JUDGE_API_KEY_ENV", "KIMI_KEY")
 DEFAULT_OUTPUT_ROOT = Path(
     os.getenv("SINGLEAXIS_OUTPUT_ROOT", "/mnt/nvme2/peft/evals/singleaxis-kimi")
 )
+DEFAULT_REPO_SUMMARY_DIR = _REPO_ROOT / "curator_dataset" / "experiments" / "20260709-curator-vs-le" / "golden_eval" / "kimi_norag_20260712"
 DEFAULT_COMPLETIONS_ROOT = Path(
     os.getenv("COMPLETIONS_OUTPUT_ROOT", "/mnt/nvme2/peft/evals/completions")
 )
@@ -73,8 +82,9 @@ REASONING_GENERATION_BUDGET = 8192
 
 JUDGE_SYSTEM = (
     "You are an independent evaluation judge for NVIDIA technical QA. "
-    "Grade only from the supplied source context, reference answer, and model "
-    "answer. Return JSON only."
+    "Grade only from the supplied question, immutable reference answer, and "
+    "model answer. Do not use retrieval context or external knowledge. Return "
+    "JSON only."
 )
 
 JUDGE_USER_TEMPLATE = """\
@@ -83,10 +93,7 @@ Evaluate the model answer on four 1-5 axes.
 Question:
 {question}
 
-Source context:
-{context}
-
-Reference answer:
+Immutable reference answer:
 {reference}
 
 Model answer:
@@ -95,7 +102,7 @@ Model answer:
 Scoring rubric:
 - accuracy: factual match to the reference answer.
 - completeness: coverage of the reference answer's important details.
-- faithfulness: every factual claim is supported by the source context.
+- faithfulness: avoids contradictions or unsupported additions relative to the reference answer.
 - clarity: concise, readable, and well formed.
 
 Return JSON only:
@@ -212,7 +219,6 @@ def build_judge_user(row: dict[str, Any]) -> str:
     prompt_parts = split_context_baked_prompt(str(row.get("prompt") or ""))
     return JUDGE_USER_TEMPLATE.format(
         question=prompt_parts["question"],
-        context=prompt_parts["context"],
         reference=str(row.get("reference_completion") or ""),
         response=str(row.get("response") or ""),
     )
@@ -632,6 +638,11 @@ def run_one_responses_file(
             "retry_backoff_max_s": judge_config.retry_backoff_max_s,
             "retry_jitter_s": judge_config.retry_jitter_s,
         },
+        "rubric": {
+            "mode": "golden_reference_no_rag",
+            "uses_source_context": False,
+            "score_fields": list(SCORE_FIELDS),
+        },
         "resume": {
             "enabled": resume,
             "existing_scores": len(completed),
@@ -674,6 +685,82 @@ def run_one_responses_file(
     return out_dir
 
 
+def mlflow_metrics_from_summary(summary: dict[str, Any]) -> dict[str, Any]:
+    metrics: dict[str, Any] = {
+        "rows.scored": summary.get("rows_scored"),
+        "rows.failed": summary.get("rows_failed"),
+        "rows.error_attempts": summary.get("row_error_attempts"),
+        "tokens.target_total": (summary.get("target_generation") or {}).get("total_tokens_raw"),
+        "tokens.judge_total": (summary.get("judge_scoring") or {}).get("total_tokens_raw"),
+        "tokens.combined_total": summary.get("combined_total_tokens_raw"),
+    }
+    for key, value in (summary.get("score_means") or {}).items():
+        metrics[f"score.{key.replace('mean_', '')}.mean"] = value
+    return metrics
+
+
+def log_singleaxis_to_mlflow(
+    out_dir: Path,
+    *,
+    args: argparse.Namespace,
+    judge_config: JudgeConfig,
+) -> str | None:
+    manifest = read_json(out_dir / "manifest.json")
+    summary = read_json(out_dir / "summary.json")
+    response_manifest = manifest.get("responses_manifest") or {}
+    model = response_manifest.get("model") or {}
+    run_id = log_eval_artifacts(
+        enabled=not args.no_mlflow,
+        tracking_uri=args.mlflow_tracking_uri,
+        experiment_name=args.mlflow_experiment,
+        artifact_location=args.mlflow_artifact_location,
+        run_name=f"{args.eval_run_id}/singleaxis/{out_dir.parent.name}",
+        artifact_dir=out_dir,
+        tags={
+            "pipeline": "docs-to-data-to-lora",
+            "pipeline.stage": "golden-evaluation",
+            "eval.engine": "direct-kimi",
+            "eval.scope": "singleaxis",
+            "eval.no_rag": "true",
+            "eval.rubric": "golden_reference_no_rag",
+            "eval.run_id": args.eval_run_id,
+            "eval.judge.model": judge_config.judge_model,
+            "eval.dataset_slug": response_manifest.get("dataset_slug"),
+            "eval.base_slug": model.get("base_slug"),
+            "eval.target_slug": model.get("target_slug"),
+            "eval.rank_slug": model.get("rank_slug"),
+        },
+        params={
+            "responses_path": manifest.get("responses_path"),
+            "output_dir": manifest.get("output_dir"),
+            "judge_api_url": judge_config.judge_api_url,
+            "judge_max_tokens": judge_config.max_tokens,
+            "judge_temperature": judge_config.temperature,
+            "rows_scored": summary.get("rows_scored"),
+            "rows_failed": summary.get("rows_failed"),
+        },
+        metrics=mlflow_metrics_from_summary(summary),
+    )
+    if run_id:
+        manifest["mlflow"] = {
+            "tracking_uri": args.mlflow_tracking_uri,
+            "experiment": args.mlflow_experiment,
+            "artifact_location": args.mlflow_artifact_location,
+            "run_id": run_id,
+        }
+        write_json(out_dir / "manifest.json", manifest)
+    if args.repo_summary_dir:
+        write_repo_summary(
+            repo_summary_dir=args.repo_summary_dir,
+            eval_run_id=args.eval_run_id,
+            scope="singleaxis",
+            artifact_dir=out_dir,
+            manifest=manifest,
+            summary=summary,
+        )
+    return run_id
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--responses", action="append", required=True, type=Path)
@@ -701,6 +788,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Cross-invocation attempt cap for resume cleanup; defaults to --judge-max-attempts.",
     )
     ap.add_argument("--log-every", type=int, default=25)
+    ap.add_argument("--mlflow-tracking-uri", default=DEFAULT_MLFLOW_TRACKING_URI)
+    ap.add_argument("--mlflow-experiment", default=DEFAULT_MLFLOW_EXPERIMENT)
+    ap.add_argument("--mlflow-artifact-location", default=DEFAULT_MLFLOW_ARTIFACT_LOCATION)
+    ap.add_argument("--repo-summary-dir", type=Path, default=DEFAULT_REPO_SUMMARY_DIR)
+    ap.add_argument("--no-mlflow", action="store_true")
     ap.add_argument("--log-level", default="INFO")
     return ap
 
@@ -743,6 +835,11 @@ def main(argv: list[str] | None = None) -> int:
                     else args.judge_max_attempts,
                 ),
             )
+        )
+        log_singleaxis_to_mlflow(
+            out_dirs[-1],
+            args=args,
+            judge_config=judge_config,
         )
     for out_dir in out_dirs:
         print(out_dir)
