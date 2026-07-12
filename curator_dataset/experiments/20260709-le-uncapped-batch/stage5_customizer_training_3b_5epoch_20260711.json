@@ -12,7 +12,7 @@
       "description": "Stage 5 LE LoRA SFT - NIM corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r16, 5 epochs",
       "initial_status": "queued",
       "job_id": "cust-BzdKGpC6VTXw2Ae5CRwQGY",
-      "observed_status": "running",
+      "observed_status": "completed",
       "output_model_entity": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711",
       "pods": [
         {
@@ -104,7 +104,18 @@
         "updated_at": "2026-07-11T21:24:43.834859"
       },
       "submitted_at": "2026-07-11T21:24:40+00:00",
-      "wave": "r16"
+      "wave": "r16",
+      "final_status_details": {
+        "best_epoch": 1,
+        "elapsed_time_seconds": 3750.570366,
+        "epochs_completed": 5,
+        "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711@cust-BzdKGpC6VTXw2Ae5CRwQGY",
+        "percentage_done": 100.0,
+        "status": "completed",
+        "steps_completed": 2475,
+        "train_loss": 0.2647443115711212,
+        "val_loss": 1.3135156631469727
+      }
     },
     {
       "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711",
@@ -114,7 +125,7 @@
       "description": "Stage 5 LE LoRA SFT - NeMo Microservices corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r16, 5 epochs",
       "initial_status": "queued",
       "job_id": "cust-FsetGu5ZHRDNKtzng4jcbL",
-      "observed_status": "running",
+      "observed_status": "completed",
       "output_model_entity": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711",
       "pods": [
         {
@@ -198,7 +209,18 @@
         "updated_at": "2026-07-11T21:24:47.111670"
       },
       "submitted_at": "2026-07-11T21:24:43+00:00",
-      "wave": "r16"
+      "wave": "r16",
+      "final_status_details": {
+        "best_epoch": 2,
+        "elapsed_time_seconds": 3384.905321,
+        "epochs_completed": 5,
+        "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711@cust-FsetGu5ZHRDNKtzng4jcbL",
+        "percentage_done": 100.0,
+        "status": "completed",
+        "steps_completed": 2245,
+        "train_loss": 0.0583227202296257,
+        "val_loss": 1.0968470573425293
+      }
     },
     {
       "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711",
@@ -208,7 +230,7 @@
       "description": "Stage 5 LE LoRA SFT - NIM corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r32, 5 epochs",
       "initial_status": "queued",
       "job_id": "cust-Lfp1giyRrX6BYiKheFKbfn",
-      "observed_status": "running",
+      "observed_status": "completed",
       "output_model_entity": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711",
       "pods": [
         {
@@ -304,7 +326,18 @@
         "updated_at": "2026-07-11T21:24:50.364887"
       },
       "submitted_at": "2026-07-11T21:24:47+00:00",
-      "wave": "r32"
+      "wave": "r32",
+      "final_status_details": {
+        "best_epoch": 1,
+        "elapsed_time_seconds": 7135.018653,
+        "epochs_completed": 5,
+        "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711@cust-Lfp1giyRrX6BYiKheFKbfn",
+        "percentage_done": 100.0,
+        "status": "completed",
+        "steps_completed": 2475,
+        "train_loss": 0.07339026033878326,
+        "val_loss": 1.245658278465271
+      }
     },
     {
       "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711",
@@ -314,7 +347,7 @@
       "description": "Stage 5 LE LoRA SFT - NeMo Microservices corpus, Super-v3 LE dataset, Llama 3.2 3B, Ada TP1/DP1, r32, 5 epochs",
       "initial_status": "queued",
       "job_id": "cust-JdKTPm7DuYBY6fzyT58HSg",
-      "observed_status": "running",
+      "observed_status": "completed",
       "output_model_entity": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711",
       "pods": [
         {
@@ -406,10 +439,21 @@
         "updated_at": "2026-07-11T21:24:53.725184"
       },
       "submitted_at": "2026-07-11T21:24:50+00:00",
-      "wave": "r32"
+      "wave": "r32",
+      "final_status_details": {
+        "best_epoch": 1,
+        "elapsed_time_seconds": 7197.991431,
+        "epochs_completed": 5,
+        "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711@cust-JdKTPm7DuYBY6fzyT58HSg",
+        "percentage_done": 100.0,
+        "status": "completed",
+        "steps_completed": 2245,
+        "train_loss": 0.010928650386631489,
+        "val_loss": 1.0470448732376099
+      }
     }
   ],
-  "last_observed_at": "2026-07-11T21:27:12+00:00",
+  "last_observed_at": "2026-07-12T06:31:41+00:00",
   "node": "ubuntu2",
   "node_gpu": "NVIDIA RTX 6000 Ada Generation",
   "runtime_observation": {
@@ -435,5 +479,11 @@
     "num_gpus": 1,
     "tensor_parallel_size": 1,
     "training_type": "sft"
+  },
+  "completion_observation": {
+    "active_training_jobs_observed": 0,
+    "kubernetes_jobs_remaining": 0,
+    "kubernetes_training_pods_remaining": 0,
+    "observed_at": "2026-07-12T06:31:41+00:00"
   }
 }
