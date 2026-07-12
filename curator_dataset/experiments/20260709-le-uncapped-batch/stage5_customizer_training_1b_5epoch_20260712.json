@@ -243,6 +243,18 @@
         "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
         "verified_node_selector": {
           "kubernetes.io/hostname": "ubuntu-local-dev"
+        },
+        "observed_status": "completed",
+        "final_status_details": {
+          "status": "completed",
+          "best_epoch": 2,
+          "val_loss": 1.4596446752548218,
+          "elapsed_time_seconds": 1992.133118,
+          "epochs_completed": 5,
+          "percentage_done": 100.0,
+          "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-WD6ABFknJMfsqLivWJ4v3X",
+          "worker_node": "ubuntu-local-dev",
+          "worker_phase": "Succeeded"
         }
       },
       {
@@ -274,6 +286,18 @@
         "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
         "verified_node_selector": {
           "kubernetes.io/hostname": "ubuntu-local-dev"
+        },
+        "observed_status": "completed",
+        "final_status_details": {
+          "status": "completed",
+          "best_epoch": 2,
+          "val_loss": 1.2307554483413696,
+          "elapsed_time_seconds": 1835.946496,
+          "epochs_completed": 5,
+          "percentage_done": 100.0,
+          "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-XgA7mdwQpKb7spFUMDAEAE",
+          "worker_node": "ubuntu-local-dev",
+          "worker_phase": "Succeeded"
         }
       },
       {
@@ -305,6 +329,18 @@
         "kubernetes_worker_node_after_submission": null,
         "verified_node_selector": {
           "kubernetes.io/hostname": "ubuntu-local-dev"
+        },
+        "observed_status": "completed",
+        "final_status_details": {
+          "status": "completed",
+          "best_epoch": 1,
+          "val_loss": 1.3849983215332031,
+          "elapsed_time_seconds": 3857.363569,
+          "epochs_completed": 5,
+          "percentage_done": 100.0,
+          "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-B7zL5FK8ucueV4xuYK5Cxn",
+          "worker_node": "ubuntu-local-dev",
+          "worker_phase": "Succeeded"
         }
       },
       {
@@ -336,6 +372,18 @@
         "kubernetes_worker_node_after_submission": null,
         "verified_node_selector": {
           "kubernetes.io/hostname": "ubuntu-local-dev"
+        },
+        "observed_status": "completed",
+        "final_status_details": {
+          "status": "completed",
+          "best_epoch": 1,
+          "val_loss": 1.1621997356414795,
+          "elapsed_time_seconds": 3827.513804,
+          "epochs_completed": 5,
+          "percentage_done": 100.0,
+          "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-SgCPgRNEp9dzZ685zfSE7X",
+          "worker_node": "ubuntu-local-dev",
+          "worker_phase": "Succeeded"
         }
       }
     ],
@@ -374,6 +422,28 @@
       "node_selector_verified_on_training_crs": {
         "kubernetes.io/hostname": "ubuntu-local-dev"
       }
+    },
+    "final_verification": {
+      "verified_at": "2026-07-12T08:03:46.683865+00:00",
+      "customizer_status": {
+        "cust-WD6ABFknJMfsqLivWJ4v3X": "completed",
+        "cust-XgA7mdwQpKb7spFUMDAEAE": "completed",
+        "cust-B7zL5FK8ucueV4xuYK5Cxn": "completed",
+        "cust-SgCPgRNEp9dzZ685zfSE7X": "completed"
+      },
+      "worker_node": {
+        "cust-WD6ABFknJMfsqLivWJ4v3X": "ubuntu-local-dev",
+        "cust-XgA7mdwQpKb7spFUMDAEAE": "ubuntu-local-dev",
+        "cust-B7zL5FK8ucueV4xuYK5Cxn": "ubuntu-local-dev",
+        "cust-SgCPgRNEp9dzZ685zfSE7X": "ubuntu-local-dev"
+      },
+      "worker_phase": {
+        "cust-WD6ABFknJMfsqLivWJ4v3X": "Succeeded",
+        "cust-XgA7mdwQpKb7spFUMDAEAE": "Succeeded",
+        "cust-B7zL5FK8ucueV4xuYK5Cxn": "Succeeded",
+        "cust-SgCPgRNEp9dzZ685zfSE7X": "Succeeded"
+      },
+      "all_output_models_reported": true
     }
   },
   "jobs_corrected_blackwell": [
@@ -406,6 +476,18 @@
       "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 2,
+        "val_loss": 1.4596446752548218,
+        "elapsed_time_seconds": 1992.133118,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-WD6ABFknJMfsqLivWJ4v3X",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
       }
     },
     {
@@ -437,6 +519,18 @@
       "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 2,
+        "val_loss": 1.2307554483413696,
+        "elapsed_time_seconds": 1835.946496,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-XgA7mdwQpKb7spFUMDAEAE",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
       }
     },
     {
@@ -468,6 +562,18 @@
       "kubernetes_worker_node_after_submission": null,
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.3849983215332031,
+        "elapsed_time_seconds": 3857.363569,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-B7zL5FK8ucueV4xuYK5Cxn",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
       }
     },
     {
@@ -499,6 +605,18 @@
       "kubernetes_worker_node_after_submission": null,
       "verified_node_selector": {
         "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.1621997356414795,
+        "elapsed_time_seconds": 3827.513804,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-SgCPgRNEp9dzZ685zfSE7X",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
       }
     }
   ],
@@ -559,16 +677,27 @@
     }
   },
   "latest_status": {
-    "updated_at": "2026-07-12T06:58:49.458915+00:00",
-    "state": "submitted_and_verified_on_blackwell",
-    "running_workers": [
-      "cust-wd6abfknjmfsqlivwj4v3x-training-job-worker-0",
-      "cust-xga7mdwqpkb7spfumdaeae-training-job-worker-0"
+    "updated_at": "2026-07-12T08:03:46.683876+00:00",
+    "state": "completed",
+    "completed_jobs": [
+      "cust-B7zL5FK8ucueV4xuYK5Cxn",
+      "cust-SgCPgRNEp9dzZ685zfSE7X",
+      "cust-WD6ABFknJMfsqLivWJ4v3X",
+      "cust-XgA7mdwQpKb7spFUMDAEAE"
     ],
-    "pending_workers": [
-      "cust-b7zl5fk8ucuev4xuyk5cxn-training-job-worker-0",
-      "cust-sgcpgrnep9dzz685zfse7x-training-job-worker-0"
-    ],
-    "blackwell_gpu_allocation": "2/2"
-  }
+    "blackwell_worker_node": "ubuntu-local-dev",
+    "next_action": "Submit 1B Curator DiverseQA LoRA SFT r16/r32 for NIM and NeMo Microservices on Blackwell."
+  },
+  "post_submission_placement_events": [
+    {
+      "observed_at": "2026-07-12T07:07:56Z",
+      "event": "Customizer placement temporarily switched to ubuntu2 while preparing future 3B Curator DiverseQA work; no 3B jobs were submitted.",
+      "backup_path": ".local_archive/cluster-backups/nemo-platform-customizer-config-pre-node-ubuntu2-20260712T020756.yaml"
+    },
+    {
+      "observed_at": "2026-07-12T07:08:49Z",
+      "event": "Customizer placement restored to ubuntu-local-dev before any follow-on 1B Curator DiverseQA submission.",
+      "backup_path": ".local_archive/cluster-backups/nemo-platform-customizer-config-pre-node-ubuntu-local-dev-20260712T020849.yaml"
+    }
+  ]
 }
