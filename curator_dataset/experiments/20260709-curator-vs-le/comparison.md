@@ -49,6 +49,14 @@ Generation provenance note: actual Curator manifests record `nvidia/nvidia/nemot
 
 This supports testing the Nemotron 3 Ultra 550B hypothesis as a dataset-quality experiment, but the smoke test should be source-fixed and small. Running the whole corpus first would hide whether improvements come from generation quality, row mix, epoch schedule, or validation split differences.
 
+
+
+## Golden Evaluation Follow-up
+
+The next formal comparison should use `golden_eval/golden-v1` rather than the current validation splits. That dataset keeps only context-baked HTML provenance rows, excludes exact prompt overlaps with all current LE and Curator train/validation files, and records checksums for reproducibility.
+
+Evaluation should run single-axis scoring for standalone target efficacy, pairwise LE vs Curator for matched corpus/base/rank slices, and pairwise comparison of the best LoRA winner against Llama 3.3 70B Instruct as a dense reference target. Kimi K2.6 on the NVIDIA inference endpoint is the primary judge; Claude Sonnet 4.6 through NeMo Evaluator is the fallback.
+
 ## Artifacts
 
 - Data: `curator_dataset/experiments/20260709-curator-vs-le/metrics.json`

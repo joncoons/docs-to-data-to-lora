@@ -21,6 +21,7 @@ from typing import Any, Iterable
 log = logging.getLogger(__name__)
 
 DEFAULT_TARGET_API_URL = os.getenv("TARGET_API_URL", "http://rag-oai-proxy.runai-rag:8080")
+DEFAULT_TARGET_API_KEY_ENV = os.getenv("TARGET_API_KEY_ENV", "TARGET_API_KEY")
 DEFAULT_OUTPUT_ROOT = Path(
     os.getenv("COMPLETIONS_OUTPUT_ROOT", "/mnt/nvme2/peft/evals/completions")
 )
@@ -301,6 +302,7 @@ async def _collect_one_row(
     *,
     client: Any,
     target_api_url: str,
+    target_api_key: str | None,
     model_id: str,
     descriptor: dict[str, Any],
     dataset_slug: str,
@@ -330,6 +332,7 @@ async def _collect_one_row(
         "temperature": max(temperature, 0.01),
         "top_p": top_p,
     }
+    headers = {"Authorization": f"Bearer {target_api_key}"} if target_api_key else None
     row_metadata = {
         key: value
         for key, value in row.items()
@@ -340,7 +343,7 @@ async def _collect_one_row(
         attempts += 1
         started = time.perf_counter()
         try:
-            resp = await client.post(_chat_url(target_api_url), json=payload)
+            resp = await client.post(_chat_url(target_api_url), json=payload, headers=headers)
             latency_s = time.perf_counter() - started
             resp.raise_for_status()
             body = resp.json()
@@ -415,6 +418,7 @@ async def _collect_rows_async(
     responses_path: Path,
     errors_path: Path,
     target_api_url: str,
+    target_api_key: str | None,
     model_id: str,
     descriptor: dict[str, Any],
     dataset_slug: str,
@@ -451,6 +455,7 @@ async def _collect_rows_async(
                 return await _collect_one_row(
                     client=client,
                     target_api_url=target_api_url,
+                    target_api_key=target_api_key,
                     model_id=model_id,
                     descriptor=descriptor,
                     dataset_slug=dataset_slug,
@@ -500,6 +505,7 @@ def collect_for_model(
     dataset_slug: str,
     output_root: Path,
     target_api_url: str,
+    target_api_key: str | None,
     model_id: str,
     run_id: str,
     max_tokens: int,
@@ -549,6 +555,7 @@ def collect_for_model(
         "dataset_slug": dataset_slug,
         "target_api_url": target_api_url,
         "chat_url": _chat_url(target_api_url),
+        "target_api_key_supplied": bool(target_api_key),
         "model": descriptor,
         "generation": {
             "max_tokens": max_tokens,
@@ -593,6 +600,7 @@ def collect_for_model(
             responses_path=responses_path,
             errors_path=errors_path,
             target_api_url=target_api_url,
+            target_api_key=target_api_key,
             model_id=model_id,
             descriptor=descriptor,
             dataset_slug=dataset_slug,
@@ -631,6 +639,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dataset-slug")
     parser.add_argument("--model", action="append", required=True, help="Target model id. Repeat for multiple targets.")
     parser.add_argument("--target-api-url", default=DEFAULT_TARGET_API_URL)
+    parser.add_argument("--target-api-key-env", default=DEFAULT_TARGET_API_KEY_ENV)
+    parser.add_argument("--target-api-key", default=None)
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     parser.add_argument("--run-id", default=datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"))
     parser.add_argument("--max-tokens", type=int, default=DEFAULT_MAX_TOKENS)
@@ -659,6 +669,7 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     logging.basicConfig(level=getattr(logging, args.log_level.upper()), format="%(levelname)s %(message)s")
     dataset_slug = args.dataset_slug or infer_dataset_slug(args.dataset)
+    target_api_key = args.target_api_key or os.getenv(args.target_api_key_env)
     run_dirs = []
     for model_id in args.model:
         run_dirs.append(
@@ -667,6 +678,7 @@ def main(argv: list[str] | None = None) -> int:
                 dataset_slug=dataset_slug,
                 output_root=args.output_root,
                 target_api_url=args.target_api_url,
+                target_api_key=target_api_key,
                 model_id=model_id,
                 run_id=args.run_id,
                 max_tokens=args.max_tokens,

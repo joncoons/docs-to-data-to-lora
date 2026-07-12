@@ -1,0 +1,403 @@
+{
+  "adapters": [
+    {
+      "adapter_name": "lora-nemo-cqa-e5-llama32-1b-r16-20260712-bw",
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nemo_usvcs_curated",
+      "job_id": "cust-9fzUTq1KHnvUii2mZ5Pjop",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nemo-cqa-e5-llama32-1b-r16-20260712-bw@cust-9fzUTq1KHnvUii2mZ5Pjop",
+      "rank": 16,
+      "training_record": "curator_dataset/experiments/20260709-curator-vs-le/stage5_customizer_training_1b_curator_diverseqa_5epoch_20260712.json",
+      "val_loss": 1.7155851125717163
+    },
+    {
+      "adapter_name": "lora-nemo-cqa-e5-llama32-1b-r32-20260712-bw",
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nemo_usvcs_curated",
+      "job_id": "cust-9CK259NS4y7mCVeuv5Rj2Z",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nemo-cqa-e5-llama32-1b-r32-20260712-bw@cust-9CK259NS4y7mCVeuv5Rj2Z",
+      "rank": 32,
+      "training_record": "curator_dataset/experiments/20260709-curator-vs-le/stage5_customizer_training_1b_curator_diverseqa_5epoch_20260712.json",
+      "val_loss": 1.6934744119644165
+    },
+    {
+      "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nemo_usvcs_curated",
+      "job_id": "cust-XgA7mdwQpKb7spFUMDAEAE",
+      "method": "LE",
+      "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-XgA7mdwQpKb7spFUMDAEAE",
+      "rank": 16,
+      "training_record": "curator_dataset/experiments/20260709-le-uncapped-batch/stage5_customizer_training_1b_5epoch_20260712.json",
+      "val_loss": 1.2307554483413696
+    },
+    {
+      "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nemo_usvcs_curated",
+      "job_id": "cust-SgCPgRNEp9dzZ685zfSE7X",
+      "method": "LE",
+      "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-SgCPgRNEp9dzZ685zfSE7X",
+      "rank": 32,
+      "training_record": "curator_dataset/experiments/20260709-le-uncapped-batch/stage5_customizer_training_1b_5epoch_20260712.json",
+      "val_loss": 1.1621997356414795
+    },
+    {
+      "adapter_name": "lora-nemo-cqa-e5-llama32-3b-r16-20260712-ada",
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nemo_usvcs_curated",
+      "job_id": "cust-KY79TSzsNdUjJAADoDRzGQ",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nemo-cqa-e5-llama32-3b-r16-20260712-ada@cust-KY79TSzsNdUjJAADoDRzGQ",
+      "rank": 16,
+      "training_record": "curator_dataset/experiments/20260709-curator-vs-le/stage5_customizer_training_3b_curator_diverseqa_5epoch_20260712.json",
+      "val_loss": 1.5598747730255127
+    },
+    {
+      "adapter_name": "lora-nemo-cqa-e5-llama32-3b-r32-20260712-ada",
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nemo_usvcs_curated",
+      "job_id": "cust-8sTfudSSh2s2EAkKmH6XCs",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nemo-cqa-e5-llama32-3b-r32-20260712-ada@cust-8sTfudSSh2s2EAkKmH6XCs",
+      "rank": 32,
+      "training_record": "curator_dataset/experiments/20260709-curator-vs-le/stage5_customizer_training_3b_curator_diverseqa_5epoch_20260712.json",
+      "val_loss": 1.5285743474960327
+    },
+    {
+      "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711",
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nemo_usvcs_curated",
+      "job_id": "cust-FsetGu5ZHRDNKtzng4jcbL",
+      "method": "LE",
+      "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711@cust-FsetGu5ZHRDNKtzng4jcbL",
+      "rank": 16,
+      "training_record": "curator_dataset/experiments/20260709-le-uncapped-batch/stage5_customizer_training_3b_5epoch_20260711.json",
+      "val_loss": 1.0968470573425293
+    },
+    {
+      "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711",
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nemo_usvcs_curated",
+      "job_id": "cust-JdKTPm7DuYBY6fzyT58HSg",
+      "method": "LE",
+      "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711@cust-JdKTPm7DuYBY6fzyT58HSg",
+      "rank": 32,
+      "training_record": "curator_dataset/experiments/20260709-le-uncapped-batch/stage5_customizer_training_3b_5epoch_20260711.json",
+      "val_loss": 1.0470448732376099
+    },
+    {
+      "adapter_name": "lora-nemo-ms-curator-e5-llama31-8b-r16-bw-20260709",
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nemo_usvcs_curated",
+      "job_id": "cust-CiQrMdjTEBqr73zvLXzM7o",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nemo-ms-curator-e5-llama31-8b-r16-bw-20260709@cust-CiQrMdjTEBqr73zvLXzM7o",
+      "rank": 16,
+      "training_record": "curator_dataset/data/customizer/runs/nemo-ms-curator-seq-e5-8b-20260709/training_manifest.json",
+      "val_loss": 1.4138505458831787
+    },
+    {
+      "adapter_name": "lora-nemo-ms-curator-e5-llama31-8b-r32-bw-20260709",
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nemo_usvcs_curated",
+      "job_id": "cust-XJ7f4T6DF8oRQzcukph5Kb",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nemo-ms-curator-e5-llama31-8b-r32-bw-20260709@cust-XJ7f4T6DF8oRQzcukph5Kb",
+      "rank": 32,
+      "training_record": "curator_dataset/data/customizer/runs/nemo-ms-curator-seq-e5-8b-20260709/training_manifest.json",
+      "val_loss": 1.4084588289260864
+    },
+    {
+      "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r16-20260711",
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nemo_usvcs_curated",
+      "job_id": "cust-5HqsCLjwYzyy2AyiW3EiNW",
+      "method": "LE",
+      "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r16-20260711@cust-5HqsCLjwYzyy2AyiW3EiNW",
+      "rank": 16,
+      "training_record": "curator_dataset/experiments/20260709-le-uncapped-batch/stage5_customizer_training_5epoch_20260711.json",
+      "val_loss": 0.960556149482727
+    },
+    {
+      "adapter_name": "lora-nim-cqa-e5-llama32-1b-r16-20260712-bw",
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nim_curated",
+      "job_id": "cust-5mXjLLoVBN4kpnmpUhgedW",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nim-cqa-e5-llama32-1b-r16-20260712-bw@cust-5mXjLLoVBN4kpnmpUhgedW",
+      "rank": 16,
+      "training_record": "curator_dataset/experiments/20260709-curator-vs-le/stage5_customizer_training_1b_curator_diverseqa_5epoch_20260712.json",
+      "val_loss": 1.7259588241577148
+    },
+    {
+      "adapter_name": "lora-nim-cqa-e5-llama32-1b-r32-20260712-bw",
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nim_curated",
+      "job_id": "cust-HZ3QepjwFzP7Z3SgEjWULd",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nim-cqa-e5-llama32-1b-r32-20260712-bw@cust-HZ3QepjwFzP7Z3SgEjWULd",
+      "rank": 32,
+      "training_record": "curator_dataset/experiments/20260709-curator-vs-le/stage5_customizer_training_1b_curator_diverseqa_5epoch_20260712.json",
+      "val_loss": 1.6970833539962769
+    },
+    {
+      "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw",
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nim_curated",
+      "job_id": "cust-WD6ABFknJMfsqLivWJ4v3X",
+      "method": "LE",
+      "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-WD6ABFknJMfsqLivWJ4v3X",
+      "rank": 16,
+      "training_record": "curator_dataset/experiments/20260709-le-uncapped-batch/stage5_customizer_training_1b_5epoch_20260712.json",
+      "val_loss": 1.4596446752548218
+    },
+    {
+      "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw",
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_size": "1B",
+      "corpus": "nim_curated",
+      "job_id": "cust-B7zL5FK8ucueV4xuYK5Cxn",
+      "method": "LE",
+      "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-B7zL5FK8ucueV4xuYK5Cxn",
+      "rank": 32,
+      "training_record": "curator_dataset/experiments/20260709-le-uncapped-batch/stage5_customizer_training_1b_5epoch_20260712.json",
+      "val_loss": 1.3849983215332031
+    },
+    {
+      "adapter_name": "lora-nim-cqa-e5-llama32-3b-r16-20260712-ada",
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nim_curated",
+      "job_id": "cust-PCqbz8W6F6Uop2fhuYkcee",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nim-cqa-e5-llama32-3b-r16-20260712-ada@cust-PCqbz8W6F6Uop2fhuYkcee",
+      "rank": 16,
+      "training_record": "curator_dataset/experiments/20260709-curator-vs-le/stage5_customizer_training_3b_curator_diverseqa_5epoch_20260712.json",
+      "val_loss": 1.5666687488555908
+    },
+    {
+      "adapter_name": "lora-nim-cqa-e5-llama32-3b-r32-20260712-ada",
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nim_curated",
+      "job_id": "cust-CxYRLbLQowgRZQC2Hnho9v",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nim-cqa-e5-llama32-3b-r32-20260712-ada@cust-CxYRLbLQowgRZQC2Hnho9v",
+      "rank": 32,
+      "training_record": "curator_dataset/experiments/20260709-curator-vs-le/stage5_customizer_training_3b_curator_diverseqa_5epoch_20260712.json",
+      "val_loss": 1.5523818731307983
+    },
+    {
+      "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711",
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nim_curated",
+      "job_id": "cust-BzdKGpC6VTXw2Ae5CRwQGY",
+      "method": "LE",
+      "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711@cust-BzdKGpC6VTXw2Ae5CRwQGY",
+      "rank": 16,
+      "training_record": "curator_dataset/experiments/20260709-le-uncapped-batch/stage5_customizer_training_3b_5epoch_20260711.json",
+      "val_loss": 1.3135156631469727
+    },
+    {
+      "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711",
+      "base_model": "meta/llama-3.2-3b-instruct",
+      "base_size": "3B",
+      "corpus": "nim_curated",
+      "job_id": "cust-Lfp1giyRrX6BYiKheFKbfn",
+      "method": "LE",
+      "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711@cust-Lfp1giyRrX6BYiKheFKbfn",
+      "rank": 32,
+      "training_record": "curator_dataset/experiments/20260709-le-uncapped-batch/stage5_customizer_training_3b_5epoch_20260711.json",
+      "val_loss": 1.245658278465271
+    },
+    {
+      "adapter_name": "lora-nim-curator-e5-llama31-8b-r16-20260629",
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nim_curated",
+      "job_id": "cust-6cpWwCz38TzoDCmZcMJK6U",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nim-curator-e5-llama31-8b-r16-20260629@cust-6cpWwCz38TzoDCmZcMJK6U",
+      "rank": 16,
+      "training_record": "curator_dataset/data/customizer/runs/curator-parent-matched-e5-8b-20260629/best_checkpoint_promotion.json",
+      "val_loss": 1.4240126609802246
+    },
+    {
+      "adapter_name": "lora-nim-curator-e5-llama31-8b-r32-20260629",
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nim_curated",
+      "job_id": "cust-EqsxmYZskEV95oRQzqjZRA",
+      "method": "Curator DiverseQA",
+      "output_model": "default/lora-nim-curator-e5-llama31-8b-r32-20260629@cust-EqsxmYZskEV95oRQzqjZRA",
+      "rank": 32,
+      "training_record": "curator_dataset/data/customizer/runs/curator-parent-matched-e5-8b-20260629/best_checkpoint_promotion.json",
+      "val_loss": 1.4220353364944458
+    },
+    {
+      "adapter_name": "lora-nim-le-super-v3-e5-llama-3.1-8b-r16-20260711",
+      "base_model": "meta/llama-3.1-8b-instruct",
+      "base_size": "8B",
+      "corpus": "nim_curated",
+      "job_id": "cust-VM3mbWVx7FcPdtTG84UiJs",
+      "method": "LE",
+      "output_model": "default/lora-nim-le-super-v3-e5-llama-3.1-8b-r16-20260711@cust-VM3mbWVx7FcPdtTG84UiJs",
+      "rank": 16,
+      "training_record": "curator_dataset/experiments/20260709-le-uncapped-batch/stage5_customizer_training_5epoch_20260711.json",
+      "val_loss": 1.1324021816253662
+    }
+  ],
+  "created_at": "2026-07-12T12:23:26.015835+00:00",
+  "dense_reference": {
+    "endpoint": "https://inference-api.nvidia.com/v1",
+    "label": "llama-3.3-70b-instruct",
+    "model": "nvidia/meta/llama-3.3-70b-instruct",
+    "role": "reference target, not judge"
+  },
+  "golden_dataset_manifest": "curator_dataset/experiments/20260709-curator-vs-le/golden_eval/golden-v1/manifest.json",
+  "judge_preference": {
+    "fallback": {
+      "model": "azure/anthropic/claude-sonnet-4-6",
+      "provider": "NVIDIA inference endpoint through NeMo Evaluator",
+      "when": "Use if Kimi K2.6 is unavailable or materially unstable."
+    },
+    "primary": {
+      "availability": "verified_200_on_2026-07-12",
+      "endpoint": "https://inference-api.nvidia.com/v1",
+      "model": "azure/moonshotai/kimi-k2.6",
+      "provider": "NVIDIA inference endpoint"
+    }
+  },
+  "provisional_validation_loss_winners": [
+    {
+      "base_size": "1B",
+      "corpus": "nemo_usvcs_curated",
+      "rank": 16,
+      "runner_up_method": "Curator DiverseQA",
+      "runner_up_output_model": "default/lora-nemo-cqa-e5-llama32-1b-r16-20260712-bw@cust-9fzUTq1KHnvUii2mZ5Pjop",
+      "runner_up_val_loss": 1.7155851125717163,
+      "winner_method": "LE",
+      "winner_output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-XgA7mdwQpKb7spFUMDAEAE",
+      "winner_val_loss": 1.2307554483413696
+    },
+    {
+      "base_size": "1B",
+      "corpus": "nemo_usvcs_curated",
+      "rank": 32,
+      "runner_up_method": "Curator DiverseQA",
+      "runner_up_output_model": "default/lora-nemo-cqa-e5-llama32-1b-r32-20260712-bw@cust-9CK259NS4y7mCVeuv5Rj2Z",
+      "runner_up_val_loss": 1.6934744119644165,
+      "winner_method": "LE",
+      "winner_output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-SgCPgRNEp9dzZ685zfSE7X",
+      "winner_val_loss": 1.1621997356414795
+    },
+    {
+      "base_size": "3B",
+      "corpus": "nemo_usvcs_curated",
+      "rank": 16,
+      "runner_up_method": "Curator DiverseQA",
+      "runner_up_output_model": "default/lora-nemo-cqa-e5-llama32-3b-r16-20260712-ada@cust-KY79TSzsNdUjJAADoDRzGQ",
+      "runner_up_val_loss": 1.5598747730255127,
+      "winner_method": "LE",
+      "winner_output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711@cust-FsetGu5ZHRDNKtzng4jcbL",
+      "winner_val_loss": 1.0968470573425293
+    },
+    {
+      "base_size": "3B",
+      "corpus": "nemo_usvcs_curated",
+      "rank": 32,
+      "runner_up_method": "Curator DiverseQA",
+      "runner_up_output_model": "default/lora-nemo-cqa-e5-llama32-3b-r32-20260712-ada@cust-8sTfudSSh2s2EAkKmH6XCs",
+      "runner_up_val_loss": 1.5285743474960327,
+      "winner_method": "LE",
+      "winner_output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711@cust-JdKTPm7DuYBY6fzyT58HSg",
+      "winner_val_loss": 1.0470448732376099
+    },
+    {
+      "base_size": "8B",
+      "corpus": "nemo_usvcs_curated",
+      "rank": 16,
+      "runner_up_method": "Curator DiverseQA",
+      "runner_up_output_model": "default/lora-nemo-ms-curator-e5-llama31-8b-r16-bw-20260709@cust-CiQrMdjTEBqr73zvLXzM7o",
+      "runner_up_val_loss": 1.4138505458831787,
+      "winner_method": "LE",
+      "winner_output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r16-20260711@cust-5HqsCLjwYzyy2AyiW3EiNW",
+      "winner_val_loss": 0.960556149482727
+    },
+    {
+      "base_size": "1B",
+      "corpus": "nim_curated",
+      "rank": 16,
+      "runner_up_method": "Curator DiverseQA",
+      "runner_up_output_model": "default/lora-nim-cqa-e5-llama32-1b-r16-20260712-bw@cust-5mXjLLoVBN4kpnmpUhgedW",
+      "runner_up_val_loss": 1.7259588241577148,
+      "winner_method": "LE",
+      "winner_output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-WD6ABFknJMfsqLivWJ4v3X",
+      "winner_val_loss": 1.4596446752548218
+    },
+    {
+      "base_size": "1B",
+      "corpus": "nim_curated",
+      "rank": 32,
+      "runner_up_method": "Curator DiverseQA",
+      "runner_up_output_model": "default/lora-nim-cqa-e5-llama32-1b-r32-20260712-bw@cust-HZ3QepjwFzP7Z3SgEjWULd",
+      "runner_up_val_loss": 1.6970833539962769,
+      "winner_method": "LE",
+      "winner_output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-B7zL5FK8ucueV4xuYK5Cxn",
+      "winner_val_loss": 1.3849983215332031
+    },
+    {
+      "base_size": "3B",
+      "corpus": "nim_curated",
+      "rank": 16,
+      "runner_up_method": "Curator DiverseQA",
+      "runner_up_output_model": "default/lora-nim-cqa-e5-llama32-3b-r16-20260712-ada@cust-PCqbz8W6F6Uop2fhuYkcee",
+      "runner_up_val_loss": 1.5666687488555908,
+      "winner_method": "LE",
+      "winner_output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711@cust-BzdKGpC6VTXw2Ae5CRwQGY",
+      "winner_val_loss": 1.3135156631469727
+    },
+    {
+      "base_size": "3B",
+      "corpus": "nim_curated",
+      "rank": 32,
+      "runner_up_method": "Curator DiverseQA",
+      "runner_up_output_model": "default/lora-nim-cqa-e5-llama32-3b-r32-20260712-ada@cust-CxYRLbLQowgRZQC2Hnho9v",
+      "runner_up_val_loss": 1.5523818731307983,
+      "winner_method": "LE",
+      "winner_output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711@cust-Lfp1giyRrX6BYiKheFKbfn",
+      "winner_val_loss": 1.245658278465271
+    },
+    {
+      "base_size": "8B",
+      "corpus": "nim_curated",
+      "rank": 16,
+      "runner_up_method": "Curator DiverseQA",
+      "runner_up_output_model": "default/lora-nim-curator-e5-llama31-8b-r16-20260629@cust-6cpWwCz38TzoDCmZcMJK6U",
+      "runner_up_val_loss": 1.4240126609802246,
+      "winner_method": "LE",
+      "winner_output_model": "default/lora-nim-le-super-v3-e5-llama-3.1-8b-r16-20260711@cust-VM3mbWVx7FcPdtTG84UiJs",
+      "winner_val_loss": 1.1324021816253662
+    }
+  ],
+  "schema_version": "stage3-golden-eval-target-catalog/v1",
+  "serving_status_note": "As of 2026-07-12, runai-rag LoRA deployments and rag-oai-proxy were scaled to zero. Local adapter evaluation requires syncing these revisions into NIM_PEFT_SOURCE and serving the relevant base model before completion collection."
+}

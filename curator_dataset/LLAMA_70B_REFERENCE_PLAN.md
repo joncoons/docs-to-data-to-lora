@@ -27,3 +27,15 @@ Implementation note:
   single-axis and pairwise evaluators can consume the 70B reference responses.
 - The concrete Python client example is pending and should be attached here or
   referenced from the implementation commit when resumed.
+
+## 2026-07-12 golden evaluation update
+
+The dense 70B reference is now part of the `golden-v1` evaluation plan under `curator_dataset/experiments/20260709-curator-vs-le/golden_eval/`.
+
+- Golden dataset: context-baked, HTML-only, exact prompt-overlap filtered against current LE and Curator train/validation files.
+- Reference target: `nvidia/meta/llama-3.3-70b-instruct` on `https://inference-api.nvidia.com/v1`.
+- Primary judge: `azure/moonshotai/kimi-k2.6` on `https://inference-api.nvidia.com/v1`; verified available on 2026-07-12 using the NVIDIA inference Kubernetes Secret.
+- Fallback judge: Claude Sonnet 4.6 through NeMo Evaluator if Kimi is unavailable or unstable.
+- Evaluation order: single-axis for standalone efficacy, pairwise LE vs Curator by matched corpus/base/rank, then pairwise best LoRA winner vs Llama 3.3 70B.
+
+The collector now supports a target API key via `--target-api-key-env` or `--target-api-key` so hosted 70B completions can be written to the same durable `responses.jsonl` layout as local LoRA completions.
