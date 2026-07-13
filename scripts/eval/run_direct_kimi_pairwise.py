@@ -383,7 +383,7 @@ async def judge_once(
                 "mapped_winner": mapped_winner,
                 "reason": parsed["reason"],
                 "judge": {
-                    "provider": "kimi-k2",
+                    "provider": "direct-llm-judge",
                     "endpoint": config.judge_api_url,
                     "model": config.judge_model,
                     "finish_reason": choice.get("finish_reason"),
@@ -771,7 +771,7 @@ def log_pairwise_to_mlflow(
         tags={
             "pipeline": "docs-to-data-to-lora",
             "pipeline.stage": "golden-evaluation",
-            "eval.engine": "direct-kimi",
+            "eval.engine": "direct-llm-judge",
             "eval.scope": "pairwise",
             "eval.no_rag": "true",
             "eval.rubric": "golden_reference_no_rag",
