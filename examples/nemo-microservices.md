@@ -1,22 +1,23 @@
 # Example: NVIDIA NeMo Microservices
 
 A worked example of [Stage 1 methodology](../docs/stage-1-curated-crawl.md)
-applied to NeMo Microservices — and a study in **how to narrow a sprawling
-product umbrella to a single coherent scope**.
+applied to a public platform-operations documentation corpus — and a study
+in **how to narrow a sprawling documentation umbrella to a single coherent
+scope**.
 
-NeMo is an interesting case because what looks like one product is actually
-a portfolio of ~10 sub-products at different maturity levels, with two
+This is an interesting case because what looks like one documentation area is
+actually a portfolio of component areas at different maturity levels, with two
 distinct URL prefixes on the same docs host, and several name-collisions
 between OSS libraries and platform microservices.
 
-## The umbrella problem
+## The documentation-umbrella problem
 
 `docs.nvidia.com/nemo/` has 14,440 URLs in its main sitemap. A broad crawl
 gets all of it. Most of it is **not** NeMo Microservices.
 
 Top-level structure under `/nemo/`:
 
-| Sub-product | URLs | Versioning | What it is |
+| Source area | URLs | Versioning | What it is |
 |---|---|---|---|
 | `microservices/` | 8,834 | CalVer + `/latest/` | The hosted microservices platform |
 | `retriever/` | 3,858 | CalVer + `/latest/` | Standalone retrieval extraction service |
@@ -44,8 +45,8 @@ $ curl -s https://docs.nvidia.com/s3-sitemap-index.xml \
     | grep -oE 'https://[^<]+sitemap[^<]+' \
     | grep -i 'nemo'
 https://docs.nvidia.com/nemo/nemo-s3-sitemap.xml          ← contains microservices/
-https://docs.nvidia.com/nemo-framework/...                ← different product
-https://docs.nvidia.com/nemotron/...                      ← different product family
+https://docs.nvidia.com/nemo-framework/...                ← different documentation area
+https://docs.nvidia.com/nemotron/...                      ← different documentation family
 ...
 ```
 
@@ -77,8 +78,8 @@ microservices/25.10.0  1002 URLs
 
 ## Step 3 — Curate
 
-Unlike the [NIM example](nim.md), NeMo Microservices is **one product** with
-a single canonical version. No per-product enumeration needed. The curated
+Unlike the [NIM example](nim.md), this scope is one coherent documentation
+area with a single canonical version. No per-source-area enumeration needed. The curated
 prefix list has exactly one entry:
 
 ```json
@@ -158,7 +159,7 @@ This is what we want for a platform-operator SFT adapter.
 ## What we deliberately excluded
 
 The trickiest curation decision was around **same-name, different-audience**
-products. Three pairs exist:
+areas. Three pairs exist:
 
 | Standalone portal | Microservices subdir |
 |---|---|
@@ -174,23 +175,23 @@ prefix, we automatically include the right view and exclude the OSS view.
 For a **developer-using-OSS-tools** SFT adapter, the choice would be reversed:
 include the standalone portals, exclude the microservices subdirs.
 
-## Lessons for other umbrella product families
+## Lessons for other broad documentation umbrellas
 
-1. **Product names overload across portals.** "Foo Evaluator" and "Foo
-   Evaluator Microservice" are often distinct products with overlapping docs.
+1. **Component names overload across portals.** "Foo Evaluator" and "Foo
+   Evaluator Microservice" are often distinct source areas with overlapping docs.
    Inspect index pages before assuming dedup will save you.
 2. **Sitemap structure is not navigation structure.** A flat sitemap can
    hide important sub-divisions. Always do a `awk -F'/<umbrella>/' '{print $2}'
-   | awk -F'/' '{print $1}' | sort | uniq -c` pass to discover sub-products
+   | awk -F'/' '{print $1}' | sort | uniq -c` pass to discover sub-areas
    before curating.
-3. **Vendor product splits happen.** NeMo Framework (the monolithic doc) was
+3. **Documentation splits happen.** NeMo Framework (the monolithic doc) was
    split into ~6 separate component portals in version 26.02. Some component
    portals have no sitemap; only the framework's index page links to them.
    If you only inspect the sitemap, you miss them. A `WebFetch` against the
    framework's index page surfaces these links.
-4. **Two URL prefixes for one product family.** `docs.nvidia.com/nemo/...`
+4. **Two URL prefixes for one domain area.** `docs.nvidia.com/nemo/...`
    and `docs.nvidia.com/nemo-framework/...` are both part of "NeMo" but
-   live at different paths. Easy to miss if you assume one product = one
+   live at different paths. Easy to miss if you assume one domain area = one
    path prefix.
 
 ## Stage 2 dataset
@@ -207,7 +208,7 @@ Built via the Stage 2 pipeline against the `nemo_usvcs_curated` ES collection
 | Stage 1A (LE → KVP, multi-entailment) | ~4,790 |
 | Stage 1B (kNN bridging + contrastive) | ~890 |
 | Stage 1C (instruction diversity) | ~330 |
-| Stage 1.5 (gap-fill) | 0 (no under-represented products flagged) |
+| Stage 1.5 (gap-fill) | 0 (no under-represented domain slices flagged) |
 | **Pre-Curator total** | **6,009** |
 | After Stage 2 QA-eval refinement | 5,721 (288 dropped as ungrounded) |
 | After exact dedup | 5,017 (-704 — high repetition across endpoint pages) |
@@ -225,15 +226,15 @@ Q&A pairs converged on similar wording for those repeated steps.
 - **Validation**: 465 pairs
 - Ratio: 89.95 / 10.05 (target 90 / 10)
 
-### Top product_family by KVP count
+### Top domain-area metadata by KVP count
 
 | Family | KVPs |
 |---|---:|
 | `NeMo Microservices` | 5,696 |
 | `unknown` | 25 |
 
-Single-product crawl: every NeMo Microservices doc URL maps to the
-`NeMo Microservices` family in `CRAWLER_PRODUCT_URL_MAP`. The 25 `unknown`
+Single-scope crawl: every NeMo Microservices doc URL maps to the
+one broad source-area label in `CRAWLER_PRODUCT_URL_MAP`. The 25 `unknown`
 chunks are URLs that fell outside the crawler's prefix map.
 
 ### Validation gate (independent external judge, 100-pair stratified sample)

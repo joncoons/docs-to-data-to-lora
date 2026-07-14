@@ -85,8 +85,8 @@ def compute_local_bias_report(
     chunk_counts = Counter(p.product_family or "unknown" for p in passages)
     kvp_counts = Counter(row.product_family or "unknown" for row in kvps)
     densities = [
-        kvp_counts.get(product_family, 0) / chunk_count
-        for product_family, chunk_count in chunk_counts.items()
+        kvp_counts.get(domain_slice, 0) / chunk_count
+        for domain_slice, chunk_count in chunk_counts.items()
         if chunk_count
     ]
     sorted_densities = sorted(densities)
@@ -94,25 +94,28 @@ def compute_local_bias_report(
         sorted_densities[len(sorted_densities) // 2] if sorted_densities else 0.0
     )
     threshold = median_density * threshold_factor
-    products = []
-    for product_family in sorted(chunk_counts):
-        chunk_count = chunk_counts[product_family]
-        kvp_count = kvp_counts.get(product_family, 0)
+    domain_slices = []
+    legacy_products = []
+    for domain_slice in sorted(chunk_counts):
+        chunk_count = chunk_counts[domain_slice]
+        kvp_count = kvp_counts.get(domain_slice, 0)
         density = kvp_count / chunk_count if chunk_count else 0.0
-        products.append(
-            {
-                "product_family": product_family,
-                "chunk_count": chunk_count,
-                "kvp_count": kvp_count,
-                "density": round(density, 4),
-                "underrepresented": density < threshold,
-            }
-        )
+        row = {
+            "domain_slice": domain_slice,
+            "chunk_count": chunk_count,
+            "kvp_count": kvp_count,
+            "density": round(density, 4),
+            "underrepresented": density < threshold,
+        }
+        domain_slices.append(row)
+        legacy_products.append({"product_family": domain_slice, **{k: v for k, v in row.items() if k != "domain_slice"}})
     return {
         "median_density": round(median_density, 4),
         "threshold": round(threshold, 4),
         "threshold_factor": threshold_factor,
-        "products": products,
+        "domain_slices": domain_slices,
+        # Backward-compatible alias for older local artifacts and callers.
+        "products": legacy_products,
     }
 
 

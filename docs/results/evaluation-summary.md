@@ -4,7 +4,7 @@ This page keeps the public repo focused on the final, reusable workflow while st
 
 ## What Was Compared
 
-The case study used two documentation corpora, NIM and NeMo Microservices, to compare two dataset-generation strategies for LoRA SFT:
+The case study used two representative public technical-documentation corpora to compare two dataset-generation strategies for LoRA SFT. In the retained charts, Corpus A is the NIM documentation slice and Corpus B is the NeMo Microservices documentation slice. They are representative corpora, not the conceptual target of the repo:
 
 - Logical Entailment (LE): premise/conclusion extraction followed by grounded QA/KVP generation.
 - Curator DiverseQA: NeMo Curator synthetic QA generation over the same corpus scope.
@@ -13,14 +13,14 @@ Adapters were trained over dense Llama 1B, 3B, and 8B bases with LoRA ranks r16 
 
 ## Validation-Loss Signal
 
-The retained validation-loss evidence favored the LE dataset path over Curator DiverseQA across the matched 8B comparison slices. Lower is better.
+The retained validation-loss evidence favored the LE dataset path over Curator DiverseQA across the matched 8B comparison slices. Lower is better. The corpus labels identify representative public examples only.
 
 | Corpus | Rank | LE val loss | Curator best val loss | Curator minus LE |
 |---|---:|---:|---:|---:|
-| NIM | r16 | 1.311 | 1.424 | +8.6% |
-| NIM | r32 | 1.269 | 1.422 | +12.1% |
-| NeMo Microservices | r16 | 0.991 | 1.457 | +47.0% |
-| NeMo Microservices | r32 | 0.947 | 1.416 | +49.6% |
+| Corpus A | r16 | 1.311 | 1.424 | +8.6% |
+| Corpus A | r32 | 1.269 | 1.422 | +12.1% |
+| Corpus B | r16 | 0.991 | 1.457 | +47.0% |
+| Corpus B | r32 | 0.947 | 1.416 | +49.6% |
 
 ![LE vs Curator validation-loss comparison](le-vs-curator-validation-loss.svg)
 
@@ -38,14 +38,14 @@ The completed single-axis pass selected the LE r32 adapters for the reduced foll
 
 | Corpus | Target | No-RAG composite | RAG composite | Rows |
 |---|---|---:|---:|---:|
-| NIM | 1B LE r32 | 2.461 | 3.155 | 424 |
-| NIM | 3B LE r32 | 2.768 | 3.791 | 424 |
-| NIM | 8B LE r32 | 2.948 | 3.950 | 424 |
-| NIM | Llama 3.3 70B base | 2.150 | 3.866 | 424 |
-| NeMo Microservices | 1B LE r32 | 3.024 | 3.295 | 431 |
-| NeMo Microservices | 3B LE r32 | 3.197 | 3.795 | 431 |
-| NeMo Microservices | 8B LE r32 | 3.382 | 3.931 | 431 |
-| NeMo Microservices | Llama 3.3 70B base | 2.077 | 3.854 | 431 |
+| Corpus A | 1B LE r32 | 2.461 | 3.155 | 424 |
+| Corpus A | 3B LE r32 | 2.768 | 3.791 | 424 |
+| Corpus A | 8B LE r32 | 2.948 | 3.950 | 424 |
+| Corpus A | Llama 3.3 70B base | 2.150 | 3.866 | 424 |
+| Corpus B | 1B LE r32 | 3.024 | 3.295 | 431 |
+| Corpus B | 3B LE r32 | 3.197 | 3.795 | 431 |
+| Corpus B | 8B LE r32 | 3.382 | 3.931 | 431 |
+| Corpus B | Llama 3.3 70B base | 2.077 | 3.854 | 431 |
 
 ![Reduced no-RAG versus RAG composite scores](rag-vs-norag-composite.svg)
 
@@ -55,7 +55,7 @@ The completed single-axis pass selected the LE r32 adapters for the reduced foll
 
 ## Interpretation
 
-The result supports the repo thesis: for small, domain-specific corpora, a provenance-preserving LE extraction path can produce high-utility SFT data for smaller dense LoRA adapters. The 8B LE r32 adapters were the strongest reduced-population LoRA targets in both corpora, and the 3B LE r32 adapters were close enough to be operationally relevant when serving cost or GPU footprint matters.
+The result supports the repo thesis: for small, domain-specific corpora, a provenance-preserving LE extraction path can produce high-utility SFT data for smaller dense LoRA adapters. The point is the repeatable NVAIE-centered representation, not the identity of the example documentation. The 8B LE r32 adapters were the strongest reduced-population LoRA targets in both corpora, and the 3B LE r32 adapters were close enough to be operationally relevant when serving cost or GPU footprint matters.
 
 RAG improved all reduced targets in this retained case study, which is expected: retrieval supplies source-grounded context at answer time. This should be read as a workload-specific result, not as a claim that either LoRA-only or RAG-assisted serving is universally preferable. The no-RAG result is the cleaner measure of what the LoRA adapter itself learned; the RAG result shows the operational upside of pairing that domain-adapted model with retrieved context when freshness, citations, or auditability matter.
 

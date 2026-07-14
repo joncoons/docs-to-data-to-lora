@@ -4,7 +4,7 @@
   "source": "https://excalidraw.com",
   "elements": [
     {"type":"rectangle","id":"es","x":400,"y":40,"width":300,"height":60,
-     "strokeColor":"#1971c2","backgroundColor":"#a5d8ff","label":{"text":"ES collection\n(nim_curated | nemo_usvcs_curated)"}},
+     "strokeColor":"#1971c2","backgroundColor":"#a5d8ff","label":{"text":"ES collection\n(domain_a | domain_b)"}},
     {"type":"rectangle","id":"s0","x":400,"y":140,"width":300,"height":80,
      "strokeColor":"#0c8599","backgroundColor":"#99e9f2","label":{"text":"Stage 0: Corpus prep\nHTML grouped by URL · PDF as-is\nNoise filter"}},
     {"type":"rectangle","id":"s1a","x":80,"y":280,"width":260,"height":80,
@@ -14,7 +14,7 @@
     {"type":"rectangle","id":"s1c","x":680,"y":280,"width":260,"height":80,
      "strokeColor":"#2f9e44","backgroundColor":"#b2f2bb","label":{"text":"Stage 1C\nInstruction diversity\nsummary/list/proc"}},
     {"type":"rectangle","id":"bias","x":380,"y":420,"width":260,"height":80,
-     "strokeColor":"#9c36b5","backgroundColor":"#eebefa","label":{"text":"Optional Stage 1.5\nBias analysis\n(product_family density)"}},
+     "strokeColor":"#9c36b5","backgroundColor":"#eebefa","label":{"text":"Optional Stage 1.5\nBias analysis\n(domain_slice density)"}},
     {"type":"rectangle","id":"dd","x":380,"y":540,"width":260,"height":80,
      "strokeColor":"#e8590c","backgroundColor":"#ffd8a8","label":{"text":"NeMo Data Designer\nOptional gap-fill\n(frontier generator)"}},
     {"type":"rectangle","id":"s2","x":380,"y":660,"width":260,"height":80,

@@ -61,7 +61,7 @@ question-answer pair grounded in the source text.
 
 Rules for the QUESTION (one clear sentence, derived from the PREMISE):
 - Must require specific, verifiable knowledge — an env var name, command,
-  parameter, version, configuration value, or product-specific identifier.
+  parameter, version, configuration value, or domain-specific identifier.
 - Avoid yes/no questions and avoid generic "what is X" questions when X is a
   well-known term; phrase the question so the answer must cite a detail from
   the source.
@@ -228,13 +228,13 @@ Output JSON:
 # ── Stage 1.5: Data Designer recipe user template (also embedded in YAML) ────
 
 GAPFILL_SYSTEM = (
-    "You are a precise NVIDIA technical assistant. Generate Q+A pairs grounded ONLY "
+    "You are a precise domain technical assistant. Generate Q+A pairs grounded ONLY "
     "in the provided documentation chunks. Return ONLY valid JSON — no explanation, "
     "no markdown fences."
 )
 
 GAPFILL_RECIPE_USER = """\
-Generate {pairs_count} question-answer pairs about {product_family} that are answerable
+Generate {pairs_count} question-answer pairs about the domain slice `{product_family}` that are answerable
 ONLY from the following retrieved documentation chunks. Vary the question styles
 using these examples as reference:
 {seed_styles}

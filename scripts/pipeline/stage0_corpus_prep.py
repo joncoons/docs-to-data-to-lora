@@ -131,6 +131,21 @@ def extract_chunk_dict(hit: dict) -> dict | None:
     )
     modality = cm.get("modality") or source_meta.get("modality") or provenance.get("modality")
 
+    domain_area = (
+        meta.get("domain_area")
+        or cm.get("domain_area")
+        or meta.get("product_family")
+        or cm.get("product_family")
+        or "unknown"
+    )
+    domain_slice = (
+        meta.get("domain_slice")
+        or cm.get("domain_slice")
+        or meta.get("product_name")
+        or cm.get("product_name")
+        or domain_area
+    )
+
     return {
         "_id": hit["_id"],
         "url": url,
@@ -138,8 +153,8 @@ def extract_chunk_dict(hit: dict) -> dict | None:
         "text": text,
         "vector": src.get("vector"),
         "doc_type": cm.get("document_type", "text"),
-        "product_family": meta.get("product_family") or cm.get("product_family") or "unknown",
-        "product_name": meta.get("product_name") or cm.get("product_name") or "unknown",
+        "product_family": domain_area,
+        "product_name": domain_slice,
         "content_metadata": cm,
         "source_metadata": source_meta,
         "provenance": provenance,
@@ -185,6 +200,8 @@ def build_passages(chunks: list[dict], min_passage_tokens: int = 60) -> list[Pas
             normalized.append(c)
 
     for c in normalized:
+        c.setdefault("product_family", c.get("domain_area") or c.get("domain_slice") or "unknown")
+        c.setdefault("product_name", c.get("domain_slice") or c.get("domain_area") or c["product_family"])
         c["doc_kind"] = classify_doc_kind(
             c["url"],
             c.get("doc_type", "text"),
@@ -478,7 +495,7 @@ def build_stage0_observability_documents(
     """Build MLflow-ready observability files without requiring the MLflow client."""
     token_counts = [p.token_count for p in passages]
     doc_kind_counts = Counter(p.doc_kind for p in passages)
-    product_family_counts = Counter(p.product_family or "unknown" for p in passages)
+    domain_slice_counts = Counter(p.product_family or "unknown" for p in passages)
     registry_metrics = url_registry_metrics or {}
     es_metrics = es_provenance_metrics or {}
     metrics: dict[str, int | float] = {
@@ -505,8 +522,8 @@ def build_stage0_observability_documents(
         "stage0.url_registry.last_modified.count": registry_metrics.get("last_modified_count", 0),
         "stage0.url_registry.redirects.count": registry_metrics.get("redirect_count", 0),
     }
-    for product_family, count in sorted(product_family_counts.items()):
-        metrics[f"stage0.product_family.{safe_metric_name(product_family)}.passages"] = count
+    for domain_slice, count in sorted(domain_slice_counts.items()):
+        metrics[f"stage0.domain_slice.{safe_metric_name(domain_slice)}.passages"] = count
 
     artifacts = [
         file_manifest(path, artifact_path=_artifact_path(path, output_dir))

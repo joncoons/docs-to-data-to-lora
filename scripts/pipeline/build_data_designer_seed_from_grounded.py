@@ -55,7 +55,7 @@ Seed ID: {{ seed_id }}
 Coverage axis: {{ coverage_axis }}
 Brief: {{ generation_brief }}
 
-Generate {{ pairs_count }} question-answer pairs about {{ product_family }}.
+Generate {{ pairs_count }} question-answer pairs about the domain slice {{ domain_slice }}.
 
 Use only the following grounded source text and original grounded QA as
 evidence. Do not introduce claims that are absent from the source.
@@ -263,7 +263,7 @@ def load_candidate_rows(config: SeedConfig) -> tuple[list[dict[str, Any]], dict[
             "completion": completion,
             "system": training_row.get("system"),
             "source_url": row.get("source_url"),
-            "product_family": row.get("product_family") or config.collection,
+            "domain_slice": row.get("domain_slice") or row.get("product_family") or config.collection,
             "context": row.get("context") or "",
             "stage": row.get("stage"),
             "qa_type": row.get("qa_type"),
@@ -295,7 +295,7 @@ def load_candidate_rows(config: SeedConfig) -> tuple[list[dict[str, Any]], dict[
             "completion": completion,
             "system": training_row.get("system"),
             "source_url": None,
-            "product_family": config.collection,
+            "domain_slice": config.collection,
             "context": "",
             "stage": None,
             "qa_type": None,
@@ -338,11 +338,11 @@ def length_bin(prompt: str, completion: str) -> str:
 
 
 def bucket_key(candidate: dict[str, Any]) -> tuple[str, str, str, str]:
-    product = normalize_text(candidate.get("product_family") or "unknown").lower()
+    domain_slice = normalize_text(candidate.get("domain_slice") or candidate.get("product_family") or "unknown").lower()
     stage = normalize_text(candidate.get("stage") or "unknown").lower()
     style = normalize_text(candidate.get("qa_type") or candidate.get("instr_type") or "direct").lower()
     size = length_bin(candidate["prompt"], candidate["completion"])
-    return (product, stage, style, size)
+    return (domain_slice, stage, style, size)
 
 
 def select_candidates(candidates: list[dict[str, Any]], seed_count: int, random_seed: int) -> list[dict[str, Any]]:
@@ -393,23 +393,23 @@ def infer_coverage_axis(candidate: dict[str, Any]) -> str:
 
 def heuristic_seed_payload(candidate: dict[str, Any], pairs_per_seed: int) -> dict[str, Any]:
     axis = infer_coverage_axis(candidate)
-    product = normalize_text(candidate.get("product_family") or "NIM")
+    domain_slice = normalize_text(candidate.get("domain_slice") or candidate.get("product_family") or "domain slice")
     return {
         "coverage_axis": axis,
         "augmentation_intent": (
-            f"Generate operationally useful {product} QA variants that preserve the "
+            f"Generate operationally useful {domain_slice} QA variants that preserve the "
             "same source-grounded facts while varying wording, prerequisites, and "
             "failure-mode framing."
         ),
         "generation_brief": (
-            f"Create {pairs_per_seed} grounded {product} question-answer pairs for "
+            f"Create {pairs_per_seed} grounded {domain_slice} question-answer pairs for "
             f"the {axis} coverage axis. Keep answers specific and supported by the "
             "source text."
         ),
         "pairs_requested": pairs_per_seed,
         "constraints": [
             "answer must be supported by the provided source text",
-            "do not introduce product claims absent from the source",
+            "do not introduce claims absent from the source",
             "do not use validation or test-set wording",
             "prefer practical operator-facing questions over generic summaries",
         ],
@@ -417,11 +417,11 @@ def heuristic_seed_payload(candidate: dict[str, Any], pairs_per_seed: int) -> di
 
 
 def build_llm_prompt(candidate: dict[str, Any], pairs_per_seed: int) -> str:
-    product = normalize_text(candidate.get("product_family") or "NIM")
+    domain_slice = normalize_text(candidate.get("domain_slice") or candidate.get("product_family") or "domain slice")
     return f"""\
 Create one seed instruction record for NeMo Data Designer.
 
-Product family: {product}
+Domain slice: {domain_slice}
 Requested synthetic pairs from this seed: {pairs_per_seed}
 Source URL: {candidate.get("source_url") or "unknown"}
 Stage/style: {candidate.get("stage") or "unknown"} / {candidate.get("qa_type") or candidate.get("instr_type") or "direct"}
@@ -587,7 +587,7 @@ def build_seed_record(
         "source_candidate_source": candidate["candidate_source"],
         "source_url": candidate.get("source_url"),
         "passage_id": candidate.get("passage_id"),
-        "product_family": candidate.get("product_family") or config.collection,
+        "domain_slice": candidate.get("domain_slice") or candidate.get("product_family") or config.collection,
         "source_stage": candidate.get("stage"),
         "qa_type": candidate.get("qa_type"),
         "instr_type": candidate.get("instr_type"),
@@ -634,7 +634,7 @@ SEED_CSV_FIELDS = [
     "source_sample_id",
     "source_url",
     "passage_id",
-    "product_family",
+    "domain_slice",
     "source_stage",
     "qa_type",
     "instr_type",

@@ -1,8 +1,8 @@
 # Methodology Rationale
 
 This repo demonstrates a generalist path for enterprise domain adaptation with
-LoRA. The NIM and NeMo Microservices corpora are worked examples, not the
-boundary of the method. The same pattern applies to any scoped domain or
+LoRA. The NIM and NeMo Microservices corpora are representative public
+examples, not the boundary of the method. The same pattern applies to any scoped enterprise domain or
 sub-domain where the source material is specific, valuable, and small enough
 that generic web-scale training has not made the target behavior obvious to a
 base model.
@@ -73,7 +73,8 @@ learning objectives that reward grounded, logically supported answers.
 
 The LE approach exists because many enterprise domains have small, specific
 corpora: internal procedures, field manuals, policy collections, support
-playbooks, architecture runbooks, research protocols, or product-area docs. In
+playbooks, architecture runbooks, research protocols, or other scoped domain
+materials. In
 that setting, the highest-value signal may be the precise local reasoning and
 nomenclature encoded in a few hundred or a few thousand source passages. LE
 turns that limited source material into grounded, auditable training rows with

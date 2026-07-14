@@ -31,6 +31,6 @@
 <text class="small" x="738" y="250">Existing smoke failed before scoring</text>
 <text class="label" x="58" y="334">RAGAS status note</text>
 <text class="small" x="58" y="362">RAGAS is retained as an optional retrieval diagnostic, not the primary LE-vs-Curator winner criterion.</text>
-<text class="small" x="58" y="386">The current one-row NeMo Evaluator smoke produced no metrics because judge_embeddings.model was missing.</text>
+<text class="small" x="58" y="386">The current one-row Corpus B Evaluator smoke produced no metrics because judge_embeddings.model was missing.</text>
 <text class="small" x="58" y="410">Next RAGAS run should use the same reduced population, configure the embedding judge, and export to MLflow.</text>
 </svg>

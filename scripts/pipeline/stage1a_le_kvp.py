@@ -327,7 +327,7 @@ def build_stage1a_observability_documents(
     mlflow_experiment_name: str | None,
     mlflow_parent_run_id: str | None,
 ) -> dict[str, dict[str, Any]]:
-    product_family_counts = Counter(row.product_family or "unknown" for row in rows)
+    domain_slice_counts = Counter(row.product_family or "unknown" for row in rows)
     source_system_counts = Counter(
         value for row in rows for value in _row_values_or_unknown(row, "source_systems")
     )
@@ -360,8 +360,8 @@ def build_stage1a_observability_documents(
         "stage1a.shard.count": shard_count,
         "stage1a.max_workers": max_workers,
     }
-    for product_family, count in sorted(product_family_counts.items()):
-        metrics[f"stage1a.product_family.{safe_metric_name(product_family)}.rows"] = count
+    for domain_slice, count in sorted(domain_slice_counts.items()):
+        metrics[f"stage1a.domain_slice.{safe_metric_name(domain_slice)}.rows"] = count
     for source_system, count in sorted(source_system_counts.items()):
         metrics[f"stage1a.source_system.{safe_metric_name(source_system)}.rows"] = count
     for source_kind, count in sorted(source_kind_counts.items()):

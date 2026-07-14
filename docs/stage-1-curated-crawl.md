@@ -65,7 +65,7 @@ path; the segment itself is the version; everything after is the page.
 
 ### Step 3: Curate versions and source areas
 
-For each distinct source area, product family, workflow, or sub-domain:
+For each distinct source area, workflow, operating function, knowledge area, or sub-domain:
 
 - If `/latest/` exists, use it.
 - If `/latest/` is missing or appears to be a stub (very few URLs vs. older
@@ -94,11 +94,11 @@ escape the allowlist regardless of depth.
   "max_depth": null,
   "max_pages": null,
   "extract_linked_files": true,                           // capture linked binaries
-  "use_product_url_map": false,                           // route binaries to this collection only
+  "use_product_url_map": false,                           // crawler-specific binary routing override
   "allowed_url_prefixes": [ ... per-source-area /latest/ or pinned prefixes ... ],
   "unblock_url_patterns": ["github.com"],                 // override default block list
   "binary_host_allowlist": [                              // permit cross-host downloads from
-    "raw.githubusercontent.com/<vendor-org>"              //   these prefixes for binaries
+    "raw.githubusercontent.com/<org>"                     //   these prefixes for binaries
   ]
 }
 ```
@@ -194,7 +194,7 @@ cap at ~20 per page to keep one outlier from dominating the corpus.
 Files that are technically in-scope (correct extension, correct host) but
 low-quality for SFT:
 
-- One-page datasheets with mostly tables and product photos
+- One-page datasheets with mostly tables and marketing images
 - Pre-rendered slide decks with sparse prose and heavy branding
 - Generated API reference dumps converted to PDF
 - Marketing whitepapers with little technical content
@@ -211,21 +211,21 @@ These show up often enough that they're worth checking before committing to a
 prefix list. All four were observed in the NIM and NeMo case studies (see
 `examples/`).
 
-1. **`/latest/` may be a stub.** Some products migrate to a Fern-style
+1. **`/latest/` may be a stub.** Some documentation areas migrate to a Fern-style
    docs portal and leave `/latest/` as a minimal landing page while older
    numbered versions retain the full doc tree. Compare URL counts at
    `/latest/` vs. the previous version. If `/latest/` has <10% of the URLs
    of the previous version, treat it as suspect.
-2. **Newest version may be incomplete.** Vendors sometimes ship a new
-   version dir before all docs are migrated. If the newest semver has far
+2. **Newest version may be incomplete.** Documentation owners sometimes ship a new
+   version directory before all docs are migrated. If the newest semver has far
    fewer URLs than the previous one, pin to the previous version.
 3. **Sitemap may omit currently-served pages.** Live URLs returning 200 are
-   not always in the sitemap. Common gaps: product landing pages
-   (`/product/index.html`), recently-migrated portals (Fern-hosted sites
+   not always in the sitemap. Common gaps: source-area landing pages
+   (`/docs/index.html`), recently-migrated portals (Fern-hosted sites
    that don't auto-publish). For these, a small follow-up BFS pass with
    `max_depth=1` from the seed will fill the gaps.
-4. **Same-name product, different audience.** A "Foo SDK" portal and a
-   "Foo Microservice" portal often share a name but document different
+4. **Same-name area, different audience.** A "Foo SDK" portal and a
+   "Foo Operations" portal often share a name but document different
    audiences (library users vs. platform operators). Read the index pages
    before deciding which to include — they typically overlap less than the
    names suggest.
@@ -319,17 +319,17 @@ After the crawl completes:
 2. Sample 10–20 random chunks. They should all be informative prose, not
    navigation boilerplate or empty stubs.
 3. Inspect the crawler's error CSV for systematic failures (a single page
-   timing out is normal; an entire product directory failing means a
+   timing out is normal; an entire source-area directory failing means a
    crawler/network issue worth investigating).
 
 ## Worked examples
 
 The two case studies in `examples/` apply this methodology end-to-end:
 
-- [`examples/nim.md`](../examples/nim.md) — 50-product NVIDIA Inference
-  Microservices catalog with mixed `/latest/` and pinned-version curation.
+- [`examples/nim.md`](../examples/nim.md) — broad public technical
+  documentation corpus with mixed `/latest/` and pinned-version curation.
 - [`examples/nemo-microservices.md`](../examples/nemo-microservices.md) —
-  Narrowing a sprawling product umbrella to a single-prefix scope.
+  narrowing a broad documentation umbrella to a single coherent scope.
 
 ## Optional integrations
 

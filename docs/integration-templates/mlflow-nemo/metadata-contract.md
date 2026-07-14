@@ -15,24 +15,24 @@ Use names already established by the repository.
 | Object | Pattern | Example |
 |---|---|---|
 | MLflow experiment | `docs-to-data-to-lora` | `docs-to-data-to-lora` |
-| Parent run name | `<collection>/<base-short>/r<rank>` | `nim_curated/llama-3.2-1b/r16` |
-| Adapter name | `lora-<corpus-short>-<base-short>-r<rank>` | `lora-nim-llama-3.2-1b-r16` |
-| Entity Store dataset | `default/stage3-<collection-with-dashes>` | `default/stage3-nim-curated` |
-| Entity Store output model | `default/<adapter-name>` | `default/lora-nim-llama-3.2-1b-r16` |
-| Data Store dataset URI | `hf://datasets/default/<dataset-name>` | `hf://datasets/default/stage3-nim-curated` |
+| Parent run name | `<collection>/<base-short>/r<rank>` | `domain_a_curated/llama-3.2-1b/r16` |
+| Adapter name | `lora-<domain-short>-<base-short>-r<rank>` | `lora-domain-a-llama-3.2-1b-r16` |
+| Entity Store dataset | `default/stage3-<collection-with-dashes>` | `default/stage3-domain-a-curated` |
+| Entity Store output model | `default/<adapter-name>` | `default/lora-domain-a-llama-3.2-1b-r16` |
+| Data Store dataset URI | `hf://datasets/default/<dataset-name>` | `hf://datasets/default/stage3-domain-a-curated` |
 
 ## MLflow Parent Run Tags
 
 | Tag | Required | Example |
 |---|---|---|
 | `pipeline` | yes | `docs-to-data-to-lora` |
-| `collection` | yes | `nim_curated` |
-| `corpus_short` | yes | `nim` |
+| `collection` | yes | `domain_a_curated` |
+| `domain_short` | yes | `domain-a` |
 | `base_model` | yes | `meta/llama-3.2-1b-instruct` |
 | `base_short` | yes | `llama-3.2-1b` |
-| `adapter_name` | yes | `lora-nim-llama-3.2-1b-r16` |
-| `dataset_entity` | yes | `default/stage3-nim-curated` |
-| `output_model_entity` | yes | `default/lora-nim-llama-3.2-1b-r16` |
+| `adapter_name` | yes | `lora-domain-a-llama-3.2-1b-r16` |
+| `dataset_entity` | yes | `default/stage3-domain-a-curated` |
+| `output_model_entity` | yes | `default/lora-domain-a-llama-3.2-1b-r16` |
 | `promotion_status` | no | `candidate` |
 | `nemo_workspace` | no | `default` |
 | `project` | no | `docs-to-data-to-lora` |
@@ -58,10 +58,10 @@ Tags:
 
 | Tag | Example |
 |---|---|
-| `nemo_data_store_uri` | `hf://datasets/default/stage3-nim-curated` |
-| `nemo_entity_store_ref` | `default/stage3-nim-curated` |
+| `nemo_data_store_uri` | `hf://datasets/default/stage3-domain-a-curated` |
+| `nemo_entity_store_ref` | `default/stage3-domain-a-curated` |
 | `dataset_format` | `hf` |
-| `source_collection` | `nim_curated` |
+| `source_collection` | `domain_a_curated` |
 | `dataset_version_id` | stable ID from `dataset_version_manifest.json` |
 | `crawl_run_id` | stable crawl run ID |
 | `delta_manifest_id` | stable delta manifest ID, if applicable |
@@ -110,8 +110,8 @@ Tags:
 |---|---|
 | `nemo_customizer_job_id` | `cust-...` |
 | `nemo_customizer_status` | `completed` |
-| `nemo_output_model_entity` | `default/lora-nim-llama-3.2-1b-r16` |
-| `nemo_output_path` | `hf://models/default/lora-nim-llama-3.2-1b-r16` |
+| `nemo_output_model_entity` | `default/lora-domain-a-llama-3.2-1b-r16` |
+| `nemo_output_path` | `hf://models/default/lora-domain-a-llama-3.2-1b-r16` |
 
 Metrics:
 

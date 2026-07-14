@@ -391,7 +391,7 @@ def normalize_records(
             }
             metadata = {
                 "collection": seed.get("collection") or config.collection,
-                "product_family": seed.get("product_family") or config.collection,
+                "domain_slice": seed.get("domain_slice") or seed.get("product_family") or config.collection,
                 "source_stage": seed.get("source_stage"),
                 "qa_type": seed.get("qa_type"),
                 "instr_type": seed.get("instr_type"),

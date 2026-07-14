@@ -46,8 +46,8 @@ latency budget, and deployment footprint.
 ## Domain adapters, one base
 
 The case study trains two adapters from the same base model, one per scoped
-collection. These adapters happen to use NIM and NeMo Microservices
-documentation, but the pattern is general: each collection can represent a
+collection. The retained examples use two representative public documentation
+corpora, but the pattern is general: each collection can represent a
 department, workflow, compliance area, engineering system, field-service
 procedure set, or other enterprise sub-domain.
 

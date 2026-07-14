@@ -21,19 +21,19 @@ data_store_auth:
   password_env: "NEMO_DATA_STORE_PASSWORD"
 
 collections:
-  nim_curated:
-    corpus_short: "nim"
-    stage2_dir: "<DATASET_ROOT>/nim_curated"
-    train_dataset_name: "stage3-nim-curated"
-    test_dataset_name: "stage3-nim-curated-test"
-    evaluator_dataset_ref: "default/stage3-nim-curated-test"
+  domain_a_curated:
+    corpus_short: "domain-a"
+    stage2_dir: "<DATASET_ROOT>/domain_a_curated"
+    train_dataset_name: "stage3-domain-a-curated"
+    test_dataset_name: "stage3-domain-a-curated-test"
+    evaluator_dataset_ref: "default/stage3-domain-a-curated-test"
 
-  nemo_usvcs_curated:
-    corpus_short: "nemo-usvcs"
-    stage2_dir: "<DATASET_ROOT>/nemo_usvcs_curated"
-    train_dataset_name: "stage3-nemo-usvcs-curated"
-    test_dataset_name: "stage3-nemo-usvcs-curated-test"
-    evaluator_dataset_ref: "default/stage3-nemo-usvcs-curated-test"
+  domain_b_curated:
+    corpus_short: "domain-b"
+    stage2_dir: "<DATASET_ROOT>/domain_b_curated"
+    train_dataset_name: "stage3-domain-b-curated"
+    test_dataset_name: "stage3-domain-b-curated-test"
+    evaluator_dataset_ref: "default/stage3-domain-b-curated-test"
 
 base_models:
   meta/llama-3.2-1b-instruct:

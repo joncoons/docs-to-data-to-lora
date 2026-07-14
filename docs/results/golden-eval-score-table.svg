@@ -21,7 +21,7 @@
 <text class="label" x="884" y="90">RAG Faith</text>
 <text class="label" x="974" y="90">RAG Clear</text>
 <rect x="36" y="100" width="1020" height="38" fill="#ffffff"/>
-<text class="small" x="44" y="124">NIM</text>
+<text class="small" x="44" y="124">Corpus A</text>
 <text class="value" x="214" y="124">1B LE r32</text>
 <text class="value" x="344" y="124">2.461</text>
 <text class="value" x="470" y="124">3.155</text>
@@ -31,7 +31,7 @@
 <text class="value" x="884" y="124">3.302</text>
 <text class="value" x="974" y="124">3.733</text>
 <rect x="36" y="142" width="1020" height="38" fill="#f2f5f8"/>
-<text class="small" x="44" y="166">NIM</text>
+<text class="small" x="44" y="166">Corpus A</text>
 <text class="value" x="214" y="166">3B LE r32</text>
 <text class="value" x="344" y="166">2.768</text>
 <text class="value" x="470" y="166">3.791</text>
@@ -41,7 +41,7 @@
 <text class="value" x="884" y="166">4.108</text>
 <text class="value" x="974" y="166">4.300</text>
 <rect x="36" y="184" width="1020" height="38" fill="#ffffff"/>
-<text class="small" x="44" y="208">NIM</text>
+<text class="small" x="44" y="208">Corpus A</text>
 <text class="value" x="214" y="208">8B LE r32</text>
 <text class="value" x="344" y="208">2.948</text>
 <text class="value" x="470" y="208">3.950</text>
@@ -51,7 +51,7 @@
 <text class="value" x="884" y="208">4.399</text>
 <text class="value" x="974" y="208">4.255</text>
 <rect x="36" y="226" width="1020" height="38" fill="#f2f5f8"/>
-<text class="small" x="44" y="250">NIM</text>
+<text class="small" x="44" y="250">Corpus A</text>
 <text class="value" x="214" y="250">70B base</text>
 <text class="value" x="344" y="250">2.150</text>
 <text class="value" x="470" y="250">3.866</text>
@@ -61,7 +61,7 @@
 <text class="value" x="884" y="250">4.526</text>
 <text class="value" x="974" y="250">3.903</text>
 <rect x="36" y="268" width="1020" height="38" fill="#ffffff"/>
-<text class="small" x="44" y="292">NeMo Microservices</text>
+<text class="small" x="44" y="292">Corpus B</text>
 <text class="value" x="214" y="292">1B LE r32</text>
 <text class="value" x="344" y="292">3.024</text>
 <text class="value" x="470" y="292">3.295</text>
@@ -71,7 +71,7 @@
 <text class="value" x="884" y="292">3.775</text>
 <text class="value" x="974" y="292">3.657</text>
 <rect x="36" y="310" width="1020" height="38" fill="#f2f5f8"/>
-<text class="small" x="44" y="334">NeMo Microservices</text>
+<text class="small" x="44" y="334">Corpus B</text>
 <text class="value" x="214" y="334">3B LE r32</text>
 <text class="value" x="344" y="334">3.197</text>
 <text class="value" x="470" y="334">3.795</text>
@@ -81,7 +81,7 @@
 <text class="value" x="884" y="334">4.283</text>
 <text class="value" x="974" y="334">4.162</text>
 <rect x="36" y="352" width="1020" height="38" fill="#ffffff"/>
-<text class="small" x="44" y="376">NeMo Microservices</text>
+<text class="small" x="44" y="376">Corpus B</text>
 <text class="value" x="214" y="376">8B LE r32</text>
 <text class="value" x="344" y="376">3.382</text>
 <text class="value" x="470" y="376">3.931</text>
@@ -91,7 +91,7 @@
 <text class="value" x="884" y="376">4.464</text>
 <text class="value" x="974" y="376">4.255</text>
 <rect x="36" y="394" width="1020" height="38" fill="#f2f5f8"/>
-<text class="small" x="44" y="418">NeMo Microservices</text>
+<text class="small" x="44" y="418">Corpus B</text>
 <text class="value" x="214" y="418">70B base</text>
 <text class="value" x="344" y="418">2.077</text>
 <text class="value" x="470" y="418">3.854</text>

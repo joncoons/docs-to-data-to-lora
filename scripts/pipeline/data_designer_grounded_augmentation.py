@@ -41,8 +41,8 @@ DEFAULT_EXPERIMENT_DIR = Path(
         "<DATASET_ROOT>/experiments/nim_curated_dd_llm_1b",
     )
 )
-DEFAULT_DATA_DESIGNER_URL = os.getenv("DATA_DESIGNER_URL", "http://192.168.1.187:30812")
-DEFAULT_DATA_STORE_URL = os.getenv("DATA_STORE_URL", "http://192.168.1.187:30912")
+DEFAULT_DATA_DESIGNER_URL = os.getenv("DATA_DESIGNER_URL", "https://data-designer.example.com")
+DEFAULT_DATA_STORE_URL = os.getenv("DATA_STORE_URL", "https://data-store.example.com")
 DEFAULT_DATA_STORE_GIT_BASE = os.getenv("DATA_STORE_GIT_BASE", DEFAULT_DATA_STORE_URL)
 DEFAULT_NAMESPACE = os.getenv("DATASET_NAMESPACE", "default")
 DEFAULT_SEED_REPO_NAME = os.getenv("DATA_DESIGNER_SEED_REPO_NAME", "stage3-nim-curated-dd-llm-seeds")
@@ -51,7 +51,7 @@ DEFAULT_MODEL = os.getenv("DATA_DESIGNER_MODEL", "frontier-llm-model")
 DEFAULT_MODEL_ALIAS = os.getenv("DATA_DESIGNER_MODEL_ALIAS", "generation_model")
 
 SYSTEM_PROMPT = (
-    "You generate source-grounded synthetic training data for NVIDIA technical "
+    "You generate source-grounded synthetic training data for scoped technical "
     "documentation. Return JSON only. Do not include reasoning, markdown, or "
     "<think> tags. Every answer must be supported by the provided source text."
 )
@@ -89,7 +89,7 @@ SEED_DATASET_COLUMNS = (
     "source_sample_id",
     "source_url",
     "passage_id",
-    "product_family",
+    "domain_slice",
     "source_stage",
     "qa_type",
     "instr_type",

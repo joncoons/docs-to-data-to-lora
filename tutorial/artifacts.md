@@ -6,7 +6,7 @@ This page maps tutorial stages to the files they produce in a full run.
 
 | Artifact | Purpose |
 |---|---|
-| `inventory.csv` | Sitemap-derived URL inventory with product, version, page, depth, and lastmod columns |
+| `inventory.csv` | Sitemap-derived URL inventory with source_area, version, page, depth, and lastmod columns |
 | crawler collection | Chunked HTML, markdown, text, and parsed binary content in the vector store |
 | binary manifest | Linked PDF, DOCX, and PPTX assets queued for document parsing |
 
@@ -29,7 +29,7 @@ Key files:
 | `stage1b_synthesis.jsonl` | Stage 1B | semantic-neighborhood synthesis pairs |
 | `stage1c_instruction.jsonl` | Stage 1C | summary, listicle, and procedural examples |
 | `stage1_5_gapfill.jsonl` | Stage 1.5 | synthetic gap-fill rows, when generated directly |
-| `bias_report.json` | Stage 1.5 | product-family coverage report |
+| `bias_report.json` | Stage 1.5 | domain-slice coverage report |
 | `stage2_eval.jsonl` | Stage 2 | refined or accepted rows after self-eval |
 | `training.jsonl` | Stage 3 curator | Customizer training split |
 | `validation.jsonl` | Stage 3 curator | Customizer validation split |

@@ -1,10 +1,12 @@
 # docs-to-data-to-lora
 
 A reproducible three-stage pipeline for turning unstructured enterprise
-domain content into domain-adapted LoRA adapters. The goal is not to create
-a vendor-product adapter specifically; it is to teach a smaller base model
-the nomenclature, procedures, constraints, and evaluation language of any
-enterprise domain or sub-domain while preserving source provenance.
+domain content into domain-adapted LoRA adapters. The purpose is to show how
+NVIDIA AI Enterprise (NVAIE) assets can be composed into a repeatable domain
+specificity workflow: ingest a scoped corpus, generate grounded training data,
+train LoRA adapters, and evaluate the result. The NIM and NeMo corpora are
+representative public examples used to make the workflow concrete; the reusable
+pattern is domain adaptation for any scoped enterprise corpus.
 
 ```
    ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐
@@ -22,9 +24,9 @@ enterprise domain or sub-domain while preserving source provenance.
 This reference implementation is centered on NVIDIA AI Enterprise (NVAIE)
 assets. NVAIE provides the production-grade foundation; this repo shows how
 those building blocks can be composed, extended, and governed to solve real
-business needs.
+business needs across any enterprise domain or sub-domain.
 
-The case study uses NVAIE capabilities across the lifecycle:
+The representative case study uses NVAIE capabilities across the lifecycle:
 
 - **NIM and OpenAI-compatible inference endpoints** for foundation/frontier model
   generation, local serving, LoRA-enabled inference, embeddings, reranking,
@@ -44,7 +46,7 @@ extraction, resumable JSONL stages, retry/failure accounting, multi-endpoint
 load sharing, corpus-scoped RAG evaluation, golden-test construction, and
 documentation-ready result graphics.
 
-Several methodology choices are deliberate:
+Several methodology choices are deliberate and are independent of the example corpora:
 
 - Nemotron 3 Super 120B-equivalent generation is the default for Stage 1A
   logical-entailment extraction and QA/KVP generation because it provides a
@@ -153,7 +155,7 @@ docs-to-data-to-lora/
 | 2 — Dataset Creation | ready to adapt | Resumable LE pipeline, optional Data Designer gap-fill, Curator handoff/finalization, provenance sidecars, validation gate |
 | 3 — PEFT Training | ready to adapt | Customizer LoRA SFT helpers for dense Llama bases, evaluator registration, completion capture, MLflow export, golden-test workflow |
 
-The repo is intended to be adapted to your corpus. Generated datasets,
+The repo is intended to be adapted to your domain corpus. Generated datasets,
 training logs, raw evaluation traces, and cluster-local run manifests are
 excluded from the public branch by design.
 
@@ -198,7 +200,7 @@ A notebook-first walkthrough now lives under [`tutorial/`](tutorial/). It covers
   Selenium-based crawler) will work as long as it can:
   - accept a list of allowed URL prefixes as scope
   - render single-page-application docs sites (Fern, modern Sphinx with
-    JS-heavy themes — many vendor sites need this)
+    JS-heavy themes — many documentation sites need this)
   - persist a URL registry across restarts
 - **For PDF-heavy or offline document corpora: a durable document extraction path.**
   The companion
@@ -215,19 +217,20 @@ A notebook-first walkthrough now lives under [`tutorial/`](tutorial/). It covers
 
 ## Worked examples
 
-Two are included to show the methodology applied to different shapes of
-documentation. They are case studies, not the boundary of the approach:
+Two representative public corpora are included to show the methodology
+applied to different documentation shapes. They are case studies, not the
+boundary of the approach:
 
-- [**examples/nim.md**](examples/nim.md) — NVIDIA Inference Microservices
-  (`docs.nvidia.com/nim`). 50 sub-products under one umbrella, mixed
-  versioning conventions, one dominant product creating corpus bias.
+- [**examples/nim.md**](examples/nim.md) — a broad public technical
+  documentation corpus with many source areas under one umbrella, mixed
+  versioning conventions, and strong source-area imbalance.
 - [**examples/nemo-microservices.md**](examples/nemo-microservices.md) —
-  NVIDIA NeMo Microservices (`docs.nvidia.com/nemo/microservices`). A
-  sprawling product family narrowed to a single-prefix scope.
+  a platform-operations documentation corpus narrowed to one coherent
+  single-prefix scope.
 
-Both are real curations used to build the case-study LoRA adapters. They
-demonstrate domain adaptation over enterprise technical documentation, but
-the same pattern applies to other domains such as internal operations,
+Both are real curations used to build the representative LoRA adapters.
+They demonstrate domain adaptation over enterprise technical documentation,
+but the same pattern applies to other domains such as internal operations,
 support playbooks, manufacturing procedures, compliance manuals, research
 methods, or field-service runbooks.
 
@@ -242,14 +245,14 @@ and treat its chunks as the Stage 1 collection.
 To apply this to your own target:
 
 1. Define the domain boundary: department, workflow, platform area,
-   regulatory topic, product family, or other sub-domain.
+   regulatory topic, operating function, knowledge area, or other sub-domain.
 2. Choose an ingestion path: curated web crawl, durable PDF/document
    extraction, internal export, or a combination.
 3. Preserve source provenance, source kind, timestamps or snapshot IDs,
    and chunk metadata before dataset generation.
 4. Store chunks in a collection scoped to that domain boundary.
 5. Use the worked examples as templates for scoping and provenance, not as
-   product-only patterns.
+   limits on the subject matter.
 
 ## Stage 2: Dataset Creation
 

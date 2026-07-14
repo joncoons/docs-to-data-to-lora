@@ -28,12 +28,12 @@ log = logging.getLogger(__name__)
 
 
 def density_score(passage: Passage) -> float:
-    """chunk_index_span × (unique_product_terms / token_count).
+    """chunk_index_span × (unique_domain_terms / token_count).
 
     Proxy chunk_index_span = len(chunk_ids).
-    Proxy unique_product_terms = product_family + product_name distinct values
-    (which is at most 2 here); since this is a flat score across passages, we
-    use len(set([product_family, product_name])) for sane comparison.
+    Proxy unique_domain_terms = the distinct source-area labels carried in the
+    backward-compatible metadata fields. Since this is a flat score across
+    passages, two labels at most are used for sane comparison.
     """
     span = max(1, len(passage.chunk_ids))
     terms = len({passage.product_family, passage.product_name})

@@ -61,7 +61,7 @@ Rules for each QUESTION:
 - Use the supplied entailment_index and premise_index exactly as provided.
 - Derive the question from that specific PREMISE.
 - Require specific, verifiable knowledge such as an env var name, command,
-  parameter, version, configuration value, or product-specific identifier.
+  parameter, version, configuration value, or domain-specific identifier.
 - Avoid yes/no questions and avoid generic "what is X" questions when X is a
   well-known term.
 

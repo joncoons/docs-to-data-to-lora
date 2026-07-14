@@ -4,7 +4,7 @@ Direct descendants of pydantic_models.py from the Jan 2025 logical entailment
 experiment, upgraded to Pydantic 2.x and split for the multi-stage pipeline.
 """
 from typing import Literal
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class LogEntailment(BaseModel):
@@ -92,9 +92,11 @@ class Passage(BaseModel):
 
 class KVPRow(BaseModel):
     """A single row in any per-stage JSONL output."""
+    model_config = ConfigDict(populate_by_name=True)
+
     passage_id: str
     source_url: str
-    product_family: str
+    product_family: str = Field(validation_alias=AliasChoices("product_family", "domain_slice", "domain_area"))
     stage: Literal["1a", "1b", "1c", "1.5", "2"]
     question: str
     answer: str
@@ -105,7 +107,7 @@ class KVPRow(BaseModel):
     entailment_index: int | None = None   # which entailment within a passage
     qa_type: str | None = None          # for 1b/1c
     instr_type: str | None = None       # for 1c
-    target_product_family: str | None = None  # for 1.5
+    target_product_family: str | None = Field(default=None, validation_alias=AliasChoices("target_product_family", "target_domain_slice"))  # for 1.5
     retrieved_urls: list[str] | None = None   # for 1.5
     neighbor_urls: list[str] | None = None    # for 1b
     # Provenance sidecar fields. These are optional so older JSONL outputs still

@@ -56,8 +56,8 @@ The pipeline has eight stages, run in order for each collection:
    selection mode is stratified across density bands; top-density and all-passage
    modes are available. Output: `stage1c_instruction.jsonl`.
 5. **Stage 1.5 — Optional Bias analysis + Data Designer gap-fill**: measure
-   per-slice KVP density (for example product family, workflow, policy area,
-   or source collection segment) and, only when synthetic augmentation is
+   per-slice KVP density (for example workflow, policy area, operating
+   function, source area, or source collection segment) and, only when synthetic augmentation is
    desired, hand under-represented slices to NeMo Data Designer for grounded
    synthetic generation. Output: `bias_report.json` + optional
    `stage1_5_gapfill.jsonl`.
@@ -109,7 +109,7 @@ that materially change dataset coverage, cost, and recovery behavior.
   arguments.
 - Stage 1.5 is optional. For grounded-only dataset creation, proceed from Stage
   1C directly to Stage 2. Enable Stage 1.5 when the source-grounded set is small,
-  product coverage is visibly imbalanced, or a controlled synthetic augmentation
+  domain-slice coverage is visibly imbalanced, or a controlled synthetic augmentation
   experiment is explicitly part of the plan. Synthetic generation should use a
   frontier-grade model, not a small local fallback, because it can otherwise
   introduce style drift or shallow paraphrases into the training mix.
@@ -176,8 +176,8 @@ File: `<DATASET_ROOT>/<collection>/passages.jsonl`
   "text": "<concatenated or chunk text>",
   "token_count": 284,
   "chunk_ids": ["<es_id>", "..."],
-  "product_family": "<from metadata>",
-  "product_name": "<from metadata>",
+  "domain_area": "<from metadata or source mapping>",
+  "domain_slice": "<from metadata or source mapping>",
   "doc_kind": "html|pdf"
 }
 ```
@@ -278,7 +278,7 @@ File: `<DATASET_ROOT>/<collection>/stage1a_le.jsonl`
 {
   "passage_id": "...",
   "source_url": "...",
-  "product_family": "...",
+  "domain_slice": "...",
   "stage": "1a",
   "premise_index": 1,
   "question": "<derived from premise>",
@@ -317,8 +317,7 @@ ONLY valid JSON — no explanation, no markdown fences.
 
 User:
 ```
-Given the following related passages from NVIDIA <NIM or NeMo Microservices>
-documentation, generate two high-value questions that require synthesizing
+Given the following related passages from the scoped domain corpus, generate two high-value questions that require synthesizing
 information across the passages.
 
 - BRIDGING: a question whose complete answer requires combining a fact from
@@ -409,11 +408,11 @@ Stage 1C uses the same density score as the earlier high-density-only design:
 
 ```
 density_score = (max_chunk_index - min_chunk_index + 1)
-                × (unique_product_terms / token_count)
+                × (unique_domain_terms / token_count)
 ```
 
-where `unique_product_terms` is the count of distinct values from
-`metadata.product_family` + `metadata.product_name` + anchor-tagged section
+where `unique_domain_terms` is the count of distinct values from
+`metadata.domain_area` + `metadata.domain_slice` + anchor-tagged section
 headings that appear in the body. Raw token count is intentionally NOT used as
 the primary heuristic because it breaks down on the smaller by-URL passages
 produced by Stage 0.
@@ -445,7 +444,7 @@ JSON. Return ONLY valid JSON.
 
 User:
 ```
-Given the following <NIM | NeMo Microservices> documentation passage, generate
+Given the following scoped domain-corpus passage, generate
 three instruction-following training examples in different formats:
 
 1. SUMMARY:    "Summarize the key points of [topic] from the following..."
@@ -505,7 +504,7 @@ For the default `stratified` mode, approximate yields are **~310 NIM pairs** and
 Stage 1.5 is an optional synthetic-augmentation stage, not a required step for
 every dataset. The default grounded path for the current LE rerun is to skip it
 and continue from Stage 1C to Stage 2. Use it when the grounded dataset is too
-small for the target adapter, when product-family coverage is materially
+small for the target adapter, when domain-slice coverage is materially
 imbalanced, or when the experiment is explicitly testing synthetic-data lift.
 
 When Stage 1.5 performs synthetic generation, use a frontier-grade model through
@@ -521,18 +520,18 @@ After Stages 1A/1B/1C complete:
 
 1. Merge all generated pairs (`stage1a_le.jsonl` + `stage1b_synthesis.jsonl` +
    `stage1c_instruction.jsonl`) into a working pool.
-2. Aggregate counts per `product_family`:
-   - `chunk_count[p]` — number of source chunks in the collection with
-     `product_family == p`
-   - `kvp_count[p]` — number of generated pairs derived from passages with
-     `product_family == p`
-3. Compute density: `density[p] = kvp_count[p] / chunk_count[p]`
-4. Compute the median density across all products present in the collection.
-5. Flag any product where `density[p] < median × 0.5` as under-represented.
+2. Aggregate counts per `domain_slice`:
+   - `chunk_count[s]` — number of source chunks in the collection with
+     `domain_slice == s`
+   - `kvp_count[s]` — number of generated pairs derived from passages with
+     `domain_slice == s`
+3. Compute density: `density[s] = kvp_count[s] / chunk_count[s]`
+4. Compute the median density across all slices present in the collection.
+5. Flag any slice where `density[s] < median × 0.5` as under-represented.
 
-The bias signal comes from the `product_family` / `product_name` metadata that
-`CRAWLER_PRODUCT_URL_MAP` already attaches to every chunk during ingest — there
-are no hand-curated keyword lists involved.
+The bias signal comes from domain-area metadata attached during ingest.
+The analysis is about representation across source slices, so Stage 1.5 should
+run on normalized `domain_area` / `domain_slice` metadata.
 
 Output files:
 
@@ -546,9 +545,9 @@ Output files:
   "collection": "<name>",
   "median_density": 1.42,
   "threshold": 0.71,
-  "products": [
+  "domain_slices": [
     {
-      "product_family": "...",
+      "domain_slice": "...",
       "chunk_count": 45,
       "kvp_count": 12,
       "density": 0.27,
@@ -561,7 +560,7 @@ Output files:
 ### Gap-fill via NeMo Data Designer
 
 Stage 1.5 now stops at a native handoff boundary by default. For each
-under-represented product `T` it writes a gap record and a Data Designer seed
+under-represented domain slice `T` it writes a gap record and a Data Designer seed
 record instead of directly calling an LLM. If generation is enabled, configure
 Data Designer with a frontier-grade model and preserve all synthetic lineage:
 
@@ -569,12 +568,12 @@ Data Designer with a frontier-grade model and preserve all synthetic lineage:
    dimension, observed count, target count, severity, seed entailment IDs, seed
    chunk IDs, and a generation brief.
 2. **ES retrieval (same collection only)**: retrieve top documentation chunks
-   for `product_family == T` and embed the retrieved text plus source URLs into
+   for `domain_slice == T` and embed the retrieved text plus source URLs into
    `data_designer/gapfill_requests.jsonl`.
 3. **Data Designer recipe**: one recipe per collection consumes the seed record
-   fields: `gap_id`, `retrieved_chunks`, `product_family`, `pairs_count`,
+   fields: `gap_id`, `retrieved_chunks`, `domain_slice`, `pairs_count`,
    `seed_styles`, and `generation_brief`.
-4. **Target**: bring each under-represented product up to ≥ `median × 0.8`.
+4. **Target**: bring each under-represented slice up to ≥ `median × 0.8`.
    Stage 1.5 computes pairs-needed and number of requested seed records; the
    native Data Designer submission/result-collection Job owns generation.
 
@@ -650,7 +649,7 @@ Default handoff files:
 Optional and highly variable. For grounded-only runs, Stage 1.5 yield is **0**
 by design. When synthetic augmentation is enabled, the NIM corpus is known to be
 skewed (LLM-NIM ≈ 88% in the April 2026 analysis); expect **~200-400 gap-fill
-pairs** rebalancing the under-represented 30-40 NIM product families. NeMo USvcs
+pairs** rebalancing under-represented source-area slices in representative Corpus A. Representative Corpus B
 is more uniform (single-prefix crawl); expect **~50-150 pairs**. For very small
 grounded datasets, a larger controlled synthetic ratio may be useful, but keep
 validation/test splits grounded and unchanged.
@@ -779,14 +778,11 @@ to dataset sample lineage.
 The older pure-Python `scripts/pipeline/stage3_curator.py` path remains a local
 offline fallback for exact dedup, MinHash, token length filters, substring
 checks, and split writing. Its token length filter must use the production
-training/serving tokenizer, not a generic tokenizer. For the current Llama 3.1
-8B Customizer target, the default tokenizer resolves from the local NIM cache at
-`$LOCAL_NIM_CACHE/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`;
-if `LOCAL_NIM_CACHE` is unset, the resolver uses the standard
-`~/.cache/nim` NIM layout. Override it with `PIPELINE_STAGE3_TOKENIZER` or
-`--stage3-tokenizer` when targeting another base model, or set
-`PIPELINE_STAGE3_TOKENIZER_SNAPSHOT` when the same NIM cache has a different
-production snapshot. The default QA-shaped cutoffs are `question >= 12` and
+training/serving tokenizer, not a generic tokenizer. Set
+`PIPELINE_STAGE3_TOKENIZER` or `--stage3-tokenizer` to the tokenizer directory
+or model ID used by the target training/serving base model. When using a model
+cache with multiple snapshots, set `PIPELINE_STAGE3_TOKENIZER_SNAPSHOT` to the
+intended production snapshot. The default QA-shaped cutoffs are `question >= 12` and
 `answer >= 8` production-tokenizer tokens, because concise grounded technical
 answers are valid and should not be dropped merely for being short.
 
@@ -814,7 +810,7 @@ Format (NeMo Customizer SFT convention):
 {
   "prompt": "<question>",
   "completion": "<answer>",
-  "system": "You are a precise NVIDIA <NIM | NeMo Microservices> technical assistant. Answer based on official documentation."
+  "system": "You are a precise domain assistant. Answer only from the scoped source documentation."
 }
 ```
 
@@ -913,10 +909,10 @@ How to point the pipeline at a new ES collection:
 
 1. Add the collection name to the CLI's `--collection` choices in
    `scripts/build_v2_dataset.py`.
-2. Update the domain label mapping (NIM → NeMo MS → your-domain) — this
+2. Update the domain label mapping (representative corpus A/B → your domain) — this
    controls the `system` prompt in the final JSONL.
 3. Confirm chunk metadata fields match the required schema: `content_url`,
-   `chunk_index`, `document_type`, `product_family`, `vector` (1024-dim
+   `chunk_index`, `document_type`, `domain_area` or `domain_slice`, `vector` (1024-dim
    dense_vector).
 4. Run:
    ```bash
@@ -996,7 +992,7 @@ wait
 │   ├── stage1b_passage_results.jsonl  ← Stage 1B: per-passage durable status
 │   ├── stage1c_instruction.jsonl    ← Stage 1C: instruction diversity
 │   ├── stage1c_passage_results.jsonl  ← Stage 1C: per-passage durable status
-│   ├── bias_report.json             ← Optional Stage 1.5: per-product density
+│   ├── bias_report.json             ← Optional Stage 1.5: per-domain-slice density
 │   ├── stage1_5_gapfill.jsonl       ← Optional Stage 1.5: RAG-grounded gap-fill
 │   ├── stage2_eval.jsonl            ← Stage 2: refined pairs
 │   ├── stage2_dropped.jsonl         ← Stage 2: dropped pairs (inspection log)
@@ -1028,8 +1024,8 @@ constraints, or policy details from unrelated source areas.
 
 The April 2026 pipeline had a gap-fill step (NeMo Data Designer or Curator's
 synthetic-gen) that called the LLM without grounding it in retrieved corpus
-chunks. Super-120b has weak parametric knowledge of NIM/NeMo product minutiae —
-exactly the topics that most need accurate training signal. This pipeline
+chunks. Super-120b may have weak parametric knowledge of narrow case-study domain
+details — exactly the topics that most need accurate training signal. This pipeline
 eliminates parametric-only generation: every pair, including optional Stage
 1.5 gap-fill when enabled, uses retrieved chunks as the LLM's sole factual
 source.

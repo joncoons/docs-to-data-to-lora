@@ -24,7 +24,7 @@
 <line class="axis" x1="78" y1="112" x2="78" y2="612"/>
 <line class="axis" x1="78" y1="612" x2="1158" y2="612"/>
 <text class="small" x="78" y="96">Composite mean, 1-5 score scale</text>
-<text class="label" x="90" y="658">NIM</text>
+<text class="label" x="90" y="658">Corpus A</text>
 <rect class="norag" x="90" y="365.9" width="11" height="246.1" rx="2"/>
 <rect class="rag" x="105" y="296.5" width="11" height="315.5" rx="2"/>
 <text class="tiny" x="88" y="288.5">+0.69</text>
@@ -42,7 +42,7 @@
 <text class="tiny" x="202" y="217.4">+1.72</text>
 <text class="tiny" transform="translate(216,634) rotate(40)">70B base</text>
 <line class="line" x1="90" y1="644" x2="237" y2="644"/>
-<text class="label" x="276" y="658">NeMo Microservices</text>
+<text class="label" x="276" y="658">Corpus B</text>
 <rect class="norag" x="276" y="309.6" width="11" height="302.4" rx="2"/>
 <rect class="rag" x="291" y="282.5" width="11" height="329.5" rx="2"/>
 <text class="tiny" x="274" y="274.5">+0.27</text>

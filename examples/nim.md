@@ -1,8 +1,9 @@
 # Example: NVIDIA Inference Microservices (NIM)
 
 A worked example of [Stage 1 methodology](../docs/stage-1-curated-crawl.md)
-applied to `docs.nvidia.com/nim` — NVIDIA's catalog of containerized AI
-inference services.
+applied to a broad public technical-documentation corpus. The purpose is to
+show curation mechanics for an NVAIE-adjacent documentation set while keeping
+the reusable method centered on scoped enterprise domains.
 
 > **Snapshot note**: numbers in this example were captured against the NIM
 > sitemap as published in May 2026. The sitemap refreshes frequently (we
@@ -12,7 +13,7 @@ inference services.
 
 ## Step 1 — Find the sitemap
 
-`docs.nvidia.com/robots.txt` lists per-product sitemaps. For NIM:
+`docs.nvidia.com/robots.txt` lists per-source-area sitemaps. For NIM:
 
 ```
 $ curl -s https://docs.nvidia.com/s3-sitemap-index.xml \
@@ -37,22 +38,22 @@ python scripts/sitemap_to_inventory.py \
 Summary output:
 
 ```
-Distinct products: 50
+Distinct source areas: 50
   with /latest/:      44
   no /latest/:        6   (need pinned-version curation)
   no version segment: 0
 ```
 
-50 products — broader than you might expect from a "single product family"
-sitemap. Includes LLM NIMs, bioscience NIMs (bionemo/*), audio/video NIMs
+50 source areas — broader than you might expect from one
+documentation umbrella. Includes LLM NIMs, bioscience NIMs (bionemo/*), audio/video NIMs
 (maxine/*), medical imaging (medical/*), and several others.
 
-## Step 3 — Curate per-product versions
+## Step 3 — Curate per-source-area versions
 
-44 of 50 products have a `/latest/` symlink. For those, use `/latest/`
+44 of 50 source areas have a `/latest/` symlink. For those, use `/latest/`
 directly. The remaining 6 need manual version pinning:
 
-| Product | Available versions | Pinned to | Rationale |
+| Source area | Available versions | Pinned to | Rationale |
 |---|---|---|---|
 | `large-language-models/early-access` | (no version segment) | `early-access` | 2 URLs only; treat the path segment as a version |
 | `llama-3-1-nemoguard-8b-contentsafety` | 1.0.0, 1.10.1 | `1.10.1` | newest |
@@ -63,7 +64,7 @@ directly. The remaining 6 need manual version pinning:
 
 ## Step 4 — Curated prefix list (48 entries)
 
-The 44 `/latest/` products + the 6 pinned versions + the `early-access`
+The 44 `/latest/` source areas + the 6 pinned versions + the `early-access`
 entry. Pass this as `allowed_url_prefixes` to the crawler:
 
 ```json
@@ -160,8 +161,8 @@ historical-version URLs, even when filtered through `allowed_url_prefixes`,
 and pollute the queue.
 
 `use_product_url_map: false` is also intentional. By default the crawler
-consults a URL-prefix → product-collection map to route binaries (PDFs,
-DOCX) into per-product directories under `pdf-repo/`. For a curated SFT
+consults a URL-prefix → source-area collection map to route binaries (PDFs,
+DOCX) into per-source-area directories under `pdf-repo/`. For a curated SFT
 crawl, you want all binaries to land in *one* directory keyed to your
 explicit collection name — so that the binary manifest and the
 downloaded files stay grouped together and don't commingle with prior
@@ -198,23 +199,23 @@ docs patterns:
 
 | Source | Typical files | Notes |
 |---|---|---|
-| `docs.nvidia.com/nim/...` HTML pages | inline `.md` snippets, occasional linked PDFs (deployment guides, performance whitepapers) | Most product technical content is in HTML; PDFs are supplementary |
+| `docs.nvidia.com/nim/...` HTML pages | inline `.md` snippets, occasional linked PDFs (deployment guides, performance whitepapers) | Most technical content is in HTML; PDFs are supplementary |
 | `images.nvidia.com/aem-dam/...` | Marketing PDFs, datasheets | Mixed quality for SFT — filter at extraction |
 | `developer.download.nvidia.com/...` | SDK release notes, large technical guides | Usually high-quality for SFT |
-| `github.com/NVIDIA/<repo>/...` | READMEs, contributing guides, code-sample explanations | Per-product repos vary; high-signal when present |
+| `github.com/NVIDIA/<repo>/...` | READMEs, contributing guides, code-sample explanations | Per-source repos vary; high-signal when present |
 
 Exact counts will be known after the crawl completes — add to this table
 post-crawl with actual binary-manifest totals.
 
-## Corpus bias to know about
+## Source-area imbalance to know about
 
 `/nim/large-language-models/latest/` alone is **~88% of the curated corpus**
-(311 of 351 URLs). The remaining ~40 URLs cover all 47 other products
+(311 of 351 URLs). The remaining ~40 URLs cover all other source areas
 combined.
 
-If your downstream SFT use case needs balanced coverage of all NIM products,
-plan to **stratify at the entailment-extraction step**: cap per-product
-chunk count to, say, 50× the median per-product count, then sample. Don't
+If your downstream SFT use case needs balanced coverage across source areas,
+plan to **stratify at the entailment-extraction step**: cap per-slice
+chunk count to, say, 50× the median per-slice count, then sample. Don't
 try to "fix" this at crawl time — the docs are what they are.
 
 If your use case is specifically LLM-NIM deployment knowledge, the bias is
@@ -235,14 +236,14 @@ curl -sk -u "$ES_USER:$ES_PASS" \
 # something went wrong with prefix matching or content-hash dedup).
 ```
 
-## Lessons for other docs.nvidia.com product families
+## Lessons for other broad documentation sites
 
-1. **Sitemap-listed product count is approximate.** What looks like one
-   product (NIM) is actually a portfolio of 50 internal products with
+1. **Sitemap-listed source-area count is approximate.** What looks like one
+   documentation area can actually contain many source areas with
    varied versioning conventions.
-2. **A single product can dominate the corpus.** `large-language-models`
+2. **A single source area can dominate the corpus.** `large-language-models`
    here, but you'll see similar imbalances in other portfolios (e.g.,
-   one flagship product with 10x the docs of its siblings).
+   one heavily documented area with 10x the docs of its siblings).
 3. **Versioning is not uniform within a single sitemap.** Mix of semver
    (`1.0.0`), CalVer (`26.02.0`), and unversioned paths (`early-access`)
    all appear in one sitemap. The classifier in `sitemap_to_inventory.py`
@@ -262,7 +263,7 @@ Built via the Stage 2 pipeline against the `nim_curated` ES collection
 | Stage 1A (LE → KVP, multi-entailment) | ~4,750 |
 | Stage 1B (kNN bridging + contrastive) | ~840 |
 | Stage 1C (instruction diversity) | ~470 |
-| Stage 1.5 (gap-fill) | 0 (no under-represented products flagged) |
+| Stage 1.5 (gap-fill) | 0 (no under-represented domain slices flagged) |
 | **Pre-Curator total** | **6,057** |
 | After Stage 2 QA-eval refinement | 5,752 (305 dropped as ungrounded) |
 | After exact dedup | 5,697 |
@@ -276,16 +277,16 @@ Built via the Stage 2 pipeline against the `nim_curated` ES collection
 - **Validation**: 543 pairs
 - Ratio: 89.97 / 10.03 (target 90 / 10)
 
-### Top product_family by KVP count
+### Top domain-area metadata by KVP count
 
 | Family | KVPs |
 |---|---:|
 | `NIM` | 4,990 |
 | `unknown` | 762 |
 
-Coarse `product_family` granularity reflects the rag-crawler's
+Coarse domain-area granularity reflects the rag-crawler's
 `CRAWLER_PRODUCT_URL_MAP` setting for this crawl — every NIM doc URL maps to
-the single `NIM` family. Finer per-product analysis would require either
+one broad source-area label. Finer per-slice analysis would require either
 extending the URL map or a post-hoc classifier.
 
 ### Validation gate (independent external judge, 99-pair stratified sample)

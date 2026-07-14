@@ -47,8 +47,8 @@ Recommended NeMo dataset names:
 
 | Collection | Training dataset entity | Test dataset entity |
 |---|---|---|
-| `nim_curated` | `default/stage3-nim-curated` | `default/stage3-nim-curated-test` |
-| `nemo_usvcs_curated` | `default/stage3-nemo-usvcs-curated` | `default/stage3-nemo-usvcs-curated-test` |
+| `domain_a_curated` | `default/stage3-domain-a-curated` | `default/stage3-domain-a-curated-test` |
+| `domain_b_curated` | `default/stage3-domain-b-curated` | `default/stage3-domain-b-curated-test` |
 
 ## Phase 2: Customizer Training
 

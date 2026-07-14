@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -138,8 +139,8 @@ def main() -> int:
     )
     ap.add_argument(
         "--customizer-url",
-        default="http://192.168.1.187:30910",
-        help="Customizer REST endpoint (NodePort default)",
+        default=os.getenv("CUSTOMIZER_URL", "https://customizer.example.com"),
+        help="Customizer REST endpoint. Defaults to CUSTOMIZER_URL or a placeholder URL.",
     )
     ap.add_argument("--wait", action="store_true", help="Block until job terminates")
     ap.add_argument("--dry-run", action="store_true")

@@ -18,7 +18,7 @@ Elasticsearch = Any
 
 log = logging.getLogger(__name__)
 
-ANALYZER_NAME = "stage1_5_product_density_gap_analysis"
+ANALYZER_NAME = "stage1_5_domain_slice_density_gap_analysis"
 ANALYZER_VERSION = "2026-05-28"
 DEFAULT_MAX_SEED_IDS = 12
 
@@ -29,7 +29,7 @@ def compute_bias_report(
     threshold_factor: float = 0.5,
     min_chunks_for_inclusion: int = 10,
 ) -> dict[str, Any]:
-    """Compute KVP density per product_family and flag underrepresented products."""
+    """Compute KVP density per domain slice and flag underrepresented slices."""
     chunks_per_family: dict[str, int] = {}
     for passage in passages:
         chunks_per_family[passage.product_family] = (
@@ -50,26 +50,31 @@ def compute_bias_report(
     median_density = statistics.median(densities.values()) if densities else 0.0
     threshold = median_density * threshold_factor
 
-    products = []
+    domain_slices = []
+    legacy_products = []
     for family, density in sorted(densities.items()):
-        products.append({
-            "product_family": family,
+        row = {
+            "domain_slice": family,
             "chunk_count": chunks_per_family[family],
             "kvp_count": kvps_per_family.get(family, 0),
             "density": round(density, 4),
             "underrepresented": density < threshold,
-        })
+        }
+        domain_slices.append(row)
+        legacy_products.append({"product_family": family, **{k: v for k, v in row.items() if k != "domain_slice"}})
 
     return {
         "median_density": round(median_density, 4),
         "threshold": round(threshold, 4),
         "threshold_factor": threshold_factor,
-        "products": products,
+        "domain_slices": domain_slices,
+        # Backward-compatible alias for older local artifacts and callers.
+        "products": legacy_products,
     }
 
 
 def build_seed_styles(kvps: list[KVPRow], product_family: str, n: int = 3) -> list[str]:
-    """Pick example questions for a product_family to seed style variation."""
+    """Pick example questions for a domain slice to seed style variation."""
     matching = [row for row in kvps if row.product_family == product_family]
     if not matching:
         return []
@@ -100,7 +105,7 @@ def retrieve_chunks_for_product(
     top_n: int = 20,
     max_tokens: int = 1500,
 ) -> list[dict[str, Any]]:
-    """Hybrid retrieval: product_family filter plus kNN when a target vector exists."""
+    """Hybrid retrieval: domain-slice filter plus kNN when a target vector exists."""
     _ = max_tokens
     if target_vector:
         body = {
@@ -259,14 +264,21 @@ def build_gap_manifest(
     target_density = float(report.get("median_density", 0.0)) * target_factor
     gaps: list[dict[str, Any]] = []
 
-    for product in report.get("products", []):
-        if not product.get("underrepresented"):
+    coverage_rows = report.get("domain_slices") or report.get("products", [])
+    for coverage_row in coverage_rows:
+        if not coverage_row.get("underrepresented"):
             continue
-        product_family = str(product["product_family"])
-        observed_count = int(product.get("kvp_count", 0))
+        product_family = str(
+            coverage_row.get("domain_slice")
+            or coverage_row.get("product_family")
+            or ""
+        )
+        if not product_family:
+            continue
+        observed_count = int(coverage_row.get("kvp_count", 0))
         target_count = max(
             observed_count,
-            math.ceil(target_density * int(product.get("chunk_count", 0))),
+            math.ceil(target_density * int(coverage_row.get("chunk_count", 0))),
         )
         if target_count <= observed_count:
             continue
@@ -276,6 +288,9 @@ def build_gap_manifest(
             "gap_id": gap_id,
             "dimension": {
                 "collection": collection,
+                "domain_slice": product_family,
+                "source_area": product_family,
+                # Backward-compatible aliases for older consumers.
                 "product": product_family,
                 "microservice": product_family,
             },
@@ -361,7 +376,7 @@ def build_data_designer_requests(
     for gap in gap_manifest.get("gaps", []):
         if gap.get("recommendation") != "generate_synthetic":
             continue
-        product_family = str(gap.get("dimension", {}).get("product") or "")
+        product_family = str(gap.get("dimension", {}).get("domain_slice") or gap.get("dimension", {}).get("product") or "")
         if not product_family:
             continue
         hits = retrieve_chunks_for_product(
@@ -385,6 +400,7 @@ def build_data_designer_requests(
             "pairs_per_record": pairs_per_call,
             "input": {
                 "gap_id": gap["gap_id"],
+                "domain_slice": product_family,
                 "product_family": product_family,
                 "pairs_count": pairs_per_call,
                 "seed_styles": "\n".join(seed_styles),

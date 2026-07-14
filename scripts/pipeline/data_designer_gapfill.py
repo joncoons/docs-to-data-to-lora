@@ -64,7 +64,7 @@ PROMPT_TEMPLATE = """\
 Gap ID: {{ gap_id }}
 Brief: {{ generation_brief }}
 
-Generate {{ pairs_count }} question-answer pairs about {{ product_family }} that are
+Generate {{ pairs_count }} question-answer pairs about the domain slice {{ domain_slice }} that are
 answerable ONLY from the following retrieved documentation chunks. Vary the
 question styles using these examples as reference:
 {{ seed_styles }}
@@ -182,7 +182,8 @@ def flatten_request_for_seed(request: dict[str, Any]) -> dict[str, Any]:
         "gap_manifest_id": request.get("gap_manifest_id"),
         "dataset_version_id": request.get("dataset_version_id"),
         "recipe_name": request.get("recipe_name"),
-        "product_family": input_payload.get("product_family"),
+        "domain_slice": input_payload.get("domain_slice") or input_payload.get("product_family"),
+        "product_family": input_payload.get("product_family") or input_payload.get("domain_slice"),
         "pairs_count": input_payload.get("pairs_count"),
         "pairs_needed": request.get("pairs_needed"),
         "num_records": request.get("num_records"),
@@ -464,7 +465,7 @@ def normalize_generated_records(
     for record_index, record in enumerate(records):
         seed = _merged_seed_record(record, requests_by_gap)
         gap_id = str(seed.get("gap_id") or stable_id("gap", collection, record_index))
-        product_family = str(seed.get("product_family") or collection)
+        product_family = str(seed.get("domain_slice") or seed.get("product_family") or collection)
         retrieved_chunks = str(seed.get("retrieved_chunks") or "")
         retrieved_urls = _list_values(seed.get("retrieved_urls"))
         seed_entailment_ids = _list_values(seed.get("seed_entailment_ids"))
@@ -526,7 +527,7 @@ def normalize_generated_records(
                 },
                 "metadata": {
                     "collection": collection,
-                    "product_family": product_family,
+                    "domain_slice": product_family,
                     "source_url": "<data-designer-synthetic>",
                     "retrieved_urls": retrieved_urls,
                     "gap_manifest_id": seed.get("gap_manifest_id"),
