@@ -8,6 +8,22 @@ This directory freezes the evaluation dataset and target plan for comparing the 
 
 Llama 3.3 70B is a comparison target, not the judge. The judge remains independent.
 
+
+## Applying This To Your Own Corpora
+
+The same process is intended to be reusable for any corpus or group of corpora made from unstructured source material. The experiment-specific names in this directory are NIM and NeMo Microservices, but the durable workflow is corpus-agnostic:
+
+1. Register each corpus with a stable corpus slug and retain source provenance for every generated row.
+2. Generate training candidates through one or both dataset paths: LE extraction/generation and Curator DiverseQA.
+3. Configure the generation model and endpoint per stage. The scripts support local NIM endpoints, hosted NVIDIA inference endpoints, and multiple endpoint entries for load sharing or fallback.
+4. Run the downstream dataset preparation stages with the same reliability controls: resumable JSONL writes, per-row provenance, failure capture, retryable batches, deterministic splits, and leak checks.
+5. Register finalized datasets with Entity/Data Store or the target dataset store expected by the training environment.
+6. Train the comparison adapters with fixed hyperparameter grids, then collect no-RAG answer sets from an immutable golden QA set to isolate model and adapter behavior.
+7. Optionally collect RAG answer sets against corpus-scoped retrieval collections. Scope retrieval to the active corpus collection so a NIM question cannot retrieve from the NeMo collection, or vice versa.
+8. Score no-RAG and RAG answer sets with the same independent judge rubric, export repo-local artifacts and MLflow telemetry, then use optional RAGAS as a retrieval diagnostic rather than the primary LoRA winner criterion.
+
+For a new corpus, the minimum project-specific inputs are the source document set, corpus slug, generation model endpoint configuration, target base models/adapters, and a frozen golden QA set for evaluation. The evaluation graphics under `graphics/` are generated from summary files, so the same rendering path can be reused once a new corpus writes compatible single-axis and RAGAS summaries.
+
 ## Golden Dataset
 
 `golden-v1` is built from the prior held-out test sets, not from the current validation splits. The builder removes rows that exactly overlap current LE or Curator train/validation prompts and enforces HTML-only provenance.
@@ -53,12 +69,12 @@ The formal winner evaluation is no-RAG. Model answers are collected from `test_s
 
 Single-axis evaluation measures standalone model efficacy with the direct Kimi scorer over saved completion files. The active rubric axes are accuracy, completeness, reference-grounded faithfulness, and clarity. Here, faithfulness means the model avoids contradictions or unsupported additions relative to the golden reference answer; it is not a RAG/source-context metric.
 
-Pairwise evaluation has two layers:
+Pairwise evaluation is intentionally reduced after single-axis completes:
 
-1. Matched LE vs Curator comparisons by corpus, base size, and LoRA rank.
-2. The best LoRA winner from that context against the dense Llama 3.3 70B reference target.
+1. For each corpus and dense size, select the top-scoring LoRA from single-axis across LE vs Curator and r16 vs r32.
+2. Compare only those selected 1B, 3B, and 8B LoRA winners against the dense Llama 3.3 70B reference target.
 
-Use position-swapped pairwise judging for all pairwise runs. Select the winner primarily by pairwise win rate; use single-axis composite as a tie breaker. Export every scoring run both to repo-local artifacts and to MLflow.
+This avoids rebuilding the full pairwise matrix after the single-axis run has already identified the strongest candidate in each size class. Use position-swapped pairwise judging for all pairwise runs. Select the winner primarily by pairwise win rate; use single-axis composite as a tie breaker. Export every scoring run both to repo-local artifacts and to MLflow.
 
 ## Judge And Reference Models
 
@@ -167,6 +183,33 @@ NeMo Evaluator RAGAS remains useful as a later diagnostic, but it is not part of
 
 The optional runner is `scripts/eval/run_nemo_evaluator_saved_responses.py`. Keep its outputs under `/mnt/nvme2/peft/evals/nemo-evaluator-kimi/` and repo summaries under `evaluator_kimi_20260712/`. A one-row 2026-07-12 smoke reached Evaluator and MLflow but was intentionally stopped for formal evaluation because it would move the experiment back into RAGAS semantics.
 
+## Reduced RAG Follow-Up
+
+After the Claude single-axis run completes, run the RAG answer-capture and RAG-aware scoring on the same reduced population used for pairwise: the top 1B, 3B, and 8B LoRA winners per corpus plus the Llama 3.3 70B base reference. For the 2026-07-14 RAG capture, the 70B reference is hosted at `https://inference-api.nvidia.com/v1` as `nvidia/meta/llama-3.3-70b-instruct`; local Blackwell GPUs are reserved for the LoRA-capable 1B and 8B NIMs.
+
+RAG deployment must be scoped sequentially by corpus. Do not use the broad `nvidia` collection for this evaluation.
+
+| Step | Corpus | Required `COLLECTION_NAME` | Input questions |
+| --- | --- | --- | --- |
+| 1 | NIM | `nim_curated` | `golden-v1/nim_curated/test_set.jsonl` |
+| 2 | NeMo Microservices | `nemo_usvcs_curated` | `golden-v1/nemo_usvcs_curated/test_set.jsonl` |
+
+Keep retrieval sizing fixed unless a smoke run proves it is too noisy:
+
+- Candidate retrieval: `VECTOR_DB_TOPK=100`
+- Reranker: `ENABLE_RERANKER=True`
+- Final returned context count: `APP_RETRIEVER_TOPK=10`
+- Retriever score threshold: `APP_RETRIEVER_SCORETHRESHOLD=0.25`
+- Reranker confidence threshold: `RERANKER_CONFIDENCE_THRESHOLD=0.0`
+
+For each corpus deployment, patch the RAG server to the active corpus collection and then run target models sequentially by patching the RAG server LLM backend to the selected target's NIM service and model id. Store RAG answer sets separately from question-only artifacts, for example under `/mnt/nvme2/peft/evals/completions-rag-reduced`.
+
+The RAG single-axis scorer should run after RAG answer capture completes and before pairwise. It compares saved RAG answers to the immutable golden reference answer, does not send retrieved context to the judge, and tags MLflow/repo artifacts as `rag_reduced` RAG-answer mode. Pairwise should compare each reduced LoRA winner against the same-corpus 70B RAG answer set only after RAG single-axis completes with zero unresolved scoring failures. RAGAS should use this same reduced population first; expand only if the reduced result is ambiguous or surprising.
+
+Operational note: the hosted 70B path requires `APP_LLM_APIKEY` from Kubernetes secret `runai-rag/nvidia-inference-key`, key `api-key`, and `rag-server` must use a combined system-plus-ECK CA bundle so both external NVIDIA HTTPS and internal Elasticsearch TLS work. The live deployment creates `/tmp/combined-ca.crt` at startup and points `REQUESTS_CA_BUNDLE`/`SSL_CERT_FILE` at it.
+
+Operational note: this RAG pass should restore the prior `ubuntu2` GPU time-slicing profile before deploying retrieval services. The pre-training profile used `timeSlicing.replicas: 5` for `ubuntu2`, advertising 10 logical GPU slots across the two Ada GPUs. Restore that profile, restart the `ubuntu2` NVIDIA device-plugin and GPU Feature Discovery pods, and verify `nvidia.com/gpu.replicas=5` before starting the RAG pass. This restores schedulability for the NIMService-based 3B, embedding, and reranker deployments. It does not guarantee physical GPU isolation; if physical isolation is required, verify actual device assignment out of band or convert the services to a Run:ai-native workload shape that supports `gpuMemory`.
+
 ## Hosted Smoke Result
 
 A constrained hosted smoke was run on 2026-07-12 with two rows from each corpus to verify endpoint wiring. This is not a formal winner evaluation.
@@ -178,6 +221,25 @@ A constrained hosted smoke was run on 2026-07-12 with two rows from each corpus 
 
 The smoke summary is captured in `hosted_70b_kimi_smoke_20260712.json`; raw completion and score artifacts are under `/mnt/nvme2/peft/evals/`. An initial 1024-token Kimi judge budget was superseded because Kimi could spend the entire budget on reasoning text and hit `finish_reason=length` before returning parseable JSON. Keep the default 8192-token judge budget for Kimi unless a later prompt or endpoint setting reliably forces compact JSON.
 
+
+## Result Graphics
+
+Documentation-ready SVG graphics are captured under `graphics/` and can be regenerated with:
+
+```bash
+/home/joncoons/anaconda3/bin/python scripts/eval/render_golden_eval_graphics.py
+```
+
+Artifacts:
+
+- `graphics/rag_vs_norag_composite.svg` shows the reduced RAG lift over the comparable no-RAG population.
+- `graphics/rag_vs_norag_axis_heatmap.svg` shows axis-level scores for accuracy, completeness, reference-grounded faithfulness, and clarity.
+- `graphics/golden_eval_score_table.svg` provides a numeric SVG table for the same reduced population.
+- `graphics/ragas_coverage_status.svg` records RAGAS coverage/status.
+- `graphics/golden_eval_graphics_data.json` contains the exact source data used to render the SVGs.
+
+The no-RAG and RAG charts use the same reduced comparison set: 1B, 3B, and 8B LE r32 adapters plus the dense Llama 3.3 70B reference for NIM and NeMo Microservices. The RAGAS graphic is currently a status artifact only: full reduced-population RAGAS has not been run, and the existing one-row smoke failed before scoring because `params.judge_embeddings.model` was not configured.
+
 ## Current Status
 
-The golden dataset, target catalog, hosted 70B reference model ID, Kimi judge ID, LoRA answer-set materialization, and no-RAG completion outputs are captured. The active scoring path is no-RAG direct Kimi judging from saved `responses.jsonl` files, with repo-local artifacts and MLflow export. NeMo Evaluator RAGAS is retained only as an optional later diagnostic.
+The golden dataset, target catalog, hosted 70B reference model ID, judge endpoint IDs, LoRA answer-set materialization, no-RAG completion outputs, reduced RAG completion outputs, reduced RAG single-axis scores, and documentation SVG graphics are captured. NeMo Evaluator RAGAS is retained as an optional later diagnostic and still needs a configured judge embedding model before it can produce formal metrics.

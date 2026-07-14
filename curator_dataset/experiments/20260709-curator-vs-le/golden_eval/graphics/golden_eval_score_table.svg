@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="630" viewBox="0 0 1160 630" role="img" aria-labelledby="title desc">
+<title id="title">Golden Evaluation Score Table</title>
+<desc id="desc">Comparable reduced no-RAG and RAG scores; all values are Claude Sonnet 4.6 judge means on a 1-5 scale.</desc>
+<style>
+.bg{fill:#f7f9fb}.title{font:700 24px Arial,sans-serif;fill:#16212d}.subtitle{font:400 13px Arial,sans-serif;fill:#526070}
+.label{font:700 12px Arial,sans-serif;fill:#263241}.small{font:400 11px Arial,sans-serif;fill:#526070}.tiny{font:400 10px Arial,sans-serif;fill:#607080}
+.axis{stroke:#c9d2dc;stroke-width:1}.grid{stroke:#dbe2ea;stroke-width:1}.panel{fill:#ffffff;stroke:#d8e0e8;stroke-width:1;rx:8}
+.norag{fill:#8794a3}.rag{fill:#15956f}.line{stroke:#9aa8b6;stroke-width:1}.value{font:700 11px Arial,sans-serif;fill:#16212d}
+</style>
+<rect class="bg" x="0" y="0" width="100%" height="100%"/>
+<text class="title" x="32" y="36">Golden Evaluation Score Table</text>
+<text class="subtitle" x="32" y="58">Comparable reduced no-RAG and RAG scores; all values are Claude Sonnet 4.6 judge means on a 1-5 scale.</text>
+<rect class="panel" x="24" y="78" width="1112" height="514"/>
+<text class="label" x="44" y="90">Corpus</text>
+<text class="label" x="214" y="90">Target</text>
+<text class="label" x="344" y="90">No-RAG</text>
+<text class="label" x="470" y="90">RAG</text>
+<text class="label" x="596" y="90">Delta</text>
+<text class="label" x="704" y="90">RAG Acc</text>
+<text class="label" x="794" y="90">RAG Comp</text>
+<text class="label" x="884" y="90">RAG Faith</text>
+<text class="label" x="974" y="90">RAG Clear</text>
+<rect x="36" y="100" width="1020" height="38" fill="#ffffff"/>
+<text class="small" x="44" y="124">NIM</text>
+<text class="value" x="214" y="124">1B LE r32</text>
+<text class="value" x="344" y="124">2.461</text>
+<text class="value" x="470" y="124">3.155</text>
+<text class="value" x="596" y="124">+0.694</text>
+<text class="value" x="704" y="124">3.233</text>
+<text class="value" x="794" y="124">2.351</text>
+<text class="value" x="884" y="124">3.302</text>
+<text class="value" x="974" y="124">3.733</text>
+<rect x="36" y="142" width="1020" height="38" fill="#f2f5f8"/>
+<text class="small" x="44" y="166">NIM</text>
+<text class="value" x="214" y="166">3B LE r32</text>
+<text class="value" x="344" y="166">2.768</text>
+<text class="value" x="470" y="166">3.791</text>
+<text class="value" x="596" y="166">+1.024</text>
+<text class="value" x="704" y="166">4.031</text>
+<text class="value" x="794" y="166">2.726</text>
+<text class="value" x="884" y="166">4.108</text>
+<text class="value" x="974" y="166">4.300</text>
+<rect x="36" y="184" width="1020" height="38" fill="#ffffff"/>
+<text class="small" x="44" y="208">NIM</text>
+<text class="value" x="214" y="208">8B LE r32</text>
+<text class="value" x="344" y="208">2.948</text>
+<text class="value" x="470" y="208">3.950</text>
+<text class="value" x="596" y="208">+1.003</text>
+<text class="value" x="704" y="208">4.347</text>
+<text class="value" x="794" y="208">2.802</text>
+<text class="value" x="884" y="208">4.399</text>
+<text class="value" x="974" y="208">4.255</text>
+<rect x="36" y="226" width="1020" height="38" fill="#f2f5f8"/>
+<text class="small" x="44" y="250">NIM</text>
+<text class="value" x="214" y="250">70B base</text>
+<text class="value" x="344" y="250">2.150</text>
+<text class="value" x="470" y="250">3.866</text>
+<text class="value" x="596" y="250">+1.716</text>
+<text class="value" x="704" y="250">4.472</text>
+<text class="value" x="794" y="250">2.564</text>
+<text class="value" x="884" y="250">4.526</text>
+<text class="value" x="974" y="250">3.903</text>
+<rect x="36" y="268" width="1020" height="38" fill="#ffffff"/>
+<text class="small" x="44" y="292">NeMo Microservices</text>
+<text class="value" x="214" y="292">1B LE r32</text>
+<text class="value" x="344" y="292">3.024</text>
+<text class="value" x="470" y="292">3.295</text>
+<text class="value" x="596" y="292">+0.271</text>
+<text class="value" x="704" y="292">3.545</text>
+<text class="value" x="794" y="292">2.202</text>
+<text class="value" x="884" y="292">3.775</text>
+<text class="value" x="974" y="292">3.657</text>
+<rect x="36" y="310" width="1020" height="38" fill="#f2f5f8"/>
+<text class="small" x="44" y="334">NeMo Microservices</text>
+<text class="value" x="214" y="334">3B LE r32</text>
+<text class="value" x="344" y="334">3.197</text>
+<text class="value" x="470" y="334">3.795</text>
+<text class="value" x="596" y="334">+0.597</text>
+<text class="value" x="704" y="334">4.160</text>
+<text class="value" x="794" y="334">2.573</text>
+<text class="value" x="884" y="334">4.283</text>
+<text class="value" x="974" y="334">4.162</text>
+<rect x="36" y="352" width="1020" height="38" fill="#ffffff"/>
+<text class="small" x="44" y="376">NeMo Microservices</text>
+<text class="value" x="214" y="376">8B LE r32</text>
+<text class="value" x="344" y="376">3.382</text>
+<text class="value" x="470" y="376">3.931</text>
+<text class="value" x="596" y="376">+0.549</text>
+<text class="value" x="704" y="376">4.339</text>
+<text class="value" x="794" y="376">2.666</text>
+<text class="value" x="884" y="376">4.464</text>
+<text class="value" x="974" y="376">4.255</text>
+<rect x="36" y="394" width="1020" height="38" fill="#f2f5f8"/>
+<text class="small" x="44" y="418">NeMo Microservices</text>
+<text class="value" x="214" y="418">70B base</text>
+<text class="value" x="344" y="418">2.077</text>
+<text class="value" x="470" y="418">3.854</text>
+<text class="value" x="596" y="418">+1.777</text>
+<text class="value" x="704" y="418">4.478</text>
+<text class="value" x="794" y="418">2.529</text>
+<text class="value" x="884" y="418">4.599</text>
+<text class="value" x="974" y="418">3.812</text>
+<text class="tiny" x="36" y="588">Composite is the unweighted mean of accuracy, completeness, reference-grounded faithfulness, and clarity.</text>
+</svg>
