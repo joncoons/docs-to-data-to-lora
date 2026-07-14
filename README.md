@@ -44,6 +44,24 @@ extraction, resumable JSONL stages, retry/failure accounting, multi-endpoint
 load sharing, corpus-scoped RAG evaluation, golden-test construction, and
 documentation-ready result graphics.
 
+Several methodology choices are deliberate:
+
+- Nemotron 3 Super 120B-equivalent generation is the default for Stage 1A
+  logical-entailment extraction and QA/KVP generation because it provides a
+  strong quality/throughput balance for full-corpus grounded extraction.
+- The evaluation matrix spans 1B, 3B, and 8B dense LoRA adapters, then compares
+  the strongest LoRA candidates against a dense Llama 3.3 70B reference target
+  to support practical model downselection.
+- The LE records preserve premise, conclusion, source context, and provenance,
+  which makes the same data shape a plausible foundation for future NeMo RL or
+  RLHF/RLAIF-style preference and reward workflows.
+- The LE path complements NeMo Curator; it is aimed at small corpus-specific
+  domain adaptation, while Curator remains the preferred foundation for massive
+  scale curation, filtering, synthetic data workflows, and full-SFT preparation.
+
+See [`docs/methodology-rationale.md`](docs/methodology-rationale.md) for the
+full rationale.
+
 ## What you get at the end
 
 A LoRA adapter you can load onto a base model (via `NIM_PEFT_SOURCE` or
@@ -102,6 +120,7 @@ docs-to-data-to-lora/
 │   ├── stage-1-curated-crawl.md           ← one corpus-ingestion methodology
 │   ├── stage-2-dataset-creation.md        ← entailment + augmentation (WIP)
 │   ├── stage-3-peft-training.md           ← LoRA SFT pipeline (WIP)
+│   ├── methodology-rationale.md           ← why LE, Curator, model sizing, RL
 │   ├── integration-templates/              ← MLflow/NeMo orchestration plans
 │   └── integrations/                      ← optional Stage 1 enhancements
 │       ├── README.md                      (decision table — when to use which)

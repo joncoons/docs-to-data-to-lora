@@ -26,6 +26,18 @@ Evaluator plus MLflow provide formal evaluation and artifact lineage. The
 LE-based QA/KVP extraction and durability patterns in this repo are examples of
 solution-level augmentation built on top of that foundation.
 
+The LE path is designed for small corpus specificity, not as a replacement for
+Curator. LE is useful when the corpus is narrow enough that local terminology,
+procedures, and premise-conclusion relationships are the highest-value signal.
+Curator remains the scale engine for broad curation, deduplication, quality
+filtering, synthetic generation workflows, and full-SFT data preparation. This
+pipeline uses both: LE for auditable grounded extraction, then Curator-backed
+quality and structural preparation where it is strongest.
+
+See [`methodology-rationale.md`](methodology-rationale.md) for the full design
+rationale behind Nemotron 3 Super, LE, Curator, model downselection, and the
+future NeMo RL extension path.
+
 ## Pipeline overview
 
 The pipeline has eight stages, run in order for each collection:
@@ -188,6 +200,18 @@ holds it in memory as `{passage_id: vector}`.
 This stage is a direct port of `prompt_zoo.logical_entailment()` and
 `prompt_zoo.kvp_generation()` from the Jan 2025 LE pipeline (see References),
 with the Pydantic schemas `LogEntailment` and `QAKeyValuePair`.
+
+The production default uses Nemotron 3 Super 120B-equivalent generation for this
+stage. Super is strong enough to extract latent premises and preserve structured
+outputs across a full corpus, while still being practical for local NIM or
+hosted inference throughput. Ultra/frontier models remain available for targeted
+audit or synthesis stages, but Super is the default extraction workhorse.
+
+The emitted records preserve the source passage, premise, conclusion, QA pair,
+and provenance. That makes the output useful beyond SFT: the same structure can
+be transformed into preference or reward data for future NeMo RL-style workflows
+where the reward signal checks whether an answer follows from the recorded
+premises instead of merely matching a surface answer string.
 
 ### Per-passage flow
 

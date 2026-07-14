@@ -20,6 +20,13 @@ better corpus-derived SFT dataset than the current custom LE extraction, where
 The experiment must not claim that Curator is better merely because it emits
 more rows, filters more aggressively, or uses a different model.
 
+This is not a universal replacement test. Curator remains the preferred NVAIE
+foundation for massive-scale curation, filtering, synthetic workflows, and
+full-SFT dataset preparation. The experiment asks a narrower operational
+question: for small, corpus-specific LoRA adaptation, does an LE-generated QA
+KVP dataset yield better adapter utility than Curator DiverseQA on the same
+source material under matched training and evaluation conditions?
+
 ## 2. What is and is not being compared
 
 ### In scope

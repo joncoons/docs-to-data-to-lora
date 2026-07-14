@@ -28,6 +28,21 @@ For a domain-specific adapter, LoRA is the right tool:
 The trade-off: LoRA learns less per training pass than full SFT, so signal
 quality (Stage 2) matters more than for full fine-tuning.
 
+## Model Downselection Rationale
+
+The case study evaluates LoRA adapters across multiple dense model sizes rather
+than assuming one model class is correct. Training 1B, 3B, and 8B dense adapters
+with matched ranks and datasets shows how much domain specificity each size can
+absorb, where the smaller models saturate, and whether a larger adapter earns
+its serving cost.
+
+The dense Llama 3.3 70B target is used as a reference comparison target, not as
+the judge. Single-axis scoring first measures standalone answer quality for each
+LoRA candidate. Pairwise scoring then compares the strongest LoRA candidates in
+each size class against the 70B reference. This supports practical selection of
+the smallest dense model that meets the quality bar for the target domain,
+latency budget, and deployment footprint.
+
 ## Domain adapters, one base
 
 The case study trains two adapters from the same base model, one per scoped
@@ -88,10 +103,11 @@ Adapter artifact (publishable)
   is the planned target — keeps the whole pipeline on NVIDIA-native tools
   and makes adapter deployment via NIM straightforward.
 - **Evaluation strategy.** External frontier judge for response quality;
-  domain-specific QA benchmark for factual accuracy. Eval split held out
-  from the source collection so it represents the same distribution, while
-  optional RAG/RAGAS diagnostics measure retrieval-augmented behavior
-  separately.
+  domain-specific golden QA benchmark for factual accuracy; single-axis
+  scoring for standalone efficacy; pairwise scoring for LE-vs-Curator and
+  best-LoRA-vs-70B comparisons. Optional RAG/RAGAS diagnostics measure
+  retrieval-augmented behavior separately and should not decide the primary
+  no-RAG LoRA winner.
 
 ## Hardware notes
 

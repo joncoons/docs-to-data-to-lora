@@ -9,6 +9,14 @@ This directory freezes the evaluation dataset and target plan for comparing the 
 Llama 3.3 70B is a comparison target, not the judge. The judge remains independent.
 
 
+The comprehensive single-axis matrix across 1B, 3B, and 8B LoRA adapters is a
+model downselection tool. It shows the relative utility of LE-generated and
+Curator DiverseQA-generated datasets across dense parameter counts before the
+reduced pairwise round compares only the strongest LoRA candidates against the
+70B reference. The point is to choose the smallest dense model that satisfies
+the domain quality bar, not to treat the 70B model as a judge or as a mandatory
+serving target.
+
 ## Applying This To Your Own Corpora
 
 The same process is intended to be reusable for any corpus or group of corpora made from unstructured source material. The experiment-specific names in this directory are NIM and NeMo Microservices, but the durable workflow is corpus-agnostic and intentionally demonstrates how NVAIE assets can be composed with project-specific logic for real business domains:
@@ -221,7 +229,6 @@ A constrained hosted smoke was run on 2026-07-12 with two rows from each corpus 
 | `nemo_usvcs_curated_golden_v1` | `nvidia/meta/llama-3.3-70b-instruct` | 2 | 2 | 3.5 | 3.5 | 3.5 | 4.0 |
 
 The historical smoke summary is captured in `hosted_70b_kimi_smoke_20260712.json`; raw completion and score artifacts are under `/mnt/nvme2/peft/evals/`. This artifact is retained only as provenance for prior endpoint testing.
-
 
 ## Result Graphics
 
