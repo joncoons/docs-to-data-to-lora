@@ -11,7 +11,7 @@ Llama 3.3 70B is a comparison target, not the judge. The judge remains independe
 
 ## Applying This To Your Own Corpora
 
-The same process is intended to be reusable for any corpus or group of corpora made from unstructured source material. The experiment-specific names in this directory are NIM and NeMo Microservices, but the durable workflow is corpus-agnostic:
+The same process is intended to be reusable for any corpus or group of corpora made from unstructured source material. The experiment-specific names in this directory are NIM and NeMo Microservices, but the durable workflow is corpus-agnostic and intentionally demonstrates how NVAIE assets can be composed with project-specific logic for real business domains:
 
 1. Register each corpus with a stable corpus slug and retain source provenance for every generated row.
 2. Generate training candidates through one or both dataset paths: LE extraction/generation and Curator DiverseQA.

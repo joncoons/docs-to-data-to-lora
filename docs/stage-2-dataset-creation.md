@@ -6,18 +6,25 @@
 
 ## What this stage produces
 
-Two independent runs of the same pipeline — one per Stage 1 ES collection — each
-producing a `training.jsonl` + `validation.jsonl` pair in NeMo Customizer SFT
+Independent runs of the same pipeline — one per Stage 1 collection — each
+produce a `training.jsonl` + `validation.jsonl` pair in NeMo Customizer SFT
 format, split 90/10. Every record has the shape `{prompt, completion, system}`.
-The two datasets are entirely independent: no chunks cross between them, and the
-resulting LoRA adapters are specialized for their respective domains. The
-`nim_curated` collection (2,086 chunks, 50 NIM products) produces a NIM-specific
-adapter; the `nemo_usvcs_curated` collection (1,289 chunks, NeMo Microservices
-platform) produces a NeMo Microservices-specific adapter.
+Collections are intentionally scoped: chunks do not cross boundaries, and the
+resulting LoRA adapters specialize in their respective enterprise domains or
+sub-domains. The NIM and NeMo Microservices collections in this repo are case
+studies, not a constraint on the approach.
 
 Every generated pair is grounded in retrieved corpus text. No parametric-only
 generation is used anywhere in the pipeline — the LLM synthesizes or transforms
 chunks already in the corpus, it does not draw on its own training knowledge.
+
+The reference implementation is NVAIE-centered. NIM endpoints provide the
+foundation/frontier model interface for LE extraction, synthesis, auditing, and
+inference; NeMo Curator/Data Designer provide dataset transformation and
+quality tooling; NeMo Customizer consumes the resulting SFT JSONL; and NeMo
+Evaluator plus MLflow provide formal evaluation and artifact lineage. The
+LE-based QA/KVP extraction and durability patterns in this repo are examples of
+solution-level augmentation built on top of that foundation.
 
 ## Pipeline overview
 
@@ -37,9 +44,11 @@ The pipeline has eight stages, run in order for each collection:
    selection mode is stratified across density bands; top-density and all-passage
    modes are available. Output: `stage1c_instruction.jsonl`.
 5. **Stage 1.5 — Optional Bias analysis + Data Designer gap-fill**: measure
-   per-product KVP density and, only when synthetic augmentation is desired,
-   hand under-represented products to NeMo Data Designer for grounded synthetic
-   generation. Output: `bias_report.json` + optional `stage1_5_gapfill.jsonl`.
+   per-slice KVP density (for example product family, workflow, policy area,
+   or source collection segment) and, only when synthetic augmentation is
+   desired, hand under-represented slices to NeMo Data Designer for grounded
+   synthetic generation. Output: `bias_report.json` + optional
+   `stage1_5_gapfill.jsonl`.
 6. **Stage 2 — QA Admission + Refinement**: Curator-backed LLM quality gating
    with a Super 120B-class or similar model by default — refine or drop each
    pair based on source grounding and answer fidelity. Escalate to
@@ -994,10 +1003,11 @@ registration, training-pod paths, and adapter naming from that point forward.
 
 ### Per-collection scoping
 
-Each ES collection gets its own independent pipeline run and produces its own
-adapter. No mixing of NIM chunks into the NeMo Microservices dataset, and vice
-versa. This keeps each adapter specialized and prevents cross-product
-hallucination where the model blends product details from two domains.
+Each collection gets its own independent pipeline run and can produce its own
+adapter. No chunks should cross scoped domain boundaries unless the experiment
+explicitly tests a shared-domain adapter. This keeps each adapter specialized
+and prevents cross-domain blending where the model mixes terms, procedures,
+constraints, or policy details from unrelated source areas.
 
 ### All generation is RAG-grounded
 
