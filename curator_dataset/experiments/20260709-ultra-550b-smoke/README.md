@@ -27,7 +27,7 @@ Use a fixed source slice and regenerate only that slice.
 | Pipelines | Logical entailment, NeMo Curator DiverseQA |
 | Generator models | Super 120B-equivalent baseline, Ultra 550B candidate |
 | Training proxy | Llama 3.1 8B LoRA r16 first; add r32 only if r16 is promising |
-| Judge | Claude Sonnet 4.6 via `azure/anthropic/claude-sonnet-4-6` on `inference.nvidia.com` |
+| Judge | Claude Sonnet 4.6 via `azure/anthropic/claude-sonnet-4-6` on `a configured OpenAI-compatible endpoint` |
 
 Start with r16 because the current Curator r16/r32 spread is small relative to the LE gap. A r32 follow-up is useful only if Ultra changes the data-quality signal enough to justify the extra training edge.
 
@@ -127,7 +127,7 @@ If Ultra improves Curator quality but still trails LE materially, keep LE as the
 4. Normalize all outputs through the same JSONL schema and register them through the HF shim-backed dataset path.
 5. Train r16 proxy adapters sequentially on Blackwell, committing after each training edge.
 6. Collect worker-log validation checkpoints and Customizer status into per-job manifests.
-7. Run Claude Sonnet 4.6 judge evaluation through `inference.nvidia.com` using the Kubernetes secret for credentials.
+7. Run Claude Sonnet 4.6 judge evaluation through `a configured OpenAI-compatible endpoint` using the Kubernetes secret for credentials.
 8. Produce a smoke comparison report with validation curves, judge deltas, row-quality checks, and a go/no-go recommendation.
 9. Commit the smoke report and manifests before deciding on full-corpus Ultra generation.
 

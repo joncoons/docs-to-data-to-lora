@@ -14,7 +14,7 @@ if str(REPO_ROOT) not in sys.path:
 
 os.environ.setdefault("JUDGE_API_URL", "http://llm-judge.default.svc.cluster.local:8000/v1")
 os.environ.setdefault("EVALUATOR_JUDGE_MODEL", "azure/anthropic/claude-sonnet-4-6")
-os.environ.setdefault("JUDGE_API_KEY_ENV", "NVIDIA_API_KEY")
+os.environ.setdefault("JUDGE_API_KEY_ENV", "LLM_API_KEY")
 os.environ.setdefault("PAIRWISE_OUTPUT_ROOT", "<EVAL_ROOT>/pairwise-llm")
 
 from scripts.eval.run_direct_kimi_pairwise import main  # noqa: E402

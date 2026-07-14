@@ -1,7 +1,7 @@
 # NIM Stage 1A Load-Balanced Recovery Summary
 
 - Created: `2026-07-10T12:18:47.357434Z`
-- Scope: NIM Super Stage 1A recovery pass using local Super plus inference.nvidia.com Super alias.
+- Scope: NIM Super Stage 1A recovery pass using local Super plus a configured OpenAI-compatible Super alias.
 - Dataset policy update: downstream datasets are HTML-only; PDF/document-capture passages remain preserved in extraction artifacts but are excluded from dataset creation.
 - Command log: `stage1a_durable_recovery_lb.log`
 - PID file: `stage1a_durable_recovery_lb.pid`

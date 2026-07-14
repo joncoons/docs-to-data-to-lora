@@ -139,5 +139,5 @@ def get_es_password() -> str:
 
 
 def get_external_judge_api_key() -> str:
-    """Get the NVIDIA Inference API key used for external judge calls."""
-    return get_k8s_secret("nvidia-inference-key", "runai-rag", "api-key")
+    """Get the API key used for external OpenAI-compatible judge calls."""
+    return get_k8s_secret("llm-api-key", "runai-rag", "api-key")

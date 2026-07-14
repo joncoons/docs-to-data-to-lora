@@ -13,7 +13,7 @@ found 451 public-source URL documents:
 - no private or internal hosts
 
 The API key was read at runtime from Kubernetes Secret
-`runai-rag/nvidia-inference-key` key `api-key`; its value was never persisted.
+`runai-rag/llm-api-key` key `api-key`; its value was never persisted.
 
 ## Corpus preparation
 

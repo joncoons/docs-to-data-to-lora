@@ -222,10 +222,10 @@ spec:
           value: "100"
         - name: VLM_TO_LLM_FALLBACK
           value: "true"
-        - name: NVIDIA_API_KEY
+        - name: LLM_API_KEY
           valueFrom:
             secretKeyRef:
-              key: NVIDIA_API_KEY
+              key: LLM_API_KEY
               name: ngc-api
         - name: TAVILY_API_KEY
           valueFrom:

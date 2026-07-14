@@ -54,13 +54,13 @@ Within each corpus deployment, run target models sequentially. Patch the RAG ser
 - 70B base reference: `APP_LLM_SERVERURL=https://llm.example.com/v1`, `APP_LLM_MODELNAME=nvidia/meta/llama-3.3-70b-instruct`.
 - 1B winner: `APP_LLM_SERVERURL=nim-llm-1b-bw-lora:8000`, selected LE r32 model id.
 
-Current live layout: local `nim-llm` 70B is scaled to zero, `nim-llm-1b-bw-lora` and `nim-llm-8b-bw-lora` run on `<BLACKWELL_NODE>`, and the 70B comparison is hosted. The capture worker resumes partial JSONL outputs under run id `golden-v1-rag-reduced-20260714`.
+Current live layout: local `nim-llm` 70B is scaled to zero, `nim-llm-1b-bw-lora` and `nim-llm-8b-bw-lora` run on `<BLACKWELL_NODE>`, and the 70B comparison uses a configured remote endpoint. The capture worker resumes partial JSONL outputs under run id `golden-v1-rag-reduced-20260714`.
 
-## Hosted 70B Runtime Notes
+## Remote 70B Runtime Notes
 
-The hosted 70B path uses `APP_LLM_APIKEY` from Kubernetes secret `runai-rag/nvidia-inference-key`, key `api-key`. Do not persist the key value. The older global `NVIDIA_API_KEY` from `ngc-api` is not sufficient for `https://llm.example.com/v1`; it is an NGC/NVIDIA key and the endpoint expects the inference virtual key.
+The remote 70B path uses `APP_LLM_APIKEY` from Kubernetes secret `runai-rag/llm-api-key`, key `api-key`. Do not persist the key value. The older global `LLM_API_KEY` from `ngc-api` is not sufficient for `https://llm.example.com/v1`; it is an NGC/NVIDIA key and the endpoint expects the inference virtual key.
 
-`rag-server` must validate both external NVIDIA TLS and the internal Elasticsearch TLS endpoint. The live deployment generates `/tmp/combined-ca.crt` at startup by concatenating `/etc/ssl/certs/cacert.pem` with `/etc/ssl/eck/ca.crt`, then sets `REQUESTS_CA_BUNDLE` and `SSL_CERT_FILE` to the combined path. A smoke test on 2026-07-14 verified both hosted 70B generation and local NIM RAG retrieval after this change.
+`rag-server` must validate both external NVIDIA TLS and the internal Elasticsearch TLS endpoint. The live deployment generates `/tmp/combined-ca.crt` at startup by concatenating `/etc/ssl/certs/cacert.pem` with `/etc/ssl/eck/ca.crt`, then sets `REQUESTS_CA_BUNDLE` and `SSL_CERT_FILE` to the combined path. A smoke test on 2026-07-14 verified both remote 70B generation and local NIM RAG retrieval after this change.
 
 ## GPU Scheduling Note
 
@@ -122,4 +122,4 @@ Do not deploy the RAG pass until all gates are true:
 - The reduced winner manifest has been written locally.
 - RAG server collection scoping has been patched to the active corpus before launch.
 - A one-row smoke confirms the active corpus does not retrieve from the other corpus.
-- Hosted 70B smoke succeeds through `rag-server` using `nvidia/meta/llama-3.3-70b-instruct` and `APP_LLM_APIKEY` from `nvidia-inference-key`.
+- Remote 70B smoke succeeds through `rag-server` using `nvidia/meta/llama-3.3-70b-instruct` and `APP_LLM_APIKEY` from `llm-api-key`.

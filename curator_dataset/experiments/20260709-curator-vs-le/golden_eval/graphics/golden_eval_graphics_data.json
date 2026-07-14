@@ -267,7 +267,7 @@
     }
   },
   "generated_at": "2026-07-14T13:05:39.317309+00:00",
-  "judge": "Claude Sonnet 4.6 via inference.nvidia.com",
+  "judge": "Claude Sonnet 4.6 via a configured OpenAI-compatible endpoint",
   "notes": [
     "No-RAG and RAG values use the same reduced comparison population.",
     "RAG scores evaluate saved RAG answers against the immutable golden answer; retrieved context is not sent to the judge.",

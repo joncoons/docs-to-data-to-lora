@@ -253,7 +253,7 @@ def collect_result_data() -> dict[str, Any]:
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "judge": "Claude Sonnet 4.6 via inference.nvidia.com",
+        "judge": "Claude Sonnet 4.6 via a configured OpenAI-compatible endpoint",
         "score_scale": "1-5",
         "axes": [{"key": key, "label": label} for key, label in AXES],
         "records": records,

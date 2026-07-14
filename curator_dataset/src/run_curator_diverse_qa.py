@@ -2,7 +2,7 @@
 """Run Curator 26.04's native Nemotron-CC DiverseQA pipeline.
 
 This script is intended to execute inside the official NeMo Curator container.
-The NVIDIA API key is accepted only through the ``NVIDIA_API_KEY`` environment
+The NVIDIA API key is accepted only through the ``LLM_API_KEY`` environment
 variable and is never persisted.
 """
 from __future__ import annotations
@@ -101,9 +101,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    api_key = os.environ.get("NVIDIA_API_KEY")
+    api_key = os.environ.get("LLM_API_KEY")
     if not api_key:
-        raise RuntimeError("NVIDIA_API_KEY is required")
+        raise RuntimeError("LLM_API_KEY is required")
     args.input = args.input.resolve()
     args.output_dir = args.output_dir.resolve()
     args.output_dir.mkdir(parents=True, exist_ok=False)

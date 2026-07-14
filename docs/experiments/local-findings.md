@@ -10,7 +10,7 @@ Date: 2026-06-02
 Context:
 
 - Previous judge endpoint: local MAAS-hosted Kimi K2.6 endpoint.
-- Current judge endpoint: NVIDIA Inference API chat-completions endpoint.
+- Current judge endpoint: configured OpenAI-compatible chat-completions endpoint.
 - Current model: `nvidia/moonshotai/kimi-k2.6`.
 - Do not store or commit ephemeral API keys. The Kubernetes Secret
   `runai-rag/kimi-judge-api` was updated locally.

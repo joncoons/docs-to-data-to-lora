@@ -2,7 +2,7 @@
 
 This script is intentionally isolated from the production pipeline. It samples
 passages from existing Stage 0 artifacts, sends the full selected passage text to
-Nemotron 3 Ultra through NVIDIA hosted inference, writes batched Stage 1A
+Nemotron 3 Ultra through a configured OpenAI-compatible inference endpoint, writes batched Stage 1A
 artifacts, and records timing/call metrics that support baseline latency
 interpolation.
 """
@@ -405,7 +405,7 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--retry-attempts", type=int, default=2)
     ap.add_argument("--retry-base-delay-s", type=float, default=2.0)
     ap.add_argument("--baseline-calibration-premises", type=int, default=12)
-    ap.add_argument("--secret-name", default="nvidia-inference-key")
+    ap.add_argument("--secret-name", default="llm-api-key")
     ap.add_argument("--secret-namespace", default="runai-rag")
     ap.add_argument("--secret-key", default="api-key")
     ap.add_argument("--nim-passages", type=Path, default=DEFAULT_INPUTS["nim_curated"])

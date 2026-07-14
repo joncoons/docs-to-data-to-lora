@@ -20,7 +20,7 @@ EXPERIMENT_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = EXPERIMENT_ROOT.parents[2]
 DEFAULT_MODEL = "azure/anthropic/claude-sonnet-4-6"
 DEFAULT_ENDPOINT = "https://llm.example.com/v1"
-DEFAULT_SECRET_NAME = "nvidia-inference-key"
+DEFAULT_SECRET_NAME = "llm-api-key"
 DEFAULT_SECRET_NAMESPACE = "runai-rag"
 RETRYABLE_STATUS_CODES = {408, 409, 425, 429, 500, 502, 503, 504}
 

@@ -31,7 +31,7 @@ def read_api_key() -> str:
             "kubectl",
             "get",
             "secret",
-            "nvidia-inference-key",
+            "llm-api-key",
             "-n",
             "runai-rag",
             "-o",
@@ -81,7 +81,7 @@ def main() -> int:
 
     image_ref = f"{args.image.split(':', 1)[0]}@{args.digest}"
     environment = os.environ.copy()
-    environment["NVIDIA_API_KEY"] = read_api_key()
+    environment["LLM_API_KEY"] = read_api_key()
     command = [
         "docker",
         "run",
@@ -91,7 +91,7 @@ def main() -> int:
         "--shm-size",
         "8g",
         "--env",
-        "NVIDIA_API_KEY",
+        "LLM_API_KEY",
         "--env",
         "HOME=/tmp",
         "--env",

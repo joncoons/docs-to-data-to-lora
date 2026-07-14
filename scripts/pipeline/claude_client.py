@@ -1,4 +1,4 @@
-"""External judge: Claude Sonnet 4.6 via NVIDIA Inference API."""
+"""External judge: Claude Sonnet 4.6 via an OpenAI-compatible API."""
 from __future__ import annotations
 
 import logging

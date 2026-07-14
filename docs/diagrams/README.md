@@ -22,4 +22,4 @@ kubectl get secret excalidraw-api-key -n runai-rag \
   -o jsonpath='{.data.api-key}' | base64 -d
 ```
 
-(Same pattern as `nvidia-inference-key` in the pipeline scripts.)
+(Same pattern as `llm-api-key` in the pipeline scripts.)

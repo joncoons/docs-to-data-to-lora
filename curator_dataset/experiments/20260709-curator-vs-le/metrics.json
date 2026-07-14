@@ -6,7 +6,7 @@
   "generation_model_provenance": {
     "logical_entailment": "nvidia/nemotron-3-super-120b-a12b",
     "curator_diverseqa": "nvidia/nvidia/nemotron-3-super-v3 actual run identifier; nvidia/nemotron-3-super-v3 catalog shorthand",
-    "equivalence_note": "Project clarification on 2026-07-09: nvidia/nemotron-3-super-v3 and the actual hosted identifier nvidia/nvidia/nemotron-3-super-v3 are exact-equivalent to nvidia/nemotron-3-super-120b-a12b for this provenance comparison."
+    "equivalence_note": "Project clarification on 2026-07-09: nvidia/nemotron-3-super-v3 and the actual provider identifier nvidia/nvidia/nemotron-3-super-v3 are exact-equivalent to nvidia/nemotron-3-super-120b-a12b for this provenance comparison."
   },
   "loss_bearing_rows": [
     {

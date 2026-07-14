@@ -2,7 +2,7 @@
   "created_at": "2026-07-12T12:33:41.287480+00:00",
   "formal_eval_gate": "Full LE-vs-Curator and LoRA-winner-vs-70B evaluation requires serving the selected local LoRA adapters and collecting their responses on golden-v1.",
   "judge": {
-    "credential_source": "Kubernetes Secret runai-rag/nvidia-inference-key key api-key; value not persisted",
+    "credential_source": "Kubernetes Secret runai-rag/llm-api-key key api-key; value not persisted",
     "endpoint": "https://llm.example.com/v1",
     "model": "azure/moonshotai/kimi-k2.6"
   },

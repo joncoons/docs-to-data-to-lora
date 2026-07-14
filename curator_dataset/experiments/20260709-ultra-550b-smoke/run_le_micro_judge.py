@@ -21,7 +21,7 @@ from typing import Any
 EXPERIMENT_ROOT = Path(__file__).resolve().parent
 DEFAULT_ENDPOINT = "https://llm.example.com/v1"
 DEFAULT_MODEL = "azure/anthropic/claude-sonnet-4-6"
-DEFAULT_SECRET_NAME = "nvidia-inference-key"
+DEFAULT_SECRET_NAME = "llm-api-key"
 DEFAULT_SECRET_NAMESPACE = "runai-rag"
 RETRYABLE_STATUS_CODES = {408, 409, 425, 429, 500, 502, 503, 504}
 CORPORA = ("nim_curated", "nemo_usvcs_curated")

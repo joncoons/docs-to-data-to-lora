@@ -2,7 +2,7 @@
 
 Date captured: 2026-07-09
 
-Use a hosted dense Llama 3.3 70B Instruct endpoint as the comparison target for
+Use a dense Llama 3.3 70B Instruct endpoint as the comparison target for
 smaller dense Llama LoRA adapters, not as the judge.
 
 Intended comparison:
@@ -11,7 +11,7 @@ Intended comparison:
   adapters.
 - Treatment targets: smaller dense Llama LoRA adapters trained on the
   Curator-generated DiverseQA dataset.
-- Reference target: Llama 3.3 70B Instruct via `inference.nvidia.com`.
+- Reference target: Llama 3.3 70B Instruct via `a configured OpenAI-compatible endpoint`.
 - Judge: keep the existing independent judge path; do not use 70B as the judge.
 
 Credential assumption:
@@ -22,7 +22,7 @@ Credential assumption:
 
 Implementation note:
 
-- Add a hosted-NVIDIA completion collection mode that writes responses into the
+- Add a remote OpenAI-compatible completion collection mode that writes responses into the
   existing `evals/completions/.../responses.jsonl` layout so the current
   single-axis and pairwise evaluators can consume the 70B reference responses.
 - The concrete Python client example is pending and should be attached here or
@@ -38,4 +38,4 @@ The dense 70B reference is now part of the `golden-v1` evaluation plan under `cu
 - Fallback judge: Claude Sonnet 4.6 through NeMo Evaluator if Kimi is unavailable or unstable.
 - Evaluation order: single-axis for standalone efficacy, pairwise LE vs Curator by matched corpus/base/rank, then pairwise best LoRA winner vs Llama 3.3 70B.
 
-The collector now supports a target API key via `--target-api-key-env` or `--target-api-key` so hosted 70B completions can be written to the same durable `responses.jsonl` layout as local LoRA completions.
+The collector now supports a target API key via `--target-api-key-env` or `--target-api-key` so remote 70B completions can be written to the same durable `responses.jsonl` layout as local LoRA completions.

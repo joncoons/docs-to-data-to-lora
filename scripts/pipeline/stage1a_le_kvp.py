@@ -49,7 +49,7 @@ DEFAULT_NIM_ENDPOINTS = os.getenv(
     "http://nim-llm-super-120b-bw.runai-rag:8000/v1",
 )
 DEFAULT_LLM_MODEL = os.getenv("PIPELINE_LLM_MODEL", "nvidia/nemotron-3-super-120b-a12b")
-DEFAULT_LLM_API_KEY = os.getenv("PIPELINE_NIM_API_KEY") or os.getenv("NVIDIA_API_KEY") or "local"
+DEFAULT_LLM_API_KEY = os.getenv("PIPELINE_NIM_API_KEY") or os.getenv("LLM_API_KEY") or "local"
 DEFAULT_INPUT_PASSAGES = Path(os.getenv("PASSAGES_PATH", "/datasets/nim_curated/passages.jsonl"))
 DEFAULT_OUTPUT_DIR = Path(os.getenv("OUTPUT_DIR", "/datasets/nim_curated"))
 DEFAULT_OBSERVABILITY_DIR = Path(

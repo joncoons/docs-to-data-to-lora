@@ -108,15 +108,15 @@ Do not persist API key values. Load them from Kubernetes Secrets or process envi
 
 Primary completions should be collected from `test_set.jsonl` without RAG or injected context. This is the evaluation mode used for the 2026-07-12 LoRA and local 70B answer sets.
 
-Hosted or local 70B completions can be collected directly with the updated collector:
+Remote or local 70B completions can be collected directly with the updated collector:
 
 ```bash
-export NVIDIA_API_KEY="$(kubectl get secret -n runai-rag nvidia-inference-key -o jsonpath='{.data.api-key}' | base64 -d)"
+export LLM_API_KEY="$(kubectl get secret -n runai-rag llm-api-key -o jsonpath='{.data.api-key}' | base64 -d)"
 python scripts/eval/collect_completions.py \
   --dataset curator_dataset/experiments/20260709-curator-vs-le/golden_eval/golden-v1/nim_curated/test_set.jsonl \
   --dataset-slug nim_curated_golden_v1_question_only \
   --target-api-url https://llm.example.com/v1 \
-  --target-api-key-env NVIDIA_API_KEY \
+  --target-api-key-env LLM_API_KEY \
   --model nvidia/meta/llama-3.3-70b-instruct \
   --run-id golden-v1-70b-20260712 \
   --max-tokens 4096 \
@@ -135,7 +135,7 @@ Local LoRA completions require serving the matching base NIM and syncing the tar
 Single-axis scoring over saved question-only completions uses an independent Claude Sonnet 4.6 judge. Use the generic direct LLM scorer wrappers for the active path; they default to Claude Sonnet 4.6 and still allow explicit endpoint/model overrides.
 
 ```bash
-export NVIDIA_API_KEY="$(kubectl get secret -n runai-rag nvidia-inference-key -o jsonpath='{.data.api-key}' | base64 -d)"
+export LLM_API_KEY="$(kubectl get secret -n runai-rag llm-api-key -o jsonpath='{.data.api-key}' | base64 -d)"
 python scripts/eval/run_direct_llm_singleaxis.py \
   --responses <EVAL_ROOT>/completions-question-only/<dataset>/<base>/<target>/<rank>/<run>/responses.jsonl \
   --completions-root <EVAL_ROOT>/completions-question-only \
@@ -143,7 +143,7 @@ python scripts/eval/run_direct_llm_singleaxis.py \
   --repo-summary-dir curator_dataset/experiments/20260709-curator-vs-le/golden_eval/claude_norag_20260713 \
   --judge-api-url https://llm.example.com/v1 \
   --judge-model azure/anthropic/claude-sonnet-4-6 \
-  --judge-api-key-env NVIDIA_API_KEY \
+  --judge-api-key-env LLM_API_KEY \
   --eval-run-id golden-v1-claude-sonnet-4-6-norag-20260713 \
   --resume \
   --concurrency 1
@@ -158,7 +158,7 @@ python scripts/eval/run_direct_llm_pairwise.py \
   --repo-summary-dir curator_dataset/experiments/20260709-curator-vs-le/golden_eval/claude_pairwise_norag_20260714 \
   --judge-api-url https://llm.example.com/v1 \
   --judge-model azure/anthropic/claude-sonnet-4-6 \
-  --judge-api-key-env NVIDIA_API_KEY \
+  --judge-api-key-env LLM_API_KEY \
   --eval-run-id golden-v1-claude-sonnet-4-6-norag-pairwise-20260714 \
   --position-swap \
   --resume \
@@ -194,7 +194,7 @@ The optional runner is `scripts/eval/run_nemo_evaluator_saved_responses.py`. For
 
 ## Reduced RAG Follow-Up
 
-After the Claude single-axis run completes, run the RAG answer-capture and RAG-aware scoring on the same reduced population used for pairwise: the top 1B, 3B, and 8B LoRA winners per corpus plus the Llama 3.3 70B base reference. For the 2026-07-14 RAG capture, the 70B reference is hosted at `https://llm.example.com/v1` as `nvidia/meta/llama-3.3-70b-instruct`; local Blackwell GPUs are reserved for the LoRA-capable 1B and 8B NIMs.
+After the Claude single-axis run completes, run the RAG answer-capture and RAG-aware scoring on the same reduced population used for pairwise: the top 1B, 3B, and 8B LoRA winners per corpus plus the Llama 3.3 70B base reference. For the 2026-07-14 RAG capture, the 70B reference is served through `https://llm.example.com/v1` as `nvidia/meta/llama-3.3-70b-instruct`; local Blackwell GPUs are reserved for the LoRA-capable 1B and 8B NIMs.
 
 RAG deployment must be scoped sequentially by corpus. Do not use the broad `nvidia` collection for this evaluation.
 
@@ -215,20 +215,20 @@ For each corpus deployment, patch the RAG server to the active corpus collection
 
 The RAG single-axis scorer should run after RAG answer capture completes and before pairwise. It compares saved RAG answers to the immutable golden reference answer, does not send retrieved context to the judge, and tags MLflow/repo artifacts as `rag_reduced` RAG-answer mode. Pairwise should compare each reduced LoRA winner against the same-corpus 70B RAG answer set only after RAG single-axis completes with zero unresolved scoring failures. RAGAS should use this same reduced population first; expand only if the reduced result is ambiguous or surprising.
 
-Operational note: the hosted 70B path requires `APP_LLM_APIKEY` from Kubernetes secret `runai-rag/nvidia-inference-key`, key `api-key`, and `rag-server` must use a combined system-plus-ECK CA bundle so both external NVIDIA HTTPS and internal Elasticsearch TLS work. The live deployment creates `/tmp/combined-ca.crt` at startup and points `REQUESTS_CA_BUNDLE`/`SSL_CERT_FILE` at it.
+Operational note: the remote 70B path requires `APP_LLM_APIKEY` from Kubernetes secret `runai-rag/llm-api-key`, key `api-key`, and `rag-server` must use a combined system-plus-ECK CA bundle so both external HTTPS and internal Elasticsearch TLS work. The live deployment creates `/tmp/combined-ca.crt` at startup and points `REQUESTS_CA_BUNDLE`/`SSL_CERT_FILE` at it.
 
 Operational note: this RAG pass should restore the prior `<ADA_NODE>` GPU time-slicing profile before deploying retrieval services. The pre-training profile used `timeSlicing.replicas: 5` for `<ADA_NODE>`, advertising 10 logical GPU slots across the two Ada GPUs. Restore that profile, restart the `<ADA_NODE>` NVIDIA device-plugin and GPU Feature Discovery pods, and verify `nvidia.com/gpu.replicas=5` before starting the RAG pass. This restores schedulability for the NIMService-based 3B, embedding, and reranker deployments. It does not guarantee physical GPU isolation; if physical isolation is required, verify actual device assignment out of band or convert the services to a Run:ai-native workload shape that supports `gpuMemory`.
 
-## Hosted Smoke Result
+## Remote Endpoint Smoke Result
 
-A constrained hosted smoke was run on 2026-07-12 with two rows from each corpus to verify endpoint wiring. This is not a formal winner evaluation.
+A constrained remote smoke was run on 2026-07-12 with two rows from each corpus to verify endpoint wiring. This is not a formal winner evaluation.
 
 | Dataset slug | Target | Rows completed | Judge rows scored | Mean accuracy | Mean completeness | Mean faithfulness | Mean clarity |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `nim_curated_golden_v1` | `nvidia/meta/llama-3.3-70b-instruct` | 2 | 2 | 5.0 | 4.0 | 5.0 | 5.0 |
 | `nemo_usvcs_curated_golden_v1` | `nvidia/meta/llama-3.3-70b-instruct` | 2 | 2 | 3.5 | 3.5 | 3.5 | 4.0 |
 
-The historical smoke summary is captured in `hosted_70b_kimi_smoke_20260712.json`; raw completion and score artifacts are under `<EVAL_ROOT>/`. This artifact is retained only as provenance for prior endpoint testing.
+The historical smoke summary is captured in `remote_70b_kimi_smoke_20260712.json`; raw completion and score artifacts are under `<EVAL_ROOT>/`. This artifact is retained only as provenance for prior endpoint testing.
 
 ## Result Graphics
 
@@ -250,4 +250,4 @@ The no-RAG and RAG charts use the same reduced comparison set: 1B, 3B, and 8B LE
 
 ## Current Status
 
-The golden dataset, target catalog, hosted 70B reference model ID, judge endpoint IDs, LoRA answer-set materialization, no-RAG completion outputs, reduced RAG completion outputs, reduced RAG single-axis scores, and documentation SVG graphics are captured. NeMo Evaluator RAGAS is retained as an optional later diagnostic and still needs a configured judge embedding model before it can produce formal metrics.
+The golden dataset, target catalog, remote 70B reference model ID, judge endpoint IDs, LoRA answer-set materialization, no-RAG completion outputs, reduced RAG completion outputs, reduced RAG single-axis scores, and documentation SVG graphics are captured. NeMo Evaluator RAGAS is retained as an optional later diagnostic and still needs a configured judge embedding model before it can produce formal metrics.

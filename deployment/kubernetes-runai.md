@@ -148,7 +148,7 @@ kubectl scale deploy/nemotron-parse-v12 -n "$NAMESPACE" --replicas=1
   on a workstation, run rag-crawler + a single embedding NIM + ES via
   `docker compose`. See the rag-crawler repo for a sample compose file.
 - **Cloud-managed alternatives.** Replace ECK with managed Elasticsearch
-  (e.g., Elastic Cloud); replace local NIMs with NVIDIA's hosted inference
+  (e.g., Elastic Cloud); replace local NIMs with OpenAI-compatible remote inference
   endpoints (`api.nvcf.nvidia.com`). The crawler config just points to
   different URLs.
 

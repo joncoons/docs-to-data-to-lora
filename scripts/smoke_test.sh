@@ -4,7 +4,7 @@
 # Prerequisites:
 #   - super-120b NIM running and reachable
 #   - ES nim_curated index populated
-#   - K8s secret nvidia-inference-key present in runai-rag (for Stage 4 external judge)
+#   - K8s secret llm-api-key present in runai-rag (for Stage 4 external judge)
 #   - PIPELINE_ES_HOST and PIPELINE_NIM_ENDPOINTS env vars set if running from
 #     a host that can't resolve cluster service DNS names.
 #

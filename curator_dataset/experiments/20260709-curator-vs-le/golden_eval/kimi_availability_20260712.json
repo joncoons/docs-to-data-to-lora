@@ -1,5 +1,5 @@
 {
-  "credential_source": "Kubernetes Secret runai-rag/nvidia-inference-key key api-key; value not persisted",
+  "credential_source": "Kubernetes Secret runai-rag/llm-api-key key api-key; value not persisted",
   "endpoint": "https://llm.example.com/v1",
   "http_status_code": 200,
   "model": "azure/moonshotai/kimi-k2.6",
