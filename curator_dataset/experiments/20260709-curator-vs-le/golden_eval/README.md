@@ -67,7 +67,7 @@ Treat rebuilt output as a new artifact version unless the checksums are unchange
 
 The formal winner evaluation is no-RAG. Model answers are collected from `test_set.jsonl` question-only prompts, then judged against the immutable golden reference answer. The judge must not receive retrieved context or context-baked prompts for the primary LE-vs-Curator comparison.
 
-Single-axis evaluation measures standalone model efficacy with the direct Kimi scorer over saved completion files. The active rubric axes are accuracy, completeness, reference-grounded faithfulness, and clarity. Here, faithfulness means the model avoids contradictions or unsupported additions relative to the golden reference answer; it is not a RAG/source-context metric.
+Single-axis evaluation measures standalone model efficacy with a direct saved-response judge over completion files. The active judge for the formal path is Claude Sonnet 4.6 via `https://inference-api.nvidia.com/v1`; Kimi is no longer part of the active evaluation plan. The active rubric axes are accuracy, completeness, reference-grounded faithfulness, and clarity. Here, faithfulness means the model avoids contradictions or unsupported additions relative to the golden reference answer; it is not a RAG/source-context metric.
 
 Pairwise evaluation is intentionally reduced after single-axis completes:
 
@@ -81,13 +81,12 @@ This avoids rebuilding the full pairwise matrix after the single-axis run has al
 Primary judge:
 
 - Endpoint: `https://inference-api.nvidia.com/v1`
-- Model: `azure/moonshotai/kimi-k2.6`
-- Availability: verified with HTTP 200 on 2026-07-12 using `runai-rag/nvidia-inference-key`.
+- Model: `azure/anthropic/claude-sonnet-4-6`
+- Scope: single-axis and pairwise saved-response judging for the active no-RAG and RAG reduced evaluation paths.
 
-Fallback judge:
+Historical note:
 
-- Claude Sonnet 4.6 through NeMo Evaluator if Kimi K2.6 is unavailable or unstable.
-- Preferred NVIDIA-hosted model ID when available: `azure/anthropic/claude-sonnet-4-6`.
+- Kimi K2.6 smoke artifacts from 2026-07-12 are retained only as provenance for prior endpoint testing. Kimi is not part of the active evaluation path.
 
 Dense reference target:
 
@@ -123,65 +122,67 @@ Repeat for `nemo_usvcs_curated/test_set.jsonl`.
 
 Local LoRA completions require serving the matching base NIM and syncing the target adapters into that NIM's `NIM_PEFT_SOURCE`. The 2026-07-12 answer collection used direct ClusterIP calls to the NIMServices, not `rag-oai-proxy`, so route staleness in the proxy cannot affect the saved answer sets.
 
-## No-RAG Kimi Scoring
+## No-RAG Claude Scoring
 
-Single-axis scoring over saved question-only completions:
+Single-axis scoring over saved question-only completions uses an independent Claude Sonnet 4.6 judge. Use the generic direct LLM scorer wrappers for the active path; they default to Claude Sonnet 4.6 and still allow explicit endpoint/model overrides.
 
 ```bash
 export NVIDIA_API_KEY="$(kubectl get secret -n runai-rag nvidia-inference-key -o jsonpath='{.data.api-key}' | base64 -d)"
-/home/joncoons/anaconda3/bin/python scripts/eval/run_direct_kimi_singleaxis.py \
+/home/joncoons/anaconda3/bin/python scripts/eval/run_direct_llm_singleaxis.py \
   --responses /mnt/nvme2/peft/evals/completions-question-only/<dataset>/<base>/<target>/<rank>/<run>/responses.jsonl \
   --completions-root /mnt/nvme2/peft/evals/completions-question-only \
-  --output-root /mnt/nvme2/peft/evals/singleaxis-kimi-norag \
+  --output-root /mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag \
+  --repo-summary-dir curator_dataset/experiments/20260709-curator-vs-le/golden_eval/claude_norag_20260713 \
   --judge-api-url https://inference-api.nvidia.com/v1 \
-  --judge-model azure/moonshotai/kimi-k2.6 \
+  --judge-model azure/anthropic/claude-sonnet-4-6 \
   --judge-api-key-env NVIDIA_API_KEY \
-  --eval-run-id golden-v1-kimi-norag-20260712 \
+  --eval-run-id golden-v1-claude-sonnet-4-6-norag-20260713 \
   --resume \
   --concurrency 1
 ```
 
-Pairwise scoring over saved question-only completions:
+Pairwise scoring over saved question-only completions should use the same Claude judge and position swapping:
 
 ```bash
-/home/joncoons/anaconda3/bin/python scripts/eval/run_direct_kimi_pairwise.py \
+/home/joncoons/anaconda3/bin/python scripts/eval/run_direct_llm_pairwise.py \
   --pair le-r32 /path/to/le/responses.jsonl curator-r32 /path/to/curator/responses.jsonl \
-  --output-root /mnt/nvme2/peft/evals/pairwise-kimi-norag \
+  --output-root /mnt/nvme2/peft/evals/pairwise-claude-sonnet-4-6-norag \
+  --repo-summary-dir curator_dataset/experiments/20260709-curator-vs-le/golden_eval/claude_pairwise_norag_20260714 \
   --judge-api-url https://inference-api.nvidia.com/v1 \
-  --judge-model azure/moonshotai/kimi-k2.6 \
+  --judge-model azure/anthropic/claude-sonnet-4-6 \
   --judge-api-key-env NVIDIA_API_KEY \
-  --eval-run-id golden-v1-kimi-norag-pairwise-20260712 \
+  --eval-run-id golden-v1-claude-sonnet-4-6-norag-pairwise-20260714 \
   --position-swap \
   --resume \
   --concurrency 1
 ```
 
-Both direct Kimi scorers write compact repo-local summaries and export the full local run directory to MLflow by default:
+Both direct saved-response scorers write compact repo-local summaries and export the full local run directory to MLflow by default:
 
-- Repo summaries: `golden_eval/kimi_norag_20260712/<eval_run_id>/*.json`
-- Full local artifacts: `/mnt/nvme2/peft/evals/singleaxis-kimi-norag/` and `/mnt/nvme2/peft/evals/pairwise-kimi-norag/`
+- Repo summaries: `golden_eval/claude_norag_20260713/<eval_run_id>/*.json` and `golden_eval/claude_pairwise_norag_20260714/<eval_run_id>/*.json`
+- Full local artifacts: `/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/` and `/mnt/nvme2/peft/evals/pairwise-claude-sonnet-4-6-norag/`
 - MLflow tracking URI: `http://10.43.102.80:5000`
 - MLflow experiment: `docs-to-data-to-lora-golden-eval`
 - MLflow artifact location: `file:///mnt/nvme2/peft/mlflow-artifacts/golden-eval`
 
 Use `--no-mlflow` only for local parser/debug runs that should not publish telemetry.
 
-## No-RAG Smoke Result
+## Historical Kimi Smoke Result
 
-A one-row direct Kimi smoke was run on 2026-07-12 to validate the no-RAG scoring path, repo summary capture, and MLflow artifact export. This is not a formal winner result.
+A one-row direct Kimi smoke was run on 2026-07-12 to validate early endpoint wiring, repo summary capture, and MLflow artifact export. This is retained as provenance only and is not part of the active evaluation path.
 
 | Scope | Dataset | Comparison target | Rows | Failures | Result | MLflow run |
 | --- | --- | --- | ---: | ---: | --- | --- |
 | Single-axis | `nim_curated_golden_v1_question_only` | `llama-3.2-1b` / `lora-nim-le-super-v3-e5` / `r16` | 1 | 0 | accuracy 1.0, completeness 2.0, faithfulness 1.0, clarity 5.0 | `47c7fc926c864a5186ce0a43f20e5eb6` |
 | Pairwise | `nim_curated_golden_v1_question_only` | `le-r16` vs `curator-r16` | 1 | 0 | left/LE won; position-swap agreement `agree` | `5067ae704f5e420cab8e47148cf2cef5` |
 
-Repo summaries are under `kimi_norag_20260712/golden-v1-kimi-norag-smoke-20260712/` and `kimi_norag_20260712/golden-v1-kimi-norag-pairwise-smoke-20260712/`.
+Historical repo summaries remain under `kimi_norag_20260712/golden-v1-kimi-norag-smoke-20260712/` and `kimi_norag_20260712/golden-v1-kimi-norag-pairwise-smoke-20260712/`.
 
 ## Optional RAGAS Follow-Up
 
 NeMo Evaluator RAGAS remains useful as a later diagnostic, but it is not part of the formal LE-vs-Curator winner selection because RAGAS is context/retrieval-oriented. Running RAGAS requires context-backed rows and, for `response_relevancy`, an embedding judge endpoint such as `nemoretriever-embedding-ms` with `input_type=query` support.
 
-The optional runner is `scripts/eval/run_nemo_evaluator_saved_responses.py`. Keep its outputs under `/mnt/nvme2/peft/evals/nemo-evaluator-kimi/` and repo summaries under `evaluator_kimi_20260712/`. A one-row 2026-07-12 smoke reached Evaluator and MLflow but was intentionally stopped for formal evaluation because it would move the experiment back into RAGAS semantics.
+The optional runner is `scripts/eval/run_nemo_evaluator_saved_responses.py`. For the active path, keep outputs under `/mnt/nvme2/peft/evals/nemo-evaluator-claude-ragas-reduced/` and repo summaries under a Claude-specific RAGAS directory. A historical one-row 2026-07-12 Kimi smoke reached Evaluator and MLflow but was intentionally stopped for formal evaluation because it would move the experiment back into RAGAS semantics.
 
 ## Reduced RAG Follow-Up
 
@@ -214,12 +215,12 @@ Operational note: this RAG pass should restore the prior `ubuntu2` GPU time-slic
 
 A constrained hosted smoke was run on 2026-07-12 with two rows from each corpus to verify endpoint wiring. This is not a formal winner evaluation.
 
-| Dataset slug | Target | Rows completed | Kimi rows scored | Mean accuracy | Mean completeness | Mean faithfulness | Mean clarity |
+| Dataset slug | Target | Rows completed | Judge rows scored | Mean accuracy | Mean completeness | Mean faithfulness | Mean clarity |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `nim_curated_golden_v1` | `nvidia/meta/llama-3.3-70b-instruct` | 2 | 2 | 5.0 | 4.0 | 5.0 | 5.0 |
 | `nemo_usvcs_curated_golden_v1` | `nvidia/meta/llama-3.3-70b-instruct` | 2 | 2 | 3.5 | 3.5 | 3.5 | 4.0 |
 
-The smoke summary is captured in `hosted_70b_kimi_smoke_20260712.json`; raw completion and score artifacts are under `/mnt/nvme2/peft/evals/`. An initial 1024-token Kimi judge budget was superseded because Kimi could spend the entire budget on reasoning text and hit `finish_reason=length` before returning parseable JSON. Keep the default 8192-token judge budget for Kimi unless a later prompt or endpoint setting reliably forces compact JSON.
+The historical smoke summary is captured in `hosted_70b_kimi_smoke_20260712.json`; raw completion and score artifacts are under `/mnt/nvme2/peft/evals/`. This artifact is retained only as provenance for prior endpoint testing.
 
 
 ## Result Graphics

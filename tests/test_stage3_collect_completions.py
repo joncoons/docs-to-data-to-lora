@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from scripts.eval.collect_completions import (
+    _parse_chat_completion_response,
     build_run_dir,
     infer_dataset_slug,
     parse_model_descriptor,
@@ -43,6 +44,15 @@ def test_parse_base_descriptor_uses_base_rank_slug():
     assert desc["base_slug"] == "llama-3.2-1b"
     assert desc["target_slug"] == "base"
     assert desc["rank"] is None
+    assert desc["rank_slug"] == "base"
+
+
+def test_parse_hosted_namespaced_base_descriptor_uses_last_path_component():
+    desc = parse_model_descriptor("nvidia/meta/llama-3.3-70b-instruct")
+
+    assert desc["target_type"] == "base"
+    assert desc["base_slug"] == "llama-3.3-70b"
+    assert desc["target_slug"] == "base"
     assert desc["rank_slug"] == "base"
 
 
@@ -118,4 +128,48 @@ def test_summarize_run_files_treats_success_as_resolving_prior_error(tmp_path):
     assert summary["rows_completed"] == 1
     assert summary["rows_failed"] == 0
     assert summary["total_tokens_raw"] == 8
+
+class _FakeResponse:
+    def __init__(self, content_type: str, text: str = "", payload=None):
+        self.headers = {"content-type": content_type}
+        self.text = text
+        self._payload = payload
+
+    def json(self):
+        return self._payload
+
+
+def test_parse_chat_completion_response_keeps_standard_json_body():
+    payload = {
+        "choices": [{"message": {"content": "standard answer"}}],
+        "usage": {"total_tokens": 12},
+    }
+
+    parsed = _parse_chat_completion_response(
+        _FakeResponse("application/json", payload=payload)
+    )
+
+    assert parsed is payload
+
+
+def test_parse_chat_completion_response_merges_sse_chunks_and_metadata():
+    response = _FakeResponse(
+        "text/event-stream",
+        "\n".join(
+            [
+                'data: {"id":"chat-1","model":"rag-model","created":123,"choices":[{"delta":{"content":"Hello "}}]}',
+                'data: {"choices":[{"delta":{"content":"world"},"finish_reason":"stop"}],"citations":{"results":[{"id":"doc-1"}]},"metrics":{"retrieval_ms":42},"usage":{"completion_tokens":2,"total_tokens":10}}',
+                "data: [DONE]",
+            ]
+        ),
+    )
+
+    parsed = _parse_chat_completion_response(response)
+
+    assert parsed["choices"][0]["message"]["content"] == "Hello world"
+    assert parsed["choices"][0]["finish_reason"] == "stop"
+    assert parsed["usage"]["total_tokens"] == 10
+    assert parsed["citations"]["results"][0]["id"] == "doc-1"
+    assert parsed["metrics"]["retrieval_ms"] == 42
+    assert parsed["stream_chunks"] == 2
 

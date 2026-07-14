@@ -78,15 +78,14 @@ The `gpu-operator` time-slicing profile restores schedulability for NIMService-b
 
 ## Post-Capture Scoring Gate
 
-After RAG answer capture completes, run reduced RAG single-axis before any pairwise scoring. The single-axis pass scores the saved RAG answers against the immutable golden reference answer using Claude Sonnet 4.6 as the judge; retrieved context is not sent to the judge. This preserves the same standalone answer-quality rubric while labeling the artifacts as `rag_reduced` answer mode.
+After RAG answer capture completes, run reduced RAG single-axis before any pairwise scoring. The single-axis pass scores the saved RAG answers against the immutable golden reference answer using Claude Sonnet 4.6 as the judge; retrieved context is not sent to the judge. This preserves the same standalone answer-quality rubric while carrying the RAG mode in the output root, run id, and repo summary directory.
 
-The live post-capture launcher is `rag_singleaxis_after_capture_20260714.py`. It waits for `rag_capture_status_20260714.json` to become `complete`, verifies all eight reduced answer sets are complete with zero unresolved failures, then runs `scripts/eval/run_direct_kimi_singleaxis.py` with:
+The live post-capture launcher is `rag_singleaxis_after_capture_20260714.py`. It waits for `rag_capture_status_20260714.json` to become `complete`, verifies all eight reduced answer sets are complete with zero unresolved failures, then runs the direct saved-response scorer with Claude Sonnet 4.6 as the judge:
 
 - output root: `/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced`
 - repo summary dir: `golden_eval/claude_rag_reduced_20260714`
 - eval run id: `golden-v1-claude-sonnet-4-6-rag-reduced-20260714`
 - judge endpoint/model: `https://inference-api.nvidia.com/v1`, `azure/anthropic/claude-sonnet-4-6`
-- answer labels: `--answer-mode rag_reduced --uses-rag-answer`
 
 Pairwise remains blocked until the RAG single-axis status file reports `complete` and the summaries show zero unresolved scoring failures.
 
@@ -112,7 +111,7 @@ The completed reduced RAG single-axis run writes full artifacts to `/mnt/nvme2/p
 - `graphics/ragas_coverage_status.svg`
 - `graphics/golden_eval_graphics_data.json`
 
-RAGAS remains pending as a formal reduced-population diagnostic. The current RAGAS SVG records coverage/status only because the existing one-row smoke failed before scoring without `params.judge_embeddings.model`.
+RAGAS remains pending as a formal reduced-population diagnostic. The current RAGAS SVG records coverage/status only because the existing historical one-row smoke failed before scoring without `params.judge_embeddings.model`. The active RAGAS path should use Claude, not Kimi.
 
 ## Execution Gate
 

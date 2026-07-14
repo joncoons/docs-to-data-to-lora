@@ -56,6 +56,77 @@ def _chat_url(api_url: str) -> str:
     return f"{base}/v1/chat/completions"
 
 
+def _parse_chat_completion_response(resp: Any) -> dict[str, Any]:
+    """Parse normal JSON or SSE chat-completion responses into one JSON shape."""
+    content_type = resp.headers.get("content-type", "").lower()
+    if "text/event-stream" not in content_type:
+        return resp.json()
+
+    chunks: list[dict[str, Any]] = []
+    content_parts: list[str] = []
+    finish_reason = None
+    usage: dict[str, Any] = {}
+    citations = None
+    metrics = None
+    response_id = ""
+    model = ""
+    created = 0
+    for raw_line in resp.text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith(":") or not line.startswith("data:"):
+            continue
+        payload = line[5:].strip()
+        if not payload or payload == "[DONE]":
+            continue
+        chunk = json.loads(payload)
+        chunks.append(chunk)
+        response_id = chunk.get("id") or response_id
+        model = chunk.get("model") or model
+        created = chunk.get("created") or created
+        if chunk.get("usage"):
+            usage = chunk["usage"]
+        if chunk.get("citations") is not None:
+            candidate_citations = chunk["citations"]
+            has_results = bool(candidate_citations.get("results")) if isinstance(candidate_citations, dict) else False
+            if citations is None or has_results:
+                citations = candidate_citations
+        if chunk.get("metrics") is not None:
+            candidate_metrics = chunk["metrics"]
+            if metrics is None or candidate_metrics:
+                metrics = candidate_metrics
+        choices = chunk.get("choices") or []
+        if not choices:
+            continue
+        choice = choices[0]
+        finish_reason = choice.get("finish_reason") or finish_reason
+        delta = choice.get("delta") or {}
+        message = choice.get("message") or {}
+        token = delta.get("content")
+        if token is None:
+            token = message.get("content")
+        if token:
+            content_parts.append(token)
+
+    body: dict[str, Any] = {
+        "id": response_id,
+        "object": "chat.completion",
+        "created": created,
+        "model": model,
+        "choices": [{
+            "index": 0,
+            "message": {"role": "assistant", "content": "".join(content_parts)},
+            "finish_reason": finish_reason or "stop",
+        }],
+        "usage": usage,
+        "stream_chunks": len(chunks),
+    }
+    if citations is not None:
+        body["citations"] = citations
+    if metrics is not None:
+        body["metrics"] = metrics
+    return body
+
+
 def _safe_slug(value: str) -> str:
     value = value.strip().replace("/", "-")
     value = re.sub(r"[^A-Za-z0-9._+-]+", "-", value)
@@ -70,7 +141,7 @@ def infer_dataset_slug(path: Path) -> str:
 
 
 def parse_model_descriptor(model_id: str) -> dict[str, Any]:
-    model = model_id.split("/", 1)[1] if "/" in model_id else model_id
+    model = model_id.rsplit("/", 1)[1] if "/" in model_id else model_id
     llama_lora = _LORA_LLAMA_RE.match(model)
     if llama_lora:
         rank = int(llama_lora.group("rank"))
@@ -346,7 +417,7 @@ async def _collect_one_row(
             resp = await client.post(_chat_url(target_api_url), json=payload, headers=headers)
             latency_s = time.perf_counter() - started
             resp.raise_for_status()
-            body = resp.json()
+            body = _parse_chat_completion_response(resp)
             choice = body["choices"][0]
             raw = choice.get("message", {}).get("content") or choice.get("text") or ""
             cleaned = strip_think_tags(raw)
@@ -371,6 +442,12 @@ async def _collect_one_row(
                 "generation_max_tokens": max_tokens,
                 "target_api_url": target_api_url,
             }
+            if "citations" in body:
+                result["citations"] = body["citations"]
+            if "metrics" in body:
+                result["metrics"] = body["metrics"]
+            if "stream_chunks" in body:
+                result["stream_chunks"] = body["stream_chunks"]
             if row_metadata:
                 result["row_metadata"] = row_metadata
             return True, ordinal, result
