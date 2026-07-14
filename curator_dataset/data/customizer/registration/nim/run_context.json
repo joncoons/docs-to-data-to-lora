@@ -1,5 +1,5 @@
 {
-  "base_dir": "/mnt/nvme2/peft/datasets/v2",
+  "base_dir": "<DATASET_ROOT>",
   "collections": [
     "nim_curated"
   ],

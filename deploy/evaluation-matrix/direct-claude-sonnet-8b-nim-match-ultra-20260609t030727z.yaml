@@ -30,13 +30,13 @@ spec:
               set -eu
               pip install --no-cache-dir -q httpx
 
-              export NIM_BASE_NONAUG=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl
-              export NIM_R16_NONAUG=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim/r16/20260530t000400z/responses.jsonl
-              export NIM_R32_NONAUG=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim/r32/20260530t000400z/responses.jsonl
-              export NIM_BASE_DD5X=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl
-              export NIM_R16_DD5X=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r16/20260606t035159z/responses.jsonl
-              export NIM_R32_DD5X=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r32/20260606t035159z/responses.jsonl
-              export NIM_49B=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl
+              export NIM_BASE_NONAUG=<EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl
+              export NIM_R16_NONAUG=<EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim/r16/20260530t000400z/responses.jsonl
+              export NIM_R32_NONAUG=<EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim/r32/20260530t000400z/responses.jsonl
+              export NIM_BASE_DD5X=<EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl
+              export NIM_R16_DD5X=<EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r16/20260606t035159z/responses.jsonl
+              export NIM_R32_DD5X=<EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r32/20260606t035159z/responses.jsonl
+              export NIM_49B=<EVAL_ROOT>/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl
 
               python - <<'PYCODE'
               import os
@@ -146,11 +146,11 @@ spec:
                 --log-every 25
           env:
             - name: SINGLEAXIS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/singleaxis-claude-sonnet
+              value: <EVAL_ROOT>/singleaxis-claude-sonnet
             - name: PAIRWISE_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/pairwise-claude-sonnet
+              value: <EVAL_ROOT>/pairwise-claude-sonnet
             - name: JUDGE_API_URL
-              value: https://inference-api.nvidia.com/v1/chat/completions
+              value: https://llm.example.com/v1/chat/completions
             - name: EVALUATOR_JUDGE_MODEL
               value: azure/anthropic/claude-sonnet-4-6
             - name: KIMI_KEY
@@ -173,7 +173,7 @@ spec:
               mountPath: /scripts/pairwise
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: singleaxis-script
           configMap:

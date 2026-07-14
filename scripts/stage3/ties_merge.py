@@ -13,7 +13,7 @@ Usage, cloning source adapters from NeMo Data Store:
     --adapters \
         default/lora-nim-nemotron-nano-30b-r16-shard-a@cust-AAAA \
         default/lora-nim-nemotron-nano-30b-r16-shard-b@cust-BBBB \
-    --out /mnt/nvme2/peft/checkpoints/lora/nemotron-nano-30b-stage3-tiesmerged \
+    --out <ARTIFACT_ROOT>/checkpoints/lora/nemotron-nano-30b-stage3-tiesmerged \
     --trim-ratio 0.2
 
 Usage, reading already-mounted adapter directories:

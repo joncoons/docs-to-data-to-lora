@@ -96,5 +96,5 @@ These are exact family overlaps between Kimi and Nemotron Ultra for 8B non-aug N
 
 ## Artifacts
 
-- JSON: `/mnt/nvme2/peft/evals/aggregates/nim-judge-delta-20260608/judge_delta_tables.json`
+- JSON: `<EVAL_ROOT>/aggregates/nim-judge-delta-20260608/judge_delta_tables.json`
 - Markdown: `docs/experiments/nim-judge-delta-tables-20260608.md`

@@ -1,8 +1,8 @@
 # Stage 3 MoE Task 4.6 — Resume Instructions After Node Reboot
 
-**Status checkpoint**: 2026-05-27 ~01:40 CDT, before reboot of `ubuntu-local-dev`.
+**Status checkpoint**: 2026-05-27 ~01:40 CDT, before reboot of `<BLACKWELL_NODE>`.
 
-The cluster's NFS server (co-located on `ubuntu-local-dev`) reached the documented
+The cluster's NFS server (co-located on `<BLACKWELL_NODE>`) reached the documented
 unrecoverable hang state during Round 2 (r=32) of MoE Task 4.6. Per
 `[[feedback_nfs_hang_recovery]]`, the only reliable fix is a node reboot. After the
 reboot you'll resume training following this file.
@@ -11,7 +11,7 @@ reboot you'll resume training following this file.
 
 ## What survives the reboot (committed and on persistent storage)
 
-- **Round 1 merged adapter**: `/mnt/nvme2/peft/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/`
+- **Round 1 merged adapter**: `<ARTIFACT_ROOT>/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/`
   (885 MB BF16 safetensors + adapter_config.json). Usable as-is for the eval matrix.
 - **All committed code**: branch `stage3-peft-training` is up to date. See `git log` for
   the last several commits including the two methodology docs
@@ -25,7 +25,7 @@ reboot you'll resume training following this file.
 ## What's lost / abandoned
 
 - **Round 2 r=32 nim shards (both a and b)**. Salvage of shard-a's NFS files
-  (`/mnt/nvme2/peft/cust-rbcxpusgj7pmwj4kw77mzm/trained/`) was not completed before the
+  (`<ARTIFACT_ROOT>/cust-rbcxpusgj7pmwj4kw77mzm/trained/`) was not completed before the
   hang took the upload offline. Per user direction we are abandoning recovery — both
   shards will be re-run from scratch.
 
@@ -75,14 +75,14 @@ echo "Alvin7222" | sudo -S reboot
 Then wait ~5 minutes. From a fresh shell, verify the node is back:
 
 ```bash
-ping -c 2 ubuntu-local-dev   # or 192.168.1.187
+ping -c 2 <BLACKWELL_NODE>   # or 192.168.1.187
 ```
 
 ### 1. Verify cluster came up healthy
 
 ```bash
 kubectl get nodes
-# expect: ubuntu-local-dev Ready, ubuntu2 Ready
+# expect: <BLACKWELL_NODE> Ready, <ADA_NODE> Ready
 
 kubectl get pods -n nemo-peft 2>&1 | grep -iE "Running|Pending|Error" | head -20
 # expect: nemo-platform-customizer-..., nemo-platform-entity-store-..., etc. all Running
@@ -94,10 +94,10 @@ kubectl get pods -n runai-rag 2>&1 | grep -iE "Running" | head -10
 
 ```bash
 # Should return quickly (no hang); confirms NFS path is responsive:
-timeout 10 ls /mnt/nvme2/peft/checkpoints/lora/ | head -5
+timeout 10 ls <ARTIFACT_ROOT>/checkpoints/lora/ | head -5
 # expect: should list directories including lora-nim-nemotron-nano-30b-r16/
 
-timeout 10 ls /mnt/nvme2/peft/datasets/v2/ | head -5
+timeout 10 ls <DATASET_ROOT>/ | head -5
 # expect: nim_curated, nemo_usvcs_curated
 ```
 
@@ -127,7 +127,7 @@ for name in stage3-nim-curated-shard-a stage3-nim-curated-shard-b \
             stage3-nemo-usvcs-curated-shard-a stage3-nemo-usvcs-curated-shard-b; do
   echo "--- $name ---"
   curl -sf -m 10 "http://10.43.187.212:8000/v1/datasets/default/${name}" \
-    | /home/joncoons/anaconda3/envs/nat/bin/python3 -c "
+    | <USER_HOME>/anaconda3/envs/nat/bin/python3 -c "
 import json,sys; d=json.load(sys.stdin)
 print(f'  files_url: {d.get(\"files_url\")}  format: {d.get(\"format\")}')"
 done
@@ -137,15 +137,15 @@ done
 ### 5. Launch the rank-lane orchestrator
 
 ```bash
-cd /home/joncoons/claude/docs-to-data-to-lora
-/home/joncoons/anaconda3/envs/nat/bin/python3 \
+cd <REPO_ROOT>
+<USER_HOME>/anaconda3/envs/nat/bin/python3 \
     scripts/stage3/moe_lane_orchestrator.py 2>&1 | tee -a /tmp/moe-lane-status.log
 ```
 
 Or to launch in the background (recommended — total wall-clock ~12h):
 
 ```bash
-nohup /home/joncoons/anaconda3/envs/nat/bin/python3 \
+nohup <USER_HOME>/anaconda3/envs/nat/bin/python3 \
     scripts/stage3/moe_lane_orchestrator.py \
     > /tmp/moe-lane-status.log 2>&1 &
 echo "PID: $!"
@@ -174,7 +174,7 @@ kubectl logs -n nemo-peft <cust-id>-training-job-worker-0 --tail=50
 ### 7. After all 6 jobs done — verify the 3 merged adapters on disk
 
 ```bash
-ls -la /mnt/nvme2/peft/checkpoints/lora/lora-{nim,nemo-usvcs}-nemotron-nano-30b-r{16,32}/
+ls -la <ARTIFACT_ROOT>/checkpoints/lora/lora-{nim,nemo-usvcs}-nemotron-nano-30b-r{16,32}/
 # expect: 4 directories, each with adapter_config.json + adapter_model.safetensors
 ```
 

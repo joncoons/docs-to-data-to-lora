@@ -30,11 +30,11 @@ spec:
             - |
               set -eu
               pip install --no-cache-dir -q httpx
-              export NIM_BASE=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/base/base/20260608t005645z/responses.jsonl
-              export NIM_R16=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x/r16/20260608t005645z/responses.jsonl
-              export NIM_R32=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x/r32/20260608t005645z/responses.jsonl
-              export NIM_E5_R16=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r16/20260608t061659z/responses.jsonl
-              export NIM_49B=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl
+              export NIM_BASE=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/base/base/20260608t005645z/responses.jsonl
+              export NIM_R16=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x/r16/20260608t005645z/responses.jsonl
+              export NIM_R32=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x/r32/20260608t005645z/responses.jsonl
+              export NIM_E5_R16=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r16/20260608t061659z/responses.jsonl
+              export NIM_49B=<EVAL_ROOT>/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl
               python - <<'PYCODE'
               import json
               import os
@@ -64,13 +64,13 @@ spec:
               python /scripts/pairwise/run_direct_kimi_pairwise.py --pair 3b-base "$NIM_BASE" 3b-nim-dd5x-e5-r16 "$NIM_E5_R16" --pair 3b-nim-dd5x-r16 "$NIM_R16" 3b-nim-dd5x-e5-r16 "$NIM_E5_R16" --pair 3b-nim-dd5x-r32 "$NIM_R32" 3b-nim-dd5x-e5-r16 "$NIM_E5_R16" --pair 49b "$NIM_49B" 3b-nim-dd5x-e5-r16 "$NIM_E5_R16" --eval-run-id "3b-nim-dd5x-e5-claude-sonnet-pairwise-20260608t061659z" --output-root "$PAIRWISE_OUTPUT_ROOT" --judge-api-url "$JUDGE_API_URL" --judge-model "$EVALUATOR_JUDGE_MODEL" --judge-api-key-env KIMI_KEY --judge-max-tokens 8192 --judge-max-attempts 5 --retry-backoff-s 5 --retry-backoff-max-s 120 --retry-jitter-s 2 --concurrency 4 --resume --position-swap --log-every 25
           env:
             - name: SINGLEAXIS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/singleaxis-claude-sonnet
+              value: <EVAL_ROOT>/singleaxis-claude-sonnet
             - name: PAIRWISE_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/pairwise-claude-sonnet
+              value: <EVAL_ROOT>/pairwise-claude-sonnet
             - name: COMPLETIONS_WAIT_S
               value: "43200"
             - name: JUDGE_API_URL
-              value: https://inference-api.nvidia.com/v1/chat/completions
+              value: https://llm.example.com/v1/chat/completions
             - name: EVALUATOR_JUDGE_MODEL
               value: azure/anthropic/claude-sonnet-4-6
             - name: KIMI_KEY
@@ -93,7 +93,7 @@ spec:
               mountPath: /scripts/pairwise
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: singleaxis-script
           configMap:

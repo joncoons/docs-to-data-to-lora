@@ -8,7 +8,7 @@ Purpose: retrain NIM Llama 3.1 8B LoRA adapters on the non-augmented HTML-only g
 
 - Training dataset entity: `default/stage3-nim-curated-html-only`
 - Context-baked evaluation dataset entity: `default/stage3-nim-curated-html-only-test-with-context`
-- Local dataset path: `/mnt/nvme2/peft/datasets/v2/nim_curated_html_only`
+- Local dataset path: `<DATASET_ROOT>/nim_curated_html_only`
 - Dataset version ID: `dsv_5694e359929202aff451042d`
 - Training rows: `4,349`
 - Validation rows: `485`
@@ -26,7 +26,7 @@ Purpose: retrain NIM Llama 3.1 8B LoRA adapters on the non-augmented HTML-only g
 - Warmup steps: `30`
 - Optimizer: `adamw_with_cosine_annealing`
 - Sequence packing: disabled
-- Placement: Blackwell node `ubuntu-local-dev`
+- Placement: Blackwell node `<BLACKWELL_NODE>`
 
 ## Jobs
 
@@ -50,7 +50,7 @@ Customizer checkpointing retained a top-1 validation checkpoint for export.
 
 ## Adapter Sync
 
-- Synced PEFT source: `/mnt/nvme4/nim_cache/nim/lora-adapters-8b-html-only-flat`
+- Synced PEFT source: `/data/nim-cache/lora-adapters-8b-html-only-flat`
 - Adapter IDs:
   - `lora-nim-html-only-e5-llama-3.1-8b-r16`
   - `lora-nim-html-only-e5-llama-3.1-8b-r32`
@@ -71,9 +71,9 @@ Customizer checkpointing retained a top-1 validation checkpoint for export.
 
 | Target | Responses path | Total tokens |
 |---|---|---:|
-| 8B base | `/mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/base/base/20260610t032644z/responses.jsonl` | `1,226,169` |
-| 8B HTML-only `r16` | `/mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r16/20260610t032644z/responses.jsonl` | `1,189,421` |
-| 8B HTML-only `r32` | `/mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r32/20260610t032644z/responses.jsonl` | `1,193,038` |
+| 8B base | `<EVAL_ROOT>/completions/nim_curated_html_only/llama-3.1-8b/base/base/20260610t032644z/responses.jsonl` | `1,226,169` |
+| 8B HTML-only `r16` | `<EVAL_ROOT>/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r16/20260610t032644z/responses.jsonl` | `1,189,421` |
+| 8B HTML-only `r32` | `<EVAL_ROOT>/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r32/20260610t032644z/responses.jsonl` | `1,193,038` |
 
 ## Planned Evaluation
 

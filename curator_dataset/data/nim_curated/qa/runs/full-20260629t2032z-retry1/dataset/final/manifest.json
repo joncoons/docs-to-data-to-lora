@@ -15,31 +15,31 @@
   "outputs": {
     "qa_samples": {
       "bytes": 21758948,
-      "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/qa_samples.jsonl",
+      "path": "<REPO_ROOT>/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/qa_samples.jsonl",
       "rows": 7660,
       "sha256": "e94eaae7cd2b0a95309b37bf6498c0049170e35b70f75d4c03601918ae710046"
     },
     "training": {
       "bytes": 2168949,
-      "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/training.jsonl",
+      "path": "<REPO_ROOT>/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/training.jsonl",
       "rows": 6845,
       "sha256": "095dec04be3c75ba3877535a26b6d8c0aa2586a37dad93fcf8dba90bae0f45b0"
     },
     "training_samples": {
       "bytes": 19459852,
-      "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/training_samples.jsonl",
+      "path": "<REPO_ROOT>/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/training_samples.jsonl",
       "rows": 6845,
       "sha256": "ef54097cf0a3035a3e524cb4022e6b1a4d4d31b6ad4fa73a8c86d29b1e187376"
     },
     "validation": {
       "bytes": 260741,
-      "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/validation.jsonl",
+      "path": "<REPO_ROOT>/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/validation.jsonl",
       "rows": 815,
       "sha256": "aeae824049b9e52a34ad047be9d3c791b207e8440aa5f7fb192539030879ee67"
     },
     "validation_samples": {
       "bytes": 2299096,
-      "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/validation_samples.jsonl",
+      "path": "<REPO_ROOT>/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/validation_samples.jsonl",
       "rows": 815,
       "sha256": "6d3cb0db6d947202a56eaa1433387200eb1bacaac03eb9c216d0da522845181f"
     }
@@ -55,7 +55,7 @@
   "schema_version": "curator_dataset.final_dataset_manifest.v1",
   "source": {
     "bytes": 28669018,
-    "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/qa_pairs.jsonl",
+    "path": "<REPO_ROOT>/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/qa_pairs.jsonl",
     "rows": 9962,
     "sha256": "7e9840135c2d164febb869221b1c0a00d71d918eb3dbb37b2ed871adddc35e13"
   }

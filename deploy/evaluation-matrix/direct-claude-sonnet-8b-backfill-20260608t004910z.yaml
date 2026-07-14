@@ -31,12 +31,12 @@ spec:
               pip install --no-cache-dir -q httpx
               echo "Starting Phase 1 Claude Sonnet augmented 8B single-axis"
               python /scripts/singleaxis/run_direct_kimi_singleaxis.py \
-                --responses /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl \
-                --responses /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r16/20260606t035159z/responses.jsonl \
-                --responses /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r32/20260606t035159z/responses.jsonl \
-                --responses /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl \
-                --responses /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r16/20260606t035159z/responses.jsonl \
-                --responses /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r32/20260606t035159z/responses.jsonl \
+                --responses <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl \
+                --responses <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r16/20260606t035159z/responses.jsonl \
+                --responses <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r32/20260606t035159z/responses.jsonl \
+                --responses <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl \
+                --responses <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r16/20260606t035159z/responses.jsonl \
+                --responses <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r32/20260606t035159z/responses.jsonl \
                 --eval-run-id "8b-dd5x-claude-sonnet-singleaxis-20260608t004910z" \
                 --output-root "$SINGLEAXIS_OUTPUT_ROOT" \
                 --judge-api-url "$JUDGE_API_URL" \
@@ -53,16 +53,16 @@ spec:
 
               echo "Starting Phase 2 Claude Sonnet 8B pairwise backfill"
               python /scripts/pairwise/run_direct_kimi_pairwise.py \
-                --pair 8b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl 8b-nim-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim/r16/20260530t000400z/responses.jsonl \
-                --pair 8b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl 8b-nim-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim/r32/20260530t000400z/responses.jsonl \
-                --pair 8b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl 8b-nim-dd5x-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r16/20260606t035159z/responses.jsonl \
-                --pair 8b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl 8b-nim-dd5x-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r32/20260606t035159z/responses.jsonl \
-                --pair 8b-nim-dd5x-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r16/20260606t035159z/responses.jsonl 8b-nim-dd5x-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r32/20260606t035159z/responses.jsonl \
-                --pair 8b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl 8b-nemo-usvcs-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs/r16/20260530t000400z/responses.jsonl \
-                --pair 8b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl 8b-nemo-usvcs-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs/r32/20260530t000400z/responses.jsonl \
-                --pair 8b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl 8b-nemo-usvcs-dd5x-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r16/20260606t035159z/responses.jsonl \
-                --pair 8b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl 8b-nemo-usvcs-dd5x-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r32/20260606t035159z/responses.jsonl \
-                --pair 8b-nemo-usvcs-dd5x-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r16/20260606t035159z/responses.jsonl 8b-nemo-usvcs-dd5x-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r32/20260606t035159z/responses.jsonl \
+                --pair 8b-base <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl 8b-nim-r16 <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim/r16/20260530t000400z/responses.jsonl \
+                --pair 8b-base <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl 8b-nim-r32 <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim/r32/20260530t000400z/responses.jsonl \
+                --pair 8b-base <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl 8b-nim-dd5x-r16 <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r16/20260606t035159z/responses.jsonl \
+                --pair 8b-base <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl 8b-nim-dd5x-r32 <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r32/20260606t035159z/responses.jsonl \
+                --pair 8b-nim-dd5x-r16 <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r16/20260606t035159z/responses.jsonl 8b-nim-dd5x-r32 <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r32/20260606t035159z/responses.jsonl \
+                --pair 8b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl 8b-nemo-usvcs-r16 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs/r16/20260530t000400z/responses.jsonl \
+                --pair 8b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl 8b-nemo-usvcs-r32 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs/r32/20260530t000400z/responses.jsonl \
+                --pair 8b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl 8b-nemo-usvcs-dd5x-r16 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r16/20260606t035159z/responses.jsonl \
+                --pair 8b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl 8b-nemo-usvcs-dd5x-r32 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r32/20260606t035159z/responses.jsonl \
+                --pair 8b-nemo-usvcs-dd5x-r16 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r16/20260606t035159z/responses.jsonl 8b-nemo-usvcs-dd5x-r32 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r32/20260606t035159z/responses.jsonl \
                 --eval-run-id "8b-claude-sonnet-phase2-backfill-20260608t004910z" \
                 --output-root "$PAIRWISE_OUTPUT_ROOT" \
                 --judge-api-url "$JUDGE_API_URL" \
@@ -80,14 +80,14 @@ spec:
 
               echo "Starting Phase 3 Claude Sonnet 49B vs 8B pairwise backfill"
               python /scripts/pairwise/run_direct_kimi_pairwise.py \
-                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 8b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl \
-                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 8b-base-dd5x-run /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl \
-                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 8b-nim-dd5x-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r16/20260606t035159z/responses.jsonl \
-                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 8b-nim-dd5x-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r32/20260606t035159z/responses.jsonl \
-                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 8b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl \
-                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 8b-base-dd5x-run /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl \
-                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 8b-nemo-usvcs-dd5x-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r16/20260606t035159z/responses.jsonl \
-                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 8b-nemo-usvcs-dd5x-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r32/20260606t035159z/responses.jsonl \
+                --pair 49b-base <EVAL_ROOT>/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 8b-base <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl \
+                --pair 49b-base <EVAL_ROOT>/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 8b-base-dd5x-run <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl \
+                --pair 49b-base <EVAL_ROOT>/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 8b-nim-dd5x-r16 <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r16/20260606t035159z/responses.jsonl \
+                --pair 49b-base <EVAL_ROOT>/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 8b-nim-dd5x-r32 <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim-dd5x/r32/20260606t035159z/responses.jsonl \
+                --pair 49b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 8b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260530t000400z/responses.jsonl \
+                --pair 49b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 8b-base-dd5x-run <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/base/base/20260606t035159z/responses.jsonl \
+                --pair 49b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 8b-nemo-usvcs-dd5x-r16 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r16/20260606t035159z/responses.jsonl \
+                --pair 49b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 8b-nemo-usvcs-dd5x-r32 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs-dd5x/r32/20260606t035159z/responses.jsonl \
                 --eval-run-id "phase3-49b-vs-8b-claude-sonnet-backfill-20260608t004910z" \
                 --output-root "$PAIRWISE_OUTPUT_ROOT" \
                 --judge-api-url "$JUDGE_API_URL" \
@@ -104,11 +104,11 @@ spec:
                 --log-every 25
           env:
             - name: SINGLEAXIS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/singleaxis-claude-sonnet
+              value: <EVAL_ROOT>/singleaxis-claude-sonnet
             - name: PAIRWISE_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/pairwise-claude-sonnet
+              value: <EVAL_ROOT>/pairwise-claude-sonnet
             - name: JUDGE_API_URL
-              value: https://inference-api.nvidia.com/v1/chat/completions
+              value: https://llm.example.com/v1/chat/completions
             - name: EVALUATOR_JUDGE_MODEL
               value: azure/anthropic/claude-sonnet-4-6
             - name: KIMI_KEY
@@ -131,7 +131,7 @@ spec:
               mountPath: /scripts/pairwise
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: singleaxis-script
           configMap:

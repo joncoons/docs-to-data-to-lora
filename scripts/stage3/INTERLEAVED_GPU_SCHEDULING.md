@@ -105,7 +105,7 @@ the right long-term direction, but this pattern unblocks immediate work.
 
 ## Related artifacts
 
-- `/home/joncoons/claude/nim-sft-final/NEMOTRON_NANO_LORA_METHODOLOGY.md` — canonical Nemotron-Nano single-GPU + 2-way TIES methodology
+- `<USER_HOME>/claude/nim-sft-final/NEMOTRON_NANO_LORA_METHODOLOGY.md` — canonical Nemotron-Nano single-GPU + 2-way TIES methodology
 - [`NEMOTRON_NANO_NFS_DEADLOCK.md`](NEMOTRON_NANO_NFS_DEADLOCK.md) — Customizer NFS output-copy issue this scheduling pattern works around
 - Memory: `[[project_customizer_output_copy_nfs_deadlock]]` — issue and future-work backlog
 - Memory: `[[feedback_nfs_hang_recovery]]` — recovery from the wedged state

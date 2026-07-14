@@ -24,11 +24,11 @@ if str(_REPO_ROOT) not in sys.path:
 
 from scripts.pipeline.provenance import SCHEMA_VERSION, utc_now  # noqa: E402
 
-DEFAULT_SOURCE_DATASET_DIR = Path(os.getenv("SOURCE_DATASET_DIR", "/mnt/nvme2/peft/datasets/v2/nim_curated"))
+DEFAULT_SOURCE_DATASET_DIR = Path(os.getenv("SOURCE_DATASET_DIR", "<DATASET_ROOT>/nim_curated"))
 DEFAULT_EXPERIMENT_DIR = Path(
     os.getenv(
         "DATA_DESIGNER_AUGMENTATION_DIR",
-        "/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_1b_20260529_kimi",
+        "<DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_20260529_kimi",
     )
 )
 DEFAULT_SYSTEM_PROMPT = "You are a precise NVIDIA NIM technical assistant. Answer based on official documentation."

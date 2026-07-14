@@ -12,7 +12,7 @@ DEFAULT_MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://10.43.102
 DEFAULT_MLFLOW_EXPERIMENT = os.getenv("MLFLOW_EXPERIMENT_NAME", "docs-to-data-to-lora-golden-eval")
 DEFAULT_MLFLOW_ARTIFACT_LOCATION = os.getenv(
     "MLFLOW_ARTIFACT_LOCATION",
-    "file:///mnt/nvme2/peft/mlflow-artifacts/golden-eval",
+    "file://<MLFLOW_ARTIFACT_ROOT>/golden-eval",
 )
 
 

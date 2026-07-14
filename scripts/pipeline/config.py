@@ -11,7 +11,7 @@ from scripts.pipeline.stage3_tokenizer import default_stage3_tokenizer_name_or_p
 
 
 # Defaults assume in-cluster pod DNS. Override via env vars when running from
-# a host that can't resolve cluster service names (e.g., from ubuntu-local-dev,
+# a host that can't resolve cluster service names (e.g., from <BLACKWELL_NODE>,
 # which CAN reach ClusterIPs via k3s iptables routing but cannot resolve names).
 DEFAULT_ES_HOST = os.environ.get(
     "PIPELINE_ES_HOST",
@@ -25,7 +25,7 @@ DEFAULT_NIM_ENDPOINTS: tuple[str, ...] = tuple(
 )
 DEFAULT_EXTERNAL_JUDGE_BASE = os.environ.get(
     "PIPELINE_EXTERNAL_JUDGE_BASE",
-    "https://inference-api.nvidia.com/v1",
+    "http://llm-judge.default.svc.cluster.local:8000/v1",
 )
 DEFAULT_EXTERNAL_JUDGE_MODEL = os.environ.get(
     "PIPELINE_EXTERNAL_JUDGE_MODEL",
@@ -64,7 +64,7 @@ class Config:
     )
     super120b_model: str = "nvidia/nemotron-3-super-120b-a12b"
 
-    base_output_dir: Path = field(default_factory=lambda: Path("/mnt/nvme2/peft/datasets/v2"))
+    base_output_dir: Path = field(default_factory=lambda: Path("<DATASET_ROOT>"))
 
     # Stage 0
     min_passage_tokens: int = 60

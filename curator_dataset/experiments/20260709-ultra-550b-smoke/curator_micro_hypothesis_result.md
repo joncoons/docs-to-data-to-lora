@@ -9,7 +9,7 @@ Scope: Curator DiverseQA only, using the deterministic 8-document-per-corpus mic
 - Generation completed for NIM and NeMo Microservices with both Super and Ultra.
 - Normalization parsed all raw segments with zero parse failures.
 - Deterministic metrics were mixed: Ultra did not improve row yield, reduced duplicate answers slightly, improved NeMo short-answer count, but did not improve answer/context overlap.
-- Claude Sonnet 4.6 judged 8 paired examples with position swapping through `https://inference-api.nvidia.com/v1` using the Kubernetes secret for credentials.
+- Claude Sonnet 4.6 judged 8 paired examples with position swapping through `https://llm.example.com/v1` using the Kubernetes secret for credentials.
 - Judge result: Super 6 wins, Ultra 1 win, 1 tie.
 - Average judge score delta, Ultra minus Super: overall -0.562, groundedness -0.062, specificity -0.313, usefulness -0.750.
 

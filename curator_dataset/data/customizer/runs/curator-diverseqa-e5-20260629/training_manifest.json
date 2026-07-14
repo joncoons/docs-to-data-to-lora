@@ -12,7 +12,7 @@
   },
   "created_at": "2026-06-29T22:54:47.813281Z",
   "gpu_policy": {
-    "node": "ubuntu-local-dev",
+    "node": "<BLACKWELL_NODE>",
     "original_replicas_per_gpu": 4,
     "physical_gpus": 2,
     "scheduler_capacity": 2,

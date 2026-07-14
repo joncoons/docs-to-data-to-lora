@@ -27,7 +27,7 @@ promotion state, and NeMo Microservices perform the actual work:
 Input:
 
 - Stage 2 output directory, usually
-  `/mnt/nvme2/peft/datasets/v2/<collection>/`
+  `<DATASET_ROOT>/<collection>/`
 - `training.jsonl`
 - `validation.jsonl`
 - optional `test_set.jsonl`

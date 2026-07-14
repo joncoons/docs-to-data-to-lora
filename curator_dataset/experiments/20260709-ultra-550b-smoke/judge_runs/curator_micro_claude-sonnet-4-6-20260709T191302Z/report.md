@@ -2,7 +2,7 @@
 
 Created: 2026-07-09T19:14:10.902333Z
 
-Judge model: `azure/anthropic/claude-sonnet-4-6` via `https://inference-api.nvidia.com/v1`.
+Judge model: `azure/anthropic/claude-sonnet-4-6` via `https://llm.example.com/v1`.
 
 Rows judged: 8 paired Super-vs-Ultra examples with position swap=True.
 

@@ -65,8 +65,7 @@ class LLMClient:
 
     @staticmethod
     def _no_think_extra_body(endpoint: str) -> dict:
-        if "inference-api.nvidia.com" in endpoint or "integrate.api.nvidia.com" in endpoint:
-            return {"chat_template_kwargs": {"enable_thinking": False}}
+        # Generic OpenAI-compatible hint; providers that do not support it should ignore it.
         return {"reasoning_effort": "none"}
 
     def call(self, system: str, user: str, max_tokens: int = 1024) -> Optional[str]:

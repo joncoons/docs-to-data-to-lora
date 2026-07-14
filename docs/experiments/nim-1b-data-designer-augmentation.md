@@ -40,7 +40,7 @@ existing proxy/collector parser while making the augmentation source visible.
 Grounded dataset directory:
 
 ```text
-/mnt/nvme2/peft/datasets/v2/nim_curated/
+<DATASET_ROOT>/nim_curated/
   training.jsonl
   validation.jsonl
   test_set.jsonl
@@ -67,7 +67,7 @@ new seed-from-grounded preparation path rather than forcing the gap-fill path.
 Create a new immutable experiment directory:
 
 ```text
-/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_1b_<date>/
+<DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_<date>/
   source_snapshot/
   data_designer/
     kimi_seed_requests.jsonl
@@ -152,8 +152,8 @@ Planned implementation:
 
 ```bash
 python scripts/pipeline/build_data_designer_seed_from_grounded.py \
-  --dataset-dir /mnt/nvme2/peft/datasets/v2/nim_curated \
-  --output-dir /mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_1b_<date> \
+  --dataset-dir <DATASET_ROOT>/nim_curated \
+  --output-dir <DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_<date> \
   --collection nim_curated \
   --judge-api-url https://maas.apps.ocp.cloud.rhai-tmm.dev/prelude-maas/kimi-k2-6/v1 \
   --judge-model kimi-k2-6 \
@@ -400,12 +400,12 @@ Result summary:
 Important artifact paths:
 
 ```text
-/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_1b_20260529_kimi/data_designer/result_manifest.json
-/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_1b_20260529_kimi/data_designer/generated_raw.jsonl
-/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_1b_20260529_kimi/data_designer/accepted_samples.jsonl
-/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_1b_20260529_kimi/stage1_5_data_designer_synthetic.jsonl
-/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_1b_20260529_kimi/provenance/synthetic_samples.jsonl
-/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_1b_20260529_kimi/data_designer/omitted_seed_records.jsonl
+<DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_20260529_kimi/data_designer/result_manifest.json
+<DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_20260529_kimi/data_designer/generated_raw.jsonl
+<DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_20260529_kimi/data_designer/accepted_samples.jsonl
+<DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_20260529_kimi/stage1_5_data_designer_synthetic.jsonl
+<DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_20260529_kimi/provenance/synthetic_samples.jsonl
+<DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_20260529_kimi/data_designer/omitted_seed_records.jsonl
 ```
 
 Operational notes:
@@ -529,8 +529,8 @@ pressure.
 
 ```bash
 python scripts/pipeline/build_data_designer_seed_from_grounded.py \
-  --dataset-dir /mnt/nvme2/peft/datasets/v2/nim_curated \
-  --output-dir /mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_fullseed_<date> \
+  --dataset-dir <DATASET_ROOT>/nim_curated \
+  --output-dir <DATASET_ROOT>/experiments/nim_curated_dd_kimi_fullseed_<date> \
   --collection nim_curated \
   --mode prepare \
   --seed-count 4870 \
@@ -538,8 +538,8 @@ python scripts/pipeline/build_data_designer_seed_from_grounded.py \
   --max-tokens 8192
 
 python scripts/pipeline/build_data_designer_seed_from_grounded.py \
-  --dataset-dir /mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated \
-  --output-dir /mnt/nvme2/peft/datasets/experiments/nemo_usvcs_dd_kimi_fullseed_<date> \
+  --dataset-dir <DATASET_ROOT>/nemo_usvcs_curated \
+  --output-dir <DATASET_ROOT>/experiments/nemo_usvcs_dd_kimi_fullseed_<date> \
   --collection nemo_usvcs_curated \
   --mode prepare \
   --seed-count 4162 \

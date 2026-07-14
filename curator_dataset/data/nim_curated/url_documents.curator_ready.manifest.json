@@ -29,7 +29,7 @@
   },
   "output": {
     "bytes": 2915338,
-    "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nim_curated/url_documents.curator_ready.jsonl",
+    "path": "<REPO_ROOT>/curator_dataset/data/nim_curated/url_documents.curator_ready.jsonl",
     "rows": 451,
     "sha256": "abf36f4c74ba2364694d911b68bd84ab799c49bd9054ff835c8eb41c13d7aa45"
   },

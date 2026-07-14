@@ -10,10 +10,10 @@
   },
   "output": {
     "bytes": 757433,
-    "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/experiments/20260709-ultra-550b-smoke/runs/curator_micro/nim_curated/ultra-550b/normalized/sft.jsonl",
+    "path": "<REPO_ROOT>/curator_dataset/experiments/20260709-ultra-550b-smoke/runs/curator_micro/nim_curated/ultra-550b/normalized/sft.jsonl",
     "rows": 248,
     "sha256": "51477c81cb1f547b9a1dc6a199e474c12478faad7f379ac1949010430e812076"
   },
-  "raw_dir": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/experiments/20260709-ultra-550b-smoke/runs/curator_micro/nim_curated/ultra-550b/raw",
+  "raw_dir": "<REPO_ROOT>/curator_dataset/experiments/20260709-ultra-550b-smoke/runs/curator_micro/nim_curated/ultra-550b/raw",
   "schema_version": "curator_dataset.qa_dataset_manifest.v1"
 }

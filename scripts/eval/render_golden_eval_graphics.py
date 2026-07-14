@@ -15,8 +15,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 GOLDEN_DIR = REPO_ROOT / "curator_dataset/experiments/20260709-curator-vs-le/golden_eval"
 GRAPHICS_DIR = GOLDEN_DIR / "graphics"
 
-NORAG_ROOT = Path("/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag")
-RAG_ROOT = Path("/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced")
+NORAG_ROOT = Path("<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag")
+RAG_ROOT = Path("<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced")
 
 NORAG_EVAL_RUN_ID = "golden-v1-claude-sonnet-4-6-norag-20260713"
 RAG_EVAL_RUN_ID = "golden-v1-claude-sonnet-4-6-rag-reduced-20260714"
@@ -244,7 +244,7 @@ def collect_result_data() -> dict[str, Any]:
     )
     ragas_detail = read_json(
         Path(
-            "/mnt/nvme2/peft/evals/nemo-evaluator-kimi/singleaxis/"
+            "<EVAL_ROOT>/nemo-evaluator-kimi/singleaxis/"
             "nim_curated_golden_v1_question_only/llama-3.2-1b/"
             "lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/"
             "golden-v1-nemo-evaluator-kimi-smoke-20260712/batch-00000/summary.json"

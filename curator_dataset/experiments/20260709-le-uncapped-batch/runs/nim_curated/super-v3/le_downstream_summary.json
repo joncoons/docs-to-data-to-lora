@@ -83,14 +83,14 @@
   "stage2_max_tokens": 2048,
   "stage2_targets": [
     {
-      "endpoint": "https://inference-api.nvidia.com/v1",
+      "endpoint": "https://llm.example.com/v1",
       "max_model_len": null,
       "model": "nvidia/nvidia/nemotron-3-super-v3"
     }
   ],
   "targets": [
     {
-      "endpoint": "https://inference-api.nvidia.com/v1",
+      "endpoint": "https://llm.example.com/v1",
       "max_model_len": null,
       "model": "nvidia/nvidia/nemotron-3-ultra"
     }
@@ -115,7 +115,7 @@
     "grounded_count": 99,
     "judge": {
       "api_key_source": "k8s_secret",
-      "endpoint": "https://inference-api.nvidia.com/v1",
+      "endpoint": "https://llm.example.com/v1",
       "max_tokens": 512,
       "model": "azure/anthropic/claude-sonnet-4-6",
       "retry_attempts": 3,

@@ -12,8 +12,8 @@ Update: the initial Kimi-authored seed-brief phase was cancelled because it adde
 
 | Collection | Source dataset | Training rows | Eligible seed rows | Requested synthetic pairs | Merged dataset path |
 |---|---:|---:|---:|---:|---|
-| `nim_curated` | `/mnt/nvme2/peft/datasets/v2/nim_curated` | 4,870 | 4,154 | 20,770 | `/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_5x_20260604` |
-| `nemo_usvcs_curated` | `/mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated` | 4,162 | 3,557 | 17,785 | `/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_kimi_5x_20260604` |
+| `nim_curated` | `<DATASET_ROOT>/nim_curated` | 4,870 | 4,154 | 20,770 | `<DATASET_ROOT>/experiments/nim_curated_dd_kimi_5x_20260604` |
+| `nemo_usvcs_curated` | `<DATASET_ROOT>/nemo_usvcs_curated` | 4,162 | 3,557 | 17,785 | `<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_kimi_5x_20260604` |
 
 Eligible seed rows are training rows after exact prompt/completion pairs present in validation/test artifacts are excluded to prevent synthetic leakage into held-out evaluation.
 
@@ -21,21 +21,21 @@ Active deterministic replacement directories:
 
 | Collection | Deterministic experiment dir | Data Designer job id | Status |
 |---|---|---|---|
-| `nim_curated` | `/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_deterministic_5x_20260604` | `job-fhtk8u175n6d5yah7vvmww` | active |
-| `nemo_usvcs_curated` | `/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_deterministic_5x_20260604` | `job-cqubk2j9fw3xcz7ztpr6zv` | active |
+| `nim_curated` | `<DATASET_ROOT>/experiments/nim_curated_dd_deterministic_5x_20260604` | `job-fhtk8u175n6d5yah7vvmww` | active |
+| `nemo_usvcs_curated` | `<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_20260604` | `job-cqubk2j9fw3xcz7ztpr6zv` | active |
 
 ## Kimi Configuration
 
-The cancelled seed-brief run used the NVIDIA endpoint directly:
+The cancelled seed-brief run used the remote endpoint directly:
 
-- endpoint: `https://inference-api.nvidia.com/v1/chat/completions`
+- endpoint: `https://llm.example.com/v1/chat/completions`
 - model: `nvidia/moonshotai/kimi-k2.6`
 - max tokens: `8192`
 - local key source: ephemeral local file, not persisted in artifacts
 
 Native NeMo Data Designer generation uses provider `kimi-k2`, updated in `nemo-peft/nemo-data-designer-config`:
 
-- endpoint: `https://inference-api.nvidia.com/v1`
+- endpoint: `https://llm.example.com/v1`
 - allowed model: `nvidia/moonshotai/kimi-k2.6`
 - secret env: `KIMI_KEY` from `nemo-peft/kimi-judge-api`
 
@@ -63,16 +63,16 @@ The native Data Designer jobs are active and own the long-running generation wor
 
 Original cancelled process files:
 
-- NIM PID file: `/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_5x_20260604/seed_generation.pid`
-- NeMo-USVCS PID file: `/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_kimi_5x_20260604/seed_generation.pid`
+- NIM PID file: `<DATASET_ROOT>/experiments/nim_curated_dd_kimi_5x_20260604/seed_generation.pid`
+- NeMo-USVCS PID file: `<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_kimi_5x_20260604/seed_generation.pid`
 - per-collection progress: `data_designer/kimi_seed_progress.json`
 - per-collection append log: `data_designer/kimi_seed_requests.jsonl`
 - per-collection failures: `data_designer/kimi_seed_failures.jsonl` if any failures require heuristic fallback
 
 The original post-seed workflow orchestrator was also stopped:
 
-- PID file: `/mnt/nvme2/peft/datasets/experiments/grounded_5x_kimi_workflow_20260604.pid`
-- log: `/mnt/nvme2/peft/datasets/experiments/grounded_5x_kimi_workflow_20260604.log`
+- PID file: `<DATASET_ROOT>/experiments/grounded_5x_kimi_workflow_20260604.pid`
+- log: `<DATASET_ROOT>/experiments/grounded_5x_kimi_workflow_20260604.log`
 
 The deterministic replacement should be completed with the same post-generation steps after each Data Designer job reaches a terminal successful state:
 
@@ -108,24 +108,24 @@ The deterministic replacement should be completed with the same post-generation 
 ## Status Check Commands
 
 ```bash
-for d in   /mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_5x_20260604   /mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_kimi_5x_20260604; do
+for d in   <DATASET_ROOT>/experiments/nim_curated_dd_kimi_5x_20260604   <DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_kimi_5x_20260604; do
   echo "=== $(basename "$d")"
   wc -l "$d/data_designer/kimi_seed_requests.jsonl"
   cat "$d/data_designer/kimi_seed_progress.json"
   test -f "$d/data_designer/kimi_seed_failures.jsonl" && wc -l "$d/data_designer/kimi_seed_failures.jsonl" || true
 done
 
-tail -40 /mnt/nvme2/peft/datasets/experiments/grounded_5x_kimi_workflow_20260604.log
+tail -40 <DATASET_ROOT>/experiments/grounded_5x_kimi_workflow_20260604.log
 ```
 
 ## NeMo-USVCS Timeout Repair Runner
 
 A post-primary repair runner was launched after observing provider timeout omissions in the NeMo-USVCS deterministic Data Designer job. It waits for the primary job to complete, collects and normalizes the primary results, builds a repair seed dataset from final `omitted_seed_records.jsonl`, submits a lower-concurrency repair job, and then builds a combined augmented dataset.
 
-- runner PID file: `/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_deterministic_5x_20260604/data_designer/repair_after_primary.pid`
-- runner log: `/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_deterministic_5x_20260604/data_designer/repair_after_primary.runner.log`
-- repair experiment dir: `/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_deterministic_5x_repair_20260605`
-- combined dataset dir: `/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_deterministic_5x_combined_20260605`
+- runner PID file: `<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_20260604/data_designer/repair_after_primary.pid`
+- runner log: `<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_20260604/data_designer/repair_after_primary.runner.log`
+- repair experiment dir: `<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_repair_20260605`
+- combined dataset dir: `<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_combined_20260605`
 - repair settings: `max_parallel_requests=2`, `timeout_s=1800`, same `nvidia/moonshotai/kimi-k2.6` Data Designer provider.
 
 Current log-derived failure snapshot before the runner was launched:
@@ -151,7 +151,7 @@ Final NeMo-USVCS deterministic 5x outputs:
 - repair returned seeds: 91 of 91
 - repair accepted synthetic pairs: 453
 - combined unique accepted synthetic pairs: 15,788
-- combined dataset dir: `/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_deterministic_5x_combined_20260605`
+- combined dataset dir: `<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_combined_20260605`
 - combined estimated Kimi tokens: 5,902,821 total; 4,764,592 prompt; 1,138,229 completion
 
 The combined dataset appends synthetic rows only to `training.jsonl` and `adapter_train.jsonl`; validation and test artifacts remain unchanged.
@@ -160,8 +160,8 @@ The combined dataset appends synthetic rows only to `training.jsonl` and `adapte
 
 A separate watcher was launched to resume the suspended NIM deterministic Data Designer job after the NeMo-USVCS workflow completes successfully. This waits for the NeMo repair runner to exit with a success marker, so NIM concurrency 8 does not overlap the lower-concurrency NeMo repair job.
 
-- watcher PID file: `/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_deterministic_5x_20260604/data_designer/resume_nim_after_nemo.pid`
-- watcher log: `/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_deterministic_5x_20260604/data_designer/resume_nim_after_nemo.log`
+- watcher PID file: `<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_20260604/data_designer/resume_nim_after_nemo.pid`
+- watcher log: `<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_20260604/data_designer/resume_nim_after_nemo.log`
 - NIM Kubernetes job to resume: `nemo-peft/jobstep-upcymm4yu2wznzchskrhtp`
 - NIM Data Designer settings retained from the original submitted job: `max_parallel_requests=8`, `timeout_s=600`.
 - 2026-06-05 update: the watcher stopped after the repair runner exited without a success marker, so the NIM job was manually resumed after the NeMo primary and repair results were collected and merged. Kubernetes reported `suspend=false`, `active=1`, and pod `jobstep-upcymm4yu2wznzchskrhtp-vgkzr` running `2/2`.

@@ -32,11 +32,11 @@ from scripts.pipeline.build_data_designer_seed_from_grounded import (  # noqa: E
 from scripts.pipeline.data_designer_gapfill import extract_pairs as _extract_pairs  # noqa: E402
 from scripts.pipeline.provenance import SCHEMA_VERSION, stable_id, utc_now  # noqa: E402
 
-DEFAULT_SOURCE_DATASET_DIR = Path(os.getenv("SOURCE_DATASET_DIR", "/mnt/nvme2/peft/datasets/v2/nim_curated"))
+DEFAULT_SOURCE_DATASET_DIR = Path(os.getenv("SOURCE_DATASET_DIR", "<DATASET_ROOT>/nim_curated"))
 DEFAULT_EXPERIMENT_DIR = Path(
     os.getenv(
         "DATA_DESIGNER_AUGMENTATION_DIR",
-        "/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_5x",
+        "<DATASET_ROOT>/experiments/nim_curated_dd_kimi_5x",
     )
 )
 DEFAULT_SYSTEM_PROMPT = "You are a precise NVIDIA NIM technical assistant. Answer based on official documentation."

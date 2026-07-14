@@ -123,7 +123,7 @@ nemo_usvcs_curated:  llama-3.2-3b base, lora-nemo-usvcs-r16, lora-nemo-usvcs-r32
 Outputs are written to:
 
 ```text
-/mnt/nvme2/peft/evals/completions/<dataset_slug>/<base_slug>/<target_slug>/<rank_slug>/<run_id>/
+<EVAL_ROOT>/completions/<dataset_slug>/<base_slug>/<target_slug>/<rank_slug>/<run_id>/
 ```
 
 Each run directory contains `responses.jsonl`, `errors.jsonl`, `manifest.json`, and `token_summary.json`. The `rank_slug` component is `base`, `r16`, or `r32`, so dense adapter outputs do not collide.
@@ -207,10 +207,10 @@ Roll these per-run summaries into experiment-level JSON and CSV artifacts:
 
 ```bash
 python scripts/eval/summarize_token_usage.py \
-  --eval-root /mnt/nvme2/peft/evals \
+  --eval-root <EVAL_ROOT> \
   --run-id 20260530T195331Z \
-  --out /mnt/nvme2/peft/evals/token-usage/20260530T195331Z/token_usage_summary.json \
-  --csv-out /mnt/nvme2/peft/evals/token-usage/20260530T195331Z/token_usage_summary.csv
+  --out <EVAL_ROOT>/token-usage/20260530T195331Z/token_usage_summary.json \
+  --csv-out <EVAL_ROOT>/token-usage/20260530T195331Z/token_usage_summary.csv
 ```
 
 Use `judge_scoring.total_tokens_raw` for Kimi/API evaluation spend. Use

@@ -12,7 +12,7 @@ import pytest
 
 @pytest.fixture
 def registry_dir(tmp_path):
-    """Temporary directory simulating /mnt/nvme2/crawler-registry."""
+    """Temporary directory simulating /workspace/artifacts/crawler-registry."""
     return str(tmp_path)
 
 

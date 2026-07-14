@@ -55,7 +55,7 @@ This supports testing the Nemotron 3 Ultra 550B hypothesis as a dataset-quality 
 
 The next formal comparison should use `golden_eval/golden-v1` rather than the current validation splits. That dataset keeps only context-baked HTML provenance rows, excludes exact prompt overlaps with all current LE and Curator train/validation files, and records checksums for reproducibility.
 
-Evaluation should run single-axis scoring for standalone target efficacy, pairwise LE vs Curator for matched corpus/base/rank slices, and pairwise comparison of the best LoRA winner against Llama 3.3 70B Instruct as a dense reference target. Kimi K2.6 on the NVIDIA inference endpoint is the primary judge; Claude Sonnet 4.6 through NeMo Evaluator is the fallback.
+Evaluation should run single-axis scoring for standalone target efficacy, pairwise LE vs Curator for matched corpus/base/rank slices, and pairwise comparison of the best LoRA winner against Llama 3.3 70B Instruct as a dense reference target. Kimi K2.6 on the OpenAI-compatible endpoint is the primary judge; Claude Sonnet 4.6 through NeMo Evaluator is the fallback.
 
 ## Artifacts
 

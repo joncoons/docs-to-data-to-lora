@@ -66,12 +66,12 @@ The watcher exits automatically after all four Customizer jobs are terminal.
 ## Temporary cluster topology
 
 - Scaled to zero in `runai-rag`: `nemotron-parse-v12`, `nim-vlm`.
-- Blackwell node: `ubuntu-local-dev`.
+- Blackwell node: `<BLACKWELL_NODE>`.
 - Physical Blackwell GPUs: 2.
-- Time-slicing temporarily removed from the `ubuntu-local-dev` entry in `gpu-operator/time-slicing-config`.
+- Time-slicing temporarily removed from the `<BLACKWELL_NODE>` entry in `gpu-operator/time-slicing-config`.
 - Node schedulable GPU capacity during training: 2.
 - Original time-slicing value: 4 replicas per physical GPU, for capacity 8.
-- Customizer API and Entity Store were moved to `ubuntu2` to avoid the Blackwell node's 110-pod ceiling.
+- Customizer API and Entity Store were moved to `<ADA_NODE>` to avoid the Blackwell node's 110-pod ceiling.
 - Optional NeMo core API/controller/log collector and jobs database remain scaled to zero; the direct Customizer + NeMoTrainingJob path does not use them.
 
-Do not restore time-slicing or the NIM deployments while training workers remain active. After all four jobs are terminal, restore the original `ubuntu-local-dev` time-slicing entry (`replicas: 4`), restart the Blackwell device-plugin/GFD pods, and verify capacity returns to 8 before deciding whether to restore the model deployments.
+Do not restore time-slicing or the NIM deployments while training workers remain active. After all four jobs are terminal, restore the original `<BLACKWELL_NODE>` time-slicing entry (`replicas: 4`), restart the Blackwell device-plugin/GFD pods, and verify capacity returns to 8 before deciding whether to restore the model deployments.

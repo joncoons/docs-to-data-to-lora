@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Score LE micro QA rows with Claude via NVIDIA endpoint."""
+"""Score LE micro QA rows with Claude via remote endpoint."""
 from __future__ import annotations
 
 import argparse
@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any
 
 EXPERIMENT_ROOT = Path(__file__).resolve().parent
-DEFAULT_ENDPOINT = "https://inference-api.nvidia.com/v1"
+DEFAULT_ENDPOINT = "https://llm.example.com/v1"
 DEFAULT_MODEL = "azure/anthropic/claude-sonnet-4-6"
 DEFAULT_SECRET_NAME = "nvidia-inference-key"
 DEFAULT_SECRET_NAMESPACE = "runai-rag"

@@ -26,14 +26,14 @@
       "pods": [
         {
           "name": "cust-vm3mbwvx7fcpdttg84uijs-entity-handler-0-6xsvr",
-          "node": "ubuntu-local-dev",
+          "node": "<BLACKWELL_NODE>",
           "phase": "Succeeded",
           "pod_status": "Succeeded",
           "ready": false
         },
         {
           "name": "cust-vm3mbwvx7fcpdttg84uijs-training-job-worker-0",
-          "node": "ubuntu-local-dev",
+          "node": "<BLACKWELL_NODE>",
           "phase": "Running",
           "pod_status": "Running",
           "ready": true
@@ -1449,14 +1449,14 @@
       "pods": [
         {
           "name": "cust-5hqscljwyzyy2ayiw3einw-entity-handler-0-ljqdb",
-          "node": "ubuntu-local-dev",
+          "node": "<BLACKWELL_NODE>",
           "phase": "Succeeded",
           "pod_status": "Succeeded",
           "ready": false
         },
         {
           "name": "cust-5hqscljwyzyy2ayiw3einw-training-job-worker-0",
-          "node": "ubuntu-local-dev",
+          "node": "<BLACKWELL_NODE>",
           "phase": "Running",
           "pod_status": "Running",
           "ready": true
@@ -2741,7 +2741,7 @@
       "pods": [
         {
           "name": "cust-bbbuteyxhnw2zjzgzhqmpy-entity-handler-0-x76gx",
-          "node": "ubuntu-local-dev",
+          "node": "<BLACKWELL_NODE>",
           "phase": "Succeeded",
           "pod_status": "Succeeded",
           "ready": false
@@ -4165,7 +4165,7 @@
       "pods": [
         {
           "name": "cust-8ge3t81ypq76fhk3b4b7ts-entity-handler-0-gztml",
-          "node": "ubuntu-local-dev",
+          "node": "<BLACKWELL_NODE>",
           "phase": "Succeeded",
           "pod_status": "Succeeded",
           "ready": false
@@ -5468,8 +5468,8 @@
       "export-r32-nemo-8b-retry-20260711"
     ],
     "prepull_nodes": [
-      "ubuntu-local-dev",
-      "ubuntu2"
+      "<BLACKWELL_NODE>",
+      "<ADA_NODE>"
     ],
     "prepulled_image": "nvcr.io/nvidia/nemo-microservices/nds-v2-huggingface-cli:25.12",
     "reason": "r32 training completed but Customizer post-training entity handler failed to pull nds-v2-huggingface-cli:25.12 due nvcr.io DNS timeout; the trained artifacts remained on peft-workspace-pvc.",
@@ -5477,12 +5477,12 @@
     "result": "Both r32 trained adapter directories were uploaded to Data Store and Entity Store artifacts were patched to upload_completed. Customizer job terminal status remains cancelled, but adapter artifacts are available.",
     "schema_version": "manual_export_recovery.v1"
   },
-  "node": "ubuntu-local-dev",
+  "node": "<BLACKWELL_NODE>",
   "runtime_observation": {
     "active_gpu_workers_expected": 2,
     "active_gpu_workers_observed": 2,
     "gpu_request_per_training_worker": 1,
-    "kubernetes_node": "ubuntu-local-dev",
+    "kubernetes_node": "<BLACKWELL_NODE>",
     "rank_order": "r16 workers running first; r32 workers pending for GPU capacity"
   },
   "schema_version": "stage5_customizer_training_submission.v1",

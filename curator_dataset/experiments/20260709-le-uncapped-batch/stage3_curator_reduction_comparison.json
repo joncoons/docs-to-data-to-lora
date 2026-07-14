@@ -32,7 +32,7 @@
           "min_question_tokens": 12,
           "minhash_threshold": 0.85,
           "tokenizer_class": "TokenizersBackend",
-          "tokenizer_name_or_path": "/mnt/nvme4/nim_cache/nim/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling",
+          "tokenizer_name_or_path": "/data/nim-cache/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling",
           "train_ratio": 0.9
         },
         "reductions": [
@@ -119,7 +119,7 @@
           "min_question_tokens": 12,
           "minhash_threshold": 0.85,
           "tokenizer_class": "TokenizersBackend",
-          "tokenizer_name_or_path": "/mnt/nvme4/nim_cache/nim/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling",
+          "tokenizer_name_or_path": "/data/nim-cache/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling",
           "train_ratio": 0.9
         },
         "reductions": [
@@ -184,7 +184,7 @@
   "revised_policy": {
     "min_answer_tokens": 8,
     "min_question_tokens": 12,
-    "tokenizer": "/mnt/nvme4/nim_cache/nim/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling"
+    "tokenizer": "/data/nim-cache/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling"
   },
   "schema_version": "stage3_curator_reduction_comparison.v1"
 }

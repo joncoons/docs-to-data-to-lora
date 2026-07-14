@@ -52,7 +52,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--digest", default=DEFAULT_DIGEST)
     parser.add_argument(
         "--base-url",
-        default="https://inference-api.nvidia.com/v1",
+        default="http://llm-frontier.default.svc.cluster.local:8000/v1",
     )
     parser.add_argument("--model", default="nvidia/nvidia/nemotron-3-super-v3")
     parser.add_argument(

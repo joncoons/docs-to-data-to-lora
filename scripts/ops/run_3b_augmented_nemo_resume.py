@@ -28,7 +28,7 @@ def main() -> int:
     parser.add_argument("--customizer-url", default="http://192.168.1.187:30910")
     parser.add_argument(
         "--log-dir",
-        default="/mnt/nvme2/peft/training-runs/3b-dd5x-sequential-fullslice-nemo-resume",
+        default="<ARTIFACT_ROOT>/training-runs/3b-dd5x-sequential-fullslice-nemo-resume",
     )
     parser.add_argument("--poll-interval-s", type=int, default=30)
     parser.add_argument("--timeout-s", type=int, default=8 * 3600)

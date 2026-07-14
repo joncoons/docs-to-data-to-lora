@@ -76,7 +76,7 @@ The current artifact stores `le_response_chars` but not the raw LE response, so 
 
 1. Keep load balancing enabled:
    - Local service: `http://10.43.114.25:8000/v1`
-   - External endpoint: `https://inference-api.nvidia.com/v1`
+   - External endpoint: `https://llm.example.com/v1`
    - Canonical row model: `nvidia/nvidia/nemotron-3-super-v3`
    - Local target model: `nvidia/nemotron-3-super-120b-a12b@32768`
 

@@ -8,7 +8,7 @@ system Python. It ran under the `nat` conda environment used by the MoE
 orchestrators:
 
 ```text
-/home/joncoons/anaconda3/envs/nat/bin/python3
+<USER_HOME>/anaconda3/envs/nat/bin/python3
 torch: 2.12.0
 safetensors: 0.7.0
 ```
@@ -27,10 +27,10 @@ Use the torch-free inspector:
 
 ```bash
 python3 scripts/stage3/inspect_adapter_checkpoint.py \
-  /mnt/nvme2/peft/checkpoints/lora/lora-nim-nemotron-nano-30b-r16
+  <ARTIFACT_ROOT>/checkpoints/lora/lora-nim-nemotron-nano-30b-r16
 
 python3 scripts/stage3/inspect_adapter_checkpoint.py \
-  /mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16
+  <ARTIFACT_ROOT>/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16
 ```
 
 ### `lora-nim-nemotron-nano-30b-r16`

@@ -43,7 +43,7 @@
   },
   "provider": {
     "api_key_source": "Kubernetes Secret reference; value not persisted",
-    "base_url": "https://inference-api.nvidia.com/v1",
+    "base_url": "https://llm.example.com/v1",
     "model": "nvidia/nvidia/nemotron-3-ultra"
   },
   "result_task_count": 1,

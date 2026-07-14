@@ -35,7 +35,7 @@ spec:
               set -eu
               pip install --no-cache-dir -q httpx
               python /scripts/collect_completions.py \
-                --dataset /mnt/nvme2/peft/datasets/v2/nim_curated/test_set_with_context.jsonl \
+                --dataset <DATASET_ROOT>/nim_curated/test_set_with_context.jsonl \
                 --dataset-slug nim_curated \
                 --model lora-nemo-usvcs-nemotron-nano-30b-r16-retrain-20260530 \
                 --run-id "$RUN_ID" \
@@ -46,7 +46,7 @@ spec:
                 --retry-backoff-max-s 60 \
                 --concurrency 2
               python /scripts/collect_completions.py \
-                --dataset /mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated/test_set_with_context.jsonl \
+                --dataset <DATASET_ROOT>/nemo_usvcs_curated/test_set_with_context.jsonl \
                 --dataset-slug nemo_usvcs_curated \
                 --model lora-nemo-usvcs-nemotron-nano-30b-r16-retrain-20260530 \
                 --run-id "$RUN_ID" \
@@ -60,7 +60,7 @@ spec:
             - name: TARGET_API_URL
               value: "http://rag-oai-proxy.runai-rag:8080"
             - name: COMPLETIONS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/completions
+              value: <EVAL_ROOT>/completions
             - name: RUN_ID
               value: "20260530T153804Z"
           resources:
@@ -75,7 +75,7 @@ spec:
               mountPath: /scripts
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: collector-script
           configMap:

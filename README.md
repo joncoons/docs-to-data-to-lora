@@ -26,7 +26,7 @@ business needs.
 
 The case study uses NVAIE capabilities across the lifecycle:
 
-- **NIM and NVIDIA-hosted inference endpoints** for foundation/frontier model
+- **NIM and OpenAI-compatible inference endpoints** for foundation/frontier model
   generation, local serving, LoRA-enabled inference, embeddings, reranking,
   and dense-model baselines.
 - **NeMo Curator and Data Designer** for dataset transformation, quality

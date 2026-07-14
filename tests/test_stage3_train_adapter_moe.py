@@ -157,7 +157,7 @@ def test_submit_adapter_job_moe_calls_client():
 # ---------------------------------------------------------------------------
 
 def test_cli_dry_run_produces_valid_json():
-    python = "/home/joncoons/anaconda3/envs/nat/bin/python3"
+    python = "<USER_HOME>/anaconda3/envs/nat/bin/python3"
     script = str(
         Path(__file__).resolve().parents[1]
         / "scripts" / "stage3" / "train_adapter_moe.py"

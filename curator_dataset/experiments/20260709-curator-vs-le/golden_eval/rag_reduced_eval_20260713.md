@@ -4,7 +4,7 @@ Date captured: 2026-07-13
 
 ## Status
 
-Answer capture and reduced RAG single-axis scoring completed on 2026-07-14. The reduced population was derived from completed Claude no-RAG single-axis results. Local Blackwell GPUs hosted the LoRA-capable 1B and 8B NIMs, the Ada GPUs hosted the 3B path, and the dense 70B reference used the NVIDIA hosted inference endpoint.
+Answer capture and reduced RAG single-axis scoring completed on 2026-07-14. The reduced population was derived from completed Claude no-RAG single-axis results. Local Blackwell GPUs hosted the LoRA-capable 1B and 8B NIMs, the Ada GPUs hosted the 3B path, and the dense 70B reference used the configured OpenAI-compatible endpoint.
 
 ## Scope
 
@@ -49,30 +49,30 @@ This is right-sized for the reduced smoke/full pass: broad enough for recall, sm
 
 Within each corpus deployment, run target models sequentially. Patch the RAG server LLM backend for the active target before collecting answers:
 
-- 3B winner: `APP_LLM_SERVERURL=nim-llm-3b-ada-lora:8000`, selected LE r32 model id, subject to the `ubuntu2` GPU note below.
+- 3B winner: `APP_LLM_SERVERURL=nim-llm-3b-ada-lora:8000`, selected LE r32 model id, subject to the `<ADA_NODE>` GPU note below.
 - 8B winner: `APP_LLM_SERVERURL=nim-llm-8b-bw-lora:8000`, selected LE r32 model id.
-- 70B base reference: `APP_LLM_SERVERURL=https://inference-api.nvidia.com/v1`, `APP_LLM_MODELNAME=nvidia/meta/llama-3.3-70b-instruct`.
+- 70B base reference: `APP_LLM_SERVERURL=https://llm.example.com/v1`, `APP_LLM_MODELNAME=nvidia/meta/llama-3.3-70b-instruct`.
 - 1B winner: `APP_LLM_SERVERURL=nim-llm-1b-bw-lora:8000`, selected LE r32 model id.
 
-Current live layout: local `nim-llm` 70B is scaled to zero, `nim-llm-1b-bw-lora` and `nim-llm-8b-bw-lora` run on `ubuntu-local-dev`, and the 70B comparison is hosted. The capture worker resumes partial JSONL outputs under run id `golden-v1-rag-reduced-20260714`.
+Current live layout: local `nim-llm` 70B is scaled to zero, `nim-llm-1b-bw-lora` and `nim-llm-8b-bw-lora` run on `<BLACKWELL_NODE>`, and the 70B comparison is hosted. The capture worker resumes partial JSONL outputs under run id `golden-v1-rag-reduced-20260714`.
 
 ## Hosted 70B Runtime Notes
 
-The hosted 70B path uses `APP_LLM_APIKEY` from Kubernetes secret `runai-rag/nvidia-inference-key`, key `api-key`. Do not persist the key value. The older global `NVIDIA_API_KEY` from `ngc-api` is not sufficient for `https://inference-api.nvidia.com/v1`; it is an NGC/NVIDIA key and the endpoint expects the inference virtual key.
+The hosted 70B path uses `APP_LLM_APIKEY` from Kubernetes secret `runai-rag/nvidia-inference-key`, key `api-key`. Do not persist the key value. The older global `NVIDIA_API_KEY` from `ngc-api` is not sufficient for `https://llm.example.com/v1`; it is an NGC/NVIDIA key and the endpoint expects the inference virtual key.
 
 `rag-server` must validate both external NVIDIA TLS and the internal Elasticsearch TLS endpoint. The live deployment generates `/tmp/combined-ca.crt` at startup by concatenating `/etc/ssl/certs/cacert.pem` with `/etc/ssl/eck/ca.crt`, then sets `REQUESTS_CA_BUNDLE` and `SSL_CERT_FILE` to the combined path. A smoke test on 2026-07-14 verified both hosted 70B generation and local NIM RAG retrieval after this change.
 
 ## GPU Scheduling Note
 
-This RAG pass should reinstate the prior `ubuntu2` GPU time-slicing profile that was temporarily removed for 3B LoRA training. The prior profile used `timeSlicing.replicas: 5`, so the two Ada GPUs advertise 10 logical `nvidia.com/gpu` slots.
+This RAG pass should reinstate the prior `<ADA_NODE>` GPU time-slicing profile that was temporarily removed for 3B LoRA training. The prior profile used `timeSlicing.replicas: 5`, so the two Ada GPUs advertise 10 logical `nvidia.com/gpu` slots.
 
 RAG preflight sequence:
 
-1. Restore the `ubuntu2` entry in `gpu-operator/time-slicing-config` to `timeSlicing.replicas: 5`.
-2. Restart the `ubuntu2` `nvidia-device-plugin-daemonset` pod and `gpu-feature-discovery` pod.
-3. Verify `ubuntu2` reports `nvidia.com/gpu.replicas=5` and `nvidia.com/gpu.sharing-strategy=time-slicing`.
+1. Restore the `<ADA_NODE>` entry in `gpu-operator/time-slicing-config` to `timeSlicing.replicas: 5`.
+2. Restart the `<ADA_NODE>` `nvidia-device-plugin-daemonset` pod and `gpu-feature-discovery` pod.
+3. Verify `<ADA_NODE>` reports `nvidia.com/gpu.replicas=5` and `nvidia.com/gpu.sharing-strategy=time-slicing`.
 4. Start `nim-llm-3b-ada-lora`, `nemoretriever-embedding-ms`, and `nemoretriever-ranking-ms`.
-5. Verify all three pods are Ready and record the `ubuntu2` logical GPU state before 3B RAG answer capture.
+5. Verify all three pods are Ready and record the `<ADA_NODE>` logical GPU state before 3B RAG answer capture.
 
 The `gpu-operator` time-slicing profile restores schedulability for NIMService-based deployments, but it advertises logical GPU slots and does not by itself guarantee physical GPU isolation. If physical isolation is required, verify actual device assignment out of band or convert the services to a Run:ai-native workload shape that supports `gpuMemory`; do not disable reranking only for 3B, because that would change the retrieval semantics for one size class.
 
@@ -82,10 +82,10 @@ After RAG answer capture completes, run reduced RAG single-axis before any pairw
 
 The live post-capture launcher is `rag_singleaxis_after_capture_20260714.py`. It waits for `rag_capture_status_20260714.json` to become `complete`, verifies all eight reduced answer sets are complete with zero unresolved failures, then runs the direct saved-response scorer with Claude Sonnet 4.6 as the judge:
 
-- output root: `/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced`
+- output root: `<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced`
 - repo summary dir: `golden_eval/claude_rag_reduced_20260714`
 - eval run id: `golden-v1-claude-sonnet-4-6-rag-reduced-20260714`
-- judge endpoint/model: `https://inference-api.nvidia.com/v1`, `azure/anthropic/claude-sonnet-4-6`
+- judge endpoint/model: `https://llm.example.com/v1`, `azure/anthropic/claude-sonnet-4-6`
 
 Pairwise remains blocked until the RAG single-axis status file reports `complete` and the summaries show zero unresolved scoring failures.
 
@@ -93,17 +93,17 @@ Pairwise remains blocked until the RAG single-axis status file reports `complete
 
 Recommended durable output roots:
 
-- RAG answers: `/mnt/nvme2/peft/evals/completions-rag-reduced`
-- RAG single-axis: `/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced`
-- RAG pairwise: `/mnt/nvme2/peft/evals/pairwise-claude-sonnet-4-6-rag-reduced` (gated until RAG single-axis completes)
-- Optional RAGAS: `/mnt/nvme2/peft/evals/nemo-evaluator-claude-ragas-reduced`
+- RAG answers: `<EVAL_ROOT>/completions-rag-reduced`
+- RAG single-axis: `<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced`
+- RAG pairwise: `<EVAL_ROOT>/pairwise-claude-sonnet-4-6-rag-reduced` (gated until RAG single-axis completes)
+- Optional RAGAS: `<EVAL_ROOT>/nemo-evaluator-claude-ragas-reduced`
 
 Repo-local summaries live under `golden_eval/claude_rag_reduced_20260714/` and MLflow export should remain enabled. Documentation graphics for the completed no-RAG/RAG comparison live under `golden_eval/graphics/`.
 
 
 ## Completed Scoring And Graphics
 
-The completed reduced RAG single-axis run writes full artifacts to `/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced` and repo summaries to `claude_rag_reduced_20260714/`. Generated SVG graphics and their source JSON are under `graphics/`:
+The completed reduced RAG single-axis run writes full artifacts to `<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced` and repo summaries to `claude_rag_reduced_20260714/`. Generated SVG graphics and their source JSON are under `graphics/`:
 
 - `graphics/rag_vs_norag_composite.svg`
 - `graphics/rag_vs_norag_axis_heatmap.svg`

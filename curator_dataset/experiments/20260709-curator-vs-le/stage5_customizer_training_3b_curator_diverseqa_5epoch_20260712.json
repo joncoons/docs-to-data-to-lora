@@ -3,7 +3,7 @@
   "run_variant": "curator-diverseqa-3b-e5-ada",
   "submitted_at": "2026-07-12T08:56:21.240932+00:00",
   "customizer_url": "http://192.168.1.187:30910",
-  "node": "ubuntu2",
+  "node": "<ADA_NODE>",
   "node_gpu": "NVIDIA RTX A6000 Ada Generation",
   "base_model": "meta/llama-3.2-3b-instruct",
   "base_template": "meta/llama-3.2-3b-instruct@v1.0.0+40GB",
@@ -26,7 +26,7 @@
     "ada_gpu_allocation_before_submission": 0,
     "blackwell_gpu_allocation_before_submission": 0,
     "customizer_training_node_selector": {
-      "kubernetes.io/hostname": "ubuntu2"
+      "kubernetes.io/hostname": "<ADA_NODE>"
     },
     "llm_nimservices_scaled_to_zero": true,
     "deleted_completed_downloader_jobs_after_customizer_restart": [
@@ -35,7 +35,7 @@
       "nemo-peft/customizer-downloader-meta-llama-3-2-3b-instruct-2-0",
       "nemo-peft/customizer-downloader-nvidia-nemotron-3-nano-30b-a3b-1-0"
     ],
-    "placement_backup_path": ".local_archive/cluster-backups/nemo-platform-customizer-config-pre-node-ubuntu2-20260712T035506.yaml"
+    "placement_backup_path": ".local_archive/cluster-backups/nemo-platform-customizer-config-pre-node-<ADA_NODE>-20260712T035506.yaml"
   },
   "submission_order": [
     "nim r16",
@@ -55,7 +55,7 @@
       "dataset_kind": "Curator DiverseQA extraction dataset",
       "description": "Stage 5 3B LoRA SFT on NIM Curator DiverseQA dataset; rank=16, alpha=32, epochs=5, Ada TP1/DP1",
       "epochs": 5,
-      "expected_node": "ubuntu2",
+      "expected_node": "<ADA_NODE>",
       "expected_gpu": "NVIDIA RTX A6000 Ada Generation",
       "finetuning_type": "lora",
       "job_id": "cust-PCqbz8W6F6Uop2fhuYkcee",
@@ -70,9 +70,9 @@
       "customizer_status_after_submission": "running",
       "kubernetes_worker_pod": "cust-pcqbz8w6f6uop2fhuykcee-training-job-worker-0",
       "kubernetes_worker_status_after_submission": "Running",
-      "kubernetes_worker_node_after_submission": "ubuntu2",
+      "kubernetes_worker_node_after_submission": "<ADA_NODE>",
       "verified_node_selector": {
-        "kubernetes.io/hostname": "ubuntu2"
+        "kubernetes.io/hostname": "<ADA_NODE>"
       },
       "observed_status": "completed",
       "final_status_details": {
@@ -83,7 +83,7 @@
         "epochs_completed": 5,
         "percentage_done": 100.0,
         "output_model": "default/lora-nim-cqa-e5-llama32-3b-r16-20260712-ada@cust-PCqbz8W6F6Uop2fhuYkcee",
-        "worker_node": "ubuntu2",
+        "worker_node": "<ADA_NODE>",
         "worker_phase": "Succeeded"
       }
     },
@@ -98,7 +98,7 @@
       "dataset_kind": "Curator DiverseQA extraction dataset",
       "description": "Stage 5 3B LoRA SFT on NeMo microservices Curator DiverseQA dataset; rank=16, alpha=32, epochs=5, Ada TP1/DP1",
       "epochs": 5,
-      "expected_node": "ubuntu2",
+      "expected_node": "<ADA_NODE>",
       "expected_gpu": "NVIDIA RTX A6000 Ada Generation",
       "finetuning_type": "lora",
       "job_id": "cust-KY79TSzsNdUjJAADoDRzGQ",
@@ -113,9 +113,9 @@
       "customizer_status_after_submission": "pending",
       "kubernetes_worker_pod": "cust-ky79tszsndujjaadodrzgq-training-job-worker-0",
       "kubernetes_worker_status_after_submission": "Running",
-      "kubernetes_worker_node_after_submission": "ubuntu2",
+      "kubernetes_worker_node_after_submission": "<ADA_NODE>",
       "verified_node_selector": {
-        "kubernetes.io/hostname": "ubuntu2"
+        "kubernetes.io/hostname": "<ADA_NODE>"
       },
       "observed_status": "completed",
       "final_status_details": {
@@ -126,7 +126,7 @@
         "epochs_completed": 5,
         "percentage_done": 100.0,
         "output_model": "default/lora-nemo-cqa-e5-llama32-3b-r16-20260712-ada@cust-KY79TSzsNdUjJAADoDRzGQ",
-        "worker_node": "ubuntu2",
+        "worker_node": "<ADA_NODE>",
         "worker_phase": "Succeeded"
       }
     },
@@ -141,7 +141,7 @@
       "dataset_kind": "Curator DiverseQA extraction dataset",
       "description": "Stage 5 3B LoRA SFT on NIM Curator DiverseQA dataset; rank=32, alpha=64, epochs=5, Ada TP1/DP1",
       "epochs": 5,
-      "expected_node": "ubuntu2",
+      "expected_node": "<ADA_NODE>",
       "expected_gpu": "NVIDIA RTX A6000 Ada Generation",
       "finetuning_type": "lora",
       "job_id": "cust-CxYRLbLQowgRZQC2Hnho9v",
@@ -158,7 +158,7 @@
       "kubernetes_worker_status_after_submission": "Pending",
       "kubernetes_worker_node_after_submission": null,
       "verified_node_selector": {
-        "kubernetes.io/hostname": "ubuntu2"
+        "kubernetes.io/hostname": "<ADA_NODE>"
       },
       "observed_status": "completed",
       "final_status_details": {
@@ -169,7 +169,7 @@
         "epochs_completed": 5,
         "percentage_done": 100.0,
         "output_model": "default/lora-nim-cqa-e5-llama32-3b-r32-20260712-ada@cust-CxYRLbLQowgRZQC2Hnho9v",
-        "worker_node": "ubuntu2",
+        "worker_node": "<ADA_NODE>",
         "worker_phase": "Succeeded"
       }
     },
@@ -184,7 +184,7 @@
       "dataset_kind": "Curator DiverseQA extraction dataset",
       "description": "Stage 5 3B LoRA SFT on NeMo microservices Curator DiverseQA dataset; rank=32, alpha=64, epochs=5, Ada TP1/DP1",
       "epochs": 5,
-      "expected_node": "ubuntu2",
+      "expected_node": "<ADA_NODE>",
       "expected_gpu": "NVIDIA RTX A6000 Ada Generation",
       "finetuning_type": "lora",
       "job_id": "cust-8sTfudSSh2s2EAkKmH6XCs",
@@ -201,7 +201,7 @@
       "kubernetes_worker_status_after_submission": "Pending",
       "kubernetes_worker_node_after_submission": null,
       "verified_node_selector": {
-        "kubernetes.io/hostname": "ubuntu2"
+        "kubernetes.io/hostname": "<ADA_NODE>"
       },
       "observed_status": "completed",
       "final_status_details": {
@@ -212,7 +212,7 @@
         "epochs_completed": 5,
         "percentage_done": 100.0,
         "output_model": "default/lora-nemo-cqa-e5-llama32-3b-r32-20260712-ada@cust-8sTfudSSh2s2EAkKmH6XCs",
-        "worker_node": "ubuntu2",
+        "worker_node": "<ADA_NODE>",
         "worker_phase": "Succeeded"
       }
     }
@@ -226,15 +226,15 @@
       "cust-KY79TSzsNdUjJAADoDRzGQ",
       "cust-PCqbz8W6F6Uop2fhuYkcee"
     ],
-    "ada_worker_node": "ubuntu2",
-    "note": "Customizer placement remains set to ubuntu2 after the completed 3B Curator DiverseQA run."
+    "ada_worker_node": "<ADA_NODE>",
+    "note": "Customizer placement remains set to <ADA_NODE> after the completed 3B Curator DiverseQA run."
   },
   "placement_verification": {
     "verified_at": "2026-07-12T08:57:06.610654+00:00",
     "ada_allocated_gpus_after_submission": 2,
     "expected_queueing": "Two r16 workers run immediately on the two Ada GPUs; two r32 workers remain pending until GPUs free.",
     "node_selector_verified_on_training_crs": {
-      "kubernetes.io/hostname": "ubuntu2"
+      "kubernetes.io/hostname": "<ADA_NODE>"
     },
     "customizer_status": {
       "cust-PCqbz8W6F6Uop2fhuYkcee": "running",
@@ -247,13 +247,13 @@
         "customizer_status": "running",
         "worker_pod": "cust-pcqbz8w6f6uop2fhuykcee-training-job-worker-0",
         "worker_status": "Running",
-        "worker_node": "ubuntu2"
+        "worker_node": "<ADA_NODE>"
       },
       "cust-KY79TSzsNdUjJAADoDRzGQ": {
         "customizer_status": "pending",
         "worker_pod": "cust-ky79tszsndujjaadodrzgq-training-job-worker-0",
         "worker_status": "Running",
-        "worker_node": "ubuntu2"
+        "worker_node": "<ADA_NODE>"
       },
       "cust-CxYRLbLQowgRZQC2Hnho9v": {
         "customizer_status": "running",
@@ -279,10 +279,10 @@
       "cust-8sTfudSSh2s2EAkKmH6XCs": "completed"
     },
     "worker_node": {
-      "cust-PCqbz8W6F6Uop2fhuYkcee": "ubuntu2",
-      "cust-KY79TSzsNdUjJAADoDRzGQ": "ubuntu2",
-      "cust-CxYRLbLQowgRZQC2Hnho9v": "ubuntu2",
-      "cust-8sTfudSSh2s2EAkKmH6XCs": "ubuntu2"
+      "cust-PCqbz8W6F6Uop2fhuYkcee": "<ADA_NODE>",
+      "cust-KY79TSzsNdUjJAADoDRzGQ": "<ADA_NODE>",
+      "cust-CxYRLbLQowgRZQC2Hnho9v": "<ADA_NODE>",
+      "cust-8sTfudSSh2s2EAkKmH6XCs": "<ADA_NODE>"
     },
     "worker_phase": {
       "cust-PCqbz8W6F6Uop2fhuYkcee": "Succeeded",

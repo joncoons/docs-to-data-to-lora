@@ -62,7 +62,7 @@ specific Curator release.
 
 ```bash
 python scripts/pipeline/curator_handoff.py \
-  --dataset-dir /mnt/nvme2/peft/datasets/v2/nim_curated \
+  --dataset-dir <DATASET_ROOT>/nim_curated \
   --collection nim_curated \
   --mode prepare \
   --config-file configs/curator/sft-dedup-quality.yaml \
@@ -93,12 +93,12 @@ until the showcase embedding model and GPU budget are selected.
 
 ```bash
 python scripts/pipeline/curator_handoff.py \
-  --dataset-dir /mnt/nvme2/peft/datasets/v2/nim_curated \
+  --dataset-dir <DATASET_ROOT>/nim_curated \
   --collection nim_curated \
   --mode collect \
   --curator-job-id <curator-job-id> \
-  --accepted-dir /mnt/nvme2/peft/datasets/v2/nim_curated/curator/retained \
-  --rejected-dir /mnt/nvme2/peft/datasets/v2/nim_curated/curator/removed \
+  --accepted-dir <DATASET_ROOT>/nim_curated/curator/retained \
+  --rejected-dir <DATASET_ROOT>/nim_curated/curator/removed \
   --observability-dir /tmp/curator-observability/nim_curated
 ```
 

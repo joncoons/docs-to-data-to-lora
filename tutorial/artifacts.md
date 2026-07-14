@@ -17,7 +17,7 @@ The tutorial notebook builds a small inventory in memory. A live crawler run sho
 Default full-run location:
 
 ```text
-/mnt/nvme2/peft/datasets/v2/<collection>/
+<DATASET_ROOT>/<collection>/
 ```
 
 Key files:
@@ -60,7 +60,7 @@ The dry-run notebook prints the Customizer payload without submitting it.
 Completion collection writes durable model outputs to:
 
 ```text
-/mnt/nvme2/peft/evals/completions/<dataset>/<base>/<target>/<rank>/<run_id>/
+<EVAL_ROOT>/completions/<dataset>/<base>/<target>/<rank>/<run_id>/
 ```
 
 Each run directory should contain:

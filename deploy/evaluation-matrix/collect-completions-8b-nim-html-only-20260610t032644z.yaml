@@ -31,7 +31,7 @@ spec:
               set -eu
               pip install --no-cache-dir -q httpx
               python /scripts/collect_completions.py \
-                --dataset /mnt/nvme2/peft/datasets/v2/nim_curated_html_only/test_set_with_context.jsonl \
+                --dataset <DATASET_ROOT>/nim_curated_html_only/test_set_with_context.jsonl \
                 --dataset-slug nim_curated_html_only \
                 --target-api-url "$TARGET_API_URL" \
                 --model meta/llama-3.1-8b-instruct \
@@ -51,7 +51,7 @@ spec:
             - name: TARGET_API_URL
               value: "http://nim-llm-8b-bw-lora.runai-rag:8000"
             - name: COMPLETIONS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/completions
+              value: <EVAL_ROOT>/completions
           resources:
             requests:
               cpu: "250m"
@@ -64,7 +64,7 @@ spec:
               mountPath: /scripts
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: collector-script
           configMap:

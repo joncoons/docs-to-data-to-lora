@@ -17,13 +17,13 @@
       "pods": [
         {
           "name": "cust-bzdkgpc6vtxw2ae5crwqgy-entity-handler-0-sl9w5",
-          "node": "ubuntu2",
+          "node": "<ADA_NODE>",
           "phase": "Succeeded",
           "ready": false
         },
         {
           "name": "cust-bzdkgpc6vtxw2ae5crwqgy-training-job-worker-0",
-          "node": "ubuntu2",
+          "node": "<ADA_NODE>",
           "phase": "Running",
           "ready": true
         }
@@ -130,13 +130,13 @@
       "pods": [
         {
           "name": "cust-fsetgu5zhrdnktzng4jcbl-entity-handler-0-7z965",
-          "node": "ubuntu2",
+          "node": "<ADA_NODE>",
           "phase": "Succeeded",
           "ready": false
         },
         {
           "name": "cust-fsetgu5zhrdnktzng4jcbl-training-job-worker-0",
-          "node": "ubuntu2",
+          "node": "<ADA_NODE>",
           "phase": "Running",
           "ready": true
         }
@@ -235,7 +235,7 @@
       "pods": [
         {
           "name": "cust-lfp1giyrrx6byikhefkbfn-entity-handler-0-9dzrv",
-          "node": "ubuntu2",
+          "node": "<ADA_NODE>",
           "phase": "Succeeded",
           "ready": false
         },
@@ -352,7 +352,7 @@
       "pods": [
         {
           "name": "cust-jdktpm7duyby6fzyt58hsg-entity-handler-0-s9jfp",
-          "node": "ubuntu2",
+          "node": "<ADA_NODE>",
           "phase": "Succeeded",
           "ready": false
         },
@@ -454,13 +454,13 @@
     }
   ],
   "last_observed_at": "2026-07-12T06:31:41+00:00",
-  "node": "ubuntu2",
+  "node": "<ADA_NODE>",
   "node_gpu": "NVIDIA RTX 6000 Ada Generation",
   "runtime_observation": {
     "active_gpu_workers_expected": 2,
     "active_gpu_workers_observed": 2,
     "gpu_request_per_training_worker": 1,
-    "kubernetes_node": "ubuntu2",
+    "kubernetes_node": "<ADA_NODE>",
     "node_allocated_nvidia_gpu": 2,
     "node_capacity_nvidia_gpu": 2,
     "rank_order": "r16 workers running first; r32 workers pending for GPU capacity"

@@ -84,7 +84,7 @@ Run this once per corpus. Use the same base model, batch size, learning rate, ep
 
 ### Judge signal
 
-Use Claude Sonnet 4.6 through the NVIDIA endpoint as the independent judge. Credentials should come only from the existing Kubernetes secret; do not write secrets into repo files.
+Use Claude Sonnet 4.6 through the remote endpoint as the independent judge. Credentials should come only from the existing Kubernetes secret; do not write secrets into repo files.
 
 Judge a paired sample from each cell on:
 

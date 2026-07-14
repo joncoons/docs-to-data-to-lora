@@ -84,5 +84,5 @@ python scripts/pipeline/stage0_corpus_prep.py \
   --es-host https://rag-eck-elasticsearch-es-http.runai-rag:9200 \
   --output-dir /tmp/nim_curated \
   --observability-dir /tmp/stage0-observability/nim_curated \
-  --url-registry /mnt/nvme2/crawler-registry/nim_curated_url_registry.json
+  --url-registry /workspace/artifacts/crawler-registry/nim_curated_url_registry.json
 ```

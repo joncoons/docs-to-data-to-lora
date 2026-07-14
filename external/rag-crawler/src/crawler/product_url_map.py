@@ -47,7 +47,7 @@ _DEFAULT_MAP: list[tuple[str, str, str | None]] = [
     ("github.com/triton-inference-server",          "Inference",          "Triton Inference Server"),
     # ── NIM / NIMs ────────────────────────────────────────────────────────────
     ("docs.nvidia.com/nim",                         "NIM",                "NVIDIA NIM"),
-    ("build.nvidia.com",                            "NIM",                "NVIDIA NIM"),
+    ("model-catalog.example.com",                            "NIM",                "NVIDIA NIM"),
     # ── Data Center / GPUs ────────────────────────────────────────────────────
     ("docs.nvidia.com/datacenter/tesla",            "Data Center",        "Tesla GPU"),
     ("docs.nvidia.com/datacenter/cloud-native",     "Data Center",        "Cloud Native"),

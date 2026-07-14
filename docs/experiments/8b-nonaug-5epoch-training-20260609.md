@@ -19,31 +19,31 @@ Purpose: test whether the grounded, non-augmented datasets show value from a lon
 - Batch size: `16`
 - Learning rate: `1e-4`
 - Sequence packing: disabled
-- Required placement: Blackwell node `ubuntu-local-dev`
+- Required placement: Blackwell node `<BLACKWELL_NODE>`
 
 ## Scheduling Correction
 
-Initial 2026-06-09 submissions landed on `ubuntu2` because the live Customizer ConfigMap still had:
+Initial 2026-06-09 submissions landed on `<ADA_NODE>` because the live Customizer ConfigMap still had:
 
-- `training.container_defaults.nodeSelector.kubernetes.io/hostname: ubuntu2`
-- `training.nodeSelectors.kubernetes.io/hostname: ubuntu2`
+- `training.container_defaults.nodeSelector.kubernetes.io/hostname: <ADA_NODE>`
+- `training.nodeSelectors.kubernetes.io/hostname: <ADA_NODE>`
 
-Those jobs were cancelled or failed. The ConfigMap was patched to `ubuntu-local-dev`, Customizer was restarted, and placement was verified with a two-job canary before queueing r32.
+Those jobs were cancelled or failed. The ConfigMap was patched to `<BLACKWELL_NODE>`, Customizer was restarted, and placement was verified with a two-job canary before queueing r32.
 
 Reusable command:
 
 ```bash
-python scripts/ops/patch_customizer_training_node.py --node ubuntu-local-dev --restart
+python scripts/ops/patch_customizer_training_node.py --node <BLACKWELL_NODE> --restart
 ```
 
 ## Active Jobs
 
 | Dataset | Rank | Job ID | Output model | Status |
 |---|---:|---|---|---|
-| NIM grounded | 16 | `cust-GQkpTXu3frr2PnWSnbcgKH` | `default/lora-nim-e5-llama-3.1-8b-r16` | running on `ubuntu-local-dev` |
-| NeMo Microservices grounded | 16 | `cust-EDmfZ5Hi9HaCw4Ko4wyLpH` | `default/lora-nemo-usvcs-e5-llama-3.1-8b-r16` | running on `ubuntu-local-dev` |
-| NIM grounded | 32 | `cust-CiTm8oforcC38Rw67D3RVH` | `default/lora-nim-e5-llama-3.1-8b-r32` | queued for `ubuntu-local-dev` |
-| NeMo Microservices grounded | 32 | `cust-XZMopAuFBH57vNpVJZzBvj` | `default/lora-nemo-usvcs-e5-llama-3.1-8b-r32` | queued for `ubuntu-local-dev` |
+| NIM grounded | 16 | `cust-GQkpTXu3frr2PnWSnbcgKH` | `default/lora-nim-e5-llama-3.1-8b-r16` | running on `<BLACKWELL_NODE>` |
+| NeMo Microservices grounded | 16 | `cust-EDmfZ5Hi9HaCw4Ko4wyLpH` | `default/lora-nemo-usvcs-e5-llama-3.1-8b-r16` | running on `<BLACKWELL_NODE>` |
+| NIM grounded | 32 | `cust-CiTm8oforcC38Rw67D3RVH` | `default/lora-nim-e5-llama-3.1-8b-r32` | queued for `<BLACKWELL_NODE>` |
+| NeMo Microservices grounded | 32 | `cust-XZMopAuFBH57vNpVJZzBvj` | `default/lora-nemo-usvcs-e5-llama-3.1-8b-r32` | queued for `<BLACKWELL_NODE>` |
 
 ## Follow-On
 

@@ -38,7 +38,7 @@ DEFAULT_JUDGE_API_KEY_ENV = os.getenv("JUDGE_API_KEY_ENV", "KIMI_KEY")
 DEFAULT_DATASET_PATH = Path(
     os.getenv(
         "EVALUATOR_SMOKE_DATASET_PATH",
-        "/mnt/nvme2/peft/datasets/v2/nim_curated/test_set_with_context.jsonl",
+        "<DATASET_ROOT>/nim_curated/test_set_with_context.jsonl",
     )
 )
 DEFAULT_OUT = Path(

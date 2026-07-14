@@ -1,128 +1,128 @@
 2026-07-10 09:45:57,543 INFO le_downstream - Stage 1A latest status for selected passages: {'complete': 486} missing=0
 2026-07-10 09:45:58,366 INFO le_downstream - Source filter: doc_kind=html passages=486/486 stage1a_rows=9611/9611
-2026-07-10 09:45:58,479 INFO le_downstream - LE downstream start: collection=nemo_usvcs_curated output=curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3 stage=1c resume=True targets=[('https://inference-api.nvidia.com/v1', 'nvidia/nvidia/nemotron-3-ultra', None)]
+2026-07-10 09:45:58,479 INFO le_downstream - LE downstream start: collection=nemo_usvcs_curated output=curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3 stage=1c resume=True targets=[('https://llm.example.com/v1', 'nvidia/nvidia/nemotron-3-ultra', None)]
 2026-07-10 09:45:58,504 INFO scripts.pipeline.stage1c_instruction - Stage 1C: 121 passages selected (mode=stratified top 25% floor 100)
-Stage 1C:   0%|          | 0/121 [00:00<?, ?it/s]2026-07-10 09:46:01,347 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:   1%|          | 1/121 [00:02<05:43,  2.86s/it]2026-07-10 09:46:05,308 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:   2%|▏         | 2/121 [00:06<06:57,  3.50s/it]2026-07-10 09:46:08,864 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:   2%|▏         | 3/121 [00:10<06:56,  3.53s/it]2026-07-10 09:46:13,934 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:   3%|▎         | 4/121 [00:15<08:03,  4.13s/it]2026-07-10 09:46:20,394 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:   4%|▍         | 5/121 [00:21<09:37,  4.97s/it]2026-07-10 09:46:24,768 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:   5%|▍         | 6/121 [00:26<09:08,  4.77s/it]2026-07-10 09:46:30,293 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:   6%|▌         | 7/121 [00:31<09:31,  5.02s/it]2026-07-10 09:46:34,329 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:   7%|▋         | 8/121 [00:35<08:51,  4.70s/it]2026-07-10 09:46:37,125 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:   7%|▋         | 9/121 [00:38<07:40,  4.11s/it]2026-07-10 09:46:41,007 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:   8%|▊         | 10/121 [00:42<07:28,  4.04s/it]2026-07-10 09:46:48,466 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:   9%|▉         | 11/121 [00:49<09:19,  5.09s/it]2026-07-10 09:46:50,645 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  10%|▉         | 12/121 [00:52<07:37,  4.20s/it]2026-07-10 09:46:54,230 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  11%|█         | 13/121 [00:55<07:13,  4.01s/it]2026-07-10 09:46:58,873 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  12%|█▏        | 14/121 [01:00<07:29,  4.20s/it]2026-07-10 09:47:03,503 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  12%|█▏        | 15/121 [01:05<07:39,  4.33s/it]2026-07-10 09:47:06,107 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  13%|█▎        | 16/121 [01:07<06:40,  3.81s/it]2026-07-10 09:47:09,431 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  14%|█▍        | 17/121 [01:10<06:21,  3.67s/it]2026-07-10 09:47:13,190 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  15%|█▍        | 18/121 [01:14<06:20,  3.69s/it]2026-07-10 09:47:16,696 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  16%|█▌        | 19/121 [01:18<06:11,  3.64s/it]2026-07-10 09:47:23,551 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  17%|█▋        | 20/121 [01:25<07:44,  4.60s/it]2026-07-10 09:47:25,362 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  17%|█▋        | 21/121 [01:26<06:16,  3.77s/it]2026-07-10 09:47:31,349 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  18%|█▊        | 22/121 [01:32<07:18,  4.43s/it]2026-07-10 09:47:35,048 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  19%|█▉        | 23/121 [01:36<06:52,  4.21s/it]2026-07-10 09:47:37,702 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  20%|█▉        | 24/121 [01:39<06:03,  3.74s/it]2026-07-10 09:47:40,901 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  21%|██        | 25/121 [01:42<05:43,  3.58s/it]2026-07-10 09:47:47,802 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  21%|██▏       | 26/121 [01:49<07:14,  4.58s/it]2026-07-10 09:47:54,093 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  22%|██▏       | 27/121 [01:55<07:58,  5.09s/it]2026-07-10 09:47:57,424 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  23%|██▎       | 28/121 [01:58<07:04,  4.56s/it]2026-07-10 09:48:01,064 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  24%|██▍       | 29/121 [02:02<06:34,  4.29s/it]2026-07-10 09:48:04,482 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  25%|██▍       | 30/121 [02:05<06:06,  4.03s/it]2026-07-10 09:48:11,723 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  26%|██▌       | 31/121 [02:13<07:29,  4.99s/it]2026-07-10 09:48:15,367 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  26%|██▋       | 32/121 [02:16<06:48,  4.59s/it]2026-07-10 09:48:18,729 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  27%|██▋       | 33/121 [02:20<06:11,  4.22s/it]2026-07-10 09:48:21,623 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  28%|██▊       | 34/121 [02:23<05:32,  3.82s/it]2026-07-10 09:48:26,089 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  29%|██▉       | 35/121 [02:27<05:45,  4.02s/it]2026-07-10 09:48:28,540 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  30%|██▉       | 36/121 [02:30<05:01,  3.55s/it]2026-07-10 09:48:34,446 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  31%|███       | 37/121 [02:35<05:57,  4.25s/it]2026-07-10 09:48:37,138 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  31%|███▏      | 38/121 [02:38<05:14,  3.79s/it]2026-07-10 09:48:40,442 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  32%|███▏      | 39/121 [02:41<04:58,  3.64s/it]2026-07-10 09:48:43,705 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  33%|███▎      | 40/121 [02:45<04:45,  3.53s/it]2026-07-10 09:48:45,882 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  34%|███▍      | 41/121 [02:47<04:09,  3.12s/it]2026-07-10 09:48:49,571 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  35%|███▍      | 42/121 [02:51<04:20,  3.29s/it]2026-07-10 09:48:52,632 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  36%|███▌      | 43/121 [02:54<04:11,  3.22s/it]2026-07-10 09:48:56,006 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  36%|███▋      | 44/121 [02:57<04:11,  3.27s/it]2026-07-10 09:48:59,367 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  37%|███▋      | 45/121 [03:00<04:10,  3.30s/it]2026-07-10 09:49:02,801 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  38%|███▊      | 46/121 [03:04<04:10,  3.34s/it]2026-07-10 09:49:07,895 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  39%|███▉      | 47/121 [03:09<04:45,  3.86s/it]2026-07-10 09:49:10,532 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  40%|███▉      | 48/121 [03:12<04:15,  3.50s/it]2026-07-10 09:49:13,070 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  40%|████      | 49/121 [03:14<03:50,  3.21s/it]2026-07-10 09:49:17,347 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  41%|████▏     | 50/121 [03:18<04:10,  3.53s/it]2026-07-10 09:49:20,662 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  42%|████▏     | 51/121 [03:22<04:02,  3.46s/it]2026-07-10 09:49:23,497 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  43%|████▎     | 52/121 [03:25<03:46,  3.28s/it]2026-07-10 09:49:24,862 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  44%|████▍     | 53/121 [03:26<03:03,  2.70s/it]2026-07-10 09:49:30,852 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  45%|████▍     | 54/121 [03:32<04:07,  3.69s/it]2026-07-10 09:49:34,631 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  45%|████▌     | 55/121 [03:36<04:05,  3.72s/it]2026-07-10 09:49:37,664 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  46%|████▋     | 56/121 [03:39<03:48,  3.51s/it]2026-07-10 09:49:41,553 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  47%|████▋     | 57/121 [03:43<03:51,  3.62s/it]2026-07-10 09:49:44,964 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  48%|████▊     | 58/121 [03:46<03:44,  3.56s/it]2026-07-10 09:49:52,052 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  49%|████▉     | 59/121 [03:53<04:46,  4.62s/it]2026-07-10 09:49:55,026 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  50%|████▉     | 60/121 [03:56<04:11,  4.13s/it]2026-07-10 09:49:58,071 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  50%|█████     | 61/121 [03:59<03:48,  3.80s/it]2026-07-10 09:50:02,911 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  51%|█████     | 62/121 [04:04<04:02,  4.11s/it]2026-07-10 09:50:06,118 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  52%|█████▏    | 63/121 [04:07<03:42,  3.84s/it]2026-07-10 09:50:09,822 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  53%|█████▎    | 64/121 [04:11<03:36,  3.80s/it]2026-07-10 09:50:12,516 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  54%|█████▎    | 65/121 [04:14<03:14,  3.47s/it]2026-07-10 09:50:16,799 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  55%|█████▍    | 66/121 [04:18<03:24,  3.71s/it]2026-07-10 09:50:19,881 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  55%|█████▌    | 67/121 [04:21<03:10,  3.52s/it]2026-07-10 09:50:22,776 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  56%|█████▌    | 68/121 [04:24<02:56,  3.33s/it]2026-07-10 09:50:24,518 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  57%|█████▋    | 69/121 [04:26<02:28,  2.86s/it]2026-07-10 09:50:29,365 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  58%|█████▊    | 70/121 [04:30<02:56,  3.45s/it]2026-07-10 09:50:32,784 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  59%|█████▊    | 71/121 [04:34<02:52,  3.44s/it]2026-07-10 09:50:36,272 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  60%|█████▉    | 72/121 [04:37<02:49,  3.46s/it]2026-07-10 09:50:38,171 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  60%|██████    | 73/121 [04:39<02:23,  2.99s/it]2026-07-10 09:50:42,619 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  61%|██████    | 74/121 [04:44<02:41,  3.43s/it]2026-07-10 09:50:47,269 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  62%|██████▏   | 75/121 [04:48<02:54,  3.79s/it]2026-07-10 09:50:49,596 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  63%|██████▎   | 76/121 [04:51<02:30,  3.35s/it]2026-07-10 09:50:52,871 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  64%|██████▎   | 77/121 [04:54<02:26,  3.33s/it]2026-07-10 09:50:56,633 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  64%|██████▍   | 78/121 [04:58<02:28,  3.46s/it]2026-07-10 09:51:00,022 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  65%|██████▌   | 79/121 [05:01<02:24,  3.44s/it]2026-07-10 09:51:03,217 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  66%|██████▌   | 80/121 [05:04<02:17,  3.37s/it]2026-07-10 09:51:06,661 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  67%|██████▋   | 81/121 [05:08<02:15,  3.39s/it]2026-07-10 09:51:09,363 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  68%|██████▊   | 82/121 [05:10<02:04,  3.18s/it]2026-07-10 09:51:15,809 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  69%|██████▊   | 83/121 [05:17<02:38,  4.16s/it]2026-07-10 09:51:18,847 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  69%|██████▉   | 84/121 [05:20<02:21,  3.82s/it]2026-07-10 09:51:20,648 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  70%|███████   | 85/121 [05:22<01:55,  3.22s/it]2026-07-10 09:51:24,644 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  71%|███████   | 86/121 [05:26<02:00,  3.45s/it]2026-07-10 09:51:30,892 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  72%|███████▏  | 87/121 [05:32<02:25,  4.29s/it]2026-07-10 09:51:32,988 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  73%|███████▎  | 88/121 [05:34<01:59,  3.63s/it]2026-07-10 09:51:36,775 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  74%|███████▎  | 89/121 [05:38<01:57,  3.68s/it]2026-07-10 09:51:40,366 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  74%|███████▍  | 90/121 [05:41<01:53,  3.65s/it]2026-07-10 09:51:44,571 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  75%|███████▌  | 91/121 [05:46<01:54,  3.82s/it]2026-07-10 09:51:47,956 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  76%|███████▌  | 92/121 [05:49<01:46,  3.69s/it]2026-07-10 09:51:53,022 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  77%|███████▋  | 93/121 [05:54<01:54,  4.10s/it]2026-07-10 09:51:56,521 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  78%|███████▊  | 94/121 [05:58<01:45,  3.92s/it]2026-07-10 09:52:05,417 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  79%|███████▊  | 95/121 [06:06<02:20,  5.41s/it]2026-07-10 09:52:09,010 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  79%|███████▉  | 96/121 [06:10<02:01,  4.87s/it]2026-07-10 09:52:11,248 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  80%|████████  | 97/121 [06:12<01:37,  4.08s/it]2026-07-10 09:52:14,861 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  81%|████████  | 98/121 [06:16<01:30,  3.94s/it]2026-07-10 09:52:20,801 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  82%|████████▏ | 99/121 [06:22<01:39,  4.54s/it]2026-07-10 09:52:24,122 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  83%|████████▎ | 100/121 [06:25<01:27,  4.17s/it]2026-07-10 09:52:27,452 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  83%|████████▎ | 101/121 [06:28<01:18,  3.92s/it]2026-07-10 09:52:30,479 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  84%|████████▍ | 102/121 [06:31<01:09,  3.65s/it]2026-07-10 09:52:38,863 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  85%|████████▌ | 103/121 [06:40<01:31,  5.07s/it]2026-07-10 09:52:46,188 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  86%|████████▌ | 104/121 [06:47<01:37,  5.75s/it]2026-07-10 09:52:49,113 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  87%|████████▋ | 105/121 [06:50<01:18,  4.90s/it]2026-07-10 09:52:52,388 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  88%|████████▊ | 106/121 [06:53<01:06,  4.41s/it]2026-07-10 09:52:56,378 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  88%|████████▊ | 107/121 [06:57<01:00,  4.29s/it]2026-07-10 09:53:00,441 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  89%|████████▉ | 108/121 [07:01<00:54,  4.22s/it]2026-07-10 09:53:04,092 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  90%|█████████ | 109/121 [07:05<00:48,  4.05s/it]2026-07-10 09:53:10,276 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  91%|█████████ | 110/121 [07:11<00:51,  4.69s/it]2026-07-10 09:53:14,580 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  92%|█████████▏| 111/121 [07:16<00:45,  4.57s/it]2026-07-10 09:53:21,175 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  93%|█████████▎| 112/121 [07:22<00:46,  5.18s/it]2026-07-10 09:53:23,969 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  93%|█████████▎| 113/121 [07:25<00:35,  4.46s/it]2026-07-10 09:53:28,324 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  94%|█████████▍| 114/121 [07:29<00:31,  4.43s/it]2026-07-10 09:53:33,525 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  95%|█████████▌| 115/121 [07:35<00:27,  4.66s/it]2026-07-10 09:53:38,327 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  96%|█████████▌| 116/121 [07:39<00:23,  4.70s/it]2026-07-10 09:53:42,048 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  97%|█████████▋| 117/121 [07:43<00:17,  4.41s/it]2026-07-10 09:53:45,259 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  98%|█████████▊| 118/121 [07:46<00:12,  4.05s/it]2026-07-10 09:53:49,166 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  98%|█████████▊| 119/121 [07:50<00:08,  4.01s/it]2026-07-10 09:54:00,225 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1C:  99%|█████████▉| 120/121 [08:01<00:06,  6.12s/it]2026-07-10 09:54:05,089 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   0%|          | 0/121 [00:00<?, ?it/s]2026-07-10 09:46:01,347 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   1%|          | 1/121 [00:02<05:43,  2.86s/it]2026-07-10 09:46:05,308 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   2%|▏         | 2/121 [00:06<06:57,  3.50s/it]2026-07-10 09:46:08,864 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   2%|▏         | 3/121 [00:10<06:56,  3.53s/it]2026-07-10 09:46:13,934 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   3%|▎         | 4/121 [00:15<08:03,  4.13s/it]2026-07-10 09:46:20,394 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   4%|▍         | 5/121 [00:21<09:37,  4.97s/it]2026-07-10 09:46:24,768 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   5%|▍         | 6/121 [00:26<09:08,  4.77s/it]2026-07-10 09:46:30,293 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   6%|▌         | 7/121 [00:31<09:31,  5.02s/it]2026-07-10 09:46:34,329 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   7%|▋         | 8/121 [00:35<08:51,  4.70s/it]2026-07-10 09:46:37,125 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   7%|▋         | 9/121 [00:38<07:40,  4.11s/it]2026-07-10 09:46:41,007 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   8%|▊         | 10/121 [00:42<07:28,  4.04s/it]2026-07-10 09:46:48,466 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:   9%|▉         | 11/121 [00:49<09:19,  5.09s/it]2026-07-10 09:46:50,645 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  10%|▉         | 12/121 [00:52<07:37,  4.20s/it]2026-07-10 09:46:54,230 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  11%|█         | 13/121 [00:55<07:13,  4.01s/it]2026-07-10 09:46:58,873 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  12%|█▏        | 14/121 [01:00<07:29,  4.20s/it]2026-07-10 09:47:03,503 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  12%|█▏        | 15/121 [01:05<07:39,  4.33s/it]2026-07-10 09:47:06,107 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  13%|█▎        | 16/121 [01:07<06:40,  3.81s/it]2026-07-10 09:47:09,431 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  14%|█▍        | 17/121 [01:10<06:21,  3.67s/it]2026-07-10 09:47:13,190 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  15%|█▍        | 18/121 [01:14<06:20,  3.69s/it]2026-07-10 09:47:16,696 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  16%|█▌        | 19/121 [01:18<06:11,  3.64s/it]2026-07-10 09:47:23,551 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  17%|█▋        | 20/121 [01:25<07:44,  4.60s/it]2026-07-10 09:47:25,362 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  17%|█▋        | 21/121 [01:26<06:16,  3.77s/it]2026-07-10 09:47:31,349 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  18%|█▊        | 22/121 [01:32<07:18,  4.43s/it]2026-07-10 09:47:35,048 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  19%|█▉        | 23/121 [01:36<06:52,  4.21s/it]2026-07-10 09:47:37,702 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  20%|█▉        | 24/121 [01:39<06:03,  3.74s/it]2026-07-10 09:47:40,901 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  21%|██        | 25/121 [01:42<05:43,  3.58s/it]2026-07-10 09:47:47,802 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  21%|██▏       | 26/121 [01:49<07:14,  4.58s/it]2026-07-10 09:47:54,093 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  22%|██▏       | 27/121 [01:55<07:58,  5.09s/it]2026-07-10 09:47:57,424 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  23%|██▎       | 28/121 [01:58<07:04,  4.56s/it]2026-07-10 09:48:01,064 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  24%|██▍       | 29/121 [02:02<06:34,  4.29s/it]2026-07-10 09:48:04,482 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  25%|██▍       | 30/121 [02:05<06:06,  4.03s/it]2026-07-10 09:48:11,723 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  26%|██▌       | 31/121 [02:13<07:29,  4.99s/it]2026-07-10 09:48:15,367 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  26%|██▋       | 32/121 [02:16<06:48,  4.59s/it]2026-07-10 09:48:18,729 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  27%|██▋       | 33/121 [02:20<06:11,  4.22s/it]2026-07-10 09:48:21,623 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  28%|██▊       | 34/121 [02:23<05:32,  3.82s/it]2026-07-10 09:48:26,089 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  29%|██▉       | 35/121 [02:27<05:45,  4.02s/it]2026-07-10 09:48:28,540 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  30%|██▉       | 36/121 [02:30<05:01,  3.55s/it]2026-07-10 09:48:34,446 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  31%|███       | 37/121 [02:35<05:57,  4.25s/it]2026-07-10 09:48:37,138 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  31%|███▏      | 38/121 [02:38<05:14,  3.79s/it]2026-07-10 09:48:40,442 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  32%|███▏      | 39/121 [02:41<04:58,  3.64s/it]2026-07-10 09:48:43,705 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  33%|███▎      | 40/121 [02:45<04:45,  3.53s/it]2026-07-10 09:48:45,882 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  34%|███▍      | 41/121 [02:47<04:09,  3.12s/it]2026-07-10 09:48:49,571 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  35%|███▍      | 42/121 [02:51<04:20,  3.29s/it]2026-07-10 09:48:52,632 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  36%|███▌      | 43/121 [02:54<04:11,  3.22s/it]2026-07-10 09:48:56,006 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  36%|███▋      | 44/121 [02:57<04:11,  3.27s/it]2026-07-10 09:48:59,367 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  37%|███▋      | 45/121 [03:00<04:10,  3.30s/it]2026-07-10 09:49:02,801 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  38%|███▊      | 46/121 [03:04<04:10,  3.34s/it]2026-07-10 09:49:07,895 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  39%|███▉      | 47/121 [03:09<04:45,  3.86s/it]2026-07-10 09:49:10,532 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  40%|███▉      | 48/121 [03:12<04:15,  3.50s/it]2026-07-10 09:49:13,070 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  40%|████      | 49/121 [03:14<03:50,  3.21s/it]2026-07-10 09:49:17,347 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  41%|████▏     | 50/121 [03:18<04:10,  3.53s/it]2026-07-10 09:49:20,662 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  42%|████▏     | 51/121 [03:22<04:02,  3.46s/it]2026-07-10 09:49:23,497 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  43%|████▎     | 52/121 [03:25<03:46,  3.28s/it]2026-07-10 09:49:24,862 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  44%|████▍     | 53/121 [03:26<03:03,  2.70s/it]2026-07-10 09:49:30,852 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  45%|████▍     | 54/121 [03:32<04:07,  3.69s/it]2026-07-10 09:49:34,631 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  45%|████▌     | 55/121 [03:36<04:05,  3.72s/it]2026-07-10 09:49:37,664 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  46%|████▋     | 56/121 [03:39<03:48,  3.51s/it]2026-07-10 09:49:41,553 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  47%|████▋     | 57/121 [03:43<03:51,  3.62s/it]2026-07-10 09:49:44,964 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  48%|████▊     | 58/121 [03:46<03:44,  3.56s/it]2026-07-10 09:49:52,052 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  49%|████▉     | 59/121 [03:53<04:46,  4.62s/it]2026-07-10 09:49:55,026 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  50%|████▉     | 60/121 [03:56<04:11,  4.13s/it]2026-07-10 09:49:58,071 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  50%|█████     | 61/121 [03:59<03:48,  3.80s/it]2026-07-10 09:50:02,911 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  51%|█████     | 62/121 [04:04<04:02,  4.11s/it]2026-07-10 09:50:06,118 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  52%|█████▏    | 63/121 [04:07<03:42,  3.84s/it]2026-07-10 09:50:09,822 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  53%|█████▎    | 64/121 [04:11<03:36,  3.80s/it]2026-07-10 09:50:12,516 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  54%|█████▎    | 65/121 [04:14<03:14,  3.47s/it]2026-07-10 09:50:16,799 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  55%|█████▍    | 66/121 [04:18<03:24,  3.71s/it]2026-07-10 09:50:19,881 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  55%|█████▌    | 67/121 [04:21<03:10,  3.52s/it]2026-07-10 09:50:22,776 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  56%|█████▌    | 68/121 [04:24<02:56,  3.33s/it]2026-07-10 09:50:24,518 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  57%|█████▋    | 69/121 [04:26<02:28,  2.86s/it]2026-07-10 09:50:29,365 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  58%|█████▊    | 70/121 [04:30<02:56,  3.45s/it]2026-07-10 09:50:32,784 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  59%|█████▊    | 71/121 [04:34<02:52,  3.44s/it]2026-07-10 09:50:36,272 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  60%|█████▉    | 72/121 [04:37<02:49,  3.46s/it]2026-07-10 09:50:38,171 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  60%|██████    | 73/121 [04:39<02:23,  2.99s/it]2026-07-10 09:50:42,619 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  61%|██████    | 74/121 [04:44<02:41,  3.43s/it]2026-07-10 09:50:47,269 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  62%|██████▏   | 75/121 [04:48<02:54,  3.79s/it]2026-07-10 09:50:49,596 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  63%|██████▎   | 76/121 [04:51<02:30,  3.35s/it]2026-07-10 09:50:52,871 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  64%|██████▎   | 77/121 [04:54<02:26,  3.33s/it]2026-07-10 09:50:56,633 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  64%|██████▍   | 78/121 [04:58<02:28,  3.46s/it]2026-07-10 09:51:00,022 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  65%|██████▌   | 79/121 [05:01<02:24,  3.44s/it]2026-07-10 09:51:03,217 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  66%|██████▌   | 80/121 [05:04<02:17,  3.37s/it]2026-07-10 09:51:06,661 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  67%|██████▋   | 81/121 [05:08<02:15,  3.39s/it]2026-07-10 09:51:09,363 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  68%|██████▊   | 82/121 [05:10<02:04,  3.18s/it]2026-07-10 09:51:15,809 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  69%|██████▊   | 83/121 [05:17<02:38,  4.16s/it]2026-07-10 09:51:18,847 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  69%|██████▉   | 84/121 [05:20<02:21,  3.82s/it]2026-07-10 09:51:20,648 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  70%|███████   | 85/121 [05:22<01:55,  3.22s/it]2026-07-10 09:51:24,644 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  71%|███████   | 86/121 [05:26<02:00,  3.45s/it]2026-07-10 09:51:30,892 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  72%|███████▏  | 87/121 [05:32<02:25,  4.29s/it]2026-07-10 09:51:32,988 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  73%|███████▎  | 88/121 [05:34<01:59,  3.63s/it]2026-07-10 09:51:36,775 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  74%|███████▎  | 89/121 [05:38<01:57,  3.68s/it]2026-07-10 09:51:40,366 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  74%|███████▍  | 90/121 [05:41<01:53,  3.65s/it]2026-07-10 09:51:44,571 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  75%|███████▌  | 91/121 [05:46<01:54,  3.82s/it]2026-07-10 09:51:47,956 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  76%|███████▌  | 92/121 [05:49<01:46,  3.69s/it]2026-07-10 09:51:53,022 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  77%|███████▋  | 93/121 [05:54<01:54,  4.10s/it]2026-07-10 09:51:56,521 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  78%|███████▊  | 94/121 [05:58<01:45,  3.92s/it]2026-07-10 09:52:05,417 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  79%|███████▊  | 95/121 [06:06<02:20,  5.41s/it]2026-07-10 09:52:09,010 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  79%|███████▉  | 96/121 [06:10<02:01,  4.87s/it]2026-07-10 09:52:11,248 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  80%|████████  | 97/121 [06:12<01:37,  4.08s/it]2026-07-10 09:52:14,861 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  81%|████████  | 98/121 [06:16<01:30,  3.94s/it]2026-07-10 09:52:20,801 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  82%|████████▏ | 99/121 [06:22<01:39,  4.54s/it]2026-07-10 09:52:24,122 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  83%|████████▎ | 100/121 [06:25<01:27,  4.17s/it]2026-07-10 09:52:27,452 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  83%|████████▎ | 101/121 [06:28<01:18,  3.92s/it]2026-07-10 09:52:30,479 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  84%|████████▍ | 102/121 [06:31<01:09,  3.65s/it]2026-07-10 09:52:38,863 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  85%|████████▌ | 103/121 [06:40<01:31,  5.07s/it]2026-07-10 09:52:46,188 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  86%|████████▌ | 104/121 [06:47<01:37,  5.75s/it]2026-07-10 09:52:49,113 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  87%|████████▋ | 105/121 [06:50<01:18,  4.90s/it]2026-07-10 09:52:52,388 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  88%|████████▊ | 106/121 [06:53<01:06,  4.41s/it]2026-07-10 09:52:56,378 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  88%|████████▊ | 107/121 [06:57<01:00,  4.29s/it]2026-07-10 09:53:00,441 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  89%|████████▉ | 108/121 [07:01<00:54,  4.22s/it]2026-07-10 09:53:04,092 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  90%|█████████ | 109/121 [07:05<00:48,  4.05s/it]2026-07-10 09:53:10,276 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  91%|█████████ | 110/121 [07:11<00:51,  4.69s/it]2026-07-10 09:53:14,580 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  92%|█████████▏| 111/121 [07:16<00:45,  4.57s/it]2026-07-10 09:53:21,175 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  93%|█████████▎| 112/121 [07:22<00:46,  5.18s/it]2026-07-10 09:53:23,969 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  93%|█████████▎| 113/121 [07:25<00:35,  4.46s/it]2026-07-10 09:53:28,324 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  94%|█████████▍| 114/121 [07:29<00:31,  4.43s/it]2026-07-10 09:53:33,525 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  95%|█████████▌| 115/121 [07:35<00:27,  4.66s/it]2026-07-10 09:53:38,327 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  96%|█████████▌| 116/121 [07:39<00:23,  4.70s/it]2026-07-10 09:53:42,048 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  97%|█████████▋| 117/121 [07:43<00:17,  4.41s/it]2026-07-10 09:53:45,259 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  98%|█████████▊| 118/121 [07:46<00:12,  4.05s/it]2026-07-10 09:53:49,166 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  98%|█████████▊| 119/121 [07:50<00:08,  4.01s/it]2026-07-10 09:54:00,225 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1C:  99%|█████████▉| 120/121 [08:01<00:06,  6.12s/it]2026-07-10 09:54:05,089 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
 Stage 1C: 100%|██████████| 121/121 [08:06<00:00,  5.74s/it]Stage 1C: 100%|██████████| 121/121 [08:06<00:00,  4.02s/it]
 2026-07-10 09:54:05,102 INFO scripts.pipeline.stage1c_instruction - Stage 1C: 262 KVPs -> curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/stage1c_instruction.jsonl
 2026-07-10 09:54:05,173 INFO le_downstream - LE downstream done: curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3

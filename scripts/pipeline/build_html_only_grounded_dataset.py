@@ -243,12 +243,12 @@ def main() -> int:
     ap.add_argument(
         "--source-dir",
         type=Path,
-        default=Path("/mnt/nvme2/peft/datasets/v2/nim_curated"),
+        default=Path("<DATASET_ROOT>/nim_curated"),
     )
     ap.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("/mnt/nvme2/peft/datasets/v2/nim_curated_html_only"),
+        default=Path("<DATASET_ROOT>/nim_curated_html_only"),
     )
     ap.add_argument("--collection", default="nim_curated_html_only")
     ap.add_argument("--source-collection", default="nim_curated")

@@ -43,12 +43,12 @@ INGESTOR_URL: str = os.environ.get(
 
 # ── Crawler runtime ───────────────────────────────────────────────────────────
 REGISTRY_DIR: str = os.environ.get("CRAWLER_REGISTRY_DIR", "/tmp/crawler-registry")
-CONFIGS_DIR: str = os.environ.get("CRAWLER_CONFIGS_DIR", "/mnt/nvme2/crawler-configs")
+CONFIGS_DIR: str = os.environ.get("CRAWLER_CONFIGS_DIR", "/workspace/artifacts/crawler-configs")
 EXPORT_DIR: str = os.environ.get("CRAWLER_EXPORT_DIR", "/crawl-exports")
-PDF_REPO_DIR: str = os.environ.get("CRAWLER_PDF_REPO_DIR", "/mnt/nvme2/pdf-repo")
-DOCS_REPO_DIR: str = os.environ.get("CRAWLER_DOCS_REPO_DIR", "/mnt/nvme2/docs-repo")
-AUDIO_REPO_DIR: str = os.environ.get("CRAWLER_AUDIO_REPO_DIR", "/mnt/nvme2/audio-repo")
-VIDEO_REPO_DIR: str = os.environ.get("CRAWLER_VIDEO_REPO_DIR", "/mnt/nvme2/video-repo")
+PDF_REPO_DIR: str = os.environ.get("CRAWLER_PDF_REPO_DIR", "/workspace/artifacts/pdf-repo")
+DOCS_REPO_DIR: str = os.environ.get("CRAWLER_DOCS_REPO_DIR", "/workspace/artifacts/docs-repo")
+AUDIO_REPO_DIR: str = os.environ.get("CRAWLER_AUDIO_REPO_DIR", "/workspace/artifacts/audio-repo")
+VIDEO_REPO_DIR: str = os.environ.get("CRAWLER_VIDEO_REPO_DIR", "/workspace/artifacts/video-repo")
 # Optional path to JSON override for CRAWLER_PRODUCT_URL_MAP
 PRODUCT_MAP_PATH: str = os.environ.get("APP_CRAWLER_PRODUCT_MAP", "")
 

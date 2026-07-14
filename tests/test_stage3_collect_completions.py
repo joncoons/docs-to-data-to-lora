@@ -72,7 +72,7 @@ def test_run_dir_layout_includes_rank_component():
 
 
 def test_dataset_slug_prefers_parent_for_context_baked_testset():
-    assert infer_dataset_slug(Path("/mnt/nvme2/peft/datasets/v2/nim_curated/test_set_with_context.jsonl")) == "nim_curated"
+    assert infer_dataset_slug(Path("<DATASET_ROOT>/nim_curated/test_set_with_context.jsonl")) == "nim_curated"
 
 
 def test_strip_think_tags_matches_reasoning_filter():

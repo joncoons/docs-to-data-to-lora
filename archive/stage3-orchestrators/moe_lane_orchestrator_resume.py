@@ -38,13 +38,13 @@ import urllib.request
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-PY_BIN = "/home/joncoons/anaconda3/envs/nat/bin/python3"
+PY_BIN = "<USER_HOME>/anaconda3/envs/nat/bin/python3"
 TRAIN_MOE = str(REPO / "scripts" / "stage3" / "train_adapter_moe.py")
 TIES_MERGE = str(REPO / "scripts" / "stage3" / "ties_merge.py")
 
 CUSTOMIZER = "http://10.43.167.101:8000"
 TERMINAL = {"completed", "failed", "cancelled"}
-MERGE_ROOT = Path("/mnt/nvme2/peft/checkpoints/lora")
+MERGE_ROOT = Path("<ARTIFACT_ROOT>/checkpoints/lora")
 LOG = "/tmp/moe-lane-resume-status.log"
 
 # Round-2 resume (after first attempt failed warmup validation):
@@ -215,7 +215,7 @@ def main() -> int:
     log("Merged adapter inventory:")
     for coll_short in ("nim", "nemo-usvcs"):
         for rank in (16, 32):
-            log(f"  /mnt/nvme2/peft/checkpoints/lora/lora-{coll_short}-nemotron-nano-30b-r{rank}/")
+            log(f"  <ARTIFACT_ROOT>/checkpoints/lora/lora-{coll_short}-nemotron-nano-30b-r{rank}/")
     return 0
 
 

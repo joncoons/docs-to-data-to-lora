@@ -36,7 +36,7 @@ spec:
     spec:
       # Run on the primary node — same network as ES and the embedding NIM
       nodeSelector:
-        kubernetes.io/hostname: ubuntu-local-dev
+        kubernetes.io/hostname: <BLACKWELL_NODE>
 
       containers:
         - name: rag-crawler
@@ -95,15 +95,15 @@ spec:
             - name: CRAWLER_EXPORT_DIR
               value: "/crawl-exports"
             - name: CRAWLER_REGISTRY_DIR
-              value: "/mnt/nvme2/crawler-registry"
+              value: "/workspace/artifacts/crawler-registry"
             - name: CRAWLER_PDF_REPO_DIR
-              value: "/mnt/nvme2/pdf-repo"
+              value: "/workspace/artifacts/pdf-repo"
             - name: CRAWLER_DOCS_REPO_DIR
-              value: "/mnt/nvme2/docs-repo"
+              value: "/workspace/artifacts/docs-repo"
             - name: CRAWLER_AUDIO_REPO_DIR
-              value: "/mnt/nvme2/audio-repo"
+              value: "/workspace/artifacts/audio-repo"
             - name: CRAWLER_VIDEO_REPO_DIR
-              value: "/mnt/nvme2/video-repo"
+              value: "/workspace/artifacts/video-repo"
 
           volumeMounts:
             # ECK CA cert — same ConfigMap used by ingestor-server
@@ -115,7 +115,7 @@ spec:
               mountPath: /crawl-exports
             # NFS repo dirs for binary files (PDF, DOCX, audio, video)
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
 
           resources:
             requests:
@@ -148,9 +148,9 @@ spec:
             name: eck-es-ca-cert
         - name: crawl-exports
           hostPath:
-            path: /home/joncoons/crawl-exports
+            path: <USER_HOME>/crawl-exports
             type: DirectoryOrCreate
         - name: nvme2
           hostPath:
-            path: /mnt/nvme2
+            path: /workspace/artifacts
             type: DirectoryOrCreate

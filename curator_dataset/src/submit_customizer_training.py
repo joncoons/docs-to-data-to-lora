@@ -108,7 +108,7 @@ def main() -> int:
             "base_config": BASE_CONFIG,
             "base_model": "nvidia/nemotron-3-nano-30b-a3b",
             "gpu_policy": {
-                "node": "ubuntu-local-dev",
+                "node": "<BLACKWELL_NODE>",
                 "physical_gpus": 2,
                 "scheduler_capacity": 2,
                 "time_slicing_temporarily_disabled": True,

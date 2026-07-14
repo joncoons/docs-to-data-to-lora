@@ -20,7 +20,7 @@
   "created_at": "2026-07-09T19:14:10.902333Z",
   "judge": {
     "api_key_source": "Kubernetes Secret runai-rag/nvidia-inference-key:api-key; value not persisted",
-    "endpoint": "https://inference-api.nvidia.com/v1",
+    "endpoint": "https://llm.example.com/v1",
     "max_tokens": 700,
     "model": "azure/anthropic/claude-sonnet-4-6",
     "position_swap": true,

@@ -23,7 +23,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--namespace", default="nemo-peft")
     parser.add_argument("--configmap", default="nemo-platform-customizer-config")
-    parser.add_argument("--node", default="ubuntu2")
+    parser.add_argument("--node", default="<ADA_NODE>")
     parser.add_argument("--backup-dir", default="archive/cluster-backups")
     args = parser.parse_args()
 

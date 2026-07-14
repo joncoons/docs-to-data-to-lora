@@ -23,7 +23,7 @@ The same process is intended to be reusable for any corpus or group of corpora m
 
 1. Register each corpus with a stable corpus slug and retain source provenance for every generated row.
 2. Generate training candidates through one or both dataset paths: LE extraction/generation and Curator DiverseQA.
-3. Configure the generation model and endpoint per stage. The scripts support local NIM endpoints, hosted NVIDIA inference endpoints, and multiple endpoint entries for load sharing or fallback.
+3. Configure the generation model and endpoint per stage. The scripts support local NIM endpoints, configured OpenAI-compatible endpoints, and multiple endpoint entries for load sharing or fallback.
 4. Run the downstream dataset preparation stages with the same reliability controls: resumable JSONL writes, per-row provenance, failure capture, retryable batches, deterministic splits, and leak checks.
 5. Register finalized datasets with Entity/Data Store or the target dataset store expected by the training environment.
 6. Train the comparison adapters with fixed hyperparameter grids, then collect no-RAG answer sets from an immutable golden QA set to isolate model and adapter behavior.
@@ -38,7 +38,7 @@ For a new corpus, the minimum project-specific inputs are the source document se
 
 ### Construction Methodology
 
-1. Start from the prior deterministic held-out test sets under `/mnt/nvme2/peft/datasets/experiments/*_dd_deterministic_5x_combined_20260605/`.
+1. Start from the prior deterministic held-out test sets under `<DATASET_ROOT>/experiments/*_dd_deterministic_5x_combined_20260605/`.
 2. Pair each plain QA row with its context-baked companion row by source row index; mismatched row counts fail the build.
 3. Build a leakage guard from all current LE and Curator train/validation prompts, normalized by lowercasing and whitespace collapse.
 4. Exclude any candidate whose normalized prompt exactly matches the current train/validation prompt set.
@@ -66,7 +66,7 @@ Key artifacts:
 Rebuild command:
 
 ```bash
-/home/joncoons/anaconda3/bin/python scripts/eval/build_golden_testset.py
+python scripts/eval/build_golden_testset.py
 ```
 
 Treat rebuilt output as a new artifact version unless the checksums are unchanged.
@@ -75,7 +75,7 @@ Treat rebuilt output as a new artifact version unless the checksums are unchange
 
 The formal winner evaluation is no-RAG. Model answers are collected from `test_set.jsonl` question-only prompts, then judged against the immutable golden reference answer. The judge must not receive retrieved context or context-baked prompts for the primary LE-vs-Curator comparison.
 
-Single-axis evaluation measures standalone model efficacy with a direct saved-response judge over completion files. The active judge for the formal path is Claude Sonnet 4.6 via `https://inference-api.nvidia.com/v1`; Kimi is no longer part of the active evaluation plan. The active rubric axes are accuracy, completeness, reference-grounded faithfulness, and clarity. Here, faithfulness means the model avoids contradictions or unsupported additions relative to the golden reference answer; it is not a RAG/source-context metric.
+Single-axis evaluation measures standalone model efficacy with a direct saved-response judge over completion files. The active judge for the formal path is Claude Sonnet 4.6 via `https://llm.example.com/v1`; Kimi is no longer part of the active evaluation plan. The active rubric axes are accuracy, completeness, reference-grounded faithfulness, and clarity. Here, faithfulness means the model avoids contradictions or unsupported additions relative to the golden reference answer; it is not a RAG/source-context metric.
 
 Pairwise evaluation is intentionally reduced after single-axis completes:
 
@@ -88,7 +88,7 @@ This avoids rebuilding the full pairwise matrix after the single-axis run has al
 
 Primary judge:
 
-- Endpoint: `https://inference-api.nvidia.com/v1`
+- Endpoint: `https://llm.example.com/v1`
 - Model: `azure/anthropic/claude-sonnet-4-6`
 - Scope: single-axis and pairwise saved-response judging for the active no-RAG and RAG reduced evaluation paths.
 
@@ -98,9 +98,9 @@ Historical note:
 
 Dense reference target:
 
-- Endpoint: `https://inference-api.nvidia.com/v1`
+- Endpoint: `https://llm.example.com/v1`
 - Model: `nvidia/meta/llama-3.3-70b-instruct`
-- Alternate endpoint/model pair when using the integrate endpoint: `https://integrate.api.nvidia.com/v1`, `meta/llama-3.3-70b-instruct`.
+- Alternate endpoint/model pair when using the integrate endpoint: `https://llm.example.com/v1`, `meta/llama-3.3-70b-instruct`.
 
 Do not persist API key values. Load them from Kubernetes Secrets or process environment only.
 
@@ -112,10 +112,10 @@ Hosted or local 70B completions can be collected directly with the updated colle
 
 ```bash
 export NVIDIA_API_KEY="$(kubectl get secret -n runai-rag nvidia-inference-key -o jsonpath='{.data.api-key}' | base64 -d)"
-/home/joncoons/anaconda3/bin/python scripts/eval/collect_completions.py \
+python scripts/eval/collect_completions.py \
   --dataset curator_dataset/experiments/20260709-curator-vs-le/golden_eval/golden-v1/nim_curated/test_set.jsonl \
   --dataset-slug nim_curated_golden_v1_question_only \
-  --target-api-url https://inference-api.nvidia.com/v1 \
+  --target-api-url https://llm.example.com/v1 \
   --target-api-key-env NVIDIA_API_KEY \
   --model nvidia/meta/llama-3.3-70b-instruct \
   --run-id golden-v1-70b-20260712 \
@@ -136,12 +136,12 @@ Single-axis scoring over saved question-only completions uses an independent Cla
 
 ```bash
 export NVIDIA_API_KEY="$(kubectl get secret -n runai-rag nvidia-inference-key -o jsonpath='{.data.api-key}' | base64 -d)"
-/home/joncoons/anaconda3/bin/python scripts/eval/run_direct_llm_singleaxis.py \
-  --responses /mnt/nvme2/peft/evals/completions-question-only/<dataset>/<base>/<target>/<rank>/<run>/responses.jsonl \
-  --completions-root /mnt/nvme2/peft/evals/completions-question-only \
-  --output-root /mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag \
+python scripts/eval/run_direct_llm_singleaxis.py \
+  --responses <EVAL_ROOT>/completions-question-only/<dataset>/<base>/<target>/<rank>/<run>/responses.jsonl \
+  --completions-root <EVAL_ROOT>/completions-question-only \
+  --output-root <EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag \
   --repo-summary-dir curator_dataset/experiments/20260709-curator-vs-le/golden_eval/claude_norag_20260713 \
-  --judge-api-url https://inference-api.nvidia.com/v1 \
+  --judge-api-url https://llm.example.com/v1 \
   --judge-model azure/anthropic/claude-sonnet-4-6 \
   --judge-api-key-env NVIDIA_API_KEY \
   --eval-run-id golden-v1-claude-sonnet-4-6-norag-20260713 \
@@ -152,11 +152,11 @@ export NVIDIA_API_KEY="$(kubectl get secret -n runai-rag nvidia-inference-key -o
 Pairwise scoring over saved question-only completions should use the same Claude judge and position swapping:
 
 ```bash
-/home/joncoons/anaconda3/bin/python scripts/eval/run_direct_llm_pairwise.py \
+python scripts/eval/run_direct_llm_pairwise.py \
   --pair le-r32 /path/to/le/responses.jsonl curator-r32 /path/to/curator/responses.jsonl \
-  --output-root /mnt/nvme2/peft/evals/pairwise-claude-sonnet-4-6-norag \
+  --output-root <EVAL_ROOT>/pairwise-claude-sonnet-4-6-norag \
   --repo-summary-dir curator_dataset/experiments/20260709-curator-vs-le/golden_eval/claude_pairwise_norag_20260714 \
-  --judge-api-url https://inference-api.nvidia.com/v1 \
+  --judge-api-url https://llm.example.com/v1 \
   --judge-model azure/anthropic/claude-sonnet-4-6 \
   --judge-api-key-env NVIDIA_API_KEY \
   --eval-run-id golden-v1-claude-sonnet-4-6-norag-pairwise-20260714 \
@@ -168,10 +168,10 @@ Pairwise scoring over saved question-only completions should use the same Claude
 Both direct saved-response scorers write compact repo-local summaries and export the full local run directory to MLflow by default:
 
 - Repo summaries: `golden_eval/claude_norag_20260713/<eval_run_id>/*.json` and `golden_eval/claude_pairwise_norag_20260714/<eval_run_id>/*.json`
-- Full local artifacts: `/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/` and `/mnt/nvme2/peft/evals/pairwise-claude-sonnet-4-6-norag/`
+- Full local artifacts: `<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag/` and `<EVAL_ROOT>/pairwise-claude-sonnet-4-6-norag/`
 - MLflow tracking URI: `http://10.43.102.80:5000`
 - MLflow experiment: `docs-to-data-to-lora-golden-eval`
-- MLflow artifact location: `file:///mnt/nvme2/peft/mlflow-artifacts/golden-eval`
+- MLflow artifact location: `file://<MLFLOW_ARTIFACT_ROOT>/golden-eval`
 
 Use `--no-mlflow` only for local parser/debug runs that should not publish telemetry.
 
@@ -190,11 +190,11 @@ Historical repo summaries remain under `kimi_norag_20260712/golden-v1-kimi-norag
 
 NeMo Evaluator RAGAS remains useful as a later diagnostic, but it is not part of the formal LE-vs-Curator winner selection because RAGAS is context/retrieval-oriented. Running RAGAS requires context-backed rows and, for `response_relevancy`, an embedding judge endpoint such as `nemoretriever-embedding-ms` with `input_type=query` support.
 
-The optional runner is `scripts/eval/run_nemo_evaluator_saved_responses.py`. For the active path, keep outputs under `/mnt/nvme2/peft/evals/nemo-evaluator-claude-ragas-reduced/` and repo summaries under a Claude-specific RAGAS directory. A historical one-row 2026-07-12 Kimi smoke reached Evaluator and MLflow but was intentionally stopped for formal evaluation because it would move the experiment back into RAGAS semantics.
+The optional runner is `scripts/eval/run_nemo_evaluator_saved_responses.py`. For the active path, keep outputs under `<EVAL_ROOT>/nemo-evaluator-claude-ragas-reduced/` and repo summaries under a Claude-specific RAGAS directory. A historical one-row 2026-07-12 Kimi smoke reached Evaluator and MLflow but was intentionally stopped for formal evaluation because it would move the experiment back into RAGAS semantics.
 
 ## Reduced RAG Follow-Up
 
-After the Claude single-axis run completes, run the RAG answer-capture and RAG-aware scoring on the same reduced population used for pairwise: the top 1B, 3B, and 8B LoRA winners per corpus plus the Llama 3.3 70B base reference. For the 2026-07-14 RAG capture, the 70B reference is hosted at `https://inference-api.nvidia.com/v1` as `nvidia/meta/llama-3.3-70b-instruct`; local Blackwell GPUs are reserved for the LoRA-capable 1B and 8B NIMs.
+After the Claude single-axis run completes, run the RAG answer-capture and RAG-aware scoring on the same reduced population used for pairwise: the top 1B, 3B, and 8B LoRA winners per corpus plus the Llama 3.3 70B base reference. For the 2026-07-14 RAG capture, the 70B reference is hosted at `https://llm.example.com/v1` as `nvidia/meta/llama-3.3-70b-instruct`; local Blackwell GPUs are reserved for the LoRA-capable 1B and 8B NIMs.
 
 RAG deployment must be scoped sequentially by corpus. Do not use the broad `nvidia` collection for this evaluation.
 
@@ -211,13 +211,13 @@ Keep retrieval sizing fixed unless a smoke run proves it is too noisy:
 - Retriever score threshold: `APP_RETRIEVER_SCORETHRESHOLD=0.25`
 - Reranker confidence threshold: `RERANKER_CONFIDENCE_THRESHOLD=0.0`
 
-For each corpus deployment, patch the RAG server to the active corpus collection and then run target models sequentially by patching the RAG server LLM backend to the selected target's NIM service and model id. Store RAG answer sets separately from question-only artifacts, for example under `/mnt/nvme2/peft/evals/completions-rag-reduced`.
+For each corpus deployment, patch the RAG server to the active corpus collection and then run target models sequentially by patching the RAG server LLM backend to the selected target's NIM service and model id. Store RAG answer sets separately from question-only artifacts, for example under `<EVAL_ROOT>/completions-rag-reduced`.
 
 The RAG single-axis scorer should run after RAG answer capture completes and before pairwise. It compares saved RAG answers to the immutable golden reference answer, does not send retrieved context to the judge, and tags MLflow/repo artifacts as `rag_reduced` RAG-answer mode. Pairwise should compare each reduced LoRA winner against the same-corpus 70B RAG answer set only after RAG single-axis completes with zero unresolved scoring failures. RAGAS should use this same reduced population first; expand only if the reduced result is ambiguous or surprising.
 
 Operational note: the hosted 70B path requires `APP_LLM_APIKEY` from Kubernetes secret `runai-rag/nvidia-inference-key`, key `api-key`, and `rag-server` must use a combined system-plus-ECK CA bundle so both external NVIDIA HTTPS and internal Elasticsearch TLS work. The live deployment creates `/tmp/combined-ca.crt` at startup and points `REQUESTS_CA_BUNDLE`/`SSL_CERT_FILE` at it.
 
-Operational note: this RAG pass should restore the prior `ubuntu2` GPU time-slicing profile before deploying retrieval services. The pre-training profile used `timeSlicing.replicas: 5` for `ubuntu2`, advertising 10 logical GPU slots across the two Ada GPUs. Restore that profile, restart the `ubuntu2` NVIDIA device-plugin and GPU Feature Discovery pods, and verify `nvidia.com/gpu.replicas=5` before starting the RAG pass. This restores schedulability for the NIMService-based 3B, embedding, and reranker deployments. It does not guarantee physical GPU isolation; if physical isolation is required, verify actual device assignment out of band or convert the services to a Run:ai-native workload shape that supports `gpuMemory`.
+Operational note: this RAG pass should restore the prior `<ADA_NODE>` GPU time-slicing profile before deploying retrieval services. The pre-training profile used `timeSlicing.replicas: 5` for `<ADA_NODE>`, advertising 10 logical GPU slots across the two Ada GPUs. Restore that profile, restart the `<ADA_NODE>` NVIDIA device-plugin and GPU Feature Discovery pods, and verify `nvidia.com/gpu.replicas=5` before starting the RAG pass. This restores schedulability for the NIMService-based 3B, embedding, and reranker deployments. It does not guarantee physical GPU isolation; if physical isolation is required, verify actual device assignment out of band or convert the services to a Run:ai-native workload shape that supports `gpuMemory`.
 
 ## Hosted Smoke Result
 
@@ -228,14 +228,14 @@ A constrained hosted smoke was run on 2026-07-12 with two rows from each corpus 
 | `nim_curated_golden_v1` | `nvidia/meta/llama-3.3-70b-instruct` | 2 | 2 | 5.0 | 4.0 | 5.0 | 5.0 |
 | `nemo_usvcs_curated_golden_v1` | `nvidia/meta/llama-3.3-70b-instruct` | 2 | 2 | 3.5 | 3.5 | 3.5 | 4.0 |
 
-The historical smoke summary is captured in `hosted_70b_kimi_smoke_20260712.json`; raw completion and score artifacts are under `/mnt/nvme2/peft/evals/`. This artifact is retained only as provenance for prior endpoint testing.
+The historical smoke summary is captured in `hosted_70b_kimi_smoke_20260712.json`; raw completion and score artifacts are under `<EVAL_ROOT>/`. This artifact is retained only as provenance for prior endpoint testing.
 
 ## Result Graphics
 
 Documentation-ready SVG graphics are captured under `graphics/` and can be regenerated with:
 
 ```bash
-/home/joncoons/anaconda3/bin/python scripts/eval/render_golden_eval_graphics.py
+python scripts/eval/render_golden_eval_graphics.py
 ```
 
 Artifacts:

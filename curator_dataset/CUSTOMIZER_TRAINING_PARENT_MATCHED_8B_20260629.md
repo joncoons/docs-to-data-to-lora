@@ -47,7 +47,7 @@ to enforce the requested NIM-first order.
 
 ## Initial health
 
-- Both NIM workers run on `ubuntu-local-dev`; handlers completed on `ubuntu2`.
+- Both NIM workers run on `<BLACKWELL_NODE>`; handlers completed on `<ADA_NODE>`.
 - Both NeMo workers use the Blackwell selector and are pending for GPUs.
 - NIM steps per epoch: 428; total steps: approximately 2,140.
 - Initial steady-state step time: approximately 1.35 seconds.

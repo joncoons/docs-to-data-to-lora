@@ -31,16 +31,16 @@ spec:
             - |
               set -eu
               pip install --no-cache-dir -q httpx
-              python /scripts/run_direct_kimi_singleaxis.py                 --responses /mnt/nvme2/peft/evals/completions/nim_curated/nemotron-3-nano-30b-a3b/base/base/20260602t164839z/responses.jsonl                 --responses /mnt/nvme2/peft/evals/completions/nim_curated/nemotron-nano-30b/lora-nim/r16/20260529t194029z/responses.jsonl                                 --responses /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/nemotron-3-nano-30b-a3b/base/base/20260602t164839z/responses.jsonl                 --responses /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/nemotron-nano-30b/lora-nemo-usvcs/r16/20260530t153804z/responses.jsonl                 --eval-run-id "$EVAL_RUN_ID"                 --judge-api-url "$JUDGE_API_URL"                 --judge-model "$EVALUATOR_JUDGE_MODEL"                 --judge-api-key-env KIMI_KEY                 --judge-max-tokens 8192                 --judge-max-attempts 5                 --max-total-attempts-per-row 5                 --retry-backoff-s 5                 --retry-backoff-max-s 120                 --retry-jitter-s 2                 --concurrency 8                 --resume                 --log-every 25
+              python /scripts/run_direct_kimi_singleaxis.py                 --responses <EVAL_ROOT>/completions/nim_curated/nemotron-3-nano-30b-a3b/base/base/20260602t164839z/responses.jsonl                 --responses <EVAL_ROOT>/completions/nim_curated/nemotron-nano-30b/lora-nim/r16/20260529t194029z/responses.jsonl                                 --responses <EVAL_ROOT>/completions/nemo_usvcs_curated/nemotron-3-nano-30b-a3b/base/base/20260602t164839z/responses.jsonl                 --responses <EVAL_ROOT>/completions/nemo_usvcs_curated/nemotron-nano-30b/lora-nemo-usvcs/r16/20260530t153804z/responses.jsonl                 --eval-run-id "$EVAL_RUN_ID"                 --judge-api-url "$JUDGE_API_URL"                 --judge-model "$EVALUATOR_JUDGE_MODEL"                 --judge-api-key-env KIMI_KEY                 --judge-max-tokens 8192                 --judge-max-attempts 5                 --max-total-attempts-per-row 5                 --retry-backoff-s 5                 --retry-backoff-max-s 120                 --retry-jitter-s 2                 --concurrency 8                 --resume                 --log-every 25
           env:
             - name: EVAL_RUN_ID
               value: "20260602T161342Z"
             - name: SINGLEAXIS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/singleaxis-kimi
+              value: <EVAL_ROOT>/singleaxis-kimi
             - name: COMPLETIONS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/completions
+              value: <EVAL_ROOT>/completions
             - name: JUDGE_API_URL
-              value: https://inference-api.nvidia.com/v1/chat/completions
+              value: https://llm.example.com/v1/chat/completions
             - name: EVALUATOR_JUDGE_MODEL
               value: nvidia/moonshotai/kimi-k2.6
             - name: KIMI_KEY
@@ -60,7 +60,7 @@ spec:
               mountPath: /scripts
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: singleaxis-script
           configMap:

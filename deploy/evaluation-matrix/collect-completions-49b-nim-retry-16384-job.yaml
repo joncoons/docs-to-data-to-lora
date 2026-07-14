@@ -35,7 +35,7 @@ spec:
               set -eu
               pip install --no-cache-dir -q httpx
               python /scripts/collect_completions.py \
-                --dataset /mnt/nvme2/peft/datasets/v2/nim_curated/test_set_with_context_49b_failed_20260529t142723z.jsonl \
+                --dataset <DATASET_ROOT>/nim_curated/test_set_with_context_49b_failed_20260529t142723z.jsonl \
                 --dataset-slug nim_curated \
                 --model llama-3.3-nemotron-super-49b-v1.5 \
                 --run-id "$RUN_ID" \
@@ -49,7 +49,7 @@ spec:
             - name: TARGET_API_URL
               value: "http://rag-oai-proxy.runai-rag:8080"
             - name: COMPLETIONS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/completions
+              value: <EVAL_ROOT>/completions
             - name: RUN_ID
               value: "20260529T142723Z-49B-NIM-RETRY-16384"
           resources:
@@ -64,7 +64,7 @@ spec:
               mountPath: /scripts
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: collector-script
           configMap:

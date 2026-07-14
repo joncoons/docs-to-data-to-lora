@@ -205,7 +205,7 @@ def test_submit_adapter_job_calls_client_and_returns_job_id():
 
 def test_cli_dry_run_produces_valid_json_with_correct_shape():
     """CLI --dry-run prints valid JSON matching the Customizer 25.12 wire schema."""
-    python = "/home/joncoons/anaconda3/envs/nat/bin/python3"
+    python = "<USER_HOME>/anaconda3/envs/nat/bin/python3"
     script = str(
         Path(__file__).resolve().parents[1]
         / "scripts" / "stage3" / "train_adapter.py"
@@ -245,7 +245,7 @@ def test_cli_dry_run_produces_valid_json_with_correct_shape():
 
 def test_cli_dry_run_accepts_augmented_dataset_overrides():
     """CLI can target an augmented dataset entity without changing baseline mappings."""
-    python = "/home/joncoons/anaconda3/envs/nat/bin/python3"
+    python = "<USER_HOME>/anaconda3/envs/nat/bin/python3"
     script = str(
         Path(__file__).resolve().parents[1]
         / "scripts" / "stage3" / "train_adapter.py"

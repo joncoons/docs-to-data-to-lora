@@ -36,12 +36,12 @@ CURRENT_TRAIN_VAL_PATHS = [
 
 SOURCE_TESTSETS = {
     "nim_curated": {
-        "plain": Path("/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_deterministic_5x_combined_20260605/test_set.jsonl"),
-        "with_context": Path("/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_deterministic_5x_combined_20260605/test_set_with_context.jsonl"),
+        "plain": Path("<DATASET_ROOT>/experiments/nim_curated_dd_deterministic_5x_combined_20260605/test_set.jsonl"),
+        "with_context": Path("<DATASET_ROOT>/experiments/nim_curated_dd_deterministic_5x_combined_20260605/test_set_with_context.jsonl"),
     },
     "nemo_usvcs_curated": {
-        "plain": Path("/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_deterministic_5x_combined_20260605/test_set.jsonl"),
-        "with_context": Path("/mnt/nvme2/peft/datasets/experiments/nemo_usvcs_curated_dd_deterministic_5x_combined_20260605/test_set_with_context.jsonl"),
+        "plain": Path("<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_combined_20260605/test_set.jsonl"),
+        "with_context": Path("<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_combined_20260605/test_set_with_context.jsonl"),
     },
 }
 

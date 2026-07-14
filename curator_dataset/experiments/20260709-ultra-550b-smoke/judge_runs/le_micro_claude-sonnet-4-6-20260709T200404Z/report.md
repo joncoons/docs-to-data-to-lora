@@ -2,7 +2,7 @@
 
 Created: 2026-07-09T20:04:57.915209Z
 
-Judge model: `azure/anthropic/claude-sonnet-4-6` via `https://inference-api.nvidia.com/v1`.
+Judge model: `azure/anthropic/claude-sonnet-4-6` via `https://llm.example.com/v1`.
 
 Rows judged: 16 independent LE QA examples.
 

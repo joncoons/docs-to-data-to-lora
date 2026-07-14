@@ -38,11 +38,11 @@ from scripts.pipeline.provenance_io import write_jsonl  # noqa: E402
 LOG = logging.getLogger(__name__)
 
 DEFAULT_INPUTS = {
-    "nim_curated": Path("/mnt/nvme2/peft/datasets/v2/nim_curated/passages.jsonl"),
-    "nemo_usvcs_curated": Path("/mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated/passages.jsonl"),
+    "nim_curated": Path("<DATASET_ROOT>/nim_curated/passages.jsonl"),
+    "nemo_usvcs_curated": Path("<DATASET_ROOT>/nemo_usvcs_curated/passages.jsonl"),
 }
 DEFAULT_MODEL = "nvidia/nvidia/nemotron-3-ultra"
-DEFAULT_BASE_URL = "https://inference-api.nvidia.com/v1"
+DEFAULT_BASE_URL = "http://llm-frontier.default.svc.cluster.local:8000/v1"
 DEFAULT_TOKEN_CAP = 16_384
 
 

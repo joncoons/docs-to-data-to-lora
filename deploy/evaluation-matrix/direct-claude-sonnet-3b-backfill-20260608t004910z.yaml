@@ -33,10 +33,10 @@ spec:
               pip install --no-cache-dir -q httpx
               echo "Starting Phase 2 Claude Sonnet 3B base comparison backfill"
               python /scripts/pairwise/run_direct_kimi_pairwise.py \
-                --pair 3b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r16/20260529t142723z/responses.jsonl \
-                --pair 3b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r32/20260529t142723z/responses.jsonl \
-                --pair 3b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r16/20260529t142723z/responses.jsonl \
-                --pair 3b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r32/20260529t142723z/responses.jsonl \
+                --pair 3b-base <EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r16 <EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim/r16/20260529t142723z/responses.jsonl \
+                --pair 3b-base <EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r32 <EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim/r32/20260529t142723z/responses.jsonl \
+                --pair 3b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r16 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r16/20260529t142723z/responses.jsonl \
+                --pair 3b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r32 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r32/20260529t142723z/responses.jsonl \
                 --eval-run-id "$PHASE2_EVAL_RUN_ID" \
                 --output-root "$PAIRWISE_OUTPUT_ROOT" \
                 --judge-api-url "$JUDGE_API_URL" \
@@ -54,8 +54,8 @@ spec:
 
               echo "Starting Phase 3 Claude Sonnet 49B vs 3B base backfill"
               python /scripts/pairwise/run_direct_kimi_pairwise.py \
-                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 3b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl \
-                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 3b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl \
+                --pair 49b-base <EVAL_ROOT>/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 3b-base <EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl \
+                --pair 49b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 3b-base <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl \
                 --eval-run-id "$PHASE3_EVAL_RUN_ID" \
                 --output-root "$PAIRWISE_OUTPUT_ROOT" \
                 --judge-api-url "$JUDGE_API_URL" \
@@ -72,13 +72,13 @@ spec:
                 --log-every 25
           env:
             - name: PAIRWISE_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/pairwise-claude-sonnet
+              value: <EVAL_ROOT>/pairwise-claude-sonnet
             - name: PHASE2_EVAL_RUN_ID
               value: 3b-claude-sonnet-phase2-base-backfill-20260608t004910z
             - name: PHASE3_EVAL_RUN_ID
               value: phase3-49b-vs-3b-base-claude-sonnet-backfill-20260608t004910z
             - name: JUDGE_API_URL
-              value: https://inference-api.nvidia.com/v1/chat/completions
+              value: https://llm.example.com/v1/chat/completions
             - name: EVALUATOR_JUDGE_MODEL
               value: azure/anthropic/claude-sonnet-4-6
             - name: KIMI_KEY
@@ -98,7 +98,7 @@ spec:
               mountPath: /scripts/pairwise
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: pairwise-script
           configMap:

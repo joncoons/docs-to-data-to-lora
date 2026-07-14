@@ -2,7 +2,7 @@
   "batch_parse_attempts": 2,
   "batched_kvp_max_tokens": 16384,
   "completed_before_start": 486,
-  "endpoint": "https://inference-api.nvidia.com/v1",
+  "endpoint": "https://llm.example.com/v1",
   "failure_payloads": "failure_payloads/stage1a_raw_failures.jsonl",
   "input_passages": "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/passages.jsonl",
   "le_max_tokens": 16384,
@@ -36,7 +36,7 @@
       "model": "nvidia/nemotron-3-super-120b-a12b"
     },
     {
-      "endpoint": "https://inference-api.nvidia.com/v1",
+      "endpoint": "https://llm.example.com/v1",
       "max_model_len": null,
       "model": "nvidia/nvidia/nemotron-3-super-v3"
     }

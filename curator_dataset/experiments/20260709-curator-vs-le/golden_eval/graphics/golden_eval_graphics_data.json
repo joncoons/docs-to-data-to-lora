@@ -23,7 +23,7 @@
       "results": [
         {
           "label": "nim-3b-le-r32",
-          "run_dir": "/mnt/nvme2/peft/evals/completions-rag-reduced/nim_curated_golden_v1_rag/llama-3.2-3b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
+          "run_dir": "<EVAL_ROOT>/completions-rag-reduced/nim_curated_golden_v1_rag/llama-3.2-3b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
           "summary": {
             "cleaned_completion_ratio_est": 1.0,
             "cleaned_response_chars": 88690,
@@ -43,7 +43,7 @@
         },
         {
           "label": "nim-8b-le-r32",
-          "run_dir": "/mnt/nvme2/peft/evals/completions-rag-reduced/nim_curated_golden_v1_rag/llama-3.1-8b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
+          "run_dir": "<EVAL_ROOT>/completions-rag-reduced/nim_curated_golden_v1_rag/llama-3.1-8b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
           "summary": {
             "cleaned_completion_ratio_est": 1.0,
             "cleaned_response_chars": 94548,
@@ -63,7 +63,7 @@
         },
         {
           "label": "nim-70b-base-hosted",
-          "run_dir": "/mnt/nvme2/peft/evals/completions-rag-reduced/nim_curated_golden_v1_rag/llama-3.3-70b/base/base/golden-v1-rag-reduced-20260714",
+          "run_dir": "<EVAL_ROOT>/completions-rag-reduced/nim_curated_golden_v1_rag/llama-3.3-70b/base/base/golden-v1-rag-reduced-20260714",
           "summary": {
             "cleaned_completion_ratio_est": 1.0,
             "cleaned_response_chars": 56329,
@@ -83,7 +83,7 @@
         },
         {
           "label": "nemo-3b-le-r32",
-          "run_dir": "/mnt/nvme2/peft/evals/completions-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.2-3b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
+          "run_dir": "<EVAL_ROOT>/completions-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.2-3b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
           "summary": {
             "cleaned_completion_ratio_est": 1.0,
             "cleaned_response_chars": 68519,
@@ -103,7 +103,7 @@
         },
         {
           "label": "nemo-8b-le-r32",
-          "run_dir": "/mnt/nvme2/peft/evals/completions-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.1-8b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
+          "run_dir": "<EVAL_ROOT>/completions-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.1-8b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
           "summary": {
             "cleaned_completion_ratio_est": 1.0,
             "cleaned_response_chars": 61708,
@@ -123,7 +123,7 @@
         },
         {
           "label": "nemo-70b-base-hosted",
-          "run_dir": "/mnt/nvme2/peft/evals/completions-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.3-70b/base/base/golden-v1-rag-reduced-20260714",
+          "run_dir": "<EVAL_ROOT>/completions-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.3-70b/base/base/golden-v1-rag-reduced-20260714",
           "summary": {
             "cleaned_completion_ratio_est": 1.0,
             "cleaned_response_chars": 47874,
@@ -143,7 +143,7 @@
         },
         {
           "label": "nim-1b-le-r32",
-          "run_dir": "/mnt/nvme2/peft/evals/completions-rag-reduced/nim_curated_golden_v1_rag/llama-3.2-1b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
+          "run_dir": "<EVAL_ROOT>/completions-rag-reduced/nim_curated_golden_v1_rag/llama-3.2-1b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
           "summary": {
             "cleaned_completion_ratio_est": 0.999983900310724,
             "cleaned_response_chars": 219030,
@@ -163,7 +163,7 @@
         },
         {
           "label": "nemo-1b-le-r32",
-          "run_dir": "/mnt/nvme2/peft/evals/completions-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.2-1b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
+          "run_dir": "<EVAL_ROOT>/completions-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.2-1b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714",
           "summary": {
             "cleaned_completion_ratio_est": 1.0,
             "cleaned_response_chars": 91189,
@@ -187,8 +187,8 @@
     },
     "rag_singleaxis": {
       "eval_run_id": "golden-v1-claude-sonnet-4-6-rag-reduced-20260714",
-      "output_root": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced",
-      "repo_summary_dir": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/experiments/20260709-curator-vs-le/golden_eval/claude_rag_reduced_20260714",
+      "output_root": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced",
+      "repo_summary_dir": "<REPO_ROOT>/curator_dataset/experiments/20260709-curator-vs-le/golden_eval/claude_rag_reduced_20260714",
       "status": "complete",
       "updated_at": "2026-07-14T10:12:34.812676+00:00"
     },
@@ -225,7 +225,7 @@
       "engine": "nemo-evaluator",
       "eval_run_id": "golden-v1-nemo-evaluator-kimi-smoke-20260712",
       "judge": {
-        "endpoint": "https://inference-api.nvidia.com/v1",
+        "endpoint": "https://llm.example.com/v1",
         "model": "azure/moonshotai/kimi-k2.6"
       },
       "limit": 1,
@@ -235,7 +235,7 @@
         "answer_accuracy"
       ],
       "mlflow": {
-        "artifact_location": "file:///mnt/nvme2/peft/mlflow-artifacts/golden-eval",
+        "artifact_location": "file://<MLFLOW_ARTIFACT_ROOT>/golden-eval",
         "enabled": true,
         "experiment": "docs-to-data-to-lora-golden-eval",
         "tracking_uri": "http://10.43.102.80:5000"
@@ -254,12 +254,12 @@
           "failed_batches": 1,
           "metrics": {},
           "rank_slug": "r16",
-          "responses_path": "/mnt/nvme2/peft/evals/completions-question-only/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/responses.jsonl",
+          "responses_path": "<EVAL_ROOT>/completions-question-only/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/responses.jsonl",
           "row_count": 1,
           "samples_processed": 0,
           "schema_version": "nemo-evaluator-saved-response-target-summary/v1",
           "status": "partial",
-          "target_output_dir": "/mnt/nvme2/peft/evals/nemo-evaluator-kimi/singleaxis/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/golden-v1-nemo-evaluator-kimi-smoke-20260712",
+          "target_output_dir": "<EVAL_ROOT>/nemo-evaluator-kimi/singleaxis/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/golden-v1-nemo-evaluator-kimi-smoke-20260712",
           "target_slug": "lora-nim-le-super-v3-e5"
         }
       ],
@@ -292,7 +292,7 @@
           "rows_failed": 0,
           "rows_scored": 424,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
         },
         "rag": {
           "axis_scores": {
@@ -306,7 +306,7 @@
           "rows_failed": 0,
           "rows_scored": 424,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced/nim_curated_golden_v1_rag/llama-3.2-1b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced/nim_curated_golden_v1_rag/llama-3.2-1b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
         }
       },
       "rag_minus_norag_composite": 0.6939858490566038,
@@ -332,7 +332,7 @@
           "rows_failed": 0,
           "rows_scored": 424,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/nim_curated_golden_v1_question_only/llama-3.2-3b/lora-nim-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag/nim_curated_golden_v1_question_only/llama-3.2-3b/lora-nim-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
         },
         "rag": {
           "axis_scores": {
@@ -346,7 +346,7 @@
           "rows_failed": 0,
           "rows_scored": 424,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced/nim_curated_golden_v1_rag/llama-3.2-3b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced/nim_curated_golden_v1_rag/llama-3.2-3b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
         }
       },
       "rag_minus_norag_composite": 1.0235849056603774,
@@ -372,7 +372,7 @@
           "rows_failed": 0,
           "rows_scored": 424,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/nim_curated_golden_v1_question_only/llama-3.1-8b/lora-nim-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag/nim_curated_golden_v1_question_only/llama-3.1-8b/lora-nim-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
         },
         "rag": {
           "axis_scores": {
@@ -386,7 +386,7 @@
           "rows_failed": 0,
           "rows_scored": 424,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced/nim_curated_golden_v1_rag/llama-3.1-8b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced/nim_curated_golden_v1_rag/llama-3.1-8b/lora-nim-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
         }
       },
       "rag_minus_norag_composite": 1.0029481132075473,
@@ -412,7 +412,7 @@
           "rows_failed": 0,
           "rows_scored": 424,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/nim_curated_golden_v1_question_only/llama-3.3-70b/base/base/golden-v1-qonly-70b-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag/nim_curated_golden_v1_question_only/llama-3.3-70b/base/base/golden-v1-qonly-70b-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
         },
         "rag": {
           "axis_scores": {
@@ -426,7 +426,7 @@
           "rows_failed": 0,
           "rows_scored": 424,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced/nim_curated_golden_v1_rag/llama-3.3-70b/base/base/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced/nim_curated_golden_v1_rag/llama-3.3-70b/base/base/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
         }
       },
       "rag_minus_norag_composite": 1.7158018867924527,
@@ -452,7 +452,7 @@
           "rows_failed": 0,
           "rows_scored": 431,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/nemo_usvcs_curated_golden_v1_question_only/llama-3.2-1b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag/nemo_usvcs_curated_golden_v1_question_only/llama-3.2-1b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
         },
         "rag": {
           "axis_scores": {
@@ -466,7 +466,7 @@
           "rows_failed": 0,
           "rows_scored": 431,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.2-1b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.2-1b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
         }
       },
       "rag_minus_norag_composite": 0.270881670533643,
@@ -492,7 +492,7 @@
           "rows_failed": 0,
           "rows_scored": 431,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/nemo_usvcs_curated_golden_v1_question_only/llama-3.2-3b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag/nemo_usvcs_curated_golden_v1_question_only/llama-3.2-3b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
         },
         "rag": {
           "axis_scores": {
@@ -506,7 +506,7 @@
           "rows_failed": 0,
           "rows_scored": 431,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.2-3b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.2-3b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
         }
       },
       "rag_minus_norag_composite": 0.5974477958236659,
@@ -532,7 +532,7 @@
           "rows_failed": 0,
           "rows_scored": 431,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/nemo_usvcs_curated_golden_v1_question_only/llama-3.1-8b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag/nemo_usvcs_curated_golden_v1_question_only/llama-3.1-8b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
         },
         "rag": {
           "axis_scores": {
@@ -546,7 +546,7 @@
           "rows_failed": 0,
           "rows_scored": 431,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.1-8b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.1-8b/lora-nemo-usvcs-le-super-v3-e5/r32/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
         }
       },
       "rag_minus_norag_composite": 0.5487238979118327,
@@ -572,7 +572,7 @@
           "rows_failed": 0,
           "rows_scored": 431,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/nemo_usvcs_curated_golden_v1_question_only/llama-3.3-70b/base/base/golden-v1-qonly-70b-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag/nemo_usvcs_curated_golden_v1_question_only/llama-3.3-70b/base/base/golden-v1-qonly-70b-20260712/golden-v1-claude-sonnet-4-6-norag-20260713/summary.json"
         },
         "rag": {
           "axis_scores": {
@@ -586,7 +586,7 @@
           "rows_failed": 0,
           "rows_scored": 431,
           "status": "complete",
-          "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.3-70b/base/base/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
+          "summary_path": "<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced/nemo_usvcs_curated_golden_v1_rag/llama-3.3-70b/base/base/golden-v1-rag-reduced-20260714/golden-v1-claude-sonnet-4-6-rag-reduced-20260714/summary.json"
         }
       },
       "rag_minus_norag_composite": 1.777262180974478,

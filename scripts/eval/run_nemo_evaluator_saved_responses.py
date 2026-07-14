@@ -36,7 +36,7 @@ from scripts.eval.run_live_ragas_smoke import (  # noqa: E402
 log = logging.getLogger(__name__)
 
 DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://10.43.143.110:7331")
-DEFAULT_JUDGE_API_URL = os.getenv("JUDGE_API_URL", "https://inference-api.nvidia.com/v1")
+DEFAULT_JUDGE_API_URL = os.getenv("JUDGE_API_URL", "http://llm-judge.default.svc.cluster.local:8000/v1")
 DEFAULT_JUDGE_MODEL_ID = os.getenv("EVALUATOR_JUDGE_MODEL", "azure/moonshotai/kimi-k2.6")
 DEFAULT_JUDGE_API_KEY_ENV = os.getenv("JUDGE_API_KEY_ENV", "NVIDIA_API_KEY")
 DEFAULT_JUDGE_EMBEDDING_API_URL = os.getenv(
@@ -50,19 +50,19 @@ DEFAULT_JUDGE_EMBEDDING_MODEL_ID = os.getenv(
 DEFAULT_COMPLETIONS_ROOT = Path(
     os.getenv(
         "GOLDEN_COMPLETIONS_ROOT",
-        "/mnt/nvme2/peft/evals/completions-question-only",
+        "<EVAL_ROOT>/completions-question-only",
     )
 )
 DEFAULT_GOLDEN_ROOT = _REPO_ROOT / "curator_dataset" / "experiments" / "20260709-curator-vs-le" / "golden_eval" / "golden-v1"
 DEFAULT_OUTPUT_ROOT = Path(
-    os.getenv("NEMO_EVALUATOR_KIMI_OUTPUT_ROOT", "/mnt/nvme2/peft/evals/nemo-evaluator-kimi")
+    os.getenv("NEMO_EVALUATOR_KIMI_OUTPUT_ROOT", "<EVAL_ROOT>/nemo-evaluator-kimi")
 )
 DEFAULT_REPO_SUMMARY_DIR = _REPO_ROOT / "curator_dataset" / "experiments" / "20260709-curator-vs-le" / "golden_eval" / "evaluator_kimi_20260712"
 DEFAULT_MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://10.43.102.80:5000")
 DEFAULT_MLFLOW_EXPERIMENT = os.getenv("MLFLOW_EXPERIMENT_NAME", "docs-to-data-to-lora-golden-eval")
 DEFAULT_MLFLOW_ARTIFACT_LOCATION = os.getenv(
     "MLFLOW_ARTIFACT_LOCATION",
-    "file:///mnt/nvme2/peft/mlflow-artifacts/golden-eval",
+    "file://<MLFLOW_ARTIFACT_ROOT>/golden-eval",
 )
 DEFAULT_METRICS = ["faithfulness", "response_relevancy", "answer_accuracy"]
 

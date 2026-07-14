@@ -55,10 +55,10 @@ Use repeated `--target` arguments to add targets:
 
 ```bash
 # Single frontier endpoint
-python run_le_downstream.py   --collection nim_curated   --output-dir runs/nim_curated/super-v3   --stage 1b   --resume   --target https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-ultra
+python run_le_downstream.py   --collection nim_curated   --output-dir runs/nim_curated/super-v3   --stage 1b   --resume   --target https://llm.example.com/v1=nvidia/nvidia/nemotron-3-ultra
 
 # Two OpenAI-compatible frontier endpoints, load-balanced
-python run_le_downstream.py   --collection nim_curated   --output-dir runs/nim_curated/super-v3   --stage 1b   --resume   --target https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-ultra   --target https://frontier.example.com/v1=vendor/frontier-model@32768   --api-key "$FRONTIER_API_KEY"
+python run_le_downstream.py   --collection nim_curated   --output-dir runs/nim_curated/super-v3   --stage 1b   --resume   --target https://llm.example.com/v1=nvidia/nvidia/nemotron-3-ultra   --target https://frontier.example.com/v1=vendor/frontier-model@32768   --api-key "$FRONTIER_API_KEY"
 ```
 
 Target format is `ENDPOINT=MODEL` or `ENDPOINT=MODEL@MAX_CONTEXT_TOKENS`.
@@ -88,13 +88,13 @@ rows from polluting the Curator input contract and preserves a local
 admission/rejection reason in `stage2_dropped.jsonl` plus
 `provenance/stage2_quality.jsonl`. The direct QA runner remains useful for
 smoke tests, fallback execution, and ablation; Stage 4 should remain
-independent, for example Claude Sonnet 4.6 via the NVIDIA-hosted
+independent, for example Claude Sonnet 4.6 via the self-hosted
 OpenAI-compatible endpoint.
 
 Stage 3 length filtering uses the production tokenizer, not a generic proxy. For
 this Llama 3.1 8B Customizer experiment, the default resolves from the NIM cache
 at `$LOCAL_NIM_CACHE/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`;
-this run used `/mnt/nvme4/nim_cache/nim/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`
+this run used `/data/nim-cache/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`
 with
 `--stage3-min-question-tokens 12 --stage3-min-answer-tokens 8`. The initial
 `cl100k_base`/`question >= 8`/`answer >= 25` filter over-dropped concise
@@ -103,7 +103,7 @@ technical answers; the revised run is captured in `stage3_curator_reductions.md`
 Stage 4 validates the finalized Stage 3 `training.jsonl`, not the full pre-Curator
 Stage 2 set. The runner restores source context by joining each curated
 prompt/completion back to `stage2_eval.jsonl`, then judges a stratified sample
-with Claude Sonnet 4.6 via `https://inference-api.nvidia.com/v1` using
+with Claude Sonnet 4.6 via `https://llm.example.com/v1` using
 `azure/anthropic/claude-sonnet-4-6`. Outputs are `validation_report.json`,
 `validation_sample.jsonl`, and `validation_judgments.jsonl`.
 The completed 100-row-per-corpus validation passed for both corpora; see
@@ -132,14 +132,14 @@ cleaned:
 
 - `runai-rag/nim-devstral-small-fp8` scaled to `0` replicas.
 - Stale terminating pod `nrl265-durable-isolated/durable-isolated-durable-ingest-caption-bf47b5688-lgcrs` force deleted.
-- Customizer `training.nodeSelectors` and `training.container_defaults.nodeSelector` patched to `ubuntu-local-dev`; the pre-patch cluster backup is local-only under `.local_archive/`.
+- Customizer `training.nodeSelectors` and `training.container_defaults.nodeSelector` patched to `<BLACKWELL_NODE>`; the pre-patch cluster backup is local-only under `.local_archive/`.
 
 Submitted jobs:
 
 | Corpus | Dataset entity | Rank | Job ID | Output model entity | Initial runtime state |
 | --- | --- | ---: | --- | --- | --- |
-| NIM | `default/stage3-nim-curated-le-super-v3` | 16 | `cust-VM3mbWVx7FcPdtTG84UiJs` | `default/lora-nim-le-super-v3-e5-llama-3.1-8b-r16-20260711` | running on `ubuntu-local-dev` |
-| NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 16 | `cust-5HqsCLjwYzyy2AyiW3EiNW` | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r16-20260711` | running on `ubuntu-local-dev` |
+| NIM | `default/stage3-nim-curated-le-super-v3` | 16 | `cust-VM3mbWVx7FcPdtTG84UiJs` | `default/lora-nim-le-super-v3-e5-llama-3.1-8b-r16-20260711` | running on `<BLACKWELL_NODE>` |
+| NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 16 | `cust-5HqsCLjwYzyy2AyiW3EiNW` | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r16-20260711` | running on `<BLACKWELL_NODE>` |
 | NIM | `default/stage3-nim-curated-le-super-v3` | 32 | `cust-BBbUtEYXHNW2zjzGZhqMpY` | `default/lora-nim-le-super-v3-e5-llama-3.1-8b-r32-20260711` | pending for GPU capacity |
 | NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 32 | `cust-8GE3t81yPq76FhK3b4b7Ts` | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.1-8b-r32-20260711` | pending for GPU capacity |
 
@@ -150,14 +150,14 @@ placement is `stage5_customizer_training_5epoch_20260711.json`.
 
 Follow-on training is captured in `stage5_followon_1b_3b_plan_20260711.md`.
 The 1B jobs should run on Blackwell after all 8B jobs complete. The 3B jobs
-should run on `ubuntu2` with the Ada-safe `meta/llama-3.2-3b-instruct@v1.0.0+40GB`
+should run on `<ADA_NODE>` with the Ada-safe `meta/llama-3.2-3b-instruct@v1.0.0+40GB`
 template; the `+80GB` 3B template is DP5 in the live Customizer config and is
 not the desired single-GPU TP1/DP1 path.
 
 Ada GPU cleanup has been completed: the NeMo Retriever GPU deployments on
-`ubuntu2` are scaled to zero, `ubuntu2` has no GPU-requesting pods, and allocated
+`<ADA_NODE>` are scaled to zero, `<ADA_NODE>` has no GPU-requesting pods, and allocated
 `nvidia.com/gpu` is zero. Before submitting 3B, decide whether to temporarily
-remove/reduce `ubuntu2` time-slicing so the scheduler exposes 2 physical GPU
+remove/reduce `<ADA_NODE>` time-slicing so the scheduler exposes 2 physical GPU
 slots instead of 10 logical shared slots.
 
 ## Stage 5 8B r32 Export Recovery - 2026-07-11
@@ -175,7 +175,7 @@ failed after training completed. Details are in
 
 ## Temporary Ada Time-Slicing Change - 2026-07-11
 
-For upcoming 3B LoRA SFT on `ubuntu2`, GPU time-slicing was temporarily removed
+For upcoming 3B LoRA SFT on `<ADA_NODE>`, GPU time-slicing was temporarily removed
 from the GPU Operator config. The node now advertises physical Ada capacity:
 `nvidia.com/gpu: 2`, `nvidia.com/gpu.replicas=1`, and
 `nvidia.com/gpu.sharing-strategy=none`, with zero GPUs allocated. Restore the
@@ -184,18 +184,18 @@ is needed again.
 
 ## Stage 5 3B Customizer Training - 2026-07-11
 
-The 3B LE LoRA SFT jobs were submitted on the Ada node `ubuntu2` using
+The 3B LE LoRA SFT jobs were submitted on the Ada node `<ADA_NODE>` using
 `meta/llama-3.2-3b-instruct@v1.0.0+40GB`. The selected template is single-GPU
 LoRA SFT: `num_gpus=1`, `tensor_parallel_size=1`, and `data_parallel_size=1`.
-Customizer training placement was patched from `ubuntu-local-dev` to `ubuntu2`
+Customizer training placement was patched from `<BLACKWELL_NODE>` to `<ADA_NODE>`
 before submission.
 
 Submitted jobs:
 
 | Corpus | Dataset entity | Rank | Job ID | Output model entity | Initial runtime state |
 | --- | --- | ---: | --- | --- | --- |
-| NIM | `default/stage3-nim-curated-le-super-v3` | 16 | `cust-BzdKGpC6VTXw2Ae5CRwQGY` | `default/lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711` | running on `ubuntu2` |
-| NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 16 | `cust-FsetGu5ZHRDNKtzng4jcbL` | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711` | running on `ubuntu2` |
+| NIM | `default/stage3-nim-curated-le-super-v3` | 16 | `cust-BzdKGpC6VTXw2Ae5CRwQGY` | `default/lora-nim-le-super-v3-e5-llama-3.2-3b-r16-20260711` | running on `<ADA_NODE>` |
+| NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 16 | `cust-FsetGu5ZHRDNKtzng4jcbL` | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r16-20260711` | running on `<ADA_NODE>` |
 | NIM | `default/stage3-nim-curated-le-super-v3` | 32 | `cust-Lfp1giyRrX6BYiKheFKbfn` | `default/lora-nim-le-super-v3-e5-llama-3.2-3b-r32-20260711` | pending for GPU capacity |
 | NeMo Microservices | `default/stage3-nemo-usvcs-curated-le-super-v3` | 32 | `cust-JdKTPm7DuYBY6fzyT58HSg` | `default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-3b-r32-20260711` | pending for GPU capacity |
 

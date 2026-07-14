@@ -1,7 +1,7 @@
 """Build 2-way {prompt, completion} shards for Nemotron-3-Nano-30B-A3B TIES SFT.
 
 Source: adapter_{train,val}.jsonl produced by holdout_split.py under
-  /mnt/nvme2/peft/datasets/v2/<collection>/
+  <DATASET_ROOT>/<collection>/
 Each row has {prompt, completion, system}.
 
   shard-a: first 50% of stratified-shuffled train rows
@@ -40,7 +40,7 @@ GITEA_USER = "datastore_admin"
 GITEA_PASS = "nemo-peft-ds"
 
 # Canonical source paths
-_CORPUS_BASE = Path("/mnt/nvme2/peft/datasets/v2")
+_CORPUS_BASE = Path("<DATASET_ROOT>")
 _COLLECTION_TO_DIR = {
     "nim_curated": _CORPUS_BASE / "nim_curated",
     "nemo_usvcs_curated": _CORPUS_BASE / "nemo_usvcs_curated",

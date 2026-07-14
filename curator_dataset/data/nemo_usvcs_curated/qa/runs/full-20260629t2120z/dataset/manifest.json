@@ -10,11 +10,11 @@
   },
   "output": {
     "bytes": 21544783,
-    "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/qa_pairs.jsonl",
+    "path": "<REPO_ROOT>/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/qa_pairs.jsonl",
     "rows": 6591,
     "sha256": "3a16da852edb9384309886777e1fb9573c5724896f51031331be637e334dad41"
   },
-  "raw_dir": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/raw",
+  "raw_dir": "<REPO_ROOT>/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/raw",
   "schema_version": "curator_dataset.qa_dataset_manifest.v1",
   "system_prompt": "You are a helpful technical assistant specializing in NVIDIA NeMo Microservices documentation. Answer accurately and concisely."
 }

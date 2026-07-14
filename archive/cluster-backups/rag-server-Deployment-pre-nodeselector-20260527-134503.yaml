@@ -16,7 +16,7 @@ metadata:
     runai-running-pods: "1"
     runai-total-requested-gpus: "0"
     runai-total-requested-gpus-memory: "0"
-    runai-used-nodes: ubuntu2
+    runai-used-nodes: <ADA_NODE>
   creationTimestamp: "2026-03-25T09:19:25Z"
   generation: 19
   labels:

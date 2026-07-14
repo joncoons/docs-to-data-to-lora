@@ -66,10 +66,10 @@ The following files are inputs only:
 Canonical paths:
 
 ```text
-/mnt/nvme2/peft/datasets/v2/nim_curated/passages.jsonl
-/mnt/nvme2/peft/datasets/v2/nim_curated/stage1a_le.jsonl
-/mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated/passages.jsonl
-/mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated/stage1a_le.jsonl
+<DATASET_ROOT>/nim_curated/passages.jsonl
+<DATASET_ROOT>/nim_curated/stage1a_le.jsonl
+<DATASET_ROOT>/nemo_usvcs_curated/passages.jsonl
+<DATASET_ROOT>/nemo_usvcs_curated/stage1a_le.jsonl
 ```
 
 The execution manifest must recompute and verify these hashes. A mismatch

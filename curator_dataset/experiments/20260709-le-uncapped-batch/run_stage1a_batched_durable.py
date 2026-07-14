@@ -2,7 +2,7 @@
 """Durable uncapped batched Stage 1A runner for the 2026-07-09 LE rerun.
 
 This wraps the production batched Stage 1A implementation with per-passage
-checkpointing so long NVIDIA endpoint calls can be retried/resumed safely.
+checkpointing so long remote endpoint calls can be retried/resumed safely.
 """
 from __future__ import annotations
 
@@ -22,7 +22,6 @@ from typing import Optional
 from openai import OpenAI
 from tqdm import tqdm
 
-from scripts.pipeline.config import get_external_judge_api_key
 from scripts.pipeline.models import KVPRow, LogEntailment, LogEntailmentList, Passage, QAKeyValuePair
 from scripts.pipeline.provenance import entailments_from_kvp_rows, sha256_text
 from scripts.pipeline.provenance_io import write_jsonl
@@ -155,8 +154,7 @@ class TimeoutLLMClient:
 
     @staticmethod
     def _no_think_extra_body(endpoint: str) -> dict:
-        if "inference-api.nvidia.com" in endpoint or "integrate.api.nvidia.com" in endpoint:
-            return {"chat_template_kwargs": {"enable_thinking": False}}
+        # Generic OpenAI-compatible hint; providers that do not support it should ignore it.
         return {"reasoning_effort": "none"}
 
     @staticmethod
@@ -583,8 +581,6 @@ def append_failures(path: Path, payloads: list[dict]) -> None:
 def endpoint_api_key(endpoint: str, explicit_api_key: str | None = None) -> str:
     if explicit_api_key is not None:
         return explicit_api_key
-    if "inference-api.nvidia.com" in endpoint or "integrate.api.nvidia.com" in endpoint:
-        return get_external_judge_api_key()
     return "local"
 
 
@@ -601,7 +597,7 @@ def parse_targets(args: argparse.Namespace) -> list[LLMTarget]:
             if "@" in model:
                 model, raw_max_model_len = model.rsplit("@", 1)
                 max_model_len = int(raw_max_model_len)
-            elif "inference-api.nvidia.com" not in endpoint and "integrate.api.nvidia.com" not in endpoint:
+            else:
                 max_model_len = 32768
             if not endpoint or not model:
                 raise ValueError("--target must include non-empty endpoint and model")
@@ -616,9 +612,7 @@ def parse_targets(args: argparse.Namespace) -> list[LLMTarget]:
         return targets
     if not args.model:
         raise ValueError("--model is required unless --target is supplied")
-    max_model_len = None
-    if "inference-api.nvidia.com" not in args.endpoint and "integrate.api.nvidia.com" not in args.endpoint:
-        max_model_len = 32768
+    max_model_len = 32768
     return [
         LLMTarget(
             endpoint=args.endpoint,
@@ -675,7 +669,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-passages", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--endpoint", default="https://inference-api.nvidia.com/v1")
+    parser.add_argument("--endpoint", default="http://llm-super.default.svc.cluster.local:8000/v1")
     parser.add_argument("--model", help="Canonical extractor model recorded on KVP rows; required unless --target is supplied.")
     parser.add_argument(
         "--target",

@@ -10,10 +10,10 @@
 - Source filter: `html`
 
 ## Synthesis Targets
-- `https://inference-api.nvidia.com/v1` -> `nvidia/nvidia/nemotron-3-ultra` (`uncapped`)
+- `https://llm.example.com/v1` -> `nvidia/nvidia/nemotron-3-ultra` (`uncapped`)
 
 ## Stage 2 QA Targets
-- `https://inference-api.nvidia.com/v1` -> `nvidia/nvidia/nemotron-3-super-v3` (`uncapped`)
+- `https://llm.example.com/v1` -> `nvidia/nvidia/nemotron-3-super-v3` (`uncapped`)
 
 ## Source Filter
 - Passages selected: 430 / 498

@@ -117,22 +117,22 @@ spec:
                       "label": "3b-nim-dd5x-e5-r32",
                       "name": "lora-nim-dd5x-e5-llama-3.2-3b-r32",
                       "job_id": "cust-5g7n3gqXDUomU34JCjUScS",
-                      "responses": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r32/{RUN_ID}/responses.jsonl",
-                      "summary": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r32/{RUN_ID}/token_summary.json",
+                      "responses": f"<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r32/{RUN_ID}/responses.jsonl",
+                      "summary": f"<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r32/{RUN_ID}/token_summary.json",
                   },
                   {
                       "label": "3b-nim-e5-r16",
                       "name": "lora-nim-e5-llama-3.2-3b-r16",
                       "job_id": "cust-43RQKeQBeqiuDYj4kGae23",
-                      "responses": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r16/{RUN_ID}/responses.jsonl",
-                      "summary": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r16/{RUN_ID}/token_summary.json",
+                      "responses": f"<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r16/{RUN_ID}/responses.jsonl",
+                      "summary": f"<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r16/{RUN_ID}/token_summary.json",
                   },
                   {
                       "label": "3b-nim-e5-r32",
                       "name": "lora-nim-e5-llama-3.2-3b-r32",
                       "job_id": "cust-9qPJMq2joy8EJsccAC8C74",
-                      "responses": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r32/{RUN_ID}/responses.jsonl",
-                      "summary": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r32/{RUN_ID}/token_summary.json",
+                      "responses": f"<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r32/{RUN_ID}/responses.jsonl",
+                      "summary": f"<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r32/{RUN_ID}/token_summary.json",
                   },
               ]
 
@@ -364,9 +364,9 @@ spec:
             - name: NIM_READY_URL
               value: http://nim-llm-3b-ada-lora.runai-rag:8000/v1/health/ready
             - name: DATASET
-              value: /mnt/nvme2/peft/datasets/v2/nim_curated/test_set_with_context.jsonl
+              value: <DATASET_ROOT>/nim_curated/test_set_with_context.jsonl
             - name: COMPLETIONS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/completions
+              value: <EVAL_ROOT>/completions
             - name: COMPLETION_CONCURRENCY
               value: "2"
             - name: EXPECTED_ROWS
@@ -389,7 +389,7 @@ spec:
               mountPath: /scripts/collector
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
             - name: model-store
               mountPath: /model-store
       volumes:
@@ -441,16 +441,16 @@ spec:
               set -eu
               python -m pip install --no-cache-dir -q --target /tmp/pydeps httpx
               export PYTHONPATH="/tmp/pydeps:${PYTHONPATH:-}"
-              export NIM_BASE=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/base/base/20260608t005645z/responses.jsonl
-              export NIM_2E_R16=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r16/20260529t142723z/responses.jsonl
-              export NIM_2E_R32=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r32/20260529t142723z/responses.jsonl
-              export NIM_DD5X_2E_R16=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x/r16/20260608t005645z/responses.jsonl
-              export NIM_DD5X_2E_R32=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x/r32/20260608t005645z/responses.jsonl
-              export NIM_DD5X_E5_R16=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r16/20260608t061659z/responses.jsonl
-              export NIM_DD5X_E5_R32=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r32/20260608t150134z/responses.jsonl
-              export NIM_E5_R16=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r16/20260608t150134z/responses.jsonl
-              export NIM_E5_R32=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r32/20260608t150134z/responses.jsonl
-              export NIM_49B=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl
+              export NIM_BASE=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/base/base/20260608t005645z/responses.jsonl
+              export NIM_2E_R16=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim/r16/20260529t142723z/responses.jsonl
+              export NIM_2E_R32=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim/r32/20260529t142723z/responses.jsonl
+              export NIM_DD5X_2E_R16=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x/r16/20260608t005645z/responses.jsonl
+              export NIM_DD5X_2E_R32=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x/r32/20260608t005645z/responses.jsonl
+              export NIM_DD5X_E5_R16=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r16/20260608t061659z/responses.jsonl
+              export NIM_DD5X_E5_R32=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r32/20260608t150134z/responses.jsonl
+              export NIM_E5_R16=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r16/20260608t150134z/responses.jsonl
+              export NIM_E5_R32=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r32/20260608t150134z/responses.jsonl
+              export NIM_49B=<EVAL_ROOT>/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl
               python - <<'PYCODE'
               import json
               import os
@@ -523,11 +523,11 @@ spec:
                 --log-every 25
           env:
             - name: SINGLEAXIS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/singleaxis-claude-sonnet
+              value: <EVAL_ROOT>/singleaxis-claude-sonnet
             - name: PAIRWISE_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/pairwise-claude-sonnet
+              value: <EVAL_ROOT>/pairwise-claude-sonnet
             - name: JUDGE_API_URL
-              value: https://inference-api.nvidia.com/v1/chat/completions
+              value: https://llm.example.com/v1/chat/completions
             - name: EVALUATOR_JUDGE_MODEL
               value: azure/anthropic/claude-sonnet-4-6
             - name: KIMI_KEY
@@ -550,7 +550,7 @@ spec:
               mountPath: /scripts/pairwise
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: singleaxis-script
           configMap:

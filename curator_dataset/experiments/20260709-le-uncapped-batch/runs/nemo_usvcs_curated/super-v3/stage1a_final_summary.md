@@ -36,7 +36,7 @@ Generated at: 2026-07-10T11:01:44.651931+00:00
 ## Targets
 
 - `http://10.43.114.25:8000/v1` using `nvidia/nemotron-3-super-120b-a12b` max_context=32768
-- `https://inference-api.nvidia.com/v1` using `nvidia/nvidia/nemotron-3-super-v3` max_context=None
+- `https://llm.example.com/v1` using `nvidia/nvidia/nemotron-3-super-v3` max_context=None
 
 ## Log Health
 
@@ -75,5 +75,5 @@ Generated at: 2026-07-10T11:01:44.651931+00:00
 ## Failure Payload Targets Total
 
 - `http://10.43.114.25:8000/v1`: 54
-- `https://inference-api.nvidia.com/v1`: 168
+- `https://llm.example.com/v1`: 168
 

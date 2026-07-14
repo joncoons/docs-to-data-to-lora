@@ -60,7 +60,7 @@ present in sample lineage, and Curator job/config metadata when
 
 ```bash
 python scripts/pipeline/finalize_dataset.py \
-  --dataset-dir /mnt/nvme2/peft/datasets/v2/nim_curated \
+  --dataset-dir <DATASET_ROOT>/nim_curated \
   --dataset-name nim_curated \
   --observability-dir /tmp/dataset-finalization-observability/nim_curated
 ```

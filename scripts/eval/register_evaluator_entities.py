@@ -308,7 +308,7 @@ def build_pairwise_config() -> dict:
                     "EVALUATOR_PAIRWISE_JUDGE_MODEL",
                     "nvidia/llama-3.3-nemotron-super-49b-v1.5",
                 ),
-                "judge_endpoint": "https://inference-api.nvidia.com/v1/chat/completions",
+                "judge_endpoint": "http://llm-judge.default.svc.cluster.local:8000/v1/chat/completions",
                 "pairwise_prompt": _PAIRWISE_PROMPT,
                 "position_swap": True,
             },

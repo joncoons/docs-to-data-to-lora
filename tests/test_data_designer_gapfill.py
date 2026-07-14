@@ -49,7 +49,7 @@ def _config(tmp_path, mode="prepare", results_jsonl=None):
         seed_filename="gapfill_requests.csv",
         model="nvidia/nemotron-3-super-120b-a12b",
         model_alias="gapfill_model",
-        model_provider="system/nvidia-build",
+        model_provider="system/model-provider",
         temperature=0.3,
         top_p=1.0,
         max_tokens=2048,

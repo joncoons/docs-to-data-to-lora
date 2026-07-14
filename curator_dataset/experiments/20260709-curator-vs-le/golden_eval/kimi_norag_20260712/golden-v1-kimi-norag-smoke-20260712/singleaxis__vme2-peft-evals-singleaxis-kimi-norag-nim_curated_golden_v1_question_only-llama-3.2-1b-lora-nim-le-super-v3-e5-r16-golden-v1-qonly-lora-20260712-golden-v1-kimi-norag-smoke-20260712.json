@@ -1,8 +1,8 @@
 {
-  "artifact_dir": "/mnt/nvme2/peft/evals/singleaxis-kimi-norag/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/golden-v1-kimi-norag-smoke-20260712",
+  "artifact_dir": "<EVAL_ROOT>/singleaxis-kimi-norag/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/golden-v1-kimi-norag-smoke-20260712",
   "eval_run_id": "golden-v1-kimi-norag-smoke-20260712",
   "judge": {
-    "endpoint": "https://inference-api.nvidia.com/v1",
+    "endpoint": "https://llm.example.com/v1",
     "max_attempts": 3,
     "max_tokens": 8192,
     "max_total_attempts_per_row": 3,
@@ -12,9 +12,9 @@
     "retry_jitter_s": 2.0,
     "temperature": 0.0
   },
-  "manifest_path": "/mnt/nvme2/peft/evals/singleaxis-kimi-norag/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/golden-v1-kimi-norag-smoke-20260712/manifest.json",
+  "manifest_path": "<EVAL_ROOT>/singleaxis-kimi-norag/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/golden-v1-kimi-norag-smoke-20260712/manifest.json",
   "mlflow": {
-    "artifact_location": "file:///mnt/nvme2/peft/mlflow-artifacts/golden-eval",
+    "artifact_location": "file://<MLFLOW_ARTIFACT_ROOT>/golden-eval",
     "experiment": "docs-to-data-to-lora-golden-eval",
     "run_id": "47c7fc926c864a5186ce0a43f20e5eb6",
     "tracking_uri": "http://10.43.102.80:5000"
@@ -60,5 +60,5 @@
     },
     "unresolved_source_row_indices": []
   },
-  "summary_path": "/mnt/nvme2/peft/evals/singleaxis-kimi-norag/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/golden-v1-kimi-norag-smoke-20260712/summary.json"
+  "summary_path": "<EVAL_ROOT>/singleaxis-kimi-norag/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/golden-v1-kimi-norag-smoke-20260712/summary.json"
 }

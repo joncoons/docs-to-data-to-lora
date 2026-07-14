@@ -32,12 +32,12 @@ spec:
               set -eu
               pip install --no-cache-dir -q httpx
               python /scripts/run_direct_kimi_pairwise.py \
-                --pair 1b-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim/r16/20260529t142723z/responses.jsonl 1b-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim/r32/20260529t142723z/responses.jsonl \
-                --pair 1b-aug-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim-dd-kimi/r16/20260530t005356z/responses.jsonl 1b-aug-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim-dd-kimi/r32/20260530t005356z/responses.jsonl \
-                --pair 1b-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim/r16/20260529t142723z/responses.jsonl 1b-aug-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim-dd-kimi/r16/20260530t005356z/responses.jsonl \
-                --pair 1b-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim/r32/20260529t142723z/responses.jsonl 1b-aug-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim-dd-kimi/r32/20260530t005356z/responses.jsonl \
-                --pair 3b-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r16/20260529t142723z/responses.jsonl 3b-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r32/20260529t142723z/responses.jsonl \
-                --pair 8b-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim/r16/20260530t000400z/responses.jsonl 8b-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim/r32/20260530t000400z/responses.jsonl \
+                --pair 1b-r16 <EVAL_ROOT>/completions/nim_curated/llama-3.2-1b/lora-nim/r16/20260529t142723z/responses.jsonl 1b-r32 <EVAL_ROOT>/completions/nim_curated/llama-3.2-1b/lora-nim/r32/20260529t142723z/responses.jsonl \
+                --pair 1b-aug-r16 <EVAL_ROOT>/completions/nim_curated/llama-3.2-1b/lora-nim-dd-kimi/r16/20260530t005356z/responses.jsonl 1b-aug-r32 <EVAL_ROOT>/completions/nim_curated/llama-3.2-1b/lora-nim-dd-kimi/r32/20260530t005356z/responses.jsonl \
+                --pair 1b-r16 <EVAL_ROOT>/completions/nim_curated/llama-3.2-1b/lora-nim/r16/20260529t142723z/responses.jsonl 1b-aug-r16 <EVAL_ROOT>/completions/nim_curated/llama-3.2-1b/lora-nim-dd-kimi/r16/20260530t005356z/responses.jsonl \
+                --pair 1b-r32 <EVAL_ROOT>/completions/nim_curated/llama-3.2-1b/lora-nim/r32/20260529t142723z/responses.jsonl 1b-aug-r32 <EVAL_ROOT>/completions/nim_curated/llama-3.2-1b/lora-nim-dd-kimi/r32/20260530t005356z/responses.jsonl \
+                --pair 3b-r16 <EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim/r16/20260529t142723z/responses.jsonl 3b-r32 <EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim/r32/20260529t142723z/responses.jsonl \
+                --pair 8b-r16 <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim/r16/20260530t000400z/responses.jsonl 8b-r32 <EVAL_ROOT>/completions/nim_curated/llama-3.1-8b/lora-nim/r32/20260530t000400z/responses.jsonl \
                 --eval-run-id "$EVAL_RUN_ID" \
                 --output-root "$PAIRWISE_OUTPUT_ROOT" \
                 --judge-api-url "$JUDGE_API_URL" \
@@ -56,9 +56,9 @@ spec:
             - name: EVAL_RUN_ID
               value: "20260602T161342Z"
             - name: PAIRWISE_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/pairwise-kimi
+              value: <EVAL_ROOT>/pairwise-kimi
             - name: JUDGE_API_URL
-              value: https://inference-api.nvidia.com/v1/chat/completions
+              value: https://llm.example.com/v1/chat/completions
             - name: EVALUATOR_JUDGE_MODEL
               value: nvidia/moonshotai/kimi-k2.6
             - name: KIMI_KEY
@@ -78,7 +78,7 @@ spec:
               mountPath: /scripts
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: pairwise-script
           configMap:
@@ -121,9 +121,9 @@ spec:
               set -eu
               pip install --no-cache-dir -q httpx
               python /scripts/run_direct_kimi_pairwise.py \
-                --pair 1b-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-1b/lora-nemo-usvcs/r16/20260529t142723z/responses.jsonl 1b-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-1b/lora-nemo-usvcs/r32/20260529t142723z/responses.jsonl \
-                --pair 3b-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r16/20260529t142723z/responses.jsonl 3b-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r32/20260529t142723z/responses.jsonl \
-                --pair 8b-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs/r16/20260530t000400z/responses.jsonl 8b-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs/r32/20260530t000400z/responses.jsonl \
+                --pair 1b-r16 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.2-1b/lora-nemo-usvcs/r16/20260529t142723z/responses.jsonl 1b-r32 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.2-1b/lora-nemo-usvcs/r32/20260529t142723z/responses.jsonl \
+                --pair 3b-r16 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r16/20260529t142723z/responses.jsonl 3b-r32 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r32/20260529t142723z/responses.jsonl \
+                --pair 8b-r16 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs/r16/20260530t000400z/responses.jsonl 8b-r32 <EVAL_ROOT>/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs/r32/20260530t000400z/responses.jsonl \
                 --eval-run-id "$EVAL_RUN_ID" \
                 --output-root "$PAIRWISE_OUTPUT_ROOT" \
                 --judge-api-url "$JUDGE_API_URL" \
@@ -142,9 +142,9 @@ spec:
             - name: EVAL_RUN_ID
               value: "20260602T161342Z"
             - name: PAIRWISE_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/pairwise-kimi
+              value: <EVAL_ROOT>/pairwise-kimi
             - name: JUDGE_API_URL
-              value: https://inference-api.nvidia.com/v1/chat/completions
+              value: https://llm.example.com/v1/chat/completions
             - name: EVALUATOR_JUDGE_MODEL
               value: nvidia/moonshotai/kimi-k2.6
             - name: KIMI_KEY
@@ -164,7 +164,7 @@ spec:
               mountPath: /scripts
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: pairwise-script
           configMap:

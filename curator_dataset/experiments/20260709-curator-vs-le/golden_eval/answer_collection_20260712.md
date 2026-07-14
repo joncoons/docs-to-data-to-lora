@@ -14,19 +14,19 @@ This run collected no-RAG, question-only answer sets for the immutable `golden-v
 
 ## Serving Method
 
-LoRA adapters were materialized into NIM PEFT source directories under `/mnt/nvme4/nim_cache/nim/` and served through local NIMServices with direct ClusterIP calls. `rag-oai-proxy` was not used.
+LoRA adapters were materialized into NIM PEFT source directories under `/data/nim-cache/` and served through local NIMServices with direct ClusterIP calls. `rag-oai-proxy` was not used.
 
-- 1B LoRA: `nim-llm-1b-bw-lora` on `ubuntu-local-dev`, `NIM_PEFT_SOURCE=/model-store/lora-adapters-golden-1b`.
-- 8B LoRA: `nim-llm-8b-bw-lora` on `ubuntu-local-dev`, `NIM_PEFT_SOURCE=/model-store/lora-adapters-golden-8b`.
-- 3B LoRA: `nim-llm-3b-ada-lora` on `ubuntu2`, `NIM_PEFT_SOURCE=/model-store/lora-adapters-golden-3b`.
-- 70B baseline: `nim-llm` on `ubuntu-local-dev`, no adapter, `meta/llama-3.3-70b-instruct`, NIM 2.0.5, local `nvfp4` cached profile selected by the image.
+- 1B LoRA: `nim-llm-1b-bw-lora` on `<BLACKWELL_NODE>`, `NIM_PEFT_SOURCE=/model-store/lora-adapters-golden-1b`.
+- 8B LoRA: `nim-llm-8b-bw-lora` on `<BLACKWELL_NODE>`, `NIM_PEFT_SOURCE=/model-store/lora-adapters-golden-8b`.
+- 3B LoRA: `nim-llm-3b-ada-lora` on `<ADA_NODE>`, `NIM_PEFT_SOURCE=/model-store/lora-adapters-golden-3b`.
+- 70B baseline: `nim-llm` on `<BLACKWELL_NODE>`, no adapter, `meta/llama-3.3-70b-instruct`, NIM 2.0.5, local `nvfp4` cached profile selected by the image.
 
 The first 70B attempt used the local snapshot ref `nvfp4-klvd4-nzbq-tool-calling` as `NIM_MODEL_PROFILE`, which NIM rejected because it is not a manifest profile id. Removing the explicit profile override allowed NIM to resolve profile `13b2cabe93f6e3d81e056b10d747d4baffc8dc6708977963dbc02c378fe6e7fd` against the mounted cache.
 
 ## Collection Parameters
 
 - Collector: `scripts/eval/collect_completions.py`.
-- Output root: `/mnt/nvme2/peft/evals/completions-question-only`.
+- Output root: `<EVAL_ROOT>/completions-question-only`.
 - LoRA run id: `golden-v1-qonly-lora-20260712`.
 - 70B run id: `golden-v1-qonly-70b-20260712`.
 - Temperature: `0.0001`.

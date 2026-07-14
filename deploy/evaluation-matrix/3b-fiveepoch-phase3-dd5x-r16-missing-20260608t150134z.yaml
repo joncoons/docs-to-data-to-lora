@@ -74,8 +74,8 @@ spec:
                   time.sleep(60)
               PYCODE
 
-              export NIM_DD5X_E5_R16=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r16/20260608t061659z/responses.jsonl
-              export NIM_49B=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl
+              export NIM_DD5X_E5_R16=<EVAL_ROOT>/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r16/20260608t061659z/responses.jsonl
+              export NIM_49B=<EVAL_ROOT>/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl
               python - <<PYCODE
               import json
               import os
@@ -111,9 +111,9 @@ spec:
                 --log-every 25
           env:
             - name: PAIRWISE_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/pairwise-claude-sonnet
+              value: <EVAL_ROOT>/pairwise-claude-sonnet
             - name: JUDGE_API_URL
-              value: https://inference-api.nvidia.com/v1/chat/completions
+              value: https://llm.example.com/v1/chat/completions
             - name: EVALUATOR_JUDGE_MODEL
               value: azure/anthropic/claude-sonnet-4-6
             - name: KIMI_KEY
@@ -133,7 +133,7 @@ spec:
               mountPath: /scripts/pairwise
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: pairwise-script
           configMap:

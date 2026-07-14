@@ -27,7 +27,7 @@ spec:
         app.kubernetes.io/component: base
     spec:
       nodeSelector:
-        kubernetes.io/hostname: ubuntu-local-dev
+        kubernetes.io/hostname: <BLACKWELL_NODE>
       imagePullSecrets:
         - name: ngc-secret
       containers:
@@ -64,7 +64,7 @@ spec:
             - name: nim-cache
               mountPath: /opt/nim/.cache
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
             - name: shm
               mountPath: /dev/shm
       volumes:
@@ -126,7 +126,7 @@ spec:
         app.kubernetes.io/component: lora
     spec:
       nodeSelector:
-        kubernetes.io/hostname: ubuntu-local-dev
+        kubernetes.io/hostname: <BLACKWELL_NODE>
       imagePullSecrets:
         - name: ngc-secret
       containers:
@@ -141,7 +141,7 @@ spec:
             - name: NIM_SERVED_MODEL_NAME
               value: nvidia/nemotron-3-nano-30b-a3b
             - name: NIM_PEFT_SOURCE
-              value: /mnt/nvme2/peft/checkpoints/lora-nemotron-3-nano
+              value: <ARTIFACT_ROOT>/checkpoints/lora-nemotron-3-nano
             - name: NIM_HTTP_API_PORT
               value: "8000"
             - name: NGC_API_KEY
@@ -161,7 +161,7 @@ spec:
             - name: nim-cache
               mountPath: /opt/nim/.cache
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
             - name: shm
               mountPath: /dev/shm
       volumes:

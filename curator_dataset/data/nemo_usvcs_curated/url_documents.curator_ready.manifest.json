@@ -28,7 +28,7 @@
   },
   "output": {
     "bytes": 3118158,
-    "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nemo_usvcs_curated/url_documents.curator_ready.jsonl",
+    "path": "<REPO_ROOT>/curator_dataset/data/nemo_usvcs_curated/url_documents.curator_ready.jsonl",
     "rows": 599,
     "sha256": "faf576a44d6dac0290ae0bd80216b5f3ba5849b54976babc1eeb14300a104ed4"
   },

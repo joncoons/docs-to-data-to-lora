@@ -17,7 +17,7 @@ Generated locally after the first durable, load-balanced Nemotron 3 Super pass.
 ## Targets
 
 - `http://10.43.114.25:8000/v1` using `nvidia/nemotron-3-super-120b-a12b` max_context=32768
-- `https://inference-api.nvidia.com/v1` using `nvidia/nvidia/nemotron-3-super-v3` max_context=None
+- `https://llm.example.com/v1` using `nvidia/nvidia/nemotron-3-super-v3` max_context=None
 
 ## First-Pass Results
 
@@ -47,7 +47,7 @@ Generated locally after the first durable, load-balanced Nemotron 3 Super pass.
 ## Failure Payload Targets
 
 - `http://10.43.114.25:8000/v1`: 50
-- `https://inference-api.nvidia.com/v1`: 160
+- `https://llm.example.com/v1`: 160
 
 ## Recovery Set
 

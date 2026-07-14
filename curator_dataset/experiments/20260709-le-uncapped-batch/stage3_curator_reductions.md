@@ -2,7 +2,7 @@
 
 This report captures the Stage 3 row reductions for the LE-derived NIM and NeMo Microservices datasets and records the policy correction made after inspecting the initial reductions.
 
-The initial Stage 3 pass used `tiktoken` `cl100k_base` with `question >= 8` and `answer >= 25`. That was the wrong tokenizer for Llama LoRA training and over-penalized concise technical answers. The revised pass uses the production Llama 3.1 8B tokenizer resolved from `$LOCAL_NIM_CACHE`; this run used `/mnt/nvme4/nim_cache/nim/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`, with `question >= 12` and `answer >= 8`.
+The initial Stage 3 pass used `tiktoken` `cl100k_base` with `question >= 8` and `answer >= 25`. That was the wrong tokenizer for Llama LoRA training and over-penalized concise technical answers. The revised pass uses the production Llama 3.1 8B tokenizer resolved from `$LOCAL_NIM_CACHE`; this run used `/data/nim-cache/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`, with `question >= 12` and `answer >= 8`.
 
 The train/validation split is shown for traceability but is not treated as a reduction cause.
 
@@ -11,7 +11,7 @@ The train/validation split is shown for traceability but is not treated as a red
 | Policy | Tokenizer | Min Question Tokens | Min Answer Tokens |
 | --- | --- | ---: | ---: |
 | Initial | `tiktoken cl100k_base` | 8 | 25 |
-| Revised | `/mnt/nvme4/nim_cache/nim/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling` | 12 | 8 |
+| Revised | `/data/nim-cache/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling` | 12 | 8 |
 
 ## Outcome Summary
 

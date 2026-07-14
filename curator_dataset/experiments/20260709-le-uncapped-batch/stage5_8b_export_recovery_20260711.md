@@ -15,8 +15,8 @@ pending deadline, even though training had already reached 5/5 epochs and 100%.
 
 The export image was pre-pulled with short-lived pods on both GPU nodes:
 
-- `ubuntu-local-dev`
-- `ubuntu2`
+- `<BLACKWELL_NODE>`
+- `<ADA_NODE>`
 
 The completed trained adapter directories were still present on
 `peft-workspace-pvc`:

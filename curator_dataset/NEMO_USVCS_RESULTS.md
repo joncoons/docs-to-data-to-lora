@@ -25,7 +25,7 @@ This run is the NeMo Microservices counterpart to the NIM Curator experiment. It
 - Native pipeline: Nemotron-CC `DiverseQAStage`
 - Model: `nvidia/nvidia/nemotron-3-super-v3`
 - Model equivalence: actual run manifests record `nvidia/nvidia/nemotron-3-super-v3`; the catalog shorthand `nvidia/nemotron-3-super-v3` is treated as exact-equivalent to `nvidia/nemotron-3-super-120b-a12b` for project provenance.
-- Hosted endpoint: `https://inference-api.nvidia.com/v1`
+- Hosted endpoint: `https://llm.example.com/v1`
 - API key source: Kubernetes Secret reference; the value was not persisted
 - Maximum input tokens per Curator segment: 1,000
 - Minimum document and segment tokens: 30

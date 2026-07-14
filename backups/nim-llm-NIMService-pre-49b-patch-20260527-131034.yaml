@@ -45,7 +45,7 @@ spec:
   metrics:
     serviceMonitor: {}
   nodeSelector:
-    kubernetes.io/hostname: ubuntu-local-dev
+    kubernetes.io/hostname: <BLACKWELL_NODE>
   readinessProbe: {}
   replicas: 1
   resources:

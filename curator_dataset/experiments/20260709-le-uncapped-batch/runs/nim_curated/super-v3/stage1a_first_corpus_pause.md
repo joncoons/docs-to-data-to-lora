@@ -26,7 +26,7 @@ Canonical model recorded on KVP rows:
 Endpoint-specific targets used:
 
 - Local NIM: `http://10.43.114.25:8000/v1` with `nvidia/nemotron-3-super-120b-a12b@32768`
-- NVIDIA endpoint: `https://inference-api.nvidia.com/v1` with `nvidia/nvidia/nemotron-3-super-v3`
+- remote endpoint: `https://llm.example.com/v1` with `nvidia/nvidia/nemotron-3-super-v3`
 
 The local and external Super model IDs are treated as exact-equivalent targets, with the local context cap used for routing.
 

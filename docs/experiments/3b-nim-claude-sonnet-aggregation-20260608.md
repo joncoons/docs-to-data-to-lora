@@ -70,5 +70,5 @@ Scope: `nim_curated` test set, `llama-3.2-3b` base and LoRA variants, judged by 
 
 ## Artifacts
 
-- Aggregate JSON: `/mnt/nvme2/peft/evals/aggregates/3b-nim-claude-sonnet-20260608/aggregate.json`
-- Source roots: `/mnt/nvme2/peft/evals/singleaxis-claude-sonnet`, `/mnt/nvme2/peft/evals/pairwise-claude-sonnet`
+- Aggregate JSON: `<EVAL_ROOT>/aggregates/3b-nim-claude-sonnet-20260608/aggregate.json`
+- Source roots: `<EVAL_ROOT>/singleaxis-claude-sonnet`, `<EVAL_ROOT>/pairwise-claude-sonnet`

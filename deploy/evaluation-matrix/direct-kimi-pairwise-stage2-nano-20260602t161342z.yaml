@@ -32,8 +32,8 @@ spec:
               set -eu
               pip install --no-cache-dir -q httpx
               python /scripts/run_direct_kimi_pairwise.py \
-                --pair nano-base /mnt/nvme2/peft/evals/completions/nim_curated/nemotron-3-nano-30b-a3b/base/base/20260602t164839z/responses.jsonl nano-nim-r16 /mnt/nvme2/peft/evals/completions/nim_curated/nemotron-nano-30b/lora-nim/r16/20260529t194029z/responses.jsonl \
-                --pair nano-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/nemotron-3-nano-30b-a3b/base/base/20260602t164839z/responses.jsonl nano-nemo-usvcs-r16-retrain /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/nemotron-nano-30b/lora-nemo-usvcs/r16/20260530t153804z/responses.jsonl \
+                --pair nano-base <EVAL_ROOT>/completions/nim_curated/nemotron-3-nano-30b-a3b/base/base/20260602t164839z/responses.jsonl nano-nim-r16 <EVAL_ROOT>/completions/nim_curated/nemotron-nano-30b/lora-nim/r16/20260529t194029z/responses.jsonl \
+                --pair nano-base <EVAL_ROOT>/completions/nemo_usvcs_curated/nemotron-3-nano-30b-a3b/base/base/20260602t164839z/responses.jsonl nano-nemo-usvcs-r16-retrain <EVAL_ROOT>/completions/nemo_usvcs_curated/nemotron-nano-30b/lora-nemo-usvcs/r16/20260530t153804z/responses.jsonl \
                 --eval-run-id "$EVAL_RUN_ID" \
                 --output-root "$PAIRWISE_OUTPUT_ROOT" \
                 --judge-api-url "$JUDGE_API_URL" \
@@ -52,9 +52,9 @@ spec:
             - name: EVAL_RUN_ID
               value: "20260602T161342Z"
             - name: PAIRWISE_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/pairwise-kimi
+              value: <EVAL_ROOT>/pairwise-kimi
             - name: JUDGE_API_URL
-              value: https://inference-api.nvidia.com/v1/chat/completions
+              value: https://llm.example.com/v1/chat/completions
             - name: EVALUATOR_JUDGE_MODEL
               value: nvidia/moonshotai/kimi-k2.6
             - name: KIMI_KEY
@@ -74,7 +74,7 @@ spec:
               mountPath: /scripts
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: pairwise-script
           configMap:

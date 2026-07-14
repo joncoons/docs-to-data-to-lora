@@ -48,7 +48,7 @@ DEFAULT_JUDGE_API_URL = os.getenv(
 DEFAULT_JUDGE_MODEL = os.getenv("EVALUATOR_JUDGE_MODEL", "kimi-k2-6")
 DEFAULT_JUDGE_API_KEY_ENV = os.getenv("JUDGE_API_KEY_ENV", "KIMI_KEY")
 DEFAULT_OUTPUT_ROOT = Path(
-    os.getenv("PAIRWISE_OUTPUT_ROOT", "/mnt/nvme2/peft/evals/pairwise-kimi")
+    os.getenv("PAIRWISE_OUTPUT_ROOT", "<EVAL_ROOT>/pairwise-kimi")
 )
 DEFAULT_REPO_SUMMARY_DIR = _REPO_ROOT / "curator_dataset" / "experiments" / "20260709-curator-vs-le" / "golden_eval" / "kimi_norag_20260712"
 REASONING_GENERATION_BUDGET = 8192

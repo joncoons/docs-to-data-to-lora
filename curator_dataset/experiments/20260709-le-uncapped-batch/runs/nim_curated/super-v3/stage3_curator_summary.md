@@ -8,7 +8,7 @@ Stage 3 applies structural curation after Stage 2 QA admission. The reductions b
 - minhash_threshold: `0.85`
 - min_question_tokens: `12`
 - min_answer_tokens: `8`
-- tokenizer_name_or_path: `/mnt/nvme4/nim_cache/nim/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`
+- tokenizer_name_or_path: `/data/nim-cache/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`
 - tokenizer_class: `TokenizersBackend`
 
 ## Reduction Steps

@@ -63,7 +63,7 @@ customizer 100-job window (rolled off after the reboot event).
 |------------------------------------------|----------------------|-----------:|---------:|-----------:|
 | lora-nim-nemotron-nano-30b-r16           | (rolled off API)     |       n/a  |    n/a   |    n/a     |
 
-On-disk artifact: `/mnt/nvme2/peft/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/`
+On-disk artifact: `<ARTIFACT_ROOT>/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/`
 (adapter_model.safetensors = 885 MB, mtime 2026-05-26 19:50:42).
 
 ## NeMo USvcs corpus (2026-05-27, post-reboot serial r=16 run)
@@ -72,9 +72,9 @@ On-disk artifact: `/mnt/nvme2/peft/checkpoints/lora/lora-nim-nemotron-nano-30b-r
 |------------------------------------------------|---------------------------------|-----------:|---------:|-----------:|
 | lora-nemo-usvcs-nemotron-nano-30b-r16-shard-a  | cust-4dLpWrjfy2GUn14StTnnVY     |    0.488   |   1.042  |  ~87 min   |
 | lora-nemo-usvcs-nemotron-nano-30b-r16-shard-b  | cust-LPb2TVBgLXKJn7mrBNpwLb     |    0.545   |   1.060  |  ~90 min   |
-| **TIES-merged**: lora-nemo-usvcs-nemotron-nano-30b-r16 (trim_ratio=0.2) — `/mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/` |
+| **TIES-merged**: lora-nemo-usvcs-nemotron-nano-30b-r16 (trim_ratio=0.2) — `<ARTIFACT_ROOT>/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/` |
 
-On-disk artifact: `/mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/`
+On-disk artifact: `<ARTIFACT_ROOT>/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/`
 (adapter_model.safetensors = 886 MB, mtime 2026-05-27 05:55:37).
 
 ## MoE wall-clock summary
@@ -89,6 +89,6 @@ On-disk artifact: `/mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nan
 
 | Adapter | Path | Size | Source |
 |---|---|---|---|
-| lora-nim-nemotron-nano-30b-r16        | `/mnt/nvme2/peft/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/`        | 885 MB | Round 1 (2026-05-26) |
-| lora-nemo-usvcs-nemotron-nano-30b-r16 | `/mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/` | 886 MB | This run (2026-05-27) |
+| lora-nim-nemotron-nano-30b-r16        | `<ARTIFACT_ROOT>/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/`        | 885 MB | Round 1 (2026-05-26) |
+| lora-nemo-usvcs-nemotron-nano-30b-r16 | `<ARTIFACT_ROOT>/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/` | 886 MB | This run (2026-05-27) |
 

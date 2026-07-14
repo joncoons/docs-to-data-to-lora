@@ -9,10 +9,10 @@
   },
   "output": {
     "bytes": 28669018,
-    "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/qa_pairs.jsonl",
+    "path": "<REPO_ROOT>/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/qa_pairs.jsonl",
     "rows": 9962,
     "sha256": "7e9840135c2d164febb869221b1c0a00d71d918eb3dbb37b2ed871adddc35e13"
   },
-  "raw_dir": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/raw",
+  "raw_dir": "<REPO_ROOT>/curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/raw",
   "schema_version": "curator_dataset.qa_dataset_manifest.v1"
 }

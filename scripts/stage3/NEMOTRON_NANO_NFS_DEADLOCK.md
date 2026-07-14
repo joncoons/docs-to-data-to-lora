@@ -22,7 +22,7 @@ mount over into lock-contention deadlock.
 ## Why the prior v3 fix did not cover this
 
 The v3 NFS-deadlock work (captured in
-`/home/joncoons/.claude/projects/-home-joncoons-claude/memory/project_customizer_workspace_dir_scratch.md`
+`<USER_HOME>/.claude/projects/-home-joncoons-claude/memory/project_customizer_workspace_dir_scratch.md`
 and in `NEMOTRON_NANO_LORA_METHODOLOGY.md §2`) moved Lightning's mid-training checkpoint
 target via `training.workspace_dir: /pvc/workspace → /scratch/workspace`. That fix is in
 place — we verified the live ConfigMap has `workspace_dir: /scratch/workspace`. But the
@@ -30,7 +30,7 @@ post-training **final output** copy is a separate code path
 (`customizer_training/utils/file_structure.py`) that still writes the trained adapter from
 `/scratch/customizer_output_checkpoints/` to `/pvc/<cust-id>/trained/`. The original v3 work
 noted this: *"OUTPUT_MODEL_PATH stays on NFS so the final adapter still lands on
-/mnt/nvme2/peft/ atomically at job end."* That was acceptable because v3 trained one shard
+<ARTIFACT_ROOT>/ atomically at job end."* That was acceptable because v3 trained one shard
 at a time per pair (and the output was smaller). At r=32 with both shards racing, it isn't.
 
 ## Codex review — recommended fixes (verbatim)
@@ -56,7 +56,7 @@ at a time per pair (and the output was smaller). At r=32 with both shards racing
 >    - shard B pod UID: `c7bfdaa4-9f86-4059-b448-d6a6e7536f09`
 >    - likely host path:
 >      `/var/lib/kubelet/pods/<uid>/volumes/kubernetes.io~empty-dir/scratch/`
->    This needs root on `ubuntu-local-dev`. Without recovery, a kubelet/containerd restart
+>    This needs root on `<BLACKWELL_NODE>`. Without recovery, a kubelet/containerd restart
 >    or node reboot may be required.
 > 5. **Stay with `alpha = rank` for Nemotron Nano MoE.** Rank 32 should be `alpha=32`, not
 >    `64`. Rank 32 also roughly doubles adapter artifact size, which makes the NFS

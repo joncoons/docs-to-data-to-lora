@@ -103,7 +103,7 @@ that materially change dataset coverage, cost, and recovery behavior.
   runs can resume without replaying completed passages or losing already written
   rows.
 - Stage 1B and Stage 1C should use a frontier-level synthesis model. The
-  current experiments use Nemotron 3 Ultra 550B through NVIDIA-hosted inference,
+  current experiments use Nemotron 3 Ultra 550B through OpenAI-compatible inference,
   but the downstream runner accepts any OpenAI-compatible chat-completions
   endpoint/model pair via repeated `--target ENDPOINT=MODEL[@MAX_CONTEXT]`
   arguments.
@@ -167,7 +167,7 @@ A passage is dropped if any of the following conditions hold:
 
 ### Output schema
 
-File: `/mnt/nvme2/peft/datasets/v2/<collection>/passages.jsonl`
+File: `<DATASET_ROOT>/<collection>/passages.jsonl`
 
 ```json
 {
@@ -234,7 +234,7 @@ Example:
 ```bash
 python scripts/build_v2_dataset.py \
   --collection nim_curated \
-  --output /mnt/nvme2/peft/datasets/v2/nim_curated \
+  --output <DATASET_ROOT>/nim_curated \
   --stage 1a \
   --stage1a-mode batched
 ```
@@ -247,7 +247,7 @@ python scripts/build_v2_dataset.py \
   shared LLM client.
 - Default model: `nvidia/nemotron-3-super-120b-a12b`. The hosted alias
   `nvidia/nvidia/nemotron-3-super-v3` is the same model family for this work and
-  can be supplied with `--stage1a-model` when using NVIDIA-hosted inference.
+  can be supplied with `--stage1a-model` when using OpenAI-compatible inference.
 - Legacy temperature: 0.2. Batched mode defaults to 0.95 for higher-recall
   extraction, unless `--stage1a-temperature` overrides it.
 - Endpoint/model overrides: use `--stage1a-nim-endpoints`, `--stage1a-model`,
@@ -272,7 +272,7 @@ passages, which often spanned multiple logical claims).
 
 ### Output schema
 
-File: `/mnt/nvme2/peft/datasets/v2/<collection>/stage1a_le.jsonl`
+File: `<DATASET_ROOT>/<collection>/stage1a_le.jsonl`
 
 ```json
 {
@@ -355,7 +355,7 @@ The current experiment uses `nvidia/nvidia/nemotron-3-ultra`, but the downstream
 runner is model-agnostic as long as the endpoint implements OpenAI-compatible
 chat completions. Use repeated `--target ENDPOINT=MODEL[@MAX_CONTEXT]` arguments
 to choose one or more endpoints; non-NVIDIA secured endpoints can use
-`--api-key`, and NVIDIA-hosted inference reads the configured Kubernetes secret.
+`--api-key`, and OpenAI-compatible inference reads the configured Kubernetes secret.
 
 ### Coverage
 
@@ -377,7 +377,7 @@ collection.
 
 ### Output schema
 
-File: `/mnt/nvme2/peft/datasets/v2/<collection>/stage1b_synthesis.jsonl`
+File: `<DATASET_ROOT>/<collection>/stage1b_synthesis.jsonl`
 
 Same schema as Stage 1A, with:
 - `stage: "1b"`
@@ -473,7 +473,7 @@ Output JSON:
 
 ### Output schema
 
-File: `/mnt/nvme2/peft/datasets/v2/<collection>/stage1c_instruction.jsonl`
+File: `<DATASET_ROOT>/<collection>/stage1c_instruction.jsonl`
 
 Same schema as Stage 1A, with:
 - `stage: "1c"`
@@ -536,10 +536,10 @@ are no hand-curated keyword lists involved.
 
 Output files:
 
-- `/mnt/nvme2/peft/datasets/v2/<collection>/bias_report.json`
-- `/mnt/nvme2/peft/datasets/v2/<collection>/provenance/gap_manifest.json`
-- `/mnt/nvme2/peft/datasets/v2/<collection>/data_designer/gapfill_requests.jsonl`
-- `/mnt/nvme2/peft/datasets/v2/<collection>/data_designer/request_manifest.json`
+- `<DATASET_ROOT>/<collection>/bias_report.json`
+- `<DATASET_ROOT>/<collection>/provenance/gap_manifest.json`
+- `<DATASET_ROOT>/<collection>/data_designer/gapfill_requests.jsonl`
+- `<DATASET_ROOT>/<collection>/data_designer/request_manifest.json`
 
 ```json
 {
@@ -647,7 +647,7 @@ Default handoff files:
   native service lineage even when Stage 2 refines the prompt or completion
   text.
 
-Legacy direct mode still writes `/mnt/nvme2/peft/datasets/v2/<collection>/stage1_5_gapfill.jsonl`
+Legacy direct mode still writes `<DATASET_ROOT>/<collection>/stage1_5_gapfill.jsonl`
 with the Stage 1A-compatible row schema:
 
 - `stage: "1.5"`
@@ -716,15 +716,15 @@ For every pair from Stages 1A + 1B + 1C plus optional Stage 1.5 synthetic rows:
 
 ### Output schema
 
-File: `/mnt/nvme2/peft/datasets/v2/<collection>/stage2_eval.jsonl`
+File: `<DATASET_ROOT>/<collection>/stage2_eval.jsonl`
 
 Same schema as Stage 1A, `refined` may now be `true`.
 
 Also:
 
-- `/mnt/nvme2/peft/datasets/v2/<collection>/stage2_dropped.jsonl` — rejected or
+- `<DATASET_ROOT>/<collection>/stage2_dropped.jsonl` — rejected or
   retryable failed pairs with QA status and reason.
-- `/mnt/nvme2/peft/datasets/v2/<collection>/provenance/stage2_quality.jsonl` —
+- `<DATASET_ROOT>/<collection>/provenance/stage2_quality.jsonl` —
   one append-only decision record per attempted row, including judge model,
   endpoint labels, admission status, grounding flags, repairability, and reason.
 
@@ -755,7 +755,7 @@ if the same model family generated a substantial share of the rows being
 judged. Stage 4 compensates by independently sampling post-Curator output with
 a separate judge model. If Stage 2 is escalated to Nemotron 3 Ultra, Stage 4
 should use a different frontier-level judge such as Claude Sonnet 4.6 through
-the NVIDIA-hosted OpenAI-compatible endpoint.
+the configured OpenAI-compatible endpoint.
 
 ---
 
@@ -810,12 +810,12 @@ pairs at 5% — too few for stable val_loss during LoRA training.
 ### Output format
 
 Files:
-- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/input/dataset_samples.jsonl`
-- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/accepted_samples.jsonl`
-- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/rejected_samples.jsonl`
-- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/curation_manifest.json`
-- `/mnt/nvme2/peft/datasets/v2/<collection>/training.jsonl`
-- `/mnt/nvme2/peft/datasets/v2/<collection>/validation.jsonl`
+- `<DATASET_ROOT>/<collection>/curator/input/dataset_samples.jsonl`
+- `<DATASET_ROOT>/<collection>/curator/accepted_samples.jsonl`
+- `<DATASET_ROOT>/<collection>/curator/rejected_samples.jsonl`
+- `<DATASET_ROOT>/<collection>/curator/curation_manifest.json`
+- `<DATASET_ROOT>/<collection>/training.jsonl`
+- `<DATASET_ROOT>/<collection>/validation.jsonl`
 
 Format (NeMo Customizer SFT convention):
 
@@ -865,7 +865,7 @@ pairs.
 2. For each sampled pair, call the configured independent judge endpoint with
    the validation prompt. API key material is read from a Kubernetes Secret.
    For the LE comparison run, the default judge is Claude Sonnet 4.6 through
-   `https://inference-api.nvidia.com/v1` as
+   `https://llm.example.com/v1` as
    `azure/anthropic/claude-sonnet-4-6`.
 3. Score each pair on three binary criteria:
    - **Grounded**: every factual claim in the answer is supported by the source
@@ -888,7 +888,7 @@ systematically hallucinated batches.
 
 ### Output schema
 
-Primary file: `/mnt/nvme2/peft/datasets/v2/<collection>/validation_report.json`
+Primary file: `<DATASET_ROOT>/<collection>/validation_report.json`
 
 The local runner also writes:
 
@@ -931,7 +931,7 @@ How to point the pipeline at a new ES collection:
    ```bash
    python scripts/build_v2_dataset.py \
      --collection <your-collection> \
-     --output /mnt/nvme2/peft/datasets/v2/<name>
+     --output <DATASET_ROOT>/<name>
    ```
 
 Supported flags:
@@ -951,7 +951,7 @@ Supported flags:
 --stage3-tokenizer PATH_OR_MODEL       override production tokenizer directory/model
 --stage3-min-question-tokens N         default 12 with the production tokenizer
 --stage3-min-answer-tokens N           default 8 with the production tokenizer
---stage4-judge-endpoint URL            default https://inference-api.nvidia.com/v1
+--stage4-judge-endpoint URL            default https://llm.example.com/v1
 --stage4-judge-model MODEL             default azure/anthropic/claude-sonnet-4-6
 --stage4-sample-size N                 default 100
 --stage4-threshold FLOAT               default 0.90
@@ -975,20 +975,20 @@ sequentially or in parallel; the cluster has the GPU budget either way.
 # Sequential
 python scripts/build_v2_dataset.py \
   --collection nim_curated \
-  --output /mnt/nvme2/peft/datasets/v2/nim/
+  --output <DATASET_ROOT>/nim/
 
 python scripts/build_v2_dataset.py \
   --collection nemo_usvcs_curated \
-  --output /mnt/nvme2/peft/datasets/v2/nemo/
+  --output <DATASET_ROOT>/nemo/
 
 # Or in parallel (background)
 python scripts/build_v2_dataset.py \
   --collection nim_curated \
-  --output /mnt/nvme2/peft/datasets/v2/nim/ &
+  --output <DATASET_ROOT>/nim/ &
 
 python scripts/build_v2_dataset.py \
   --collection nemo_usvcs_curated \
-  --output /mnt/nvme2/peft/datasets/v2/nemo/ &
+  --output <DATASET_ROOT>/nemo/ &
 wait
 ```
 
@@ -997,7 +997,7 @@ wait
 ## File layout
 
 ```
-/mnt/nvme2/peft/datasets/v2/
+<DATASET_ROOT>/
 ├── nim/
 │   ├── passages.jsonl               ← Stage 0 output
 │   ├── stage1a_le.jsonl             ← Stage 1A: LE → KVP
@@ -1102,7 +1102,7 @@ The Stages 1A/1B/1C LLM calls use direct API calls, not Data Designer.
 - Archive: `prompt_zoo.py` + `pydantic_models.py` in the `archive/` directory
   of this repository (provenance for the Jan 2025 LE/KVP/QA-eval prompts; not
   redistributed here, original path:
-  `/mnt/nvme3/code_repo/LLM_Demos/NIM_CUDA_X_QA_public_website/archive/le_artifacts/`).
+  `<LOCAL_STORAGE_ROOT>/code_repo/LLM_Demos/NIM_CUDA_X_QA_public_website/archive/le_artifacts/`).
 - `scripts/build_v2_dataset.py` — this pipeline's implementation.
 - `data-designer-recipes/nim-gapfill.yaml` — Stage 1.5 Data Designer recipe for
   NIM gap-fill.

@@ -2,7 +2,7 @@
   "schema_version": "stage5_customizer_training_submission.v1",
   "submitted_at": "2026-07-12T06:53:03.544650+00:00",
   "customizer_url": "http://192.168.1.187:30910",
-  "node": "ubuntu-local-dev",
+  "node": "<BLACKWELL_NODE>",
   "node_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
   "base_model": "meta/llama-3.2-1b-instruct",
   "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
@@ -77,7 +77,7 @@
       "submitted_at": "2026-07-12T06:53:06.839675+00:00",
       "wave": "r16",
       "final_status": "cancelled",
-      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=ubuntu2; cancelled and replaced by -20260712-bw submission."
+      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=<ADA_NODE>; cancelled and replaced by -20260712-bw submission."
     },
     {
       "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712",
@@ -120,7 +120,7 @@
       "submitted_at": "2026-07-12T06:53:09.969777+00:00",
       "wave": "r16",
       "final_status": "cancelled",
-      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=ubuntu2; cancelled and replaced by -20260712-bw submission."
+      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=<ADA_NODE>; cancelled and replaced by -20260712-bw submission."
     },
     {
       "adapter_name": "lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712",
@@ -163,7 +163,7 @@
       "submitted_at": "2026-07-12T06:53:13.060721+00:00",
       "wave": "r32",
       "final_status": "cancelled",
-      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=ubuntu2; cancelled and replaced by -20260712-bw submission."
+      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=<ADA_NODE>; cancelled and replaced by -20260712-bw submission."
     },
     {
       "adapter_name": "lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712",
@@ -206,12 +206,12 @@
       "submitted_at": "2026-07-12T06:53:16.218587+00:00",
       "wave": "r32",
       "final_status": "cancelled",
-      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=ubuntu2; cancelled and replaced by -20260712-bw submission."
+      "placement_error": "Created with stale live Customizer nodeSelector kubernetes.io/hostname=<ADA_NODE>; cancelled and replaced by -20260712-bw submission."
     }
   ],
   "corrected_blackwell_submission": {
     "submitted_at": "2026-07-12T06:57:34.257389+00:00",
-    "reason": "Resubmitted after restarting Customizer so live training placement picked up ubuntu-local-dev node selectors.",
+    "reason": "Resubmitted after restarting Customizer so live training placement picked up <BLACKWELL_NODE> node selectors.",
     "suffix": "20260712-bw",
     "jobs": [
       {
@@ -225,7 +225,7 @@
         "dataset_kind": "LE Stage 3 Curator finalized dataset",
         "description": "Stage 5 1B LoRA SFT on NIM LE dataset; rank=16, alpha=32, epochs=5, Blackwell TP1/DP1",
         "epochs": 5,
-        "expected_node": "ubuntu-local-dev",
+        "expected_node": "<BLACKWELL_NODE>",
         "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
         "finetuning_type": "lora",
         "job_id": "cust-WD6ABFknJMfsqLivWJ4v3X",
@@ -240,9 +240,9 @@
         "customizer_status_after_submission": "running",
         "kubernetes_worker_pod": "cust-wd6abfknjmfsqlivwj4v3x-training-job-worker-0",
         "kubernetes_worker_status_after_submission": "Running",
-        "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
+        "kubernetes_worker_node_after_submission": "<BLACKWELL_NODE>",
         "verified_node_selector": {
-          "kubernetes.io/hostname": "ubuntu-local-dev"
+          "kubernetes.io/hostname": "<BLACKWELL_NODE>"
         },
         "observed_status": "completed",
         "final_status_details": {
@@ -253,7 +253,7 @@
           "epochs_completed": 5,
           "percentage_done": 100.0,
           "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-WD6ABFknJMfsqLivWJ4v3X",
-          "worker_node": "ubuntu-local-dev",
+          "worker_node": "<BLACKWELL_NODE>",
           "worker_phase": "Succeeded"
         }
       },
@@ -268,7 +268,7 @@
         "dataset_kind": "LE Stage 3 Curator finalized dataset",
         "description": "Stage 5 1B LoRA SFT on NeMo microservices LE dataset; rank=16, alpha=32, epochs=5, Blackwell TP1/DP1",
         "epochs": 5,
-        "expected_node": "ubuntu-local-dev",
+        "expected_node": "<BLACKWELL_NODE>",
         "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
         "finetuning_type": "lora",
         "job_id": "cust-XgA7mdwQpKb7spFUMDAEAE",
@@ -283,9 +283,9 @@
         "customizer_status_after_submission": "running",
         "kubernetes_worker_pod": "cust-xga7mdwqpkb7spfumdaeae-training-job-worker-0",
         "kubernetes_worker_status_after_submission": "Running",
-        "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
+        "kubernetes_worker_node_after_submission": "<BLACKWELL_NODE>",
         "verified_node_selector": {
-          "kubernetes.io/hostname": "ubuntu-local-dev"
+          "kubernetes.io/hostname": "<BLACKWELL_NODE>"
         },
         "observed_status": "completed",
         "final_status_details": {
@@ -296,7 +296,7 @@
           "epochs_completed": 5,
           "percentage_done": 100.0,
           "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-XgA7mdwQpKb7spFUMDAEAE",
-          "worker_node": "ubuntu-local-dev",
+          "worker_node": "<BLACKWELL_NODE>",
           "worker_phase": "Succeeded"
         }
       },
@@ -311,7 +311,7 @@
         "dataset_kind": "LE Stage 3 Curator finalized dataset",
         "description": "Stage 5 1B LoRA SFT on NIM LE dataset; rank=32, alpha=64, epochs=5, Blackwell TP1/DP1",
         "epochs": 5,
-        "expected_node": "ubuntu-local-dev",
+        "expected_node": "<BLACKWELL_NODE>",
         "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
         "finetuning_type": "lora",
         "job_id": "cust-B7zL5FK8ucueV4xuYK5Cxn",
@@ -328,7 +328,7 @@
         "kubernetes_worker_status_after_submission": "Pending",
         "kubernetes_worker_node_after_submission": null,
         "verified_node_selector": {
-          "kubernetes.io/hostname": "ubuntu-local-dev"
+          "kubernetes.io/hostname": "<BLACKWELL_NODE>"
         },
         "observed_status": "completed",
         "final_status_details": {
@@ -339,7 +339,7 @@
           "epochs_completed": 5,
           "percentage_done": 100.0,
           "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-B7zL5FK8ucueV4xuYK5Cxn",
-          "worker_node": "ubuntu-local-dev",
+          "worker_node": "<BLACKWELL_NODE>",
           "worker_phase": "Succeeded"
         }
       },
@@ -354,7 +354,7 @@
         "dataset_kind": "LE Stage 3 Curator finalized dataset",
         "description": "Stage 5 1B LoRA SFT on NeMo microservices LE dataset; rank=32, alpha=64, epochs=5, Blackwell TP1/DP1",
         "epochs": 5,
-        "expected_node": "ubuntu-local-dev",
+        "expected_node": "<BLACKWELL_NODE>",
         "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
         "finetuning_type": "lora",
         "job_id": "cust-SgCPgRNEp9dzZ685zfSE7X",
@@ -371,7 +371,7 @@
         "kubernetes_worker_status_after_submission": "Pending",
         "kubernetes_worker_node_after_submission": null,
         "verified_node_selector": {
-          "kubernetes.io/hostname": "ubuntu-local-dev"
+          "kubernetes.io/hostname": "<BLACKWELL_NODE>"
         },
         "observed_status": "completed",
         "final_status_details": {
@@ -382,7 +382,7 @@
           "epochs_completed": 5,
           "percentage_done": 100.0,
           "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-SgCPgRNEp9dzZ685zfSE7X",
-          "worker_node": "ubuntu-local-dev",
+          "worker_node": "<BLACKWELL_NODE>",
           "worker_phase": "Succeeded"
         }
       }
@@ -399,12 +399,12 @@
         "cust-WD6ABFknJMfsqLivWJ4v3X": {
           "pod": "cust-wd6abfknjmfsqlivwj4v3x-training-job-worker-0",
           "k8s_status": "Running",
-          "node": "ubuntu-local-dev"
+          "node": "<BLACKWELL_NODE>"
         },
         "cust-XgA7mdwQpKb7spFUMDAEAE": {
           "pod": "cust-xga7mdwqpkb7spfumdaeae-training-job-worker-0",
           "k8s_status": "Running",
-          "node": "ubuntu-local-dev"
+          "node": "<BLACKWELL_NODE>"
         },
         "cust-B7zL5FK8ucueV4xuYK5Cxn": {
           "pod": "cust-b7zl5fk8ucuev4xuyk5cxn-training-job-worker-0",
@@ -420,7 +420,7 @@
       "blackwell_allocated_gpus_after_submission": 2,
       "expected_queueing": "Two r16 workers run immediately on the two Blackwell GPUs; two r32 workers remain pending until GPUs free.",
       "node_selector_verified_on_training_crs": {
-        "kubernetes.io/hostname": "ubuntu-local-dev"
+        "kubernetes.io/hostname": "<BLACKWELL_NODE>"
       }
     },
     "final_verification": {
@@ -432,10 +432,10 @@
         "cust-SgCPgRNEp9dzZ685zfSE7X": "completed"
       },
       "worker_node": {
-        "cust-WD6ABFknJMfsqLivWJ4v3X": "ubuntu-local-dev",
-        "cust-XgA7mdwQpKb7spFUMDAEAE": "ubuntu-local-dev",
-        "cust-B7zL5FK8ucueV4xuYK5Cxn": "ubuntu-local-dev",
-        "cust-SgCPgRNEp9dzZ685zfSE7X": "ubuntu-local-dev"
+        "cust-WD6ABFknJMfsqLivWJ4v3X": "<BLACKWELL_NODE>",
+        "cust-XgA7mdwQpKb7spFUMDAEAE": "<BLACKWELL_NODE>",
+        "cust-B7zL5FK8ucueV4xuYK5Cxn": "<BLACKWELL_NODE>",
+        "cust-SgCPgRNEp9dzZ685zfSE7X": "<BLACKWELL_NODE>"
       },
       "worker_phase": {
         "cust-WD6ABFknJMfsqLivWJ4v3X": "Succeeded",
@@ -458,7 +458,7 @@
       "dataset_kind": "LE Stage 3 Curator finalized dataset",
       "description": "Stage 5 1B LoRA SFT on NIM LE dataset; rank=16, alpha=32, epochs=5, Blackwell TP1/DP1",
       "epochs": 5,
-      "expected_node": "ubuntu-local-dev",
+      "expected_node": "<BLACKWELL_NODE>",
       "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
       "finetuning_type": "lora",
       "job_id": "cust-WD6ABFknJMfsqLivWJ4v3X",
@@ -473,9 +473,9 @@
       "customizer_status_after_submission": "running",
       "kubernetes_worker_pod": "cust-wd6abfknjmfsqlivwj4v3x-training-job-worker-0",
       "kubernetes_worker_status_after_submission": "Running",
-      "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
+      "kubernetes_worker_node_after_submission": "<BLACKWELL_NODE>",
       "verified_node_selector": {
-        "kubernetes.io/hostname": "ubuntu-local-dev"
+        "kubernetes.io/hostname": "<BLACKWELL_NODE>"
       },
       "observed_status": "completed",
       "final_status_details": {
@@ -486,7 +486,7 @@
         "epochs_completed": 5,
         "percentage_done": 100.0,
         "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-WD6ABFknJMfsqLivWJ4v3X",
-        "worker_node": "ubuntu-local-dev",
+        "worker_node": "<BLACKWELL_NODE>",
         "worker_phase": "Succeeded"
       }
     },
@@ -501,7 +501,7 @@
       "dataset_kind": "LE Stage 3 Curator finalized dataset",
       "description": "Stage 5 1B LoRA SFT on NeMo microservices LE dataset; rank=16, alpha=32, epochs=5, Blackwell TP1/DP1",
       "epochs": 5,
-      "expected_node": "ubuntu-local-dev",
+      "expected_node": "<BLACKWELL_NODE>",
       "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
       "finetuning_type": "lora",
       "job_id": "cust-XgA7mdwQpKb7spFUMDAEAE",
@@ -516,9 +516,9 @@
       "customizer_status_after_submission": "running",
       "kubernetes_worker_pod": "cust-xga7mdwqpkb7spfumdaeae-training-job-worker-0",
       "kubernetes_worker_status_after_submission": "Running",
-      "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
+      "kubernetes_worker_node_after_submission": "<BLACKWELL_NODE>",
       "verified_node_selector": {
-        "kubernetes.io/hostname": "ubuntu-local-dev"
+        "kubernetes.io/hostname": "<BLACKWELL_NODE>"
       },
       "observed_status": "completed",
       "final_status_details": {
@@ -529,7 +529,7 @@
         "epochs_completed": 5,
         "percentage_done": 100.0,
         "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r16-20260712-bw@cust-XgA7mdwQpKb7spFUMDAEAE",
-        "worker_node": "ubuntu-local-dev",
+        "worker_node": "<BLACKWELL_NODE>",
         "worker_phase": "Succeeded"
       }
     },
@@ -544,7 +544,7 @@
       "dataset_kind": "LE Stage 3 Curator finalized dataset",
       "description": "Stage 5 1B LoRA SFT on NIM LE dataset; rank=32, alpha=64, epochs=5, Blackwell TP1/DP1",
       "epochs": 5,
-      "expected_node": "ubuntu-local-dev",
+      "expected_node": "<BLACKWELL_NODE>",
       "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
       "finetuning_type": "lora",
       "job_id": "cust-B7zL5FK8ucueV4xuYK5Cxn",
@@ -561,7 +561,7 @@
       "kubernetes_worker_status_after_submission": "Pending",
       "kubernetes_worker_node_after_submission": null,
       "verified_node_selector": {
-        "kubernetes.io/hostname": "ubuntu-local-dev"
+        "kubernetes.io/hostname": "<BLACKWELL_NODE>"
       },
       "observed_status": "completed",
       "final_status_details": {
@@ -572,7 +572,7 @@
         "epochs_completed": 5,
         "percentage_done": 100.0,
         "output_model": "default/lora-nim-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-B7zL5FK8ucueV4xuYK5Cxn",
-        "worker_node": "ubuntu-local-dev",
+        "worker_node": "<BLACKWELL_NODE>",
         "worker_phase": "Succeeded"
       }
     },
@@ -587,7 +587,7 @@
       "dataset_kind": "LE Stage 3 Curator finalized dataset",
       "description": "Stage 5 1B LoRA SFT on NeMo microservices LE dataset; rank=32, alpha=64, epochs=5, Blackwell TP1/DP1",
       "epochs": 5,
-      "expected_node": "ubuntu-local-dev",
+      "expected_node": "<BLACKWELL_NODE>",
       "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
       "finetuning_type": "lora",
       "job_id": "cust-SgCPgRNEp9dzZ685zfSE7X",
@@ -604,7 +604,7 @@
       "kubernetes_worker_status_after_submission": "Pending",
       "kubernetes_worker_node_after_submission": null,
       "verified_node_selector": {
-        "kubernetes.io/hostname": "ubuntu-local-dev"
+        "kubernetes.io/hostname": "<BLACKWELL_NODE>"
       },
       "observed_status": "completed",
       "final_status_details": {
@@ -615,20 +615,20 @@
         "epochs_completed": 5,
         "percentage_done": 100.0,
         "output_model": "default/lora-nemo-usvcs-le-super-v3-e5-llama-3.2-1b-r32-20260712-bw@cust-SgCPgRNEp9dzZ685zfSE7X",
-        "worker_node": "ubuntu-local-dev",
+        "worker_node": "<BLACKWELL_NODE>",
         "worker_phase": "Succeeded"
       }
     }
   ],
   "cancelled_initial_submission": {
     "submitted_at": "2026-07-12T06:53:03.544650+00:00",
-    "root_cause": "Customizer deployment had stale in-memory training placement from before the ConfigMap node selector patch, so NemoTrainingJobs were created with kubernetes.io/hostname=ubuntu2 instead of ubuntu-local-dev.",
+    "root_cause": "Customizer deployment had stale in-memory training placement from before the ConfigMap node selector patch, so NemoTrainingJobs were created with kubernetes.io/hostname=<ADA_NODE> instead of <BLACKWELL_NODE>.",
     "impact": "The four initial 1B jobs were cancelled before proceeding so Blackwell-only placement could be enforced.",
     "observed_bad_placement": {
       "node_selector": {
-        "kubernetes.io/hostname": "ubuntu2"
+        "kubernetes.io/hostname": "<ADA_NODE>"
       },
-      "node": "ubuntu2"
+      "node": "<ADA_NODE>"
     },
     "cancellation_method": "POST /v1/customization/jobs/{job_id}/cancel",
     "jobs": [
@@ -666,14 +666,14 @@
   },
   "customizer_placement_reload": {
     "completed_at": "2026-07-12T06:54:42Z",
-    "method": "scripts/ops/patch_customizer_training_node.py --node ubuntu-local-dev --restart --backup-dir .local_archive/cluster-backups",
-    "backup_path": ".local_archive/cluster-backups/nemo-platform-customizer-config-pre-node-ubuntu-local-dev-20260712T015442.yaml",
+    "method": "scripts/ops/patch_customizer_training_node.py --node <BLACKWELL_NODE> --restart --backup-dir .local_archive/cluster-backups",
+    "backup_path": ".local_archive/cluster-backups/nemo-platform-customizer-config-pre-node-<BLACKWELL_NODE>-20260712T015442.yaml",
     "rollout_status": "deployment/nemo-platform-customizer successfully rolled out",
     "effective_training_node_selector": {
-      "kubernetes.io/hostname": "ubuntu-local-dev"
+      "kubernetes.io/hostname": "<BLACKWELL_NODE>"
     },
     "effective_container_default_node_selector": {
-      "kubernetes.io/hostname": "ubuntu-local-dev"
+      "kubernetes.io/hostname": "<BLACKWELL_NODE>"
     }
   },
   "latest_status": {
@@ -685,19 +685,19 @@
       "cust-WD6ABFknJMfsqLivWJ4v3X",
       "cust-XgA7mdwQpKb7spFUMDAEAE"
     ],
-    "blackwell_worker_node": "ubuntu-local-dev",
+    "blackwell_worker_node": "<BLACKWELL_NODE>",
     "next_action": "Submit 1B Curator DiverseQA LoRA SFT r16/r32 for NIM and NeMo Microservices on Blackwell."
   },
   "post_submission_placement_events": [
     {
       "observed_at": "2026-07-12T07:07:56Z",
-      "event": "Customizer placement temporarily switched to ubuntu2 while preparing future 3B Curator DiverseQA work; no 3B jobs were submitted.",
-      "backup_path": ".local_archive/cluster-backups/nemo-platform-customizer-config-pre-node-ubuntu2-20260712T020756.yaml"
+      "event": "Customizer placement temporarily switched to <ADA_NODE> while preparing future 3B Curator DiverseQA work; no 3B jobs were submitted.",
+      "backup_path": ".local_archive/cluster-backups/nemo-platform-customizer-config-pre-node-<ADA_NODE>-20260712T020756.yaml"
     },
     {
       "observed_at": "2026-07-12T07:08:49Z",
-      "event": "Customizer placement restored to ubuntu-local-dev before any follow-on 1B Curator DiverseQA submission.",
-      "backup_path": ".local_archive/cluster-backups/nemo-platform-customizer-config-pre-node-ubuntu-local-dev-20260712T020849.yaml"
+      "event": "Customizer placement restored to <BLACKWELL_NODE> before any follow-on 1B Curator DiverseQA submission.",
+      "backup_path": ".local_archive/cluster-backups/nemo-platform-customizer-config-pre-node-<BLACKWELL_NODE>-20260712T020849.yaml"
     }
   ]
 }

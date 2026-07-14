@@ -36,7 +36,7 @@ spec:
   metrics:
     serviceMonitor: {}
   nodeSelector:
-    kubernetes.io/hostname: ubuntu2
+    kubernetes.io/hostname: <ADA_NODE>
   readinessProbe: {}
   replicas: 1
   resources:

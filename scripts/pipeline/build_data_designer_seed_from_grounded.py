@@ -705,7 +705,7 @@ def build_submission_plan(
         "data_designer": {
             "model": os.getenv("DATA_DESIGNER_MODEL", "nvidia/nemotron-3-super-120b-a12b"),
             "model_alias": os.getenv("DATA_DESIGNER_MODEL_ALIAS", "augmentation_model"),
-            "model_provider": os.getenv("DATA_DESIGNER_MODEL_PROVIDER", "system/nvidia-build"),
+            "model_provider": os.getenv("DATA_DESIGNER_MODEL_PROVIDER", "system/model-provider"),
             "temperature": float(os.getenv("DATA_DESIGNER_TEMPERATURE", "0.3")),
             "top_p": float(os.getenv("DATA_DESIGNER_TOP_P", "1.0")),
             "max_tokens": int(os.getenv("DATA_DESIGNER_MAX_TOKENS", "2048")),

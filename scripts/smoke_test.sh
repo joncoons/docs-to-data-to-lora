@@ -11,10 +11,10 @@
 # Runtime: ~30-60 min depending on super-120b throughput.
 
 set -euo pipefail
-OUT=/mnt/nvme2/peft/datasets/v2/smoke_nim
+OUT=<DATASET_ROOT>/smoke_nim
 mkdir -p "$OUT"
 
-/home/joncoons/anaconda3/envs/nat/bin/python3 scripts/build_v2_dataset.py \
+<USER_HOME>/anaconda3/envs/nat/bin/python3 scripts/build_v2_dataset.py \
     --collection nim_curated \
     --output "$OUT" \
     --stage all \
@@ -25,10 +25,10 @@ TRAIN_COUNT=$(wc -l < "$OUT/training.jsonl")
 VAL_COUNT=$(wc -l < "$OUT/validation.jsonl")
 echo "Smoke test complete: $TRAIN_COUNT train, $VAL_COUNT val"
 
-RATIO=$(/home/joncoons/anaconda3/envs/nat/bin/python3 -c "print(round($TRAIN_COUNT / max($VAL_COUNT, 1), 1))")
+RATIO=$(<USER_HOME>/anaconda3/envs/nat/bin/python3 -c "print(round($TRAIN_COUNT / max($VAL_COUNT, 1), 1))")
 echo "train:val ratio = $RATIO  (expected ≈ 9.0)"
 
-/home/joncoons/anaconda3/envs/nat/bin/python3 -c "
+<USER_HOME>/anaconda3/envs/nat/bin/python3 -c "
 import json, sys
 r = json.load(open('$OUT/validation_report.json'))
 print(f\"validation pass_rate={r['pass_rate']*100:.1f}% (threshold={r['threshold']*100:.0f}%) passed={r['passed']}\")

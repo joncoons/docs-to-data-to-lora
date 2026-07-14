@@ -83,7 +83,7 @@ docker build \
 
 ```bash
 python scripts/pipeline/data_designer_gapfill.py \
-  --dataset-dir /mnt/nvme2/peft/datasets/v2/nim_curated \
+  --dataset-dir <DATASET_ROOT>/nim_curated \
   --collection nim_curated \
   --mode prepare \
   --observability-dir /tmp/data-designer-gapfill-observability/nim_curated
@@ -93,7 +93,7 @@ python scripts/pipeline/data_designer_gapfill.py \
 
 ```bash
 python scripts/pipeline/data_designer_gapfill.py \
-  --dataset-dir /mnt/nvme2/peft/datasets/v2/nim_curated \
+  --dataset-dir <DATASET_ROOT>/nim_curated \
   --collection nim_curated \
   --mode collect \
   --job-id <data-designer-job-id> \

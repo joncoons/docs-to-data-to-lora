@@ -30,12 +30,12 @@ spec:
             - |
               set -eu
               pip install --no-cache-dir -q httpx
-              python /scripts/collect_completions.py                 --dataset /mnt/nvme2/peft/datasets/v2/nim_curated/test_set_with_context.jsonl                 --dataset-slug nim_curated                 --model lora-nim-dd5x-e5-llama-3.2-3b-r16                 --run-id "20260608t061659z"                 --max-tokens 8192                 --concurrency 2                 --timeout-s 900                 --resume                 --retry-failed                 --max-attempts 3                 --retry-backoff-s 5                 --retry-backoff-max-s 120                 --log-every 25
+              python /scripts/collect_completions.py                 --dataset <DATASET_ROOT>/nim_curated/test_set_with_context.jsonl                 --dataset-slug nim_curated                 --model lora-nim-dd5x-e5-llama-3.2-3b-r16                 --run-id "20260608t061659z"                 --max-tokens 8192                 --concurrency 2                 --timeout-s 900                 --resume                 --retry-failed                 --max-attempts 3                 --retry-backoff-s 5                 --retry-backoff-max-s 120                 --log-every 25
           env:
             - name: TARGET_API_URL
               value: "http://rag-oai-proxy.runai-rag:8080"
             - name: COMPLETIONS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/completions
+              value: <EVAL_ROOT>/completions
           resources:
             requests:
               cpu: 250m
@@ -48,7 +48,7 @@ spec:
               mountPath: /scripts
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: collector-script
           configMap:

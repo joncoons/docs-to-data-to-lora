@@ -97,7 +97,7 @@ and rejection reports are uploaded as lineage sidecars when present.
 
 ```bash
 python scripts/eval/upload_test_datasets.py \
-  --base-dir /mnt/nvme2/peft/datasets/v2 \
+  --base-dir <DATASET_ROOT> \
   --collections nim_curated nemo_usvcs_curated \
   --include-train \
   --include-test \

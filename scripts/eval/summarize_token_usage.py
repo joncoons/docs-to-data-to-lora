@@ -224,7 +224,7 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--eval-root", type=Path, default=Path("/mnt/nvme2/peft/evals"))
+    ap.add_argument("--eval-root", type=Path, default=Path("<EVAL_ROOT>"))
     ap.add_argument("--run-id", help="Only include summaries under this eval run id.")
     ap.add_argument(
         "--eval-type",

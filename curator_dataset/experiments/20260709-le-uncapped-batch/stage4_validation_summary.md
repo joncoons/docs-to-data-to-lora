@@ -2,7 +2,7 @@
 
 Stage 4 validates finalized Stage 3 `training.jsonl` rows. Each sampled prompt/completion is joined back to `stage2_eval.jsonl` so Claude sees the original source context.
 
-Judge: `azure/anthropic/claude-sonnet-4-6` via `https://inference-api.nvidia.com/v1`.
+Judge: `azure/anthropic/claude-sonnet-4-6` via `https://llm.example.com/v1`.
 
 ## Results
 

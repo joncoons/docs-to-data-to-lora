@@ -30,7 +30,7 @@ spec:
               pip install --no-cache-dir -q httpx
               RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}"
               python /scripts/collect_completions.py \
-                --dataset /mnt/nvme2/peft/datasets/v2/nim_curated/test_set_with_context.jsonl \
+                --dataset <DATASET_ROOT>/nim_curated/test_set_with_context.jsonl \
                 --dataset-slug nim_curated \
                 --model llama-3.2-1b-instruct \
                 --model lora-nim-llama-3.2-1b-r16 \
@@ -38,7 +38,7 @@ spec:
                 --run-id "$RUN_ID" \
                 --max-tokens 8192
               python /scripts/collect_completions.py \
-                --dataset /mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated/test_set_with_context.jsonl \
+                --dataset <DATASET_ROOT>/nemo_usvcs_curated/test_set_with_context.jsonl \
                 --dataset-slug nemo_usvcs_curated \
                 --model llama-3.2-1b-instruct \
                 --model lora-nemo-usvcs-llama-3.2-1b-r16 \
@@ -49,7 +49,7 @@ spec:
             - name: TARGET_API_URL
               value: "http://rag-oai-proxy.runai-rag:8080"
             - name: COMPLETIONS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/completions
+              value: <EVAL_ROOT>/completions
           resources:
             requests:
               cpu: 250m
@@ -62,7 +62,7 @@ spec:
               mountPath: /scripts
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: collector-script
           configMap:

@@ -23,14 +23,14 @@ Future implementation work must follow these rules:
 
 1. All experiment code, configs, tests, deployment templates, and reports live
    under `curator_dataset/`.
-2. Canonical datasets under `/mnt/nvme2/peft/datasets/v2/` are read-only.
+2. Canonical datasets under `<DATASET_ROOT>/` are read-only.
 3. Runtime outputs go to a new root such as
-   `/mnt/nvme2/peft/experiments/curator_dataset/<run-id>/`; no command may use a
+   `<ARTIFACT_ROOT>/experiments/curator_dataset/<run-id>/`; no command may use a
    canonical collection directory as an output.
 4. No existing source file, config, manifest, dataset, test set, adapter, or
    cluster job is changed in place.
 5. A preflight step must reject an output path that resolves inside
-   `/mnt/nvme2/peft/datasets/v2/`.
+   `<DATASET_ROOT>/`.
 6. Container tags, model identifiers, prompts, configs, input hashes, random
    seeds, and image digests are recorded before execution.
 

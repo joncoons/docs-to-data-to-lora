@@ -39,7 +39,7 @@ from pathlib import Path
 import httpx
 
 
-# Service endpoints reachable from the k3s host (ubuntu-local-dev). All ClusterIPs.
+# Service endpoints reachable from the k3s host (<BLACKWELL_NODE>). All ClusterIPs.
 EMBED_URL = os.getenv("EMBED_URL", "http://10.43.101.173:8000/v1/embeddings")
 RANK_URL  = os.getenv("RANK_URL",  "http://10.43.126.32:8000/v1/ranking")
 ES_URL    = os.getenv("ES_URL",    "https://10.43.233.46:9200")
@@ -195,7 +195,7 @@ def main() -> int:
     )
     ap.add_argument("--corpus", required=True, choices=list(_CORPUS_TO_INDEX))
     ap.add_argument("--in-path", type=Path,
-                    help="Default: /mnt/nvme2/peft/datasets/v2/<corpus>/test_set.jsonl")
+                    help="Default: <DATASET_ROOT>/<corpus>/test_set.jsonl")
     ap.add_argument("--out-path", type=Path,
                     help="Default: <in>.with_context.jsonl alongside the input")
     ap.add_argument("--audit-path", type=Path,
@@ -212,7 +212,7 @@ def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
     index = _CORPUS_TO_INDEX[args.corpus]
-    in_path = args.in_path or Path(f"/mnt/nvme2/peft/datasets/v2/{args.corpus}/test_set.jsonl")
+    in_path = args.in_path or Path(f"<DATASET_ROOT>/{args.corpus}/test_set.jsonl")
     out_path = args.out_path or in_path.with_name("test_set_with_context.jsonl")
     audit_path = args.audit_path or out_path.with_suffix(".audit.jsonl")
 

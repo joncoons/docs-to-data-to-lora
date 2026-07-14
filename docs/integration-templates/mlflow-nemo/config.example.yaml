@@ -23,14 +23,14 @@ data_store_auth:
 collections:
   nim_curated:
     corpus_short: "nim"
-    stage2_dir: "/mnt/nvme2/peft/datasets/v2/nim_curated"
+    stage2_dir: "<DATASET_ROOT>/nim_curated"
     train_dataset_name: "stage3-nim-curated"
     test_dataset_name: "stage3-nim-curated-test"
     evaluator_dataset_ref: "default/stage3-nim-curated-test"
 
   nemo_usvcs_curated:
     corpus_short: "nemo-usvcs"
-    stage2_dir: "/mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated"
+    stage2_dir: "<DATASET_ROOT>/nemo_usvcs_curated"
     train_dataset_name: "stage3-nemo-usvcs-curated"
     test_dataset_name: "stage3-nemo-usvcs-curated-test"
     evaluator_dataset_ref: "default/stage3-nemo-usvcs-curated-test"

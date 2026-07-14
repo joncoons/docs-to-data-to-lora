@@ -9,10 +9,10 @@ and removes the concurrent NFS write hazard since only one shard is in flight.
 Workflow:
   1. submit nemo_usvcs_curated r=16 shard-a → wait terminal
   2. submit nemo_usvcs_curated r=16 shard-b → wait terminal
-  3. TIES-merge a + b → /mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/
+  3. TIES-merge a + b → <ARTIFACT_ROOT>/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/
 
 nim r=16 already exists from Round 1 at
-  /mnt/nvme2/peft/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/
+  <ARTIFACT_ROOT>/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/
 so no nim work needed here.
 
 Status log: /tmp/moe-serial-r16-status.log
@@ -27,14 +27,14 @@ import time
 import urllib.request
 from pathlib import Path
 
-REPO = Path("/home/joncoons/claude/docs-to-data-to-lora")
-PY_BIN = "/home/joncoons/anaconda3/envs/nat/bin/python3"
+REPO = Path("<REPO_ROOT>")
+PY_BIN = "<USER_HOME>/anaconda3/envs/nat/bin/python3"
 TRAIN_MOE = str(REPO / "scripts" / "stage3" / "train_adapter_moe.py")
 TIES_MERGE = str(REPO / "scripts" / "stage3" / "ties_merge.py")
 
 CUSTOMIZER = "http://10.43.167.101:8000"
 TERMINAL = {"completed", "failed", "cancelled"}
-MERGE_ROOT = Path("/mnt/nvme2/peft/checkpoints/lora")
+MERGE_ROOT = Path("<ARTIFACT_ROOT>/checkpoints/lora")
 LOG = "/tmp/moe-serial-r16-status.log"
 
 QUEUE: list[tuple[str, int, str]] = [
@@ -152,8 +152,8 @@ def main() -> int:
 
     log("=== ALL R=16 MOE WORK COMPLETE ===")
     log("Merged adapter inventory (r=16 only):")
-    log("  /mnt/nvme2/peft/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/        (from Round 1, pre-existing)")
-    log("  /mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/ (this run)")
+    log("  <ARTIFACT_ROOT>/checkpoints/lora/lora-nim-nemotron-nano-30b-r16/        (from Round 1, pre-existing)")
+    log("  <ARTIFACT_ROOT>/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/ (this run)")
     return 0
 
 

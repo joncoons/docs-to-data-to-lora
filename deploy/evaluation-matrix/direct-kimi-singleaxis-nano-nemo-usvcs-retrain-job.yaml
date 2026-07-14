@@ -35,8 +35,8 @@ spec:
               set -eu
               pip install --no-cache-dir -q httpx
               python /scripts/run_direct_kimi_singleaxis.py \
-                --responses /mnt/nvme2/peft/evals/completions/nim_curated/nemotron-nano-30b/lora-nemo-usvcs/r16/20260530t153804z/responses.jsonl \
-                --responses /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/nemotron-nano-30b/lora-nemo-usvcs/r16/20260530t153804z/responses.jsonl \
+                --responses <EVAL_ROOT>/completions/nim_curated/nemotron-nano-30b/lora-nemo-usvcs/r16/20260530t153804z/responses.jsonl \
+                --responses <EVAL_ROOT>/completions/nemo_usvcs_curated/nemotron-nano-30b/lora-nemo-usvcs/r16/20260530t153804z/responses.jsonl \
                 --eval-run-id "$EVAL_RUN_ID" \
                 --judge-api-url "$JUDGE_API_URL" \
                 --judge-model "$EVALUATOR_JUDGE_MODEL" \
@@ -53,11 +53,11 @@ spec:
             - name: EVAL_RUN_ID
               value: "20260530T193808Z"
             - name: SINGLEAXIS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/singleaxis-kimi
+              value: <EVAL_ROOT>/singleaxis-kimi
             - name: COMPLETIONS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/completions
+              value: <EVAL_ROOT>/completions
             - name: JUDGE_API_URL
-              value: "https://inference-api.nvidia.com/v1/chat/completions"
+              value: "https://llm.example.com/v1/chat/completions"
             - name: EVALUATOR_JUDGE_MODEL
               value: "nvidia/moonshotai/kimi-k2.6"
             - name: KIMI_KEY
@@ -77,7 +77,7 @@ spec:
               mountPath: /scripts
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: singleaxis-script
           configMap:

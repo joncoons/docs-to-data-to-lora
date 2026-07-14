@@ -121,7 +121,7 @@ def test_adapter_row_from_log_line():
 
 def test_adapter_row_from_log_line_moe_nano():
     line = ("| lora-nemo-usvcs-nemotron-nano-30b-r16 | "
-            "`/mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/` "
+            "`<ARTIFACT_ROOT>/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/` "
             "| 886 MB | This run (2026-05-27) |")
     row = AdapterRow.from_log_line(line)
     assert row.name == "lora-nemo-usvcs-nemotron-nano-30b-r16"

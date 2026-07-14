@@ -37,7 +37,7 @@ docker run -p 8085:8085 \
   -e CRAWLER_ES_URL=https://your-es:9200 \
   -e CRAWLER_ES_USER=elastic \
   -e CRAWLER_ES_PASS=... \
-  -v /your/registry:/mnt/nvme2/crawler-registry \
+  -v /your/registry:/workspace/artifacts/crawler-registry \
   rag-crawler:latest
 
 # crawl

@@ -17,7 +17,7 @@ Context:
 
 Observed results:
 
-| Workload | Previous endpoint | NVIDIA endpoint | Delta |
+| Workload | Previous endpoint | remote endpoint | Delta |
 |---|---:|---:|---:|
 | Pairwise rows/min at 8 judge slots | ~5.4 | ~8.3 | +54% |
 | Pairwise judge calls/min at 8 judge slots | ~10.8 | ~16.6 | +54% |
@@ -28,7 +28,7 @@ Observed results:
 
 - Previous endpoint returned immediate `503 Service Unavailable` responses and
   produced no usable 49B scoring progress.
-- NVIDIA endpoint completed the 49B single-axis run successfully at
+- remote endpoint completed the 49B single-axis run successfully at
   `--concurrency 8`.
 - Final 49B score coverage: 1,001 / 1,002 rows scored.
 - Failed rows: 1.
@@ -37,7 +37,7 @@ Observed results:
 
 Operational finding:
 
-- The NVIDIA endpoint is materially faster and more reliable for this workload.
+- The remote endpoint is materially faster and more reliable for this workload.
 - For pairwise scoring, use clean run IDs when switching judge endpoints so old
   and new judge behavior is not mixed in one result set.
 - Stage 2 pairwise should run sequentially by corpus at `--concurrency 8`:

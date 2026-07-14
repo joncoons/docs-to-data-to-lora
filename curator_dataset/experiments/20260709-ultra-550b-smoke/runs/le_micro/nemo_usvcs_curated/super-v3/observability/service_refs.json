@@ -11,7 +11,7 @@
     "llm": {
       "endpoint_count": 1,
       "endpoints": [
-        "https://inference-api.nvidia.com/v1"
+        "https://llm.example.com/v1"
       ],
       "model": "nvidia/nvidia/nemotron-3-super-v3"
     }

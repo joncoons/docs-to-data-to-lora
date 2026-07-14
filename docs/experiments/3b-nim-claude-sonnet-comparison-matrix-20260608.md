@@ -53,7 +53,7 @@ Compact outcome only, from the row model perspective.
 
 ## Artifacts
 
-- JSON: `/mnt/nvme2/peft/evals/aggregates/3b-nim-claude-sonnet-20260608/comparison_matrix.json`
-- Win-rate CSV: `/mnt/nvme2/peft/evals/aggregates/3b-nim-claude-sonnet-20260608/comparison_matrix_win_rates.csv`
-- Detail CSV: `/mnt/nvme2/peft/evals/aggregates/3b-nim-claude-sonnet-20260608/comparison_matrix_details.csv`
-- Source aggregate: `/mnt/nvme2/peft/evals/aggregates/3b-nim-claude-sonnet-20260608/aggregate.json`
+- JSON: `<EVAL_ROOT>/aggregates/3b-nim-claude-sonnet-20260608/comparison_matrix.json`
+- Win-rate CSV: `<EVAL_ROOT>/aggregates/3b-nim-claude-sonnet-20260608/comparison_matrix_win_rates.csv`
+- Detail CSV: `<EVAL_ROOT>/aggregates/3b-nim-claude-sonnet-20260608/comparison_matrix_details.csv`
+- Source aggregate: `<EVAL_ROOT>/aggregates/3b-nim-claude-sonnet-20260608/aggregate.json`

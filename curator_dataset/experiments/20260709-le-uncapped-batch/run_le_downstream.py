@@ -3,7 +3,7 @@
 
 This runner is scoped to the 2026-07-09 uncapped LE rerun. It preserves the
 existing Stage 0/1A files, reconstructs Stage 1B seed vectors in memory, and
-uses target-aware load balancing so local and NVIDIA-hosted Super aliases can
+uses target-aware load balancing so local and remote Super aliases can
 be used together.
 """
 from __future__ import annotations
@@ -26,7 +26,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from scripts.pipeline.config import Config, get_es_password, get_external_judge_api_key  # noqa: E402
+from scripts.pipeline.config import Config, get_es_password  # noqa: E402
 from scripts.pipeline.external_judge_client import ExternalJudge  # noqa: E402
 from scripts.pipeline.dataset_admission import admitted_dataset_samples_from_kvp_rows  # noqa: E402
 from scripts.pipeline.es_client import make_es_client, scroll_all_chunks  # noqa: E402
@@ -51,15 +51,15 @@ STAGE_ORDER = ("1b", "1c", "1.5", "2", "3", "4", "finalize")
 # targets, while Stage 2 QA admission has a separate Super 120B-class default to
 # keep the required admission pass cost-conscious.
 DEFAULT_TARGETS = (
-    "https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-ultra",
+    "http://llm-frontier.default.svc.cluster.local:8000/v1=nvidia/nvidia/nemotron-3-ultra",
 )
 DEFAULT_CANONICAL_MODEL = "nvidia/nvidia/nemotron-3-ultra"
 DEFAULT_STAGE2_TARGETS = (
-    "https://inference-api.nvidia.com/v1=nvidia/nvidia/nemotron-3-super-v3",
+    "http://llm-super.default.svc.cluster.local:8000/v1=nvidia/nvidia/nemotron-3-super-v3",
 )
 DEFAULT_STAGE2_CANONICAL_MODEL = "nvidia/nvidia/nemotron-3-super-v3"
 DEFAULT_SOURCE_DOC_KIND = "all"
-DEFAULT_STAGE4_JUDGE_ENDPOINT = "https://inference-api.nvidia.com/v1"
+DEFAULT_STAGE4_JUDGE_ENDPOINT = "http://llm-judge.default.svc.cluster.local:8000/v1"
 DEFAULT_STAGE4_JUDGE_MODEL = "azure/anthropic/claude-sonnet-4-6"
 COLLECTION_DOMAIN = {
     "nim_curated": "NVIDIA NIM",
@@ -140,9 +140,8 @@ class TargetAwareLLMClient:
         return prompt_tokens + max_tokens <= target.max_model_len - 512
 
     @staticmethod
-    def _no_think_extra_body(endpoint: str) -> dict[str, Any]:
-        if "inference-api.nvidia.com" in endpoint or "integrate.api.nvidia.com" in endpoint:
-            return {"chat_template_kwargs": {"enable_thinking": False}}
+    def _no_think_extra_body(endpoint: str) -> dict:
+        # Generic OpenAI-compatible hint; providers that do not support it should ignore it.
         return {"reasoning_effort": "none"}
 
     @staticmethod
@@ -226,8 +225,6 @@ class TargetAwareLLMClient:
 def endpoint_api_key(endpoint: str, explicit_api_key: str | None = None) -> str:
     if explicit_api_key is not None:
         return explicit_api_key
-    if "inference-api.nvidia.com" in endpoint or "integrate.api.nvidia.com" in endpoint:
-        return get_external_judge_api_key()
     return "local"
 
 
@@ -243,7 +240,7 @@ def parse_targets(raw_targets: list[str], explicit_api_key: str | None = None) -
         if "@" in model:
             model, raw_max_model_len = model.rsplit("@", 1)
             max_model_len = int(raw_max_model_len)
-        elif "inference-api.nvidia.com" not in endpoint and "integrate.api.nvidia.com" not in endpoint:
+        else:
             max_model_len = 32768
         if not endpoint or not model:
             raise ValueError("--target must include non-empty endpoint and model")

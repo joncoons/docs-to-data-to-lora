@@ -207,7 +207,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--seed-count", type=int, default=0)
     ap.add_argument("--pairs-per-seed", type=int, default=5)
     ap.add_argument("--random-seed", type=int, default=42)
-    ap.add_argument("--judge-api-url", default="https://inference-api.nvidia.com/v1/chat/completions")
+    ap.add_argument("--judge-api-url", default="http://llm-judge.default.svc.cluster.local:8000/v1/chat/completions")
     ap.add_argument("--judge-model", default="nvidia/moonshotai/kimi-k2.6")
     ap.add_argument("--judge-api-key-env", default="NV_KIMI_KEY")
     ap.add_argument("--key-file", type=Path, default=None)

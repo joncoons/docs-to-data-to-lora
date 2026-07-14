@@ -21,7 +21,7 @@ For direct judge evaluation, collect model completions once and score those save
 Collection command shape:
 
 ```bash
-python scripts/eval/collect_completions.py   --dataset /mnt/nvme2/peft/datasets/v2/nim_curated/test_set_with_context.jsonl   --model default/lora-nim-llama-3.2-3b-r16   --run-id <run-id>   --max-tokens 8192
+python scripts/eval/collect_completions.py   --dataset <DATASET_ROOT>/nim_curated/test_set_with_context.jsonl   --model default/lora-nim-llama-3.2-3b-r16   --run-id <run-id>   --max-tokens 8192
 ```
 
 ## Direct Judge Fallback
@@ -31,7 +31,7 @@ Use direct single-axis and pairwise scripts when the Evaluator service cannot re
 Single-axis command shape:
 
 ```bash
-python scripts/eval/run_direct_kimi_singleaxis.py   --responses /mnt/nvme2/peft/evals/completions/.../responses.jsonl   --eval-run-id <run-id>   --limit 10
+python scripts/eval/run_direct_kimi_singleaxis.py   --responses <EVAL_ROOT>/completions/.../responses.jsonl   --eval-run-id <run-id>   --limit 10
 ```
 
 Pairwise command shape:

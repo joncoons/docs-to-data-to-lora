@@ -30,10 +30,10 @@ spec:
               set -eu
               pip install --no-cache-dir -q httpx
 
-              export NIM_HTML_BASE=/mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/base/base/20260610t032644z/responses.jsonl
-              export NIM_HTML_R16=/mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r16/20260610t032644z/responses.jsonl
-              export NIM_HTML_R32=/mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r32/20260610t032644z/responses.jsonl
-              export NIM_HTML_49B=/mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.3-nemotron-super-49b-v1/base/base/20260610t032644z/responses.jsonl
+              export NIM_HTML_BASE=<EVAL_ROOT>/completions/nim_curated_html_only/llama-3.1-8b/base/base/20260610t032644z/responses.jsonl
+              export NIM_HTML_R16=<EVAL_ROOT>/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r16/20260610t032644z/responses.jsonl
+              export NIM_HTML_R32=<EVAL_ROOT>/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r32/20260610t032644z/responses.jsonl
+              export NIM_HTML_49B=<EVAL_ROOT>/completions/nim_curated_html_only/llama-3.3-nemotron-super-49b-v1/base/base/20260610t032644z/responses.jsonl
 
               python - <<'PYCODE'
               import os
@@ -120,11 +120,11 @@ spec:
             - name: PHASE3_EVAL_RUN_ID
               value: "phase3-49b-vs-8b-nim-html-only-kimi-k26-20260610t204500z"
             - name: SINGLEAXIS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/singleaxis-kimi
+              value: <EVAL_ROOT>/singleaxis-kimi
             - name: PAIRWISE_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/pairwise-kimi
+              value: <EVAL_ROOT>/pairwise-kimi
             - name: JUDGE_API_URL
-              value: https://inference-api.nvidia.com/v1/chat/completions
+              value: https://llm.example.com/v1/chat/completions
             - name: EVALUATOR_JUDGE_MODEL
               value: nvidia/moonshotai/kimi-k2.6
             - name: KIMI_KEY
@@ -147,7 +147,7 @@ spec:
               mountPath: /scripts/pairwise
               readOnly: true
             - name: nvme2
-              mountPath: /mnt/nvme2
+              mountPath: /workspace/artifacts
       volumes:
         - name: singleaxis-script
           configMap:

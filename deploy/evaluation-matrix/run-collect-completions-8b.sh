@@ -24,7 +24,7 @@ dst = Path(sys.argv[2])
 run_id = sys.argv[3]
 text = src.read_text(encoding='utf-8')
 needle = """            - name: COMPLETIONS_OUTPUT_ROOT
-              value: /mnt/nvme2/peft/evals/completions
+              value: <EVAL_ROOT>/completions
 """
 replacement = needle + f"""            - name: RUN_ID
               value: "{run_id}"

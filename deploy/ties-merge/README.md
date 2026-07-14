@@ -75,7 +75,7 @@ After the Job completes, run the structural inspector:
 
 ```bash
 python scripts/stage3/inspect_adapter_checkpoint.py \
-  /mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16
+  <ARTIFACT_ROOT>/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16
 ```
 
 Structural inspection is not the final validation. The adapter is only viable

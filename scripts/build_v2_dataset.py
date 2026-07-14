@@ -3,9 +3,9 @@
 
 Usage:
   python scripts/build_v2_dataset.py --collection nim_curated \\
-      --output /mnt/nvme2/peft/datasets/v2/nim_curated
+      --output <DATASET_ROOT>/nim_curated
   python scripts/build_v2_dataset.py --collection nemo_usvcs_curated \\
-      --output /mnt/nvme2/peft/datasets/v2/nemo_usvcs_curated --stage all
+      --output <DATASET_ROOT>/nemo_usvcs_curated --stage all
   python scripts/build_v2_dataset.py --collection nim_curated --resume
 """
 from __future__ import annotations
@@ -71,11 +71,7 @@ def _parse_endpoints(value: str, label: str = "inference") -> list[str]:
 
 
 def _endpoint_requires_api_key(endpoints: list[str]) -> bool:
-    return any(
-        "inference-api.nvidia.com" in endpoint
-        or "integrate.api.nvidia.com" in endpoint
-        for endpoint in endpoints
-    )
+    return any(endpoint.startswith("https://") for endpoint in endpoints)
 
 
 def _build_stage1a_llm(args: argparse.Namespace, cfg: Config) -> LLMClient:

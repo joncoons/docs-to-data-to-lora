@@ -15,31 +15,31 @@
   "outputs": {
     "qa_samples": {
       "bytes": 12897243,
-      "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/qa_samples.jsonl",
+      "path": "<REPO_ROOT>/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/qa_samples.jsonl",
       "rows": 4345,
       "sha256": "cab8d898ffbc54d582f0547127e0eb9faf78f2d0fc3d3b7ac7b1bcb280e1cc80"
     },
     "training": {
       "bytes": 1310290,
-      "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/training.jsonl",
+      "path": "<REPO_ROOT>/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/training.jsonl",
       "rows": 3865,
       "sha256": "533ebfab9726157aece6e4251dd5bcc4ac3f7200858a2c3b1dc50e2941d2d025"
     },
     "training_samples": {
       "bytes": 11444001,
-      "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/training_samples.jsonl",
+      "path": "<REPO_ROOT>/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/training_samples.jsonl",
       "rows": 3865,
       "sha256": "b4bf4f0dc1146c5e4cdcfcb40347eb2aacbf11d3dfc0abc6c5ba2145c1ebe98f"
     },
     "validation": {
       "bytes": 160963,
-      "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/validation.jsonl",
+      "path": "<REPO_ROOT>/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/validation.jsonl",
       "rows": 480,
       "sha256": "e0d9de41b05fec6d0e706625e862193739f3d03a91d821912306176d1692b8bc"
     },
     "validation_samples": {
       "bytes": 1453242,
-      "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/validation_samples.jsonl",
+      "path": "<REPO_ROOT>/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/validation_samples.jsonl",
       "rows": 480,
       "sha256": "d9401f0f8739e8c7750ce5ea1b5857fdea5c9ac3b04525b2badf25cb63d53cef"
     }
@@ -55,7 +55,7 @@
   "schema_version": "curator_dataset.final_dataset_manifest.v1",
   "source": {
     "bytes": 21544783,
-    "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/qa_pairs.jsonl",
+    "path": "<REPO_ROOT>/curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/qa_pairs.jsonl",
     "rows": 6591,
     "sha256": "3a16da852edb9384309886777e1fb9573c5724896f51031331be637e334dad41"
   }

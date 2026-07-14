@@ -8,7 +8,7 @@ spec:
   capacity:
     storage: 500Gi
   nfs:
-    path: /mnt/nvme4/nim_cache/nim
+    path: /data/nim-cache
     server: 192.168.0.169
   persistentVolumeReclaimPolicy: Retain
 ---
@@ -94,7 +94,7 @@ spec:
   metrics:
     serviceMonitor: {}
   nodeSelector:
-    kubernetes.io/hostname: ubuntu-local-dev
+    kubernetes.io/hostname: <BLACKWELL_NODE>
   readinessProbe: {}
   replicas: 2
   resources:

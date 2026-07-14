@@ -38,7 +38,7 @@ from scripts.pipeline.provenance import SCHEMA_VERSION, utc_now  # noqa: E402
 DEFAULT_EXPERIMENT_DIR = Path(
     os.getenv(
         "DATA_DESIGNER_AUGMENTATION_DIR",
-        "/mnt/nvme2/peft/datasets/experiments/nim_curated_dd_kimi_1b_20260529_kimi",
+        "<DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_20260529_kimi",
     )
 )
 DEFAULT_DATA_DESIGNER_URL = os.getenv("DATA_DESIGNER_URL", "http://192.168.1.187:30812")

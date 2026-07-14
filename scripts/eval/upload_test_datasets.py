@@ -40,7 +40,7 @@ DEFAULT_DATA_STORE_HF_ENDPOINT = os.getenv(
     "DATA_STORE_HF_ENDPOINT",
     "http://nemo-data-store:3000/v1/hf",
 )
-DEFAULT_BASE_DIR = Path(os.getenv("DATASET_BASE_DIR", "/mnt/nvme2/peft/datasets/v2"))
+DEFAULT_BASE_DIR = Path(os.getenv("DATASET_BASE_DIR", "<DATASET_ROOT>"))
 DEFAULT_OBSERVABILITY_DIR = Path(
     os.getenv("OBSERVABILITY_DIR", "/outputs/observability/dataset-registration")
 )

@@ -26,7 +26,7 @@ Worker pod config:
 
 - Shard A job: `cust-RbCxPuSgJ7Pmwj4KW77MzM`
 - Shard B job: `cust-HJLGvuN6ckQ1ADEFgjzBJV`
-- Both pods were scheduled to `ubuntu-local-dev/192.168.0.169`.
+- Both pods were scheduled to `<BLACKWELL_NODE>/192.168.0.169`.
 - Both pods mounted:
   - `/scratch` as `emptyDir`
   - `/pvc` from `peft-workspace-pvc`
@@ -43,7 +43,7 @@ PVC/PV setup:
 - `peft-workspace-pvc` is bound to `peft-workspace-pv`.
 - `peft-workspace-pv` is NFS:
   - server: `192.168.0.169`
-  - path: `/mnt/nvme2/peft`
+  - path: `<ARTIFACT_ROOT>`
   - access mode: `ReadWriteMany`
 - The GPU worker pods ran on the same host that is also serving the NFS export. This means the node was writing final artifacts back to its own local disk through NFS.
 
@@ -148,7 +148,7 @@ The `workspace_dir` fix removed training checkpoints from NFS, but `OUTPUT_MODEL
    - Shard A: `a83ca1eb-4097-4e9a-b374-cf60860a8777`
    - Shard B: `c7bfdaa4-9f86-4059-b448-d6a6e7536f09`
 
-   Potential node-local recovery path on `ubuntu-local-dev`:
+   Potential node-local recovery path on `<BLACKWELL_NODE>`:
 
    ```text
    /var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~empty-dir/scratch/

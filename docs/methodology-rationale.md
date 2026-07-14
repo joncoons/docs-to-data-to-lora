@@ -23,7 +23,7 @@ not always the right default for full-corpus extraction.
 
 Nemotron 3 Super provides the middle ground used by the case study: strong
 instruction following and reasoning capacity, practical throughput through NIM
-or NVIDIA-hosted inference, and enough quality to run the full Stage 1A corpus
+or OpenAI-compatible inference, and enough quality to run the full Stage 1A corpus
 without making extraction cost dominate the experiment. In this repo,
 `nvidia/nemotron-3-super-v3` and
 `nvidia/nemotron-3-super-120b-a12b` are treated as exact-equivalent model IDs

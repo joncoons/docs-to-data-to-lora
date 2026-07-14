@@ -6,8 +6,8 @@ Purpose: remove PDF-derived NIM rows from the grounded dataset to test whether t
 
 ## Dataset
 
-- Source dataset: `/mnt/nvme2/peft/datasets/v2/nim_curated`
-- New dataset: `/mnt/nvme2/peft/datasets/v2/nim_curated_html_only`
+- Source dataset: `<DATASET_ROOT>/nim_curated`
+- New dataset: `<DATASET_ROOT>/nim_curated_html_only`
 - Dataset version ID: `dsv_5694e359929202aff451042d`
 - Filter: `doc_kind == "html"`
 - Builder: `scripts/pipeline/build_html_only_grounded_dataset.py`

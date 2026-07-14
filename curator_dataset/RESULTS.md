@@ -5,7 +5,7 @@ Completed: 2026-06-29
 ## Authorization and source audit
 
 The user explicitly authorized transmitting the Curator-ready corpus to
-NVIDIA's hosted inference API after an external-data warning. The local audit
+the configured OpenAI-compatible inference API after an external-data warning. The local audit
 found 451 public-source URL documents:
 
 - 439 `docs.nvidia.com` URLs
@@ -36,7 +36,7 @@ The API key was read at runtime from Kubernetes Secret
 - Native preprocessing: `add_preprocessing_pipeline`
 - Hosted model: `nvidia/nvidia/nemotron-3-super-v3`
 - Model equivalence: actual run manifests record `nvidia/nvidia/nemotron-3-super-v3`; the catalog shorthand `nvidia/nemotron-3-super-v3` is treated as exact-equivalent to `nvidia/nemotron-3-super-120b-a12b` for project provenance.
-- Endpoint: `https://inference-api.nvidia.com/v1`
+- Endpoint: `https://llm.example.com/v1`
 - Temperature: 0.5
 - Top-p: 0.9
 - Seed: 42

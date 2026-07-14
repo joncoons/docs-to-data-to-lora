@@ -3,7 +3,7 @@
 ## Current State
 
 The 8B LE LoRA SFT jobs are already submitted on the Blackwell node
-`ubuntu-local-dev` using `meta/llama-3.1-8b-instruct@v1.0.0+80GB` with
+`<BLACKWELL_NODE>` using `meta/llama-3.1-8b-instruct@v1.0.0+80GB` with
 single-GPU LoRA SFT (`num_gpus=1`, `tensor_parallel_size=1`,
 `data_parallel_size=1`). The r16 jobs are running first and the r32 jobs are
 pending for Blackwell GPU capacity.
@@ -13,7 +13,7 @@ No 1B jobs should be submitted until the 8B jobs are complete, so the existing
 
 ## 1B Follow-on Training
 
-Target node: `ubuntu-local-dev` Blackwell GPUs.
+Target node: `<BLACKWELL_NODE>` Blackwell GPUs.
 
 Recommended template: `meta/llama-3.2-1b-instruct@v1.0.0+80GB`.
 
@@ -32,13 +32,13 @@ Planned jobs after 8B completion:
 
 ## 3B Ada Training
 
-Target node: `ubuntu2`, which is the Ada node:
+Target node: `<ADA_NODE>`, which is the Ada node:
 
 - GPU family: `ada-lovelace`
 - GPU product: `NVIDIA-RTX-6000-Ada-Generation-SHARED`
 - Physical GPU count: 2
 - Current advertised capacity before any time-slicing change: 10 logical GPU
-  slots because `timeSlicing.replicas: 5` is configured for `ubuntu2`.
+  slots because `timeSlicing.replicas: 5` is configured for `<ADA_NODE>`.
 
 Recommended template: `meta/llama-3.2-3b-instruct@v1.0.0+40GB`.
 
@@ -49,10 +49,10 @@ want DP5; the live Customizer config reports that template as `num_gpus=5` and
 `data_parallel_size=5`.
 
 Before submitting 3B, either temporarily remove/reduce time-slicing for
-`ubuntu2` so Kubernetes advertises 2 GPU slots, or run only one/two jobs at a
+`<ADA_NODE>` so Kubernetes advertises 2 GPU slots, or run only one/two jobs at a
 time and accept that the device plugin may still place logical GPUs on shared
 physical devices. For apples-to-apples adapter training, prefer temporarily
-removing time-slicing on `ubuntu2`, restarting the Ada device-plugin/GFD pods,
+removing time-slicing on `<ADA_NODE>`, restarting the Ada device-plugin/GFD pods,
 and verifying `nvidia.com/gpu` capacity drops from 10 to 2.
 
 Ada GPU cleanup completed before this plan:
@@ -67,9 +67,9 @@ Ada GPU cleanup completed before this plan:
 
 Verification after cleanup:
 
-- `ubuntu2` GPU-requesting pods: none
-- `ubuntu2` allocated `nvidia.com/gpu`: `0`
-- stale non-running pods on `ubuntu2`: none
+- `<ADA_NODE>` GPU-requesting pods: none
+- `<ADA_NODE>` allocated `nvidia.com/gpu`: `0`
+- stale non-running pods on `<ADA_NODE>`: none
 
 Planned 3B jobs, after the time-slicing decision:
 
@@ -82,11 +82,11 @@ Planned 3B jobs, after the time-slicing decision:
 
 ## Temporary Ada Time-Slicing Change - 2026-07-11
 
-`ubuntu2` time-slicing was temporarily removed for 3B adapter training so the
+`<ADA_NODE>` time-slicing was temporarily removed for 3B adapter training so the
 scheduler exposes physical Ada GPU capacity instead of logical shared slots.
 The raw pre-change ConfigMap backup is local-only under `.local_archive/`:
 
-`time-slicing-config-pre-ubuntu2-physical-gpu-20260711T121751.yaml`
+`time-slicing-config-pre-<ADA_NODE>-physical-gpu-20260711T121751.yaml`
 
 Post-change verification:
 
@@ -97,6 +97,6 @@ Post-change verification:
 - Allocatable `nvidia.com/gpu: 2`
 - Allocated `nvidia.com/gpu: 0`
 
-After 3B training completes, restore the `ubuntu2` `timeSlicing.replicas: 5`
+After 3B training completes, restore the `<ADA_NODE>` `timeSlicing.replicas: 5`
 entry from the local backup if the Retriever/NIM services need their previous
 shared-GPU scheduling behavior.
