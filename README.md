@@ -124,8 +124,8 @@ docs-to-data-to-lora/
 ├── LICENSE                                ← Apache 2.0
 ├── docs/
 │   ├── stage-1-curated-crawl.md           ← one corpus-ingestion methodology
-│   ├── stage-2-dataset-creation.md        ← entailment + augmentation (WIP)
-│   ├── stage-3-peft-training.md           ← LoRA SFT pipeline (WIP)
+│   ├── stage-2-dataset-creation.md        ← LE dataset creation + Curator finalization
+│   ├── stage-3-peft-training.md           ← Customizer LoRA SFT + evaluation workflow
 │   ├── methodology-rationale.md           ← why LE, Curator, model sizing, RL
 │   ├── results/                            ← curated case-study results + SVGs
 │   ├── integration-templates/              ← MLflow/NeMo orchestration plans

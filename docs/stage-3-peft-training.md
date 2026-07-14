@@ -1,8 +1,9 @@
 # Stage 3: PEFT Adapter Training
 
-> **Status**: outline only. The pipeline is under active development; this
-> document captures the intended approach. Stage 2 (dataset creation) is
-> the input.
+> **Status**: implemented reference methodology. Stage 2 finalized datasets are
+> the input; `scripts/stage3/`, `scripts/eval/`, and
+> `docs/integration-templates/` provide the Customizer, completion-capture,
+> evaluation, and MLflow-oriented handoff surfaces.
 
 ## What this stage produces
 
@@ -60,47 +61,43 @@ Routing between adapters happens at the application layer (or via a small
 classifier upstream). The base model handles questions outside the adapted
 domains unchanged.
 
-## Planned training workflow
+## Training and evaluation workflow
 
 ```
-Stage 2 dataset (JSONL)
+Stage 2 training.jsonl + validation.jsonl
         │
-        │  load + tokenize
+        │  register dataset entity / Data Store repo
         ▼
-LoRA config
-   - rank r (typically 8-32)
-   - alpha (typically 2x rank)
-   - target modules (q_proj, v_proj, etc.)
-        │
-        ▼
-SFT trainer
-   - base model frozen
-   - only LoRA adapter weights trained
-   - mixed-precision (bf16 or fp8 depending on hardware)
+NeMo Customizer LoRA SFT
+   - dense base model selected for the deployment target
+   - rank 16 and rank 32 comparison runs
+   - alpha typically 2x rank
+   - base model frozen; only adapter weights trained
         │
         ▼
-Checkpoint (LoRA adapter weights)
+Adapter artifact / model entity
+        │
+        ├── no-RAG completion capture on immutable golden QA
+        ├── optional RAG completion capture on the reduced comparison set
+        └── MLflow metadata/export for publishable lineage
         │
         ▼
 Evaluation
-   - vs. base model (no adapter)
-   - vs. RAG-only baseline
-   - domain-specific QA accuracy
-        │
-        ▼
-Adapter artifact (publishable)
+   - single-axis scoring for standalone model efficacy
+   - pairwise scoring for LE vs. Curator and best LoRA vs. 70B reference
+   - optional RAGAS diagnostics for retrieval behavior
 ```
 
-## Key choices, not yet final
+## Reference choices
 
-- **Base model.** The case study uses dense Llama 1B, 3B, and 8B models for
+- **Base models.** The case study uses dense Llama 1B, 3B, and 8B models for
   LoRA training, then compares the strongest LoRA candidates with a dense
   Llama 3.3 70B no-adapter reference target.
-- **LoRA rank.** Common starting point is rank=16, alpha=32. Will tune
-  based on validation metrics.
-- **Training framework.** NVIDIA NeMo Customizer (part of NeMo Microservices)
-  is the planned target — keeps the whole pipeline on NVIDIA-native tools
-  and makes adapter deployment via NIM straightforward.
+- **LoRA ranks.** Rank 16 and rank 32 are trained for each dataset/model pair
+  so the evaluation can show whether additional adapter capacity is useful.
+- **Training framework.** NVIDIA NeMo Customizer consumes the Stage 2 SFT JSONL
+  and produces LoRA adapter artifacts that can be served through LoRA-capable
+  NIM deployments.
 - **Evaluation strategy.** External frontier judge for response quality;
   domain-specific golden QA benchmark for factual accuracy; single-axis
   scoring for standalone efficacy; pairwise scoring for LE-vs-Curator and
@@ -129,13 +126,15 @@ mode is parsed but silently ignored. Practical deployment:
 - Verify the adapter is detected via the NIM's `/v1/models` endpoint —
   the adapter appears as a selectable model variant.
 
-## Open work
+## Adaptation checklist
 
-- [ ] Lock base model choice based on size/cost/perf tradeoff.
-- [ ] Build the training pipeline against NeMo Customizer.
-- [ ] Define eval benchmark per adapter.
-- [ ] Document the adapter-publication workflow (HF Hub format? NGC?).
+For a new domain corpus:
 
-When this stage lands, this doc will be replaced by a worked walkthrough
-end-to-end: from JSONL dataset through adapter weights to a deployed NIM
-serving the adapter.
+- Choose the dense base model sizes that match the latency, cost, and quality
+  target for the deployment.
+- Train at least one LoRA rank baseline, and use rank 16/rank 32 comparisons
+  when adapter capacity is part of the experiment.
+- Keep no-RAG evaluation separate from optional RAG evaluation so model
+  adaptation and retrieval quality are measured independently.
+- Capture model, dataset, adapter, evaluation, and MLflow metadata together so
+  the selected adapter can be reproduced or rolled back.
