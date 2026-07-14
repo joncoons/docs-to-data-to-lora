@@ -29,7 +29,7 @@ DEFAULT_EXTERNAL_JUDGE_BASE = os.environ.get(
 )
 DEFAULT_EXTERNAL_JUDGE_MODEL = os.environ.get(
     "PIPELINE_EXTERNAL_JUDGE_MODEL",
-    "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "frontier-judge",
 )
 DEFAULT_STAGE2_QA_ENDPOINTS: tuple[str, ...] = tuple(
     endpoint.strip()

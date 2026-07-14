@@ -175,13 +175,9 @@ def main() -> int:
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--dry-run", action="store_true",
                     help="Print plan + estimated yields, no LLM calls")
-    ap.add_argument("--stage1-5-mode", choices=["manifest", "legacy-direct"],
-                    default="manifest",
-                    help="Stage 1.5 default writes gap_manifest/Data Designer inputs; "
-                         "legacy-direct preserves the older direct LLM generator")
-    ap.add_argument("--stage1a-mode", choices=["legacy", "batched"],
-                    default=os.getenv("PIPELINE_STAGE1A_MODE", "legacy"),
-                    help="Stage 1A implementation. legacy preserves one KVP call per "
+    ap.add_argument("--stage1a-mode", choices=["single", "batched"],
+                    default=os.getenv("PIPELINE_STAGE1A_MODE", "single"),
+                    help="Stage 1A implementation. single uses one KVP call per "
                          "premise; batched uses conservative batched KVP expansion "
                          "with fallback.")
     ap.add_argument("--stage1a-nim-endpoints",
@@ -386,15 +382,12 @@ def main() -> int:
         else:
             existing = stage1a_rows + stage1b_rows + stage1c_rows
             stage1_5_rows = run_stage1_5(passages, existing, es, args.collection,
-                                          llm, args.output,
+                                          args.output,
                                           threshold_factor=cfg.bias_threshold_factor,
                                           target_factor=cfg.bias_gapfill_target_factor,
                                           top_n_chunks=cfg.gapfill_top_n_chunks,
                                           pairs_per_call=cfg.gapfill_pairs_per_call,
-                                          max_attempt_factor=cfg.gapfill_max_attempt_factor,
-                                          legacy_direct=(
-                                              args.stage1_5_mode == "legacy-direct"
-                                          ))
+                                          max_attempt_factor=cfg.gapfill_max_attempt_factor)
             progress.mark_done("1.5")
     else:
         stage1_5_rows = _read_jsonl_rows(args.output / "stage1_5_gapfill.jsonl")

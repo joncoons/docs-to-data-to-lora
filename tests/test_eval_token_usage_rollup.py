@@ -18,7 +18,7 @@ def write_summary(path: Path, payload: dict) -> None:
 def test_singleaxis_token_rollup(tmp_path: Path) -> None:
     eval_root = tmp_path / "evals"
     summary = eval_root / (
-        "singleaxis-kimi/dataset-a/model-a/lora-a/r16/completion-run/eval-run/summary.json"
+        "singleaxis-llm/dataset-a/model-a/lora-a/r16/completion-run/eval-run/summary.json"
     )
     write_summary(
         summary,
@@ -41,7 +41,7 @@ def test_singleaxis_token_rollup(tmp_path: Path) -> None:
         },
     )
 
-    row = summarize_one(eval_root, SummaryRef("singleaxis-kimi", summary))
+    row = summarize_one(eval_root, SummaryRef("singleaxis-llm", summary))
 
     assert row["eval_run_id"] == "eval-run"
     assert row["dataset_slug"] == "dataset-a"
@@ -55,7 +55,7 @@ def test_singleaxis_token_rollup(tmp_path: Path) -> None:
 
 def test_pairwise_token_rollup_uses_left_right_target_totals(tmp_path: Path) -> None:
     eval_root = tmp_path / "evals"
-    summary = eval_root / "pairwise-kimi/dataset-a/model-a-vs-model-b/eval-run/summary.json"
+    summary = eval_root / "pairwise-llm/dataset-a/model-a-vs-model-b/eval-run/summary.json"
     write_summary(
         summary,
         {
@@ -74,7 +74,7 @@ def test_pairwise_token_rollup_uses_left_right_target_totals(tmp_path: Path) -> 
         },
     )
 
-    row = summarize_one(eval_root, SummaryRef("pairwise-kimi", summary))
+    row = summarize_one(eval_root, SummaryRef("pairwise-llm", summary))
 
     assert row["eval_run_id"] == "eval-run"
     assert row["pair_slug"] == "dataset-a/model-a-vs-model-b"
@@ -86,12 +86,12 @@ def test_pairwise_token_rollup_uses_left_right_target_totals(tmp_path: Path) -> 
 
 def test_find_summaries_filters_by_run_id(tmp_path: Path) -> None:
     eval_root = tmp_path / "evals"
-    included = eval_root / "singleaxis-kimi/d/m/t/r/c/run-a/summary.json"
-    excluded = eval_root / "singleaxis-kimi/d/m/t/r/c/run-b/summary.json"
+    included = eval_root / "singleaxis-llm/d/m/t/r/c/run-a/summary.json"
+    excluded = eval_root / "singleaxis-llm/d/m/t/r/c/run-b/summary.json"
     write_summary(included, {"rows_scored": 0})
     write_summary(excluded, {"rows_scored": 0})
 
-    refs = find_summaries(eval_root, ["singleaxis-kimi"], "run-a")
+    refs = find_summaries(eval_root, ["singleaxis-llm"], "run-a")
 
     assert [ref.path for ref in refs] == [included]
 
@@ -99,14 +99,14 @@ def test_find_summaries_filters_by_run_id(tmp_path: Path) -> None:
 def test_aggregate_and_csv_output(tmp_path: Path) -> None:
     rows = [
         {
-            "eval_type": "singleaxis-kimi",
+            "eval_type": "singleaxis-llm",
             "eval_run_id": "run-a",
             "dataset_slug": "d",
             "base_slug": "m",
             "target_slug": "base",
             "rank_slug": "base",
             "completion_run_id": "c",
-            "relative_dir": "singleaxis-kimi/d/m/base/base/c/run-a",
+            "relative_dir": "singleaxis-llm/d/m/base/base/c/run-a",
             "rows_scored_or_compared": 2,
             "rows_failed": 1,
             "target_generation": {
@@ -138,4 +138,4 @@ def test_aggregate_and_csv_output(tmp_path: Path) -> None:
     write_csv(out, rows)
     text = out.read_text(encoding="utf-8")
     assert "judge_total_tokens_raw" in text
-    assert "singleaxis-kimi" in text
+    assert "singleaxis-llm" in text

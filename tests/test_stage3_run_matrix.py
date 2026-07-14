@@ -9,7 +9,7 @@ import pytest
 from scripts.eval.register_evaluator_entities import AdapterRow
 import scripts.eval.run_evaluation_matrix as rem
 from scripts.eval.run_evaluation_matrix import (
-    build_49b_pairwise_jobs,
+    build_reference_pairwise_jobs,
     build_pairwise_jobs,
     build_singleaxis_jobs,
     submit_wave,
@@ -41,7 +41,7 @@ def _all_12():
 def test_singleaxis_jobs_count_is_18():
     """12 adapters (1 ds each) + 3 bases (2 ds each) = 18.
 
-    The 49B comparator is not a Wave A RAG target; it appears in Wave C pairwise.
+    The 70B reference is not a Wave A target; it appears in Wave C pairwise.
     """
     jobs = build_singleaxis_jobs(
         adapters=_all_12(),
@@ -82,22 +82,22 @@ def test_singleaxis_includes_each_base_on_both_corpora():
     assert len(bases_seen) == 3
 
 
-def test_singleaxis_excludes_49b_comparator():
+def test_singleaxis_excludes_reference_comparator():
     jobs = build_singleaxis_jobs(
         adapters=_all_12(),
         config_name="default/stage3-singleaxis-rubric",
     )
-    assert all("llama-3.3-nemotron-super-49b" not in j["target"] for j in jobs)
+    assert all("llama-3.3-70b" not in j["target"] for j in jobs)
 
 
-def test_49b_pairwise_jobs_compare_49b_against_each_adapter():
-    jobs = build_49b_pairwise_jobs(
+def test_reference_pairwise_jobs_compare_reference_against_each_adapter():
+    jobs = build_reference_pairwise_jobs(
         adapters=_all_12(),
         config_name="default/stage3-pairwise-tournament",
     )
     assert len(jobs) == 12
-    assert all(j["target"] == "default/llama-3.3-nemotron-super-49b-v1.5" for j in jobs)
-    assert all(j["extra"]["target_a"] == "default/llama-3.3-nemotron-super-49b-v1.5" for j in jobs)
+    assert all(j["target"] == "default/llama-3.3-70b-instruct" for j in jobs)
+    assert all(j["extra"]["target_a"] == "default/llama-3.3-70b-instruct" for j in jobs)
     assert all(j["extra"]["target_b"].startswith("default/lora-") for j in jobs)
 
 

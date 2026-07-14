@@ -49,7 +49,7 @@ from scripts.stage3.customizer_client import CustomizerClient, JobStatus
 from scripts.stage3.models import AdapterSpec
 from scripts.eval.evaluator_client import EvaluatorClient
 from scripts.eval.run_evaluation_matrix import (
-    build_49b_pairwise_jobs,
+    build_reference_pairwise_jobs,
     build_pairwise_jobs,
     build_singleaxis_jobs,
 )

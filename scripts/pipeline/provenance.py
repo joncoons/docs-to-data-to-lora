@@ -731,7 +731,7 @@ def dataset_sample_from_kvp_row(row: KVPRow, system_prompt: str | None = None) -
         "modalities": row.modalities or [],
         "gap_id": stable_id("gap", row.target_product_family or row.product_family)
         if row.stage == "1.5" else None,
-        "data_designer_job_id": "legacy_direct_llm_gapfill" if row.stage == "1.5" else None,
+        "data_designer_job_id": "nemo_data_designer_gapfill" if row.stage == "1.5" else None,
         "seed_sample_ids": [],
     }
     return DatasetSample(

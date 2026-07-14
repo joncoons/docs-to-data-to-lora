@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: live-ragas-smoke-kimi
+  name: live-ragas-smoke-llm
   namespace: nemo-peft
   labels:
     app.kubernetes.io/name: live-ragas-smoke
@@ -32,14 +32,14 @@ spec:
             - name: JUDGE_API_URL
               value: "https://llm.example.com/v1/chat/completions"
             - name: EVALUATOR_JUDGE_MODEL
-              value: "nvidia/moonshotai/kimi-k2.6"
+              value: "azure/anthropic/claude-sonnet-4-6"
             - name: JUDGE_API_KEY_ENV
-              value: "KIMI_KEY"
-            - name: KIMI_KEY
+              value: "LLM_API_KEY"
+            - name: LLM_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: kimi-judge-api
-                  key: KIMI_KEY
+                  name: llm-judge-api
+                  key: LLM_API_KEY
             - name: EVALUATOR_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -56,7 +56,7 @@ spec:
             - --metrics
             - faithfulness
             - --out
-            - /outputs/live_ragas_smoke_kimi.json
+            - /outputs/live_ragas_smoke_llm.json
           resources:
             requests:
               cpu: 500m

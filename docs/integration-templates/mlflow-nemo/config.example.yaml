@@ -65,7 +65,7 @@ evaluation:
   register_configs: true
   run_singleaxis: true
   run_pairwise_lora: true
-  run_pairwise_49b: true
+  run_pairwise_reference: true
   config_singleaxis: "default/stage3-singleaxis-rubric"
   config_pairwise: "default/stage3-pairwise-tournament"
 

@@ -1,1006 +1,0 @@
-2026-07-09 21:36:41,380 INFO __main__ - Stage 1A durable: 351 passages selected, 147 already completed
-Stage 1A durable:   0%|          | 0/351 [00:00<?, ?it/s]2026-07-09 21:36:50,452 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:37:01,085 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:37:06,900 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:37:06,901 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/maisi/latest/configuration.html#p0 status=complete rows=12 entailments=9 premises=12 missing=0
-Stage 1A durable:   0%|          | 1/351 [00:25<2:28:22, 25.43s/it]2026-07-09 21:37:19,025 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:37:19,026 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/maisi/latest/support-matrix.html#p0 status=complete rows=17 entailments=6 premises=17 missing=0
-Stage 1A durable:   1%|          | 2/351 [00:37<1:42:24, 17.61s/it]2026-07-09 21:37:22,939 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:37:43,048 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:37:43,048 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/vista3d/latest/index.html#p0 status=complete rows=3 entailments=1 premises=3 missing=0
-Stage 1A durable:   1%|          | 3/351 [01:01<1:59:06, 20.54s/it]2026-07-09 21:37:44,623 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:38:00,862 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:38:10,399 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:38:20,164 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:38:20,166 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/vista3d/latest/advanced-usage.html#p0 status=complete rows=27 entailments=8 premises=27 missing=0
-Stage 1A durable:   1%|          | 4/351 [01:38<2:36:37, 27.08s/it]2026-07-09 21:38:36,561 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:38:36,754 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:38:45,974 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:38:45,975 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/vista3d/latest/model-fine-tuning.html#p0 status=complete rows=10 entailments=4 premises=10 missing=0
-Stage 1A durable:   1%|▏         | 5/351 [02:04<2:33:31, 26.62s/it]2026-07-09 21:38:52,555 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:39:05,855 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:39:13,208 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:39:26,739 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:39:26,740 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/vista3d/latest/api-reference.html#p0 status=complete rows=19 entailments=6 premises=19 missing=0
-Stage 1A durable:   2%|▏         | 6/351 [02:45<3:00:43, 31.43s/it]2026-07-09 21:39:34,210 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:39:44,955 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:39:52,613 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:40:09,007 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:40:12,440 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:40:27,745 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:40:27,747 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/vista3d/latest/model-details.html#p0 status=complete rows=25 entailments=8 premises=25 missing=0
-Stage 1A durable:   2%|▏         | 7/351 [03:46<3:55:38, 41.10s/it]2026-07-09 21:40:32,505 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:40:44,601 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:40:52,463 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:41:07,482 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:41:07,483 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/vista3d/latest/performance.html#p0 status=complete rows=10 entailments=2 premises=10 missing=0
-Stage 1A durable:   2%|▏         | 8/351 [04:26<3:52:28, 40.67s/it]2026-07-09 21:41:15,164 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:41:32,826 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:41:40,068 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:41:44,010 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:41:58,404 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:42:02,654 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:42:21,102 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:42:21,103 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/vista3d/latest/configuration.html#p0 status=complete rows=15 entailments=4 premises=15 missing=0
-Stage 1A durable:   3%|▎         | 9/351 [05:39<4:50:31, 50.97s/it]2026-07-09 21:42:25,131 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:42:35,326 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:42:42,420 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:42:56,320 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:43:02,411 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:43:20,621 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:43:26,253 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:43:37,005 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:43:42,835 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:43:52,451 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:44:02,489 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:44:12,623 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:44:22,453 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:44:32,509 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:44:43,322 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:44:52,694 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:45:03,474 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:45:12,326 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:45:22,568 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:45:32,859 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:45:46,473 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:45:53,725 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:46:09,429 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:46:18,574 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:46:27,997 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:46:32,362 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:46:42,640 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:46:58,908 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:47:02,611 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:47:15,584 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:47:22,608 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:47:32,996 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:47:32,997 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/vista3d/latest/support-matrix.html#p0 status=partial rows=12 entailments=4 premises=13 missing=1
-Stage 1A durable:   3%|▎         | 10/351 [10:51<12:27:28, 131.52s/it]2026-07-09 21:47:42,693 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:47:53,203 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:48:02,665 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:48:13,734 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:48:13,735 INFO __main__ - passage=https://docs.nvidia.com/nim/multimodal-safety/latest/index.html#p0 status=complete rows=4 entailments=1 premises=4 missing=0
-Stage 1A durable:   3%|▎         | 11/351 [11:32<9:47:50, 103.74s/it] 2026-07-09 21:48:22,352 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:48:42,234 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:48:42,609 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:49:03,546 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:49:03,547 INFO __main__ - passage=https://docs.nvidia.com/nim/multimodal-safety/latest/getting-started.html#p0 status=complete rows=14 entailments=6 premises=14 missing=0
-Stage 1A durable:   3%|▎         | 12/351 [12:22<8:13:25, 87.33s/it] 2026-07-09 21:49:05,369 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:49:22,803 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:49:24,159 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:49:35,055 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:49:52,668 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:50:02,690 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:50:07,241 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:50:07,242 INFO __main__ - passage=https://docs.nvidia.com/nim/multimodal-safety/latest/deploying.html#p0 status=complete rows=39 entailments=14 premises=39 missing=0
-Stage 1A durable:   4%|▎         | 13/351 [13:25<7:31:38, 80.17s/it]2026-07-09 21:50:12,624 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:50:31,341 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:50:32,689 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:50:52,793 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:50:52,795 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/vista3d/latest/getting-started.html#p0 status=partial rows=38 entailments=8 premises=39 missing=1
-Stage 1A durable:   4%|▍         | 14/351 [14:11<6:31:34, 69.72s/it]2026-07-09 21:50:53,313 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:50:53,315 INFO __main__ - passage=https://docs.nvidia.com/nim/multimodal-safety/latest/configuration.html#p0 status=complete rows=28 entailments=4 premises=28 missing=0
-Stage 1A durable:   4%|▍         | 15/351 [14:11<4:33:36, 48.86s/it]2026-07-09 21:51:14,269 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:51:14,269 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemoguard-8b-topiccontrol/latest/getting-started.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:   5%|▍         | 16/351 [14:32<3:45:53, 40.46s/it]2026-07-09 21:51:15,937 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:51:27,010 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:51:33,904 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:51:46,027 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:51:54,978 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:52:12,892 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:52:17,754 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:52:26,508 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:52:42,174 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:52:44,647 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:52:53,152 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:53:02,753 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:53:12,290 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:53:22,347 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:53:32,574 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:53:42,398 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:53:52,494 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:54:12,637 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:54:12,638 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemoguard-8b-topiccontrol/latest/prompt-template.html#p0 status=partial rows=4 entailments=3 premises=7 missing=3
-Stage 1A durable:   5%|▍         | 17/351 [17:31<7:36:03, 81.93s/it]2026-07-09 21:54:17,504 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:54:29,537 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:54:32,524 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:54:52,162 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:54:52,164 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemoguard-8b-topiccontrol/latest/configuration.html#p0 status=complete rows=26 entailments=4 premises=26 missing=0
-Stage 1A durable:   5%|▌         | 18/351 [18:10<6:23:59, 69.19s/it]2026-07-09 21:54:52,649 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:55:05,194 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:55:13,216 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:55:13,217 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemoguard-8b-topiccontrol/latest/integrate-guardrails.html#p0 status=complete rows=9 entailments=7 premises=9 missing=0
-Stage 1A durable:   5%|▌         | 19/351 [18:31<5:02:50, 54.73s/it]2026-07-09 21:55:25,118 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:55:25,120 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemoguard-8b-topiccontrol/latest/air-gapped.html#p0 status=complete rows=15 entailments=3 premises=15 missing=0
-Stage 1A durable:   6%|▌         | 20/351 [18:43<3:50:59, 41.87s/it]2026-07-09 21:55:41,549 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:55:47,183 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:56:21,771 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:56:21,773 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemoguard-8b-topiccontrol/latest/observability.html#p0 status=complete rows=13 entailments=4 premises=13 missing=0
-Stage 1A durable:   6%|▌         | 21/351 [19:40<4:14:41, 46.31s/it]2026-07-09 21:56:29,414 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:56:29,416 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemoguard-8b-topiccontrol/latest/support-matrix.html#p0 status=complete rows=15 entailments=5 premises=15 missing=0
-Stage 1A durable:   6%|▋         | 22/351 [19:47<3:10:17, 34.70s/it]2026-07-09 21:56:37,608 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:56:45,114 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:56:52,146 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:57:16,088 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:57:16,120 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemotron-safety-guard-8b/latest/release-notes.html#p0 status=complete rows=33 entailments=8 premises=33 missing=0
-Stage 1A durable:   7%|▋         | 23/351 [20:34<3:29:24, 38.31s/it]2026-07-09 21:57:29,050 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:57:30,507 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:57:30,509 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemotron-safety-guard-8b/latest/getting-started.html#p0 status=complete rows=19 entailments=4 premises=19 missing=0
-Stage 1A durable:   7%|▋         | 24/351 [20:49<2:49:39, 31.13s/it]2026-07-09 21:57:43,437 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:57:56,831 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:57:57,585 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:58:13,166 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:58:13,355 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:58:19,977 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:58:19,978 INFO __main__ - passage=https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector/main/receiver/otlpreceiver/README.md#p0 status=complete rows=43 entailments=12 premises=43 missing=0
-Stage 1A durable:   7%|▋         | 25/351 [21:38<3:19:01, 36.63s/it]2026-07-09 21:58:36,858 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:58:45,977 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:58:45,977 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/proteinmpnn/latest/index.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:   7%|▋         | 26/351 [22:04<3:01:08, 33.44s/it]2026-07-09 21:58:49,881 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:59:03,225 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:59:15,252 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:59:22,978 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:59:22,979 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/proteinmpnn/latest/release-notes.html#p0 status=complete rows=11 entailments=3 premises=11 missing=0
-Stage 1A durable:   8%|▊         | 27/351 [22:41<3:06:21, 34.51s/it]2026-07-09 21:59:30,223 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:59:41,502 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:59:50,159 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:00:01,193 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:00:10,187 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:00:23,581 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:00:23,582 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/proteinmpnn/latest/prerequisites.html#p0 status=complete rows=6 entailments=3 premises=6 missing=0
-Stage 1A durable:   8%|▊         | 28/351 [23:42<3:47:55, 42.34s/it]2026-07-09 22:00:32,793 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:00:46,652 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:00:51,639 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:01:11,655 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:01:19,364 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:01:39,402 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:01:39,404 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/proteinmpnn/latest/support-matrix.html#p0 status=complete rows=10 entailments=4 premises=10 missing=0
-Stage 1A durable:   8%|▊         | 29/351 [24:57<4:41:07, 52.38s/it]2026-07-09 22:02:00,812 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:02:14,548 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:02:18,301 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:02:18,302 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/proteinmpnn/latest/quickstart-guide.html#p0 status=complete rows=11 entailments=3 premises=11 missing=0
-Stage 1A durable:   9%|▊         | 30/351 [25:36<4:18:36, 48.34s/it]2026-07-09 22:02:33,372 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:03:03,221 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:03:17,564 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:03:51,813 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:04:03,423 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:04:19,271 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:04:44,717 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:04:44,718 INFO __main__ - passage=https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/exporter/zipkinexporter/README.md#p0 status=partial rows=14 entailments=5 premises=16 missing=2
-Stage 1A durable:   9%|▉         | 31/351 [28:03<6:54:43, 77.76s/it]2026-07-09 22:04:54,136 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:05:02,775 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:05:02,775 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/rfdiffusion/latest/index.html#p0 status=complete rows=9 entailments=6 premises=9 missing=0
-Stage 1A durable:   9%|▉         | 32/351 [28:21<5:18:12, 59.85s/it]2026-07-09 22:05:09,517 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:05:20,897 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:05:20,898 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/rfdiffusion/latest/release-notes.html#p0 status=complete rows=13 entailments=4 premises=13 missing=0
-Stage 1A durable:   9%|▉         | 33/351 [28:39<4:10:51, 47.33s/it]2026-07-09 22:06:33,080 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:06:33,081 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/proteinmpnn/latest/advanced-usage.html#p0 status=complete rows=9 entailments=4 premises=9 missing=0
-Stage 1A durable:  10%|▉         | 34/351 [29:51<4:49:27, 54.79s/it]2026-07-09 22:06:41,159 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:07:24,700 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:07:36,994 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:07:36,996 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/rfdiffusion/latest/prerequisites.html#p0 status=complete rows=4 entailments=1 premises=4 missing=0
-Stage 1A durable:  10%|▉         | 35/351 [30:55<5:02:58, 57.53s/it]2026-07-09 22:07:55,018 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:07:55,019 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/rfdiffusion/latest/support-matrix.html#p0 status=complete rows=12 entailments=3 premises=12 missing=0
-Stage 1A durable:  10%|█         | 36/351 [31:13<3:59:47, 45.67s/it]2026-07-09 22:08:05,153 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:08:05,154 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/rfdiffusion/latest/endpoints.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  11%|█         | 37/351 [31:23<3:03:14, 35.01s/it]2026-07-09 22:08:34,860 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:08:39,846 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:08:41,203 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:09:00,302 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:09:00,303 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/rfdiffusion/latest/quickstart-guide.html#p0 status=complete rows=9 entailments=3 premises=9 missing=0
-Stage 1A durable:  11%|█         | 38/351 [32:18<3:34:09, 41.05s/it]2026-07-09 22:09:09,789 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:09:16,107 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:09:22,209 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:09:22,211 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/rfdiffusion/latest/advanced-usage.html#p0 status=complete rows=19 entailments=6 premises=19 missing=0
-Stage 1A durable:  11%|█         | 39/351 [32:40<3:03:36, 35.31s/it]2026-07-09 22:09:38,698 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:09:38,699 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/diffdock/latest/index.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  11%|█▏        | 40/351 [32:57<2:33:45, 29.66s/it]2026-07-09 22:09:49,137 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:09:55,775 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:09:56,286 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:10:05,817 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:10:21,386 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:10:21,387 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/diffdock/latest/release-notes.html#p0 status=complete rows=23 entailments=8 premises=23 missing=0
-Stage 1A durable:  12%|█▏        | 41/351 [33:39<2:53:26, 33.57s/it]2026-07-09 22:10:25,683 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:10:37,187 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:10:46,530 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:11:01,939 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:11:01,940 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/diffdock/latest/support-matrix.html#p0 status=complete rows=9 entailments=3 premises=9 missing=0
-Stage 1A durable:  12%|█▏        | 42/351 [34:20<3:03:40, 35.67s/it]2026-07-09 22:11:06,060 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:11:31,845 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:11:32,663 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:11:46,149 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:11:49,847 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:12:12,792 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:12:22,554 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:12:25,900 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:12:35,730 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:12:45,737 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:12:57,579 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:13:07,232 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:13:16,664 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:13:22,825 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:13:25,784 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:13:45,786 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:13:56,675 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:14:51,086 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:14:52,219 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:15:23,570 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:15:24,552 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:15:39,072 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:15:45,302 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:15:54,748 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:16:07,121 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:16:07,397 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:16:16,068 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:16:34,536 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:16:41,934 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:16:46,406 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:16:54,465 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:17:17,268 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:17:24,642 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:17:34,573 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:17:45,537 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:17:45,538 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/rfdiffusion/latest/benchmarking.html#p0 status=complete rows=17 entailments=3 premises=17 missing=0
-Stage 1A durable:  12%|█▏        | 43/351 [41:04<12:29:41, 146.05s/it]2026-07-09 22:17:58,064 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:18:16,594 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:18:19,126 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:18:31,319 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:18:49,307 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:19:17,056 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:19:17,058 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/diffdock/latest/configure-nim.html#p0 status=complete rows=18 entailments=5 premises=18 missing=0
-Stage 1A durable:  13%|█▎        | 44/351 [42:35<11:03:34, 129.69s/it]2026-07-09 22:19:19,127 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:19:35,935 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:19:54,909 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:19:56,144 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:20:05,919 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:20:05,920 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/diffdock/latest/getting-started.html#p0 status=partial rows=25 entailments=8 premises=27 missing=2
-Stage 1A durable:  13%|█▎        | 45/351 [43:24<8:57:44, 105.44s/it] 2026-07-09 22:20:21,112 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:20:33,377 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:20:33,378 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/diffdock/latest/advanced-usage.html#p0 status=complete rows=16 entailments=3 premises=16 missing=0
-Stage 1A durable:  13%|█▎        | 46/351 [43:51<6:57:03, 82.05s/it] 2026-07-09 22:20:41,205 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:20:48,005 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:20:48,006 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/diffdock/latest/api-reference.html#p0 status=complete rows=4 entailments=4 premises=4 missing=0
-Stage 1A durable:  13%|█▎        | 47/351 [44:06<5:13:13, 61.82s/it]2026-07-09 22:20:48,428 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:20:48,429 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/diffdock/latest/performance.html#p0 status=complete rows=10 entailments=5 premises=10 missing=0
-Stage 1A durable:  14%|█▎        | 48/351 [44:06<3:39:10, 43.40s/it]2026-07-09 22:20:57,889 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:21:07,672 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:21:23,041 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:21:29,473 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:21:36,104 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:21:54,857 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:21:55,984 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:22:06,727 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:22:15,826 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:22:15,827 INFO __main__ - passage=https://docs.nvidia.com/nim/cosmos/latest/index.html#p0 status=complete rows=2 entailments=1 premises=2 missing=0
-Stage 1A durable:  14%|█▍        | 49/351 [45:34<4:44:53, 56.60s/it]2026-07-09 22:22:28,956 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:22:39,563 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:22:39,563 INFO __main__ - passage=https://docs.nvidia.com/nim/cosmos/latest/prerequisites.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  14%|█▍        | 50/351 [45:58<3:54:29, 46.74s/it]2026-07-09 22:22:49,171 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:23:07,629 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:23:14,574 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:23:25,956 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:23:35,979 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:23:47,035 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:23:50,477 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:24:10,315 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:24:34,944 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:24:34,948 INFO __main__ - passage=https://docs.nvidia.com/nim/cosmos/latest/quickstart-guide.html#p0 status=complete rows=40 entailments=9 premises=40 missing=0
-Stage 1A durable:  15%|█▍        | 51/351 [47:53<5:36:40, 67.33s/it]2026-07-09 22:24:44,441 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:24:45,674 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:24:45,675 INFO __main__ - passage=https://docs.nvidia.com/nim/cosmos/latest/release-notes.html#p0 status=partial rows=9 entailments=5 premises=10 missing=1
-Stage 1A durable:  15%|█▍        | 52/351 [48:04<4:10:55, 50.35s/it]2026-07-09 22:24:47,171 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:25:00,711 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:25:13,062 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:25:13,063 INFO __main__ - passage=https://docs.nvidia.com/nim/cosmos/latest/sampling-params.html#p0 status=complete rows=21 entailments=7 premises=21 missing=0
-Stage 1A durable:  15%|█▌        | 53/351 [48:31<3:35:51, 43.46s/it]2026-07-09 22:25:25,606 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:25:25,608 INFO __main__ - passage=https://docs.nvidia.com/nim/cosmos/latest/configuration.html#p0 status=complete rows=19 entailments=6 premises=19 missing=0
-Stage 1A durable:  15%|█▌        | 54/351 [48:44<2:49:13, 34.19s/it]2026-07-09 22:25:57,461 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:25:57,462 INFO __main__ - passage=https://docs.nvidia.com/nim/cosmos/latest/api-reference.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  16%|█▌        | 55/351 [49:15<2:45:12, 33.49s/it]2026-07-09 22:26:15,350 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:26:18,298 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:26:18,300 INFO __main__ - passage=https://docs.nvidia.com/nim/cosmos/latest/helm.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  16%|█▌        | 56/351 [49:36<2:25:59, 29.69s/it]2026-07-09 22:26:24,320 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:26:24,322 INFO __main__ - passage=https://docs.nvidia.com/nim/cosmos/latest/support-matrix.html#p0 status=complete rows=16 entailments=6 premises=16 missing=0
-Stage 1A durable:  16%|█▌        | 57/351 [49:42<1:50:41, 22.59s/it]2026-07-09 22:26:32,312 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:26:45,547 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:27:01,485 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:27:01,487 INFO __main__ - passage=https://docs.nvidia.com/nim/cosmos/latest/observability.html#p0 status=complete rows=33 entailments=5 premises=33 missing=0
-Stage 1A durable:  17%|█▋        | 58/351 [50:20<2:11:40, 26.96s/it]2026-07-09 22:27:21,588 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:27:21,589 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2-multimer/latest/deployment-guide.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  17%|█▋        | 59/351 [50:40<2:01:12, 24.91s/it]2026-07-09 22:27:26,693 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:27:43,778 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:27:43,780 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2-multimer/latest/endpoints.html#p0 status=complete rows=31 entailments=5 premises=31 missing=0
-Stage 1A durable:  17%|█▋        | 60/351 [51:02<1:56:50, 24.09s/it]2026-07-09 22:27:51,077 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:28:02,093 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:28:02,094 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2-multimer/latest/performance.html#p0 status=complete rows=19 entailments=5 premises=19 missing=0
-Stage 1A durable:  17%|█▋        | 61/351 [51:20<1:48:03, 22.36s/it]2026-07-09 22:28:05,882 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:28:05,884 INFO __main__ - passage=https://docs.nvidia.com/nim/cosmos/latest/troubleshooting.html#p0 status=complete rows=12 entailments=3 premises=12 missing=0
-Stage 1A durable:  18%|█▊        | 62/351 [51:24<1:20:51, 16.79s/it]2026-07-09 22:28:19,302 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:28:25,557 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:28:25,558 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2/latest/index.html#p0 status=complete rows=4 entailments=4 premises=4 missing=0
-Stage 1A durable:  18%|█▊        | 63/351 [51:44<1:24:44, 17.65s/it]2026-07-09 22:28:38,937 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:28:55,444 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:29:44,560 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:29:44,561 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2-multimer/latest/configuring-the-nim-at-runtime.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  18%|█▊        | 64/351 [53:03<2:52:28, 36.06s/it]2026-07-09 22:29:48,765 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:30:02,064 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:30:16,274 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:30:17,019 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:30:27,431 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:30:38,840 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:30:47,831 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:30:57,680 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:31:08,755 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:31:15,121 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:31:17,491 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:31:37,386 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:31:47,194 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:31:57,159 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:32:07,681 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:32:21,472 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:32:35,742 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:33:05,409 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:33:06,472 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:33:06,564 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:33:16,703 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:33:37,773 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:33:38,233 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:33:51,296 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:33:56,138 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:34:06,295 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:34:18,236 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:34:35,223 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:34:41,164 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:34:41,165 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2/latest/quickstart-guide.html#p0 status=partial rows=15 entailments=6 premises=19 missing=4
-Stage 1A durable:  19%|█▊        | 65/351 [57:59<9:04:27, 114.22s/it]2026-07-09 22:34:46,493 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:35:04,565 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:35:04,566 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2/latest/deployment-guide.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  19%|█▉        | 66/351 [58:23<6:53:08, 86.98s/it] 2026-07-09 22:35:09,430 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:35:20,715 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:35:30,014 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:35:46,649 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:35:54,864 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:35:54,866 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2/latest/endpoints.html#p0 status=complete rows=25 entailments=4 premises=25 missing=0
-Stage 1A durable:  19%|█▉        | 67/351 [59:13<5:59:36, 75.97s/it]2026-07-09 22:35:58,668 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:36:14,007 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:36:16,545 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:36:34,513 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:36:34,514 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2/latest/performance.html#p0 status=complete rows=19 entailments=9 premises=19 missing=0
-Stage 1A durable:  19%|█▉        | 68/351 [59:53<5:06:56, 65.08s/it]2026-07-09 22:36:36,411 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:36:48,286 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:36:59,148 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:37:13,022 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:37:13,023 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2/latest/configuring-the-nim-at-runtime.html#p0 status=complete rows=10 entailments=3 premises=10 missing=0
-Stage 1A durable:  20%|█▉        | 69/351 [1:00:31<4:28:23, 57.11s/it]2026-07-09 22:37:16,331 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:37:35,217 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:37:41,130 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:37:58,681 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:37:58,682 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/boltz2/latest/index.html#p0 status=complete rows=13 entailments=3 premises=13 missing=0
-Stage 1A durable:  20%|█▉        | 70/351 [1:01:17<4:11:21, 53.67s/it]2026-07-09 22:38:12,586 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:38:13,571 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:38:18,577 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:38:36,006 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:38:36,007 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/boltz2/latest/release-notes.html#p0 status=complete rows=32 entailments=7 premises=32 missing=0
-Stage 1A durable:  20%|██        | 71/351 [1:01:54<3:47:34, 48.77s/it]2026-07-09 22:38:38,151 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:38:55,093 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:38:56,495 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:39:09,306 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:39:09,307 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/boltz2/latest/support-matrix.html#p0 status=complete rows=10 entailments=3 premises=10 missing=0
-Stage 1A durable:  21%|██        | 72/351 [1:02:27<3:25:11, 44.13s/it]2026-07-09 22:39:27,196 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:39:31,372 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:39:36,838 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:39:51,646 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:39:51,648 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/boltz2/latest/getting-started.html#p0 status=complete rows=21 entailments=5 premises=21 missing=0
-Stage 1A durable:  21%|██        | 73/351 [1:03:10<3:21:58, 43.59s/it]2026-07-09 22:39:56,186 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:40:17,119 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:40:20,762 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:40:20,762 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2/latest/prerequisites.html#p0 status=partial rows=23 entailments=5 premises=24 missing=1
-Stage 1A durable:  21%|██        | 74/351 [1:03:39<3:01:11, 39.25s/it]2026-07-09 22:40:41,745 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:40:41,746 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/boltz2/latest/inference.html#p0 status=complete rows=7 entailments=3 premises=7 missing=0
-Stage 1A durable:  21%|██▏       | 75/351 [1:04:00<2:35:20, 33.77s/it]2026-07-09 22:40:45,534 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:41:07,752 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:41:21,288 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:41:21,291 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/boltz2/latest/optimization.html#p0 status=complete rows=39 entailments=9 premises=39 missing=0
-Stage 1A durable:  22%|██▏       | 76/351 [1:04:39<2:42:43, 35.50s/it]2026-07-09 22:41:34,698 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:41:34,703 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/boltz2/latest/configure.html#p0 status=complete rows=63 entailments=7 premises=63 missing=0
-Stage 1A durable:  22%|██▏       | 77/351 [1:04:53<2:11:51, 28.87s/it]2026-07-09 22:41:34,875 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:41:52,799 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:41:52,800 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/boltz2/latest/performance.html#p0 status=complete rows=9 entailments=4 premises=9 missing=0
-Stage 1A durable:  22%|██▏       | 78/351 [1:05:11<1:56:40, 25.64s/it]2026-07-09 22:42:07,486 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:42:07,487 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/quickstart-guide.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  23%|██▎       | 79/351 [1:05:26<1:41:20, 22.36s/it]2026-07-09 22:42:13,060 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:42:13,061 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/boltz2/latest/deploy-helm.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  23%|██▎       | 80/351 [1:05:31<1:18:13, 17.32s/it]2026-07-09 22:42:20,957 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:42:30,110 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:42:33,136 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:42:47,596 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:42:47,597 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/tuning-parameters.html#p0 status=complete rows=10 entailments=3 premises=10 missing=0
-Stage 1A durable:  23%|██▎       | 81/351 [1:06:06<1:41:11, 22.49s/it]2026-07-09 22:43:04,484 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:43:15,839 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:43:18,302 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:43:18,303 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/examples.html#p0 status=complete rows=8 entailments=3 premises=8 missing=0
-Stage 1A durable:  23%|██▎       | 82/351 [1:06:36<1:51:51, 24.95s/it]2026-07-09 22:43:25,665 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:43:34,207 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:43:38,421 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:43:55,642 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:43:55,643 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/configuration.html#p0 status=complete rows=20 entailments=4 premises=20 missing=0
-Stage 1A durable:  24%|██▎       | 83/351 [1:07:14<2:08:03, 28.67s/it]2026-07-09 22:44:03,792 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:44:23,453 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:44:27,039 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:44:29,858 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:44:47,945 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:44:47,947 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/observability.html#p0 status=complete rows=43 entailments=7 premises=43 missing=0
-Stage 1A durable:  24%|██▍       | 84/351 [1:08:06<2:39:07, 35.76s/it]2026-07-09 22:44:48,640 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:45:08,419 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:45:14,550 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:45:18,463 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:45:41,664 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:45:49,063 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:45:58,583 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:46:13,838 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:46:18,574 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:46:21,165 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:46:30,844 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:46:38,776 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:46:48,733 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:47:01,082 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:47:08,981 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:47:18,654 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:47:35,940 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:47:49,101 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:47:56,157 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:47:56,157 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/custom-models.html#p0 status=partial rows=15 entailments=6 premises=16 missing=1
-Stage 1A durable:  24%|██▍       | 85/351 [1:11:14<6:01:17, 81.49s/it]2026-07-09 22:48:13,096 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:48:13,097 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/performance.html#p0 status=complete rows=41 entailments=6 premises=41 missing=0
-Stage 1A durable:  25%|██▍       | 86/351 [1:11:31<4:34:23, 62.13s/it]2026-07-09 22:48:15,448 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:48:27,675 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:48:51,383 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:48:56,518 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:48:56,519 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/troubleshoot.html#p0 status=complete rows=34 entailments=7 premises=34 missing=0
-Stage 1A durable:  25%|██▍       | 87/351 [1:12:15<4:08:40, 56.52s/it]2026-07-09 22:49:08,120 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:49:12,437 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:49:17,943 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:49:17,944 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/api-reference.html#p0 status=complete rows=14 entailments=4 premises=14 missing=0
-Stage 1A durable:  25%|██▌       | 88/351 [1:12:36<3:21:35, 45.99s/it]2026-07-09 22:49:22,212 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:49:36,992 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:49:42,212 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:49:59,597 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:49:59,599 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/environment-variables.html#p0 status=complete rows=19 entailments=6 premises=19 missing=0
-Stage 1A durable:  25%|██▌       | 89/351 [1:13:18<3:15:08, 44.69s/it]2026-07-09 22:50:02,387 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:50:15,643 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:50:24,034 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:50:40,725 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:50:40,726 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/ai-transparency-card/overview.html#p0 status=complete rows=10 entailments=5 premises=10 missing=0
-Stage 1A durable:  26%|██▌       | 90/351 [1:13:59<3:09:44, 43.62s/it]2026-07-09 22:50:46,955 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:50:56,869 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:51:04,785 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:51:15,161 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:51:15,162 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/index.html#p0 status=complete rows=16 entailments=6 premises=16 missing=0
-Stage 1A durable:  26%|██▌       | 91/351 [1:14:33<2:57:04, 40.86s/it]2026-07-09 22:51:25,637 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:51:46,972 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:51:53,326 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:51:56,563 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:52:02,467 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:52:25,550 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:52:26,738 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:52:26,739 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/release-notes.html#p0 status=complete rows=12 entailments=12 premises=12 missing=0
-Stage 1A durable:  26%|██▌       | 92/351 [1:15:45<3:36:10, 50.08s/it]2026-07-09 22:52:35,370 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:52:54,209 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:53:01,923 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:53:13,885 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:53:13,886 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/support-matrix.html#p0 status=complete rows=15 entailments=5 premises=15 missing=0
-Stage 1A durable:  26%|██▋       | 93/351 [1:16:32<3:31:33, 49.20s/it]2026-07-09 22:53:15,283 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:53:32,450 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:54:00,814 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:54:03,880 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:54:14,156 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:54:26,998 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:54:31,678 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:54:40,696 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:54:40,697 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/prerequisites.html#p0 status=complete rows=18 entailments=4 premises=18 missing=0
-Stage 1A durable:  27%|██▋       | 94/351 [1:17:59<4:19:04, 60.48s/it]2026-07-09 22:54:42,106 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:54:56,922 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:55:01,552 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:55:15,070 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:55:32,512 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:55:36,059 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:55:41,882 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:55:54,169 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:56:03,771 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:56:11,957 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:56:24,778 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:56:24,779 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/security.html#p0 status=partial rows=22 entailments=10 premises=25 missing=3
-Stage 1A durable:  27%|██▋       | 95/351 [1:19:43<5:13:52, 73.56s/it]2026-07-09 22:56:33,944 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:56:51,804 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:56:55,698 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:57:02,017 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:57:18,696 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:57:18,697 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/custom-models.html#p0 status=complete rows=15 entailments=5 premises=15 missing=0
-Stage 1A durable:  27%|██▋       | 96/351 [1:20:37<4:47:35, 67.67s/it]2026-07-09 22:57:54,139 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:57:56,428 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:58:05,129 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:58:09,701 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:58:09,702 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/example-workflows.html#p0 status=complete rows=23 entailments=10 premises=23 missing=0
-Stage 1A durable:  28%|██▊       | 97/351 [1:21:28<4:25:18, 62.67s/it]2026-07-09 22:58:15,132 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:58:30,678 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:58:36,103 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:58:58,824 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:59:00,967 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:59:00,969 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/configuration.html#p0 status=complete rows=48 entailments=5 premises=48 missing=0
-Stage 1A durable:  28%|██▊       | 98/351 [1:22:19<4:09:49, 59.25s/it]2026-07-09 22:59:05,199 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:59:05,199 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/quickstart-guide.html#p0 status=partial rows=10 entailments=7 premises=11 missing=1
-Stage 1A durable:  28%|██▊       | 99/351 [1:22:23<2:59:31, 42.74s/it]2026-07-09 22:59:25,997 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 22:59:35,723 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:00:08,374 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:00:08,376 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/performance.html#p0 status=complete rows=41 entailments=8 premises=41 missing=0
-Stage 1A durable:  28%|██▊       | 100/351 [1:23:26<3:24:27, 48.87s/it]2026-07-09 23:00:15,160 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:00:32,812 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:00:39,756 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:00:39,758 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/observability.html#p0 status=complete rows=40 entailments=7 premises=40 missing=0
-Stage 1A durable:  29%|██▉       | 101/351 [1:23:58<3:01:46, 43.63s/it]2026-07-09 23:00:57,394 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:01:10,758 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:01:15,807 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:01:40,402 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:02:13,063 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:02:23,319 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:02:23,321 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/troubleshoot.html#p0 status=complete rows=35 entailments=9 premises=35 missing=0
-Stage 1A durable:  29%|██▉       | 102/351 [1:25:41<4:15:40, 61.61s/it]2026-07-09 23:03:05,620 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:03:21,111 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:03:21,113 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/api-reference.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  29%|██▉       | 103/351 [1:26:39<4:09:54, 60.46s/it]2026-07-09 23:03:27,659 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:03:28,808 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:03:48,865 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:03:51,145 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:03:51,146 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/environment-variables.html#p0 status=complete rows=30 entailments=10 premises=30 missing=0
-Stage 1A durable:  30%|██▉       | 104/351 [1:27:09<3:31:19, 51.33s/it]2026-07-09 23:04:15,086 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:04:18,201 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:04:31,397 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:04:34,321 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:04:42,897 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:04:45,823 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:05:33,484 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:05:35,869 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:05:51,163 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:05:54,197 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:06:02,173 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:06:38,871 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:06:46,218 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:07:03,695 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:07:04,482 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:07:34,962 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:08:00,690 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:08:08,428 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:08:11,926 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:08:15,676 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:08:29,824 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:08:45,591 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:08:50,772 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:08:51,627 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:09:18,209 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:09:18,210 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/security.html#p0 status=partial rows=19 entailments=8 premises=21 missing=2
-Stage 1A durable:  30%|██▉       | 105/351 [1:32:36<9:09:36, 134.05s/it]2026-07-09 23:09:21,278 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:09:23,459 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:09:31,572 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:09:44,107 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:09:44,108 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2-multimer/latest/index.html#p0 status=complete rows=6 entailments=4 premises=6 missing=0
-Stage 1A durable:  30%|███       | 106/351 [1:33:02<6:54:53, 101.61s/it]2026-07-09 23:09:51,609 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:10:09,332 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:10:11,707 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:10:31,768 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:10:32,601 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:10:32,603 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2-multimer/latest/prerequisites.html#p0 status=complete rows=30 entailments=5 premises=30 missing=0
-Stage 1A durable:  30%|███       | 107/351 [1:33:51<5:48:24, 85.67s/it] 2026-07-09 23:11:08,289 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:11:09,048 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:11:11,952 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:11:11,953 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2-multimer/latest/quickstart-guide.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  31%|███       | 108/351 [1:34:30<4:50:41, 71.78s/it]2026-07-09 23:11:19,981 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:11:19,981 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/ai-transparency-card/overview.html#p0 status=complete rows=14 entailments=6 premises=14 missing=0
-Stage 1A durable:  31%|███       | 109/351 [1:34:38<3:32:21, 52.65s/it]2026-07-09 23:11:34,519 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:11:52,044 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:11:56,016 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:11:56,019 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold3/latest/index.html#p0 status=complete rows=20 entailments=5 premises=20 missing=0
-Stage 1A durable:  31%|███▏      | 110/351 [1:35:14<3:11:27, 47.67s/it]2026-07-09 23:12:08,946 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:12:08,948 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold3/latest/release-notes.html#p0 status=complete rows=38 entailments=12 premises=38 missing=0
-Stage 1A durable:  32%|███▏      | 111/351 [1:35:27<2:28:59, 37.25s/it]2026-07-09 23:12:14,674 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:12:41,118 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:12:41,122 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold3/latest/prerequisites.html#p0 status=complete rows=29 entailments=7 premises=29 missing=0
-Stage 1A durable:  32%|███▏      | 112/351 [1:35:59<2:22:18, 35.72s/it]2026-07-09 23:12:44,008 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:12:54,554 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:12:54,555 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold3/latest/getting-started.html#p0 status=complete rows=9 entailments=4 premises=9 missing=0
-Stage 1A durable:  32%|███▏      | 113/351 [1:36:13<1:55:10, 29.04s/it]2026-07-09 23:13:08,634 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:13:19,836 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:13:19,838 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold3/latest/example-requests.html#p0 status=complete rows=16 entailments=5 premises=16 missing=0
-Stage 1A durable:  32%|███▏      | 114/351 [1:36:38<1:50:14, 27.91s/it]2026-07-09 23:13:39,410 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:14:08,330 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:14:12,802 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:14:12,809 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold3/latest/performance.html#p0 status=complete rows=75 entailments=26 premises=75 missing=0
-Stage 1A durable:  33%|███▎      | 115/351 [1:37:31<2:19:21, 35.43s/it]2026-07-09 23:14:21,318 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:14:31,949 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:14:49,173 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:14:54,030 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:15:09,203 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:15:09,205 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold3/latest/support-matrix.html#p0 status=complete rows=12 entailments=5 premises=12 missing=0
-Stage 1A durable:  33%|███▎      | 116/351 [1:38:27<2:43:23, 41.72s/it]2026-07-09 23:15:14,124 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:15:25,459 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:15:25,460 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold3/latest/observability.html#p0 status=complete rows=20 entailments=8 premises=20 missing=0
-Stage 1A durable:  33%|███▎      | 117/351 [1:38:43<2:12:54, 34.08s/it]2026-07-09 23:15:42,110 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:15:51,802 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:15:51,804 INFO __main__ - passage=https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/receiver/prometheusreceiver/README.md#p0 status=complete rows=34 entailments=11 premises=34 missing=0
-Stage 1A durable:  34%|███▎      | 118/351 [1:39:10<2:03:19, 31.76s/it]2026-07-09 23:16:03,111 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:16:14,785 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:16:15,265 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:16:15,267 INFO __main__ - passage=https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/exporter/prometheusexporter/README.md#p0 status=complete rows=35 entailments=19 premises=35 missing=0
-Stage 1A durable:  34%|███▍      | 119/351 [1:39:33<1:53:10, 29.27s/it]2026-07-09 23:16:17,884 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:16:30,850 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:16:37,333 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:16:50,706 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:16:50,707 INFO __main__ - passage=https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector/main/exporter/otlpexporter/README.md#p0 status=complete rows=18 entailments=10 premises=18 missing=0
-Stage 1A durable:  34%|███▍      | 120/351 [1:40:09<1:59:49, 31.12s/it]2026-07-09 23:16:55,919 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:17:15,207 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:17:16,711 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:17:32,489 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:17:32,490 INFO __main__ - passage=https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector/main/exporter/debugexporter/README.md#p0 status=complete rows=14 entailments=8 premises=14 missing=0
-Stage 1A durable:  34%|███▍      | 121/351 [1:40:51<2:11:33, 34.32s/it]2026-07-09 23:17:35,745 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:17:55,985 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:17:59,251 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:18:18,127 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:18:18,128 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/introduction.html#p0 status=complete rows=31 entailments=9 premises=31 missing=0
-Stage 1A durable:  35%|███▍      | 122/351 [1:41:36<2:23:56, 37.72s/it]2026-07-09 23:18:30,271 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:18:38,790 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:18:46,173 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:18:55,854 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:19:04,599 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:19:04,600 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/getting-started.html#p0 status=complete rows=15 entailments=6 premises=15 missing=0
-Stage 1A durable:  35%|███▌      | 123/351 [1:42:23<2:33:18, 40.34s/it]2026-07-09 23:19:06,038 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:19:26,997 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:19:26,998 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold3/latest/configuration-alternatives.html#p0 status=complete rows=11 entailments=3 premises=11 missing=0
-Stage 1A durable:  35%|███▌      | 124/351 [1:42:45<2:12:15, 34.96s/it]2026-07-09 23:19:41,647 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:19:45,000 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:20:06,357 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:20:06,359 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/database-selection.html#p0 status=complete rows=10 entailments=5 premises=10 missing=0
-Stage 1A durable:  36%|███▌      | 125/351 [1:43:24<2:16:39, 36.28s/it]2026-07-09 23:20:12,266 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:20:16,064 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:20:29,661 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:20:29,662 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/indexing-databases.html#p0 status=complete rows=14 entailments=5 premises=14 missing=0
-Stage 1A durable:  36%|███▌      | 126/351 [1:43:48<2:01:26, 32.39s/it]2026-07-09 23:20:49,254 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:20:50,143 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:20:55,725 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:21:10,131 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:21:20,202 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:21:20,203 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/optimization.html#p0 status=complete rows=9 entailments=3 premises=9 missing=0
-Stage 1A durable:  36%|███▌      | 127/351 [1:44:38<2:21:14, 37.83s/it]2026-07-09 23:21:21,407 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:21:43,702 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:21:56,772 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:21:57,061 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:22:17,091 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:22:18,203 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:22:18,205 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/performance.html#p0 status=complete rows=24 entailments=8 premises=24 missing=0
-Stage 1A durable:  36%|███▋      | 128/351 [1:45:36<2:43:06, 43.88s/it]2026-07-09 23:22:20,538 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:22:33,346 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:22:55,905 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:23:00,335 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:23:12,055 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:23:14,361 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:23:14,362 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/observability.html#p0 status=complete rows=11 entailments=4 premises=11 missing=0
-Stage 1A durable:  37%|███▋      | 129/351 [1:46:32<2:55:59, 47.57s/it]2026-07-09 23:23:22,268 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:23:40,229 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:23:50,186 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:23:50,186 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/api-reference.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  37%|███▋      | 130/351 [1:47:08<2:42:13, 44.04s/it]2026-07-09 23:23:50,254 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:24:06,106 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:24:10,256 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:24:30,515 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:24:30,516 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold2/latest/release-notes.html#p0 status=complete rows=29 entailments=8 premises=29 missing=0
-Stage 1A durable:  37%|███▋      | 131/351 [1:47:49<2:37:24, 42.93s/it]2026-07-09 23:24:30,855 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:24:45,573 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:24:50,250 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:25:10,878 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:25:10,880 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold2/latest/prerequisites.html#p0 status=complete rows=13 entailments=6 premises=13 missing=0
-Stage 1A durable:  38%|███▊      | 132/351 [1:48:29<2:33:52, 42.16s/it]2026-07-09 23:25:21,641 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:25:26,885 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:25:30,357 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:25:50,188 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:25:57,031 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:25:57,032 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold2/latest/support-matrix.html#p0 status=complete rows=20 entailments=5 premises=20 missing=0
-Stage 1A durable:  38%|███▊      | 133/351 [1:49:15<2:37:31, 43.36s/it]2026-07-09 23:26:04,574 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:26:20,963 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:26:30,737 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:26:38,041 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:26:42,166 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:26:53,627 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:26:53,628 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold2/latest/getting-started.html#p0 status=complete rows=12 entailments=3 premises=12 missing=0
-Stage 1A durable:  38%|███▊      | 134/351 [1:50:12<2:51:10, 47.33s/it]2026-07-09 23:27:00,486 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:27:17,425 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:27:22,203 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:27:35,473 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:27:35,474 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold2/latest/example-requests.html#p0 status=complete rows=16 entailments=9 premises=16 missing=0
-Stage 1A durable:  38%|███▊      | 135/351 [1:50:54<2:44:27, 45.68s/it]2026-07-09 23:27:49,033 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:27:59,436 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:27:59,437 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold2/latest/template-processing.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  39%|███▊      | 136/351 [1:51:17<2:20:21, 39.17s/it]2026-07-09 23:28:03,217 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:28:23,315 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:28:30,640 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:28:32,296 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:28:40,296 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:29:00,671 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:29:08,857 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:29:08,859 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold2/latest/migrating-from-hhr-to-explicit-templates.html#p0 status=complete rows=32 entailments=10 premises=32 missing=0
-Stage 1A durable:  39%|███▉      | 137/351 [1:52:27<2:52:04, 48.24s/it]2026-07-09 23:29:10,634 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:29:27,568 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:29:30,456 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:29:50,961 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:30:00,336 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:30:10,273 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:30:11,583 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:30:11,585 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold2/latest/performance.html#p0 status=complete rows=28 entailments=7 premises=28 missing=0
-Stage 1A durable:  39%|███▉      | 138/351 [1:53:30<3:06:41, 52.59s/it]2026-07-09 23:30:21,063 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:30:41,201 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:30:46,690 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:30:50,118 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:31:04,749 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:31:04,750 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold2/latest/configuration-alternatives.html#p0 status=complete rows=10 entailments=5 premises=10 missing=0
-Stage 1A durable:  40%|███▉      | 139/351 [1:54:23<3:06:25, 52.76s/it]2026-07-09 23:31:10,935 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:31:30,280 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:31:30,281 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/configure.html#p0 status=complete rows=41 entailments=13 premises=41 missing=0
-Stage 1A durable:  40%|███▉      | 140/351 [1:54:48<2:36:48, 44.59s/it]2026-07-09 23:31:32,469 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:31:42,004 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:31:56,974 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:31:56,975 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold3/latest/template-processing.html#p0 status=complete rows=19 entailments=5 premises=19 missing=0
-Stage 1A durable:  40%|████      | 141/351 [1:55:15<2:17:16, 39.22s/it]2026-07-09 23:32:13,011 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:32:13,012 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/molmim/latest/index.html#p0 status=complete rows=8 entailments=7 premises=8 missing=0
-Stage 1A durable:  40%|████      | 142/351 [1:55:31<1:52:23, 32.27s/it]2026-07-09 23:32:15,637 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:32:23,083 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:32:30,681 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:32:30,681 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/molmim/latest/prerequisites.html#p0 status=complete rows=3 entailments=1 premises=3 missing=0
-Stage 1A durable:  41%|████      | 143/351 [1:55:49<1:36:40, 27.89s/it]2026-07-09 23:32:43,474 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:32:43,475 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/molmim/latest/support-matrix.html#p0 status=complete rows=11 entailments=3 premises=11 missing=0
-Stage 1A durable:  41%|████      | 144/351 [1:56:02<1:20:35, 23.36s/it]2026-07-09 23:32:57,116 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:33:01,823 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:33:13,568 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:33:13,569 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/molmim/latest/quickstart-guide.html#p0 status=complete rows=12 entailments=4 premises=12 missing=0
-Stage 1A durable:  41%|████▏     | 145/351 [1:56:32<1:27:08, 25.38s/it]2026-07-09 23:33:23,164 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:33:23,165 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/molmim/latest/deployment-guide.html#p0 status=complete rows=6 entailments=2 premises=6 missing=0
-Stage 1A durable:  42%|████▏     | 146/351 [1:56:41<1:10:32, 20.64s/it]2026-07-09 23:33:41,598 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:34:00,547 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:34:00,548 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/molmim/latest/advanced-usage.html#p0 status=complete rows=9 entailments=2 premises=9 missing=0
-Stage 1A durable:  42%|████▏     | 147/351 [1:57:19<1:27:15, 25.67s/it]2026-07-09 23:34:02,879 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:34:11,840 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:34:19,133 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:34:29,521 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:34:42,075 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:34:54,732 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:34:55,005 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:35:01,905 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:35:13,662 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:35:21,461 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:35:31,720 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:35:42,821 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:35:51,827 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:36:01,659 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:36:21,687 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:36:26,774 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:36:31,652 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:36:42,195 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:36:51,897 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:37:01,680 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:37:11,888 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:37:23,832 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:37:31,836 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:37:53,369 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:37:55,302 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:38:03,073 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:38:11,490 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:38:23,535 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:38:31,814 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:38:45,553 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:38:56,810 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:39:10,360 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:39:20,977 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:39:22,879 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:39:40,285 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:39:41,627 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:39:41,628 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/evo2/latest/index.html#p0 status=partial rows=13 entailments=6 premises=14 missing=1
-Stage 1A durable:  42%|████▏     | 148/351 [2:03:00<6:46:58, 120.29s/it]2026-07-09 23:40:14,061 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:40:19,182 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:40:45,339 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:40:45,341 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/evo2/latest/release-notes.html#p0 status=complete rows=18 entailments=8 premises=18 missing=0
-Stage 1A durable:  42%|████▏     | 149/351 [2:04:03<5:47:50, 103.32s/it]2026-07-09 23:40:55,898 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:40:55,900 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/molmim/latest/endpoints.html#p0 status=complete rows=18 entailments=5 premises=18 missing=0
-Stage 1A durable:  43%|████▎     | 150/351 [2:04:14<4:12:53, 75.49s/it] 2026-07-09 23:40:58,524 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:41:00,400 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:41:21,321 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:41:21,322 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/evo2/latest/quickstart-guide.html#p0 status=complete rows=13 entailments=2 premises=13 missing=0
-Stage 1A durable:  43%|████▎     | 151/351 [2:04:39<3:21:33, 60.47s/it]2026-07-09 23:41:30,740 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:41:40,832 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:41:41,727 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:41:41,728 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/evo2/latest/endpoints.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  43%|████▎     | 152/351 [2:05:00<2:40:41, 48.45s/it]2026-07-09 23:41:56,173 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:42:11,880 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:42:18,558 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:42:24,411 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:42:26,883 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:42:26,884 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/evo2/latest/prerequisites.html#p0 status=complete rows=16 entailments=5 premises=16 missing=0
-Stage 1A durable:  44%|████▎     | 153/351 [2:05:45<2:36:37, 47.46s/it]2026-07-09 23:42:49,595 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:42:57,333 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:42:57,335 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/evo2/latest/benchmarking.html#p0 status=complete rows=38 entailments=8 premises=38 missing=0
-Stage 1A durable:  44%|████▍     | 154/351 [2:06:15<2:19:04, 42.36s/it]2026-07-09 23:43:02,683 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:43:02,684 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/evo2/latest/advanced-usage.html#p0 status=complete rows=12 entailments=5 premises=12 missing=0
-Stage 1A durable:  44%|████▍     | 155/351 [2:06:21<1:42:06, 31.26s/it]2026-07-09 23:43:08,924 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:43:19,133 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:43:31,862 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:43:31,863 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/evo2/latest/custom-models.html#p0 status=complete rows=6 entailments=2 premises=6 missing=0
-Stage 1A durable:  44%|████▍     | 156/351 [2:06:50<1:39:33, 30.63s/it]2026-07-09 23:43:38,694 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:43:38,695 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/index.html#p0 status=complete rows=13 entailments=5 premises=13 missing=0
-Stage 1A durable:  45%|████▍     | 157/351 [2:06:57<1:15:57, 23.49s/it]2026-07-09 23:43:52,106 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:44:00,580 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:44:23,947 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:44:23,948 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/prerequisites.html#p0 status=complete rows=14 entailments=4 premises=14 missing=0
-Stage 1A durable:  45%|████▌     | 158/351 [2:07:42<1:36:34, 30.02s/it]2026-07-09 23:44:26,516 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:44:26,517 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/release-notes.html#p0 status=complete rows=27 entailments=8 premises=27 missing=0
-Stage 1A durable:  45%|████▌     | 159/351 [2:07:45<1:09:42, 21.79s/it]2026-07-09 23:44:42,864 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:44:45,995 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:45:05,018 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:45:05,019 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/getting-started.html#p0 status=complete rows=20 entailments=5 premises=20 missing=0
-Stage 1A durable:  46%|████▌     | 160/351 [2:08:23<1:25:18, 26.80s/it]2026-07-09 23:45:08,367 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:45:18,056 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:45:27,622 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:45:38,771 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:45:38,773 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/configure-nim.html#p0 status=complete rows=28 entailments=7 premises=28 missing=0
-Stage 1A durable:  46%|████▌     | 161/351 [2:08:57<1:31:28, 28.89s/it]2026-07-09 23:45:39,713 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:45:49,523 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:45:49,523 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/endpoints.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  46%|████▌     | 162/351 [2:09:08<1:13:51, 23.45s/it]2026-07-09 23:45:59,306 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:46:20,904 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:46:22,879 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:46:28,777 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:46:28,778 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/utilities.html#p0 status=complete rows=10 entailments=6 premises=10 missing=0
-Stage 1A durable:  46%|████▋     | 163/351 [2:09:47<1:28:19, 28.19s/it]2026-07-09 23:46:38,462 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:46:52,364 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:46:59,234 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:47:09,626 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:47:17,102 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:47:32,383 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:47:32,384 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/benchmarks.html#p0 status=complete rows=10 entailments=5 premises=10 missing=0
-Stage 1A durable:  47%|████▋     | 164/351 [2:10:50<2:00:58, 38.81s/it]2026-07-09 23:47:39,346 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:47:49,522 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:47:57,789 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:48:09,528 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:48:16,898 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:48:30,600 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:48:36,842 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:48:47,372 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:49:00,067 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:49:07,453 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:49:18,685 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:49:28,530 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:49:46,502 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:49:48,923 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:49:58,850 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:50:09,229 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:50:23,189 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:50:37,202 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:50:38,642 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:50:46,727 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:50:59,415 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:51:06,986 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:51:16,787 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:51:40,021 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:51:40,733 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:51:47,310 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:51:56,904 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:52:06,924 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:52:06,925 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/support-matrix.html#p0 status=complete rows=21 entailments=5 premises=21 missing=0
-Stage 1A durable:  47%|████▋     | 165/351 [2:15:25<5:39:32, 109.53s/it]2026-07-09 23:52:18,787 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:52:45,868 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:52:48,455 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:52:56,958 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:52:56,958 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/observability.html#p0 status=complete rows=13 entailments=4 premises=13 missing=0
-Stage 1A durable:  47%|████▋     | 166/351 [2:16:15<4:42:41, 91.68s/it] 2026-07-09 23:53:16,027 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:53:16,236 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:53:23,227 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:53:23,229 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/prerequisites.html#p0 status=complete rows=22 entailments=8 premises=22 missing=0
-Stage 1A durable:  48%|████▊     | 167/351 [2:16:41<3:40:58, 72.06s/it]2026-07-09 23:53:37,456 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:53:37,457 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/index.html#p0 status=complete rows=66 entailments=6 premises=66 missing=0
-Stage 1A durable:  48%|████▊     | 168/351 [2:16:55<2:46:51, 54.71s/it]2026-07-09 23:53:51,886 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:53:59,544 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:53:59,545 INFO __main__ - passage=https://docs.nvidia.com/nim/benchmarking/llm/latest/performance.html#p0 status=complete rows=8 entailments=4 premises=8 missing=0
-Stage 1A durable:  48%|████▊     | 169/351 [2:17:18<2:16:15, 44.92s/it]2026-07-09 23:54:08,747 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:54:08,749 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/release-notes.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  48%|████▊     | 170/351 [2:17:27<1:43:11, 34.21s/it]2026-07-09 23:54:13,924 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:54:35,191 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:54:35,191 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/audio2face-2d/latest/getting-started.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  49%|████▊     | 171/351 [2:17:53<1:35:38, 31.88s/it]2026-07-09 23:54:36,059 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:54:36,061 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/observability.html#p0 status=complete rows=24 entailments=9 premises=24 missing=0
-Stage 1A durable:  49%|████▉     | 172/351 [2:17:54<1:07:21, 22.58s/it]2026-07-09 23:54:42,776 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:54:42,777 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/eye-contact/latest/getting-started.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  49%|████▉     | 173/351 [2:18:01<52:51, 17.82s/it]  2026-07-09 23:54:56,709 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:55:24,071 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:55:37,173 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:55:38,240 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:55:50,317 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:55:50,319 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/eye-contact/latest/advanced-usage.html#p0 status=complete rows=39 entailments=15 premises=39 missing=0
-Stage 1A durable:  50%|████▉     | 174/351 [2:19:08<1:36:34, 32.74s/it]2026-07-09 23:55:59,753 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:56:01,901 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:56:11,366 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:56:20,257 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:56:28,385 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:56:39,066 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:56:49,314 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:57:08,478 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:57:08,717 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:57:20,193 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:57:31,554 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:57:45,139 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:57:45,139 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/eye-contact/latest/performance-results.html#p0 status=complete rows=3 entailments=1 premises=3 missing=0
-Stage 1A durable:  50%|████▉     | 175/351 [2:21:03<2:48:15, 57.36s/it]2026-07-09 23:57:48,352 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:57:58,848 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:58:08,219 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:58:28,255 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:58:38,189 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:58:39,312 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:58:39,313 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/eye-contact/latest/observability.html#p0 status=complete rows=5 entailments=2 premises=5 missing=0
-Stage 1A durable:  50%|█████     | 176/351 [2:21:57<2:44:30, 56.40s/it]2026-07-09 23:58:59,423 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:58:59,426 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/eye-contact/latest/basic-inference.html#p0 status=complete rows=70 entailments=11 premises=70 missing=0
-Stage 1A durable:  50%|█████     | 177/351 [2:22:17<2:11:59, 45.52s/it]2026-07-09 23:59:18,346 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:59:18,960 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:59:21,230 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:59:36,020 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:59:36,021 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/eye-contact/latest/support-matrix.html#p0 status=complete rows=23 entailments=9 premises=23 missing=0
-Stage 1A durable:  51%|█████     | 178/351 [2:22:54<2:03:31, 42.84s/it]2026-07-09 23:59:39,556 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 23:59:56,935 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:00:03,255 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:00:12,417 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:00:12,418 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/studio-voice/latest/overview.html#p0 status=complete rows=10 entailments=6 premises=10 missing=0
-Stage 1A durable:  51%|█████     | 179/351 [2:23:30<1:57:16, 40.91s/it]2026-07-10 00:00:23,872 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:00:23,873 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/eye-contact/latest/eula.html#p0 status=partial rows=1 entailments=2 premises=2 missing=1
-Stage 1A durable:  51%|█████▏    | 180/351 [2:23:42<1:31:24, 32.07s/it]2026-07-10 00:00:44,125 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:00:51,660 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:00:51,661 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/studio-voice/latest/getting-started.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  52%|█████▏    | 181/351 [2:24:10<1:27:13, 30.79s/it]2026-07-10 00:01:03,828 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:01:03,828 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/studio-voice/latest/model-profile-table.html#p0 status=complete rows=6 entailments=2 premises=6 missing=0
-Stage 1A durable:  52%|█████▏    | 182/351 [2:24:22<1:10:58, 25.20s/it]2026-07-10 00:01:12,829 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:01:26,404 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:01:54,460 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:01:54,462 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/studio-voice/latest/advanced-usage.html#p0 status=complete rows=19 entailments=6 premises=19 missing=0
-Stage 1A durable:  52%|█████▏    | 183/351 [2:25:12<1:31:55, 32.83s/it]2026-07-10 00:01:57,895 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:01:57,896 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/studio-voice/latest/running-inference.html#p0 status=complete rows=19 entailments=4 premises=19 missing=0
-Stage 1A durable:  52%|█████▏    | 184/351 [2:25:16<1:06:49, 24.01s/it]2026-07-10 00:02:27,461 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:02:30,618 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:02:31,906 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:02:48,620 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:02:48,621 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/studio-voice/latest/support-matrix.html#p0 status=complete rows=6 entailments=2 premises=6 missing=0
-Stage 1A durable:  53%|█████▎    | 185/351 [2:26:07<1:28:36, 32.03s/it]2026-07-10 00:02:52,153 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:02:52,154 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/studio-voice/latest/observability.html#p0 status=complete rows=4 entailments=2 premises=4 missing=0
-Stage 1A durable:  53%|█████▎    | 186/351 [2:26:10<1:04:33, 23.48s/it]2026-07-10 00:03:11,040 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:03:20,917 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:03:46,886 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:04:03,518 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:04:03,521 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/maisi/latest/overview.html#p0 status=complete rows=17 entailments=4 premises=17 missing=0
-Stage 1A durable:  53%|█████▎    | 187/351 [2:27:22<1:43:26, 37.84s/it]2026-07-10 00:04:24,420 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:04:54,481 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:05:22,804 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:05:35,497 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:05:35,499 INFO __main__ - passage=https://docs.nvidia.com/nim/maxine/studio-voice/latest/eula.html#p0 status=complete rows=3 entailments=3 premises=3 missing=0
-Stage 1A durable:  54%|█████▎    | 188/351 [2:28:54<2:26:55, 54.08s/it]2026-07-10 00:05:55,161 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:06:09,852 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:07:34,122 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"

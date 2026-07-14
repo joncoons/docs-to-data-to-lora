@@ -255,7 +255,7 @@ async def _run_crawl(task_id: str, req: CrawlRequest) -> None:
         elif domain_cfg:
             effective_purl_map = domain_cfg.collection_routing.mode == "product_url_map"
         else:
-            effective_purl_map = req.collection_name is None  # legacy: null collection → map
+            effective_purl_map = req.collection_name is None  # compatibility: null collection -> map
 
         # max_depth / batch_ingest_size: request > domain config defaults
         effective_max_depth = req.max_depth

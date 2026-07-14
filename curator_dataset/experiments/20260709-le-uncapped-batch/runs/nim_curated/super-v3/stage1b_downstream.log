@@ -1,872 +1,0 @@
-2026-07-10 08:29:54,239 WARNING le_downstream - Excluding 1 selected passages with incomplete Stage 1A status: {'https://docs.nvidia.com/nim/bionemo/boltz2/latest/deploy-helm.html#p0': 'le_parse_failed'}
-2026-07-10 08:29:54,241 INFO le_downstream - Stage 1A latest status for selected passages: {'complete': 430} missing=0
-2026-07-10 08:29:55,117 INFO le_downstream - Source filter: doc_kind=html passages=430/498 stage1a_rows=8438/9312
-2026-07-10 08:29:55,232 INFO le_downstream - LE downstream start: collection=nim_curated output=curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3 stage=1b resume=True targets=[('https://llm.example.com/v1', 'nvidia/nvidia/nemotron-3-ultra', None)]
-2026-07-10 08:29:55,691 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search?scroll=5m [status:200 duration:0.459s]
-2026-07-10 08:29:56,317 INFO elastic_transport.transport - POST https://10.43.233.46:9200/_search/scroll [status:200 duration:0.397s]
-2026-07-10 08:29:56,592 INFO elastic_transport.transport - POST https://10.43.233.46:9200/_search/scroll [status:200 duration:0.042s]
-2026-07-10 08:29:56,610 INFO elastic_transport.transport - DELETE https://10.43.233.46:9200/_search/scroll [status:200 duration:0.001s]
-2026-07-10 08:29:56,611 INFO le_downstream - Stage 1B seed vectors: 430/430 passages, 1643/1643 chunk IDs
-Stage 1B:   0%|          | 0/430 [00:00<?, ?it/s]2026-07-10 08:29:56,863 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.239s]
-2026-07-10 08:29:56,864 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.239s]
-2026-07-10 08:29:56,864 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.242s]
-2026-07-10 08:29:56,865 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.239s]
-2026-07-10 08:29:59,744 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   0%|          | 1/430 [00:03<22:15,  3.11s/it]2026-07-10 08:29:59,758 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.009s]
-2026-07-10 08:30:00,647 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   0%|          | 2/430 [00:04<12:55,  1.81s/it]2026-07-10 08:30:00,655 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:03,125 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   1%|          | 3/430 [00:06<15:03,  2.12s/it]2026-07-10 08:30:03,135 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:30:04,685 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   1%|          | 4/430 [00:08<13:27,  1.90s/it]2026-07-10 08:30:04,694 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:30:09,531 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   1%|          | 5/430 [00:12<20:57,  2.96s/it]2026-07-10 08:30:09,542 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.010s]
-2026-07-10 08:30:09,922 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   1%|▏         | 6/430 [00:13<14:44,  2.09s/it]2026-07-10 08:30:09,929 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:10,309 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   2%|▏         | 7/430 [00:13<10:47,  1.53s/it]2026-07-10 08:30:10,318 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:30:13,304 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   2%|▏         | 8/430 [00:16<14:02,  2.00s/it]2026-07-10 08:30:13,311 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:14,983 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   2%|▏         | 9/430 [00:18<13:19,  1.90s/it]2026-07-10 08:30:14,993 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:30:16,532 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   2%|▏         | 10/430 [00:19<12:31,  1.79s/it]2026-07-10 08:30:16,540 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:30:19,086 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   3%|▎         | 11/430 [00:22<14:07,  2.02s/it]2026-07-10 08:30:19,095 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:30:24,397 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   3%|▎         | 12/430 [00:27<21:03,  3.02s/it]2026-07-10 08:30:24,405 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:24,938 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   3%|▎         | 13/430 [00:28<15:47,  2.27s/it]2026-07-10 08:30:24,947 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.009s]
-2026-07-10 08:30:26,107 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   3%|▎         | 14/430 [00:29<13:26,  1.94s/it]2026-07-10 08:30:26,115 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:28,543 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   3%|▎         | 15/430 [00:31<14:26,  2.09s/it]2026-07-10 08:30:28,551 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:31,211 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   4%|▎         | 16/430 [00:34<15:36,  2.26s/it]2026-07-10 08:30:31,221 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 08:30:31,223 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.010s]
-2026-07-10 08:30:31,229 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:33,548 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   4%|▍         | 18/430 [00:36<12:03,  1.76s/it]2026-07-10 08:30:33,555 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:30:35,348 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   4%|▍         | 19/430 [00:38<12:06,  1.77s/it]2026-07-10 08:30:35,356 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:38,220 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   5%|▍         | 20/430 [00:41<14:03,  2.06s/it]2026-07-10 08:30:38,229 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:40,352 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   5%|▍         | 21/430 [00:43<14:09,  2.08s/it]2026-07-10 08:30:40,360 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:42,055 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   5%|▌         | 22/430 [00:45<13:24,  1.97s/it]2026-07-10 08:30:42,064 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:45,063 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   5%|▌         | 23/430 [00:48<15:23,  2.27s/it]2026-07-10 08:30:45,070 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:30:46,967 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   6%|▌         | 24/430 [00:50<14:38,  2.16s/it]2026-07-10 08:30:46,975 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:48,391 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   6%|▌         | 25/430 [00:51<13:08,  1.95s/it]2026-07-10 08:30:48,399 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:30:50,312 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   6%|▌         | 26/430 [00:53<13:03,  1.94s/it]2026-07-10 08:30:50,321 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:30:53,649 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   6%|▋         | 27/430 [00:57<15:48,  2.35s/it]2026-07-10 08:30:53,656 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:30:54,726 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   7%|▋         | 28/430 [00:58<13:13,  1.97s/it]2026-07-10 08:30:54,733 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:30:56,140 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   7%|▋         | 29/430 [00:59<12:04,  1.81s/it]2026-07-10 08:30:56,151 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.010s]
-2026-07-10 08:30:57,272 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   7%|▋         | 30/430 [01:00<10:42,  1.61s/it]2026-07-10 08:30:57,279 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:31:01,562 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   7%|▋         | 31/430 [01:04<16:00,  2.41s/it]2026-07-10 08:31:01,570 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:01,631 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 08:31:01,638 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:31:03,550 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   8%|▊         | 33/430 [01:06<11:37,  1.76s/it]2026-07-10 08:31:03,557 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:31:05,188 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   8%|▊         | 34/430 [01:08<11:23,  1.73s/it]2026-07-10 08:31:05,196 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:06,642 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   8%|▊         | 35/430 [01:10<10:54,  1.66s/it]2026-07-10 08:31:06,648 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:31:08,673 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   8%|▊         | 36/430 [01:12<11:32,  1.76s/it]2026-07-10 08:31:08,682 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:31:12,115 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   9%|▊         | 37/430 [01:15<14:35,  2.23s/it]2026-07-10 08:31:12,124 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:12,731 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   9%|▉         | 38/430 [01:16<11:33,  1.77s/it]2026-07-10 08:31:12,739 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:16,279 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   9%|▉         | 39/430 [01:19<14:53,  2.28s/it]2026-07-10 08:31:16,288 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:17,645 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:   9%|▉         | 40/430 [01:21<13:05,  2.02s/it]2026-07-10 08:31:17,652 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:31:21,350 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  10%|▉         | 41/430 [01:24<16:17,  2.51s/it]2026-07-10 08:31:21,358 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:22,917 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  10%|▉         | 42/430 [01:26<14:26,  2.23s/it]2026-07-10 08:31:22,924 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:24,644 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  10%|█         | 43/430 [01:28<13:25,  2.08s/it]2026-07-10 08:31:24,651 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:31:25,032 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  10%|█         | 44/430 [01:28<10:08,  1.58s/it]2026-07-10 08:31:25,039 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:31:26,725 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  10%|█         | 45/430 [01:30<10:20,  1.61s/it]2026-07-10 08:31:26,733 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:29,478 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  11%|█         | 46/430 [01:32<12:29,  1.95s/it]2026-07-10 08:31:29,486 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:31,227 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  11%|█         | 47/430 [01:34<12:04,  1.89s/it]2026-07-10 08:31:31,235 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:33,981 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  11%|█         | 48/430 [01:37<13:41,  2.15s/it]2026-07-10 08:31:33,989 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:35,995 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  11%|█▏        | 49/430 [01:39<13:23,  2.11s/it]2026-07-10 08:31:36,002 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:31:38,226 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  12%|█▏        | 50/430 [01:41<13:35,  2.15s/it]2026-07-10 08:31:38,234 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:40,899 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  12%|█▏        | 51/430 [01:44<14:33,  2.30s/it]2026-07-10 08:31:40,907 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:42,244 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  12%|█▏        | 52/430 [01:45<12:42,  2.02s/it]2026-07-10 08:31:42,251 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:31:43,576 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  12%|█▏        | 53/430 [01:46<11:22,  1.81s/it]2026-07-10 08:31:43,583 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:31:46,991 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  13%|█▎        | 54/430 [01:50<14:21,  2.29s/it]2026-07-10 08:31:46,998 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:31:48,611 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  13%|█▎        | 55/430 [01:51<13:03,  2.09s/it]2026-07-10 08:31:48,617 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:31:50,252 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  13%|█▎        | 56/430 [01:53<12:11,  1.96s/it]2026-07-10 08:31:50,261 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:51,076 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  13%|█▎        | 57/430 [01:54<10:02,  1.62s/it]2026-07-10 08:31:51,083 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:31:56,746 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  13%|█▎        | 58/430 [02:00<17:33,  2.83s/it]2026-07-10 08:31:56,754 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:58,639 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  14%|█▎        | 59/430 [02:02<15:46,  2.55s/it]2026-07-10 08:31:58,647 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:31:58,881 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  14%|█▍        | 60/430 [02:02<11:27,  1.86s/it]2026-07-10 08:31:58,888 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:31:59,386 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  14%|█▍        | 61/430 [02:02<08:55,  1.45s/it]2026-07-10 08:31:59,396 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.009s]
-2026-07-10 08:32:03,192 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  14%|█▍        | 62/430 [02:06<13:14,  2.16s/it]2026-07-10 08:32:03,199 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:32:04,132 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  15%|█▍        | 63/430 [02:07<10:57,  1.79s/it]2026-07-10 08:32:04,139 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:32:05,824 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  15%|█▍        | 64/430 [02:09<10:45,  1.76s/it]2026-07-10 08:32:05,834 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.009s]
-2026-07-10 08:32:06,997 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  15%|█▌        | 65/430 [02:10<09:38,  1.59s/it]2026-07-10 08:32:07,006 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:10,645 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  15%|█▌        | 66/430 [02:14<13:22,  2.20s/it]2026-07-10 08:32:10,654 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:12,213 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  16%|█▌        | 67/430 [02:15<12:10,  2.01s/it]2026-07-10 08:32:12,221 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:12,816 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  16%|█▌        | 68/430 [02:16<09:35,  1.59s/it]2026-07-10 08:32:12,823 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:32:15,992 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  16%|█▌        | 69/430 [02:19<12:25,  2.07s/it]2026-07-10 08:32:16,000 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:17,173 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  16%|█▋        | 70/430 [02:20<10:48,  1.80s/it]2026-07-10 08:32:17,181 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:18,623 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  17%|█▋        | 71/430 [02:21<10:08,  1.70s/it]2026-07-10 08:32:18,629 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:32:21,146 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  17%|█▋        | 72/430 [02:24<11:35,  1.94s/it]2026-07-10 08:32:21,155 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:32:23,130 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  17%|█▋        | 73/430 [02:26<11:38,  1.96s/it]2026-07-10 08:32:23,138 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:27,920 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  17%|█▋        | 74/430 [02:31<16:38,  2.81s/it]2026-07-10 08:32:27,928 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:28,854 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  17%|█▋        | 75/430 [02:32<13:16,  2.24s/it]2026-07-10 08:32:28,863 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:32:29,879 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  18%|█▊        | 76/430 [02:33<11:04,  1.88s/it]2026-07-10 08:32:29,885 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:32:31,324 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  18%|█▊        | 77/430 [02:34<10:17,  1.75s/it]2026-07-10 08:32:31,332 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:35,010 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  18%|█▊        | 78/430 [02:38<13:40,  2.33s/it]2026-07-10 08:32:35,019 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:32:35,284 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  18%|█▊        | 79/430 [02:38<10:01,  1.71s/it]2026-07-10 08:32:35,291 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:32:37,277 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  19%|█▊        | 80/430 [02:40<10:28,  1.80s/it]2026-07-10 08:32:37,284 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:32:38,828 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  19%|█▉        | 81/430 [02:42<10:01,  1.72s/it]2026-07-10 08:32:38,835 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:32:41,277 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  19%|█▉        | 82/430 [02:44<11:15,  1.94s/it]2026-07-10 08:32:41,286 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:42,950 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  19%|█▉        | 83/430 [02:46<10:45,  1.86s/it]2026-07-10 08:32:42,957 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:49,849 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  20%|█▉        | 84/430 [02:53<19:26,  3.37s/it]2026-07-10 08:32:49,856 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:32:50,815 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  20%|█▉        | 85/430 [02:54<15:14,  2.65s/it]2026-07-10 08:32:50,823 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:50,923 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  20%|██        | 86/430 [02:54<10:49,  1.89s/it]2026-07-10 08:32:50,931 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:51,197 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  20%|██        | 87/430 [02:54<08:01,  1.40s/it]2026-07-10 08:32:51,206 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:32:54,727 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  20%|██        | 88/430 [02:58<11:38,  2.04s/it]2026-07-10 08:32:54,735 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:56,533 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  21%|██        | 89/430 [02:59<11:12,  1.97s/it]2026-07-10 08:32:56,541 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:32:59,945 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  21%|██        | 90/430 [03:03<13:37,  2.40s/it]2026-07-10 08:32:59,953 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:33:02,210 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  21%|██        | 91/430 [03:05<13:20,  2.36s/it]2026-07-10 08:33:02,221 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.010s]
-2026-07-10 08:33:02,426 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  21%|██▏       | 92/430 [03:05<09:40,  1.72s/it]2026-07-10 08:33:02,432 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:05,427 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  22%|██▏       | 93/430 [03:08<11:48,  2.10s/it]2026-07-10 08:33:05,435 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:05,722 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  22%|██▏       | 94/430 [03:09<08:44,  1.56s/it]2026-07-10 08:33:05,729 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:08,315 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  22%|██▏       | 95/430 [03:11<10:26,  1.87s/it]2026-07-10 08:33:08,321 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:09,721 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  22%|██▏       | 96/430 [03:13<09:38,  1.73s/it]2026-07-10 08:33:09,730 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:33:12,830 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  23%|██▎       | 97/430 [03:16<11:54,  2.14s/it]2026-07-10 08:33:12,836 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:33:13,167 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  23%|██▎       | 98/430 [03:16<08:51,  1.60s/it]2026-07-10 08:33:13,174 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:15,629 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  23%|██▎       | 99/430 [03:18<10:15,  1.86s/it]2026-07-10 08:33:15,637 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:33:18,455 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  23%|██▎       | 100/430 [03:21<11:49,  2.15s/it]2026-07-10 08:33:18,463 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:18,960 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  23%|██▎       | 101/430 [03:22<09:04,  1.66s/it]2026-07-10 08:33:18,966 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:21,314 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  24%|██▎       | 102/430 [03:24<10:11,  1.87s/it]2026-07-10 08:33:21,320 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:33:22,666 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  24%|██▍       | 103/430 [03:26<09:19,  1.71s/it]2026-07-10 08:33:22,674 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:33:25,083 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  24%|██▍       | 104/430 [03:28<10:26,  1.92s/it]2026-07-10 08:33:25,090 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:27,517 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  24%|██▍       | 105/430 [03:30<11:14,  2.08s/it]2026-07-10 08:33:27,523 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:33:31,740 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  25%|██▍       | 106/430 [03:35<14:41,  2.72s/it]2026-07-10 08:33:31,747 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:34,792 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  25%|██▍       | 107/430 [03:38<15:10,  2.82s/it]2026-07-10 08:33:34,798 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:33:35,863 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  25%|██▌       | 108/430 [03:39<12:19,  2.30s/it]2026-07-10 08:33:35,871 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:33:38,078 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  25%|██▌       | 109/430 [03:41<12:09,  2.27s/it]2026-07-10 08:33:38,085 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:39,463 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  26%|██▌       | 110/430 [03:42<10:41,  2.01s/it]2026-07-10 08:33:39,469 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:33:43,208 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  26%|██▌       | 111/430 [03:46<13:26,  2.53s/it]2026-07-10 08:33:43,216 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:33:43,615 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  26%|██▌       | 112/430 [03:46<10:01,  1.89s/it]2026-07-10 08:33:43,622 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:46,562 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  26%|██▋       | 113/430 [03:49<11:39,  2.21s/it]2026-07-10 08:33:46,570 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:33:46,724 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  27%|██▋       | 114/430 [03:50<08:23,  1.59s/it]2026-07-10 08:33:46,731 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:49,402 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  27%|██▋       | 115/430 [03:52<10:04,  1.92s/it]2026-07-10 08:33:49,409 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:50,542 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  27%|██▋       | 116/430 [03:53<08:49,  1.69s/it]2026-07-10 08:33:50,549 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:33:51,867 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  27%|██▋       | 117/430 [03:55<08:13,  1.58s/it]2026-07-10 08:33:51,875 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:33:52,885 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  27%|██▋       | 118/430 [03:56<07:19,  1.41s/it]2026-07-10 08:33:52,894 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:33:57,923 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  28%|██▊       | 119/430 [04:01<12:56,  2.50s/it]2026-07-10 08:33:57,931 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:33:58,852 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  28%|██▊       | 120/430 [04:02<10:28,  2.03s/it]2026-07-10 08:33:58,859 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:01,355 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  28%|██▊       | 121/430 [04:04<11:10,  2.17s/it]2026-07-10 08:34:01,361 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:01,999 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  28%|██▊       | 122/430 [04:05<08:47,  1.71s/it]2026-07-10 08:34:02,005 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:03,032 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  29%|██▊       | 123/430 [04:06<07:43,  1.51s/it]2026-07-10 08:34:03,038 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:05,467 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  29%|██▉       | 124/430 [04:08<09:06,  1.79s/it]2026-07-10 08:34:05,474 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:07,034 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  29%|██▉       | 125/430 [04:10<08:44,  1.72s/it]2026-07-10 08:34:07,043 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:34:10,481 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  29%|██▉       | 126/430 [04:13<11:20,  2.24s/it]2026-07-10 08:34:10,489 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:13,584 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  30%|██▉       | 127/430 [04:16<12:36,  2.50s/it]2026-07-10 08:34:13,590 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:15,548 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  30%|██▉       | 128/430 [04:18<11:45,  2.34s/it]2026-07-10 08:34:15,554 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:16,089 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  30%|███       | 129/430 [04:19<09:01,  1.80s/it]2026-07-10 08:34:16,096 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:17,119 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  30%|███       | 130/430 [04:20<07:50,  1.57s/it]2026-07-10 08:34:17,126 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:18,716 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  30%|███       | 131/430 [04:22<07:51,  1.58s/it]2026-07-10 08:34:18,723 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:21,352 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  31%|███       | 132/430 [04:24<09:24,  1.89s/it]2026-07-10 08:34:21,359 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:23,300 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  31%|███       | 133/430 [04:26<09:27,  1.91s/it]2026-07-10 08:34:23,307 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:24,925 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  31%|███       | 134/430 [04:28<09:00,  1.82s/it]2026-07-10 08:34:24,932 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:28,540 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  31%|███▏      | 135/430 [04:31<11:36,  2.36s/it]2026-07-10 08:34:28,548 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:34:29,605 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  32%|███▏      | 136/430 [04:32<09:40,  1.97s/it]2026-07-10 08:34:29,611 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:33,332 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  32%|███▏      | 137/430 [04:36<12:12,  2.50s/it]2026-07-10 08:34:33,339 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:33,348 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 08:34:33,354 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:36,018 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  32%|███▏      | 139/430 [04:39<09:31,  1.97s/it]2026-07-10 08:34:36,026 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:34:37,877 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  33%|███▎      | 140/430 [04:41<09:22,  1.94s/it]2026-07-10 08:34:37,884 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:38,302 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  33%|███▎      | 141/430 [04:41<07:25,  1.54s/it]2026-07-10 08:34:38,308 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:42,891 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  33%|███▎      | 142/430 [04:46<11:23,  2.37s/it]2026-07-10 08:34:42,900 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:34:43,076 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  33%|███▎      | 143/430 [04:46<08:25,  1.76s/it]2026-07-10 08:34:43,084 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:45,218 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  33%|███▎      | 144/430 [04:48<08:54,  1.87s/it]2026-07-10 08:34:45,224 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:48,484 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  34%|███▎      | 145/430 [04:51<10:47,  2.27s/it]2026-07-10 08:34:48,491 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:50,798 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  34%|███▍      | 146/430 [04:54<10:49,  2.29s/it]2026-07-10 08:34:50,804 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:51,745 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  34%|███▍      | 147/430 [04:55<08:55,  1.89s/it]2026-07-10 08:34:51,751 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:34:53,683 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  34%|███▍      | 148/430 [04:57<08:57,  1.90s/it]2026-07-10 08:34:53,691 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:34:55,603 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  35%|███▍      | 149/430 [04:58<08:56,  1.91s/it]2026-07-10 08:34:55,611 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:34:57,377 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  35%|███▍      | 150/430 [05:00<08:43,  1.87s/it]2026-07-10 08:34:57,386 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:34:59,210 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  35%|███▌      | 151/430 [05:02<08:38,  1.86s/it]2026-07-10 08:34:59,216 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:00,778 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  35%|███▌      | 152/430 [05:04<08:12,  1.77s/it]2026-07-10 08:35:00,786 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:35:04,314 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  36%|███▌      | 153/430 [05:07<10:37,  2.30s/it]2026-07-10 08:35:04,321 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:07,106 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  36%|███▌      | 154/430 [05:10<11:15,  2.45s/it]2026-07-10 08:35:07,113 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:09,701 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  36%|███▌      | 155/430 [05:13<11:25,  2.49s/it]2026-07-10 08:35:09,707 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:09,765 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 08:35:09,771 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:11,336 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  37%|███▋      | 157/430 [05:14<07:49,  1.72s/it]2026-07-10 08:35:11,342 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:14,217 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  37%|███▋      | 158/430 [05:17<09:05,  2.01s/it]2026-07-10 08:35:14,222 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:14,813 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  37%|███▋      | 159/430 [05:18<07:23,  1.64s/it]2026-07-10 08:35:14,821 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:35:17,455 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  37%|███▋      | 160/430 [05:20<08:36,  1.91s/it]2026-07-10 08:35:17,461 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:19,542 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  37%|███▋      | 161/430 [05:22<08:47,  1.96s/it]2026-07-10 08:35:19,550 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:35:21,490 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  38%|███▊      | 162/430 [05:24<08:44,  1.96s/it]2026-07-10 08:35:21,497 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:24,573 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  38%|███▊      | 163/430 [05:27<10:09,  2.28s/it]2026-07-10 08:35:24,580 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:26,109 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  38%|███▊      | 164/430 [05:29<09:09,  2.06s/it]2026-07-10 08:35:26,116 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:27,275 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  38%|███▊      | 165/430 [05:30<07:56,  1.80s/it]2026-07-10 08:35:27,281 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:29,047 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  39%|███▊      | 166/430 [05:32<07:52,  1.79s/it]2026-07-10 08:35:29,055 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:35:31,261 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  39%|███▉      | 167/430 [05:34<08:24,  1.92s/it]2026-07-10 08:35:31,268 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:33,034 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  39%|███▉      | 168/430 [05:36<08:11,  1.87s/it]2026-07-10 08:35:33,041 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:35,616 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  39%|███▉      | 169/430 [05:38<09:04,  2.09s/it]2026-07-10 08:35:35,622 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:37,456 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  40%|███▉      | 170/430 [05:40<08:43,  2.01s/it]2026-07-10 08:35:37,463 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:38,761 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  40%|███▉      | 171/430 [05:42<07:46,  1.80s/it]2026-07-10 08:35:38,767 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:41,940 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  40%|████      | 172/430 [05:45<09:31,  2.21s/it]2026-07-10 08:35:41,947 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:44,373 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  40%|████      | 173/430 [05:47<09:45,  2.28s/it]2026-07-10 08:35:44,380 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:45,831 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  40%|████      | 174/430 [05:49<08:40,  2.03s/it]2026-07-10 08:35:45,837 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:48,127 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  41%|████      | 175/430 [05:51<08:58,  2.11s/it]2026-07-10 08:35:48,134 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:49,396 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  41%|████      | 176/430 [05:52<07:52,  1.86s/it]2026-07-10 08:35:49,402 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:51,716 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  41%|████      | 177/430 [05:55<08:25,  2.00s/it]2026-07-10 08:35:51,722 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:52,612 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  41%|████▏     | 178/430 [05:55<07:00,  1.67s/it]2026-07-10 08:35:52,619 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:54,941 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  42%|████▏     | 179/430 [05:58<07:48,  1.87s/it]2026-07-10 08:35:54,948 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:35:58,926 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  42%|████▏     | 180/430 [06:02<10:25,  2.50s/it]2026-07-10 08:35:58,932 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:35:59,779 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  42%|████▏     | 181/430 [06:03<08:19,  2.01s/it]2026-07-10 08:35:59,786 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:03,414 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  42%|████▏     | 182/430 [06:06<10:18,  2.50s/it]2026-07-10 08:36:03,420 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:03,789 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  43%|████▎     | 183/430 [06:07<07:39,  1.86s/it]2026-07-10 08:36:03,796 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:05,020 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  43%|████▎     | 184/430 [06:08<06:50,  1.67s/it]2026-07-10 08:36:05,026 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:06,422 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  43%|████▎     | 185/430 [06:09<06:29,  1.59s/it]2026-07-10 08:36:06,429 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:12,358 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  43%|████▎     | 186/430 [06:15<11:46,  2.89s/it]2026-07-10 08:36:12,364 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:12,939 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  43%|████▎     | 187/430 [06:16<08:54,  2.20s/it]2026-07-10 08:36:12,946 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:13,597 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  44%|████▎     | 188/430 [06:16<07:00,  1.74s/it]2026-07-10 08:36:13,604 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:15,343 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  44%|████▍     | 189/430 [06:18<06:59,  1.74s/it]2026-07-10 08:36:15,348 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:17,844 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  44%|████▍     | 190/430 [06:21<07:52,  1.97s/it]2026-07-10 08:36:17,852 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:19,478 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  44%|████▍     | 191/430 [06:22<07:26,  1.87s/it]2026-07-10 08:36:19,484 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:20,723 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  45%|████▍     | 192/430 [06:24<06:40,  1.68s/it]2026-07-10 08:36:20,729 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.004s]
-2026-07-10 08:36:22,680 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  45%|████▍     | 193/430 [06:26<06:58,  1.76s/it]2026-07-10 08:36:22,687 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:25,241 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  45%|████▌     | 194/430 [06:28<07:52,  2.00s/it]2026-07-10 08:36:25,247 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:30,000 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  45%|████▌     | 195/430 [06:33<11:04,  2.83s/it]2026-07-10 08:36:30,006 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:31,533 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  46%|████▌     | 196/430 [06:34<09:31,  2.44s/it]2026-07-10 08:36:31,539 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:31,698 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  46%|████▌     | 197/430 [06:35<06:49,  1.76s/it]2026-07-10 08:36:31,704 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:32,985 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  46%|████▌     | 198/430 [06:36<06:15,  1.62s/it]2026-07-10 08:36:32,991 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:35,399 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  46%|████▋     | 199/430 [06:38<07:08,  1.86s/it]2026-07-10 08:36:35,406 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:36,872 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  47%|████▋     | 200/430 [06:40<06:40,  1.74s/it]2026-07-10 08:36:36,878 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:41,385 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  47%|████▋     | 201/430 [06:44<09:49,  2.57s/it]2026-07-10 08:36:41,391 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:43,674 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  47%|████▋     | 202/430 [06:47<09:27,  2.49s/it]2026-07-10 08:36:43,682 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:46,211 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  47%|████▋     | 203/430 [06:49<09:28,  2.50s/it]2026-07-10 08:36:46,217 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:46,463 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  47%|████▋     | 204/430 [06:49<06:52,  1.83s/it]2026-07-10 08:36:46,469 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:48,632 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  48%|████▊     | 205/430 [06:51<07:14,  1.93s/it]2026-07-10 08:36:48,638 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:48,919 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  48%|████▊     | 206/430 [06:52<05:21,  1.44s/it]2026-07-10 08:36:48,924 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:50,788 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  48%|████▊     | 207/430 [06:54<05:49,  1.57s/it]2026-07-10 08:36:50,794 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:53,206 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  48%|████▊     | 208/430 [06:56<06:44,  1.82s/it]2026-07-10 08:36:53,212 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:55,309 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  49%|████▊     | 209/430 [06:58<07:01,  1.91s/it]2026-07-10 08:36:55,315 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:36:59,291 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  49%|████▉     | 210/430 [07:02<09:16,  2.53s/it]2026-07-10 08:36:59,296 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:36:59,411 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  49%|████▉     | 211/430 [07:02<06:35,  1.81s/it]2026-07-10 08:36:59,417 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:02,264 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  49%|████▉     | 212/430 [07:05<07:42,  2.12s/it]2026-07-10 08:37:02,272 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:04,678 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  50%|████▉     | 213/430 [07:08<07:59,  2.21s/it]2026-07-10 08:37:04,684 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:06,416 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  50%|████▉     | 214/430 [07:09<07:26,  2.07s/it]2026-07-10 08:37:06,423 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:07,432 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  50%|█████     | 215/430 [07:10<06:16,  1.75s/it]2026-07-10 08:37:07,438 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:09,629 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  50%|█████     | 216/430 [07:12<06:43,  1.89s/it]2026-07-10 08:37:09,636 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:37:10,901 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  50%|█████     | 217/430 [07:14<06:02,  1.70s/it]2026-07-10 08:37:10,907 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:15,294 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  51%|█████     | 218/430 [07:18<08:51,  2.51s/it]2026-07-10 08:37:15,301 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:16,693 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  51%|█████     | 219/430 [07:20<07:39,  2.18s/it]2026-07-10 08:37:16,700 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:17,528 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  51%|█████     | 220/430 [07:20<06:12,  1.77s/it]2026-07-10 08:37:17,535 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:18,842 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  51%|█████▏    | 221/430 [07:22<05:41,  1.64s/it]2026-07-10 08:37:18,848 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:22,419 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  52%|█████▏    | 222/430 [07:25<07:41,  2.22s/it]2026-07-10 08:37:22,425 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:23,247 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  52%|█████▏    | 223/430 [07:26<06:12,  1.80s/it]2026-07-10 08:37:23,254 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:25,314 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  52%|█████▏    | 224/430 [07:28<06:27,  1.88s/it]2026-07-10 08:37:25,319 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:29,588 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  52%|█████▏    | 225/430 [07:32<08:52,  2.60s/it]2026-07-10 08:37:29,594 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:30,307 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  53%|█████▎    | 226/430 [07:33<06:55,  2.03s/it]2026-07-10 08:37:30,313 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:31,788 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  53%|█████▎    | 227/430 [07:35<06:19,  1.87s/it]2026-07-10 08:37:31,794 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:32,345 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  53%|█████▎    | 228/430 [07:35<04:57,  1.48s/it]2026-07-10 08:37:32,351 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:36,304 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  53%|█████▎    | 229/430 [07:39<07:26,  2.22s/it]2026-07-10 08:37:36,311 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:37,721 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  53%|█████▎    | 230/430 [07:41<06:35,  1.98s/it]2026-07-10 08:37:37,728 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:39,848 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  54%|█████▎    | 231/430 [07:43<06:42,  2.02s/it]2026-07-10 08:37:39,855 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:41,220 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  54%|█████▍    | 232/430 [07:44<06:01,  1.83s/it]2026-07-10 08:37:41,226 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:42,948 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  54%|█████▍    | 233/430 [07:46<05:54,  1.80s/it]2026-07-10 08:37:42,954 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:44,440 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  54%|█████▍    | 234/430 [07:47<05:34,  1.71s/it]2026-07-10 08:37:44,447 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:47,224 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  55%|█████▍    | 235/430 [07:50<06:35,  2.03s/it]2026-07-10 08:37:47,230 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:49,322 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  55%|█████▍    | 236/430 [07:52<06:37,  2.05s/it]2026-07-10 08:37:49,329 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:37:50,802 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  55%|█████▌    | 237/430 [07:54<06:02,  1.88s/it]2026-07-10 08:37:50,807 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:53,029 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  55%|█████▌    | 238/430 [07:56<06:20,  1.98s/it]2026-07-10 08:37:53,035 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:55,678 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  56%|█████▌    | 239/430 [07:59<06:56,  2.18s/it]2026-07-10 08:37:55,685 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:37:57,059 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  56%|█████▌    | 240/430 [08:00<06:09,  1.94s/it]2026-07-10 08:37:57,065 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:37:59,213 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  56%|█████▌    | 241/430 [08:02<06:19,  2.01s/it]2026-07-10 08:37:59,224 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.010s]
-2026-07-10 08:38:00,604 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  56%|█████▋    | 242/430 [08:03<05:42,  1.82s/it]2026-07-10 08:38:00,614 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:38:03,548 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  57%|█████▋    | 243/430 [08:06<06:43,  2.16s/it]2026-07-10 08:38:03,554 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:05,255 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  57%|█████▋    | 244/430 [08:08<06:16,  2.02s/it]2026-07-10 08:38:05,263 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:07,192 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  57%|█████▋    | 245/430 [08:10<06:09,  2.00s/it]2026-07-10 08:38:07,199 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:08,498 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  57%|█████▋    | 246/430 [08:11<05:29,  1.79s/it]2026-07-10 08:38:08,506 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:11,212 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  57%|█████▋    | 247/430 [08:14<06:18,  2.07s/it]2026-07-10 08:38:11,218 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:38:12,752 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  58%|█████▊    | 248/430 [08:16<05:47,  1.91s/it]2026-07-10 08:38:12,759 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:18,464 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  58%|█████▊    | 249/430 [08:21<09:12,  3.05s/it]2026-07-10 08:38:18,472 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:38:18,976 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  58%|█████▊    | 250/430 [08:22<06:51,  2.29s/it]2026-07-10 08:38:18,984 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:38:19,024 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 08:38:19,031 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:22,736 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  59%|█████▊    | 252/430 [08:26<06:13,  2.10s/it]2026-07-10 08:38:22,742 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:38:23,114 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  59%|█████▉    | 253/430 [08:26<04:56,  1.67s/it]2026-07-10 08:38:23,121 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:25,302 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  59%|█████▉    | 254/430 [08:28<05:18,  1.81s/it]2026-07-10 08:38:25,310 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:38:27,434 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  59%|█████▉    | 255/430 [08:30<05:31,  1.90s/it]2026-07-10 08:38:27,439 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:38:30,754 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  60%|█████▉    | 256/430 [08:34<06:39,  2.29s/it]2026-07-10 08:38:30,761 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:30,808 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 08:38:30,816 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:32,671 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  60%|██████    | 258/430 [08:36<04:52,  1.70s/it]2026-07-10 08:38:32,679 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:35,567 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  60%|██████    | 259/430 [08:38<05:40,  1.99s/it]2026-07-10 08:38:35,574 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:36,656 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  60%|██████    | 260/430 [08:40<04:58,  1.76s/it]2026-07-10 08:38:36,664 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:38:40,143 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  61%|██████    | 261/430 [08:43<06:15,  2.22s/it]2026-07-10 08:38:40,149 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:38:41,847 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  61%|██████    | 262/430 [08:45<05:49,  2.08s/it]2026-07-10 08:38:41,853 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.004s]
-2026-07-10 08:38:42,503 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  61%|██████    | 263/430 [08:45<04:39,  1.68s/it]2026-07-10 08:38:42,509 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:38:44,215 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  61%|██████▏   | 264/430 [08:47<04:39,  1.69s/it]2026-07-10 08:38:44,221 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:38:47,648 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  62%|██████▏   | 265/430 [08:51<06:02,  2.20s/it]2026-07-10 08:38:47,655 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:48,707 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  62%|██████▏   | 266/430 [08:52<05:05,  1.86s/it]2026-07-10 08:38:48,714 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:51,704 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  62%|██████▏   | 267/430 [08:55<05:58,  2.20s/it]2026-07-10 08:38:51,711 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:53,312 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  62%|██████▏   | 268/430 [08:56<05:27,  2.02s/it]2026-07-10 08:38:53,318 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:38:55,411 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  63%|██████▎   | 269/430 [08:58<05:29,  2.05s/it]2026-07-10 08:38:55,417 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:38:57,926 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  63%|██████▎   | 270/430 [09:01<05:49,  2.19s/it]2026-07-10 08:38:57,934 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:38:59,443 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  63%|██████▎   | 271/430 [09:02<05:15,  1.99s/it]2026-07-10 08:38:59,449 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:39:01,033 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  63%|██████▎   | 272/430 [09:04<04:55,  1.87s/it]2026-07-10 08:39:01,041 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:02,805 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  63%|██████▎   | 273/430 [09:06<04:48,  1.84s/it]2026-07-10 08:39:02,813 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:06,740 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  64%|██████▎   | 274/430 [09:10<06:24,  2.47s/it]2026-07-10 08:39:06,747 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:07,730 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  64%|██████▍   | 275/430 [09:11<05:13,  2.02s/it]2026-07-10 08:39:07,737 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:09,072 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  64%|██████▍   | 276/430 [09:12<04:40,  1.82s/it]2026-07-10 08:39:09,078 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:10,804 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  64%|██████▍   | 277/430 [09:14<04:34,  1.79s/it]2026-07-10 08:39:10,812 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:12,474 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  65%|██████▍   | 278/430 [09:15<04:26,  1.76s/it]2026-07-10 08:39:12,479 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:39:18,113 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  65%|██████▍   | 279/430 [09:21<07:21,  2.92s/it]2026-07-10 08:39:18,118 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.004s]
-2026-07-10 08:39:18,935 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  65%|██████▌   | 280/430 [09:22<05:43,  2.29s/it]2026-07-10 08:39:18,942 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:20,960 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  65%|██████▌   | 281/430 [09:24<05:29,  2.21s/it]2026-07-10 08:39:20,967 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:21,067 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  66%|██████▌   | 282/430 [09:24<03:53,  1.58s/it]2026-07-10 08:39:21,073 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:22,707 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  66%|██████▌   | 283/430 [09:26<03:54,  1.60s/it]2026-07-10 08:39:22,713 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:39:25,772 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  66%|██████▌   | 284/430 [09:29<04:57,  2.04s/it]2026-07-10 08:39:25,778 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:29,057 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  66%|██████▋   | 285/430 [09:32<05:49,  2.41s/it]2026-07-10 08:39:29,064 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:31,428 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  67%|██████▋   | 286/430 [09:34<05:45,  2.40s/it]2026-07-10 08:39:31,436 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:39:31,839 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  67%|██████▋   | 287/430 [09:35<04:17,  1.80s/it]2026-07-10 08:39:31,845 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:32,952 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  67%|██████▋   | 288/430 [09:36<03:46,  1.60s/it]2026-07-10 08:39:32,959 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:39:34,760 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  67%|██████▋   | 289/430 [09:38<03:54,  1.66s/it]2026-07-10 08:39:34,767 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:39:36,818 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  67%|██████▋   | 290/430 [09:40<04:09,  1.78s/it]2026-07-10 08:39:36,825 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:39:41,679 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  68%|██████▊   | 291/430 [09:45<06:15,  2.70s/it]2026-07-10 08:39:41,686 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:42,500 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  68%|██████▊   | 292/430 [09:45<04:55,  2.14s/it]2026-07-10 08:39:42,507 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:42,832 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  68%|██████▊   | 293/430 [09:46<03:38,  1.60s/it]2026-07-10 08:39:42,840 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:39:45,307 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  68%|██████▊   | 294/430 [09:48<04:12,  1.86s/it]2026-07-10 08:39:45,314 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:46,219 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  69%|██████▊   | 295/430 [09:49<03:32,  1.58s/it]2026-07-10 08:39:46,226 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:48,248 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  69%|██████▉   | 296/430 [09:51<03:49,  1.71s/it]2026-07-10 08:39:48,256 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:52,192 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  69%|██████▉   | 297/430 [09:55<05:16,  2.38s/it]2026-07-10 08:39:52,199 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:52,216 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 08:39:52,222 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:55,044 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  70%|██████▉   | 299/430 [09:58<04:14,  1.94s/it]2026-07-10 08:39:55,051 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:39:57,195 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  70%|██████▉   | 300/430 [10:00<04:19,  1.99s/it]2026-07-10 08:39:57,202 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:39:59,621 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  70%|███████   | 301/430 [10:02<04:31,  2.11s/it]2026-07-10 08:39:59,628 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:01,986 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  70%|███████   | 302/430 [10:05<04:38,  2.18s/it]2026-07-10 08:40:01,992 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:03,559 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  70%|███████   | 303/430 [10:06<04:14,  2.01s/it]2026-07-10 08:40:03,565 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:05,777 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  71%|███████   | 304/430 [10:09<04:20,  2.07s/it]2026-07-10 08:40:05,785 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:10,843 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  71%|███████   | 305/430 [10:14<06:07,  2.94s/it]2026-07-10 08:40:10,851 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:13,881 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  71%|███████   | 306/430 [10:17<06:07,  2.97s/it]2026-07-10 08:40:13,888 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:14,318 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  71%|███████▏  | 307/430 [10:17<04:33,  2.22s/it]2026-07-10 08:40:14,325 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:16,629 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  72%|███████▏  | 308/430 [10:19<04:34,  2.25s/it]2026-07-10 08:40:16,635 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:19,164 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  72%|███████▏  | 309/430 [10:22<04:42,  2.33s/it]2026-07-10 08:40:19,172 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:40:20,501 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  72%|███████▏  | 310/430 [10:23<04:04,  2.04s/it]2026-07-10 08:40:20,507 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:22,782 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  72%|███████▏  | 311/430 [10:26<04:10,  2.11s/it]2026-07-10 08:40:22,788 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:24,849 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  73%|███████▎  | 312/430 [10:28<04:07,  2.10s/it]2026-07-10 08:40:24,856 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:26,808 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  73%|███████▎  | 313/430 [10:30<04:00,  2.06s/it]2026-07-10 08:40:26,815 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:30,421 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  73%|███████▎  | 314/430 [10:33<04:52,  2.52s/it]2026-07-10 08:40:30,430 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:40:30,535 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  73%|███████▎  | 315/430 [10:33<03:27,  1.80s/it]2026-07-10 08:40:30,542 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:32,052 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  73%|███████▎  | 316/430 [10:35<03:15,  1.72s/it]2026-07-10 08:40:32,059 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:34,064 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  74%|███████▎  | 317/430 [10:37<03:23,  1.80s/it]2026-07-10 08:40:34,071 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:36,723 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  74%|███████▍  | 318/430 [10:40<03:50,  2.06s/it]2026-07-10 08:40:36,728 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.004s]
-2026-07-10 08:40:38,127 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  74%|███████▍  | 319/430 [10:41<03:26,  1.86s/it]2026-07-10 08:40:38,133 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:41,261 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  74%|███████▍  | 320/430 [10:44<04:06,  2.24s/it]2026-07-10 08:40:41,267 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:42,333 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  75%|███████▍  | 321/430 [10:45<03:26,  1.89s/it]2026-07-10 08:40:42,339 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:45,789 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  75%|███████▍  | 322/430 [10:49<04:15,  2.36s/it]2026-07-10 08:40:45,796 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:45,901 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  75%|███████▌  | 323/430 [10:49<03:00,  1.69s/it]2026-07-10 08:40:45,908 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:50,111 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  75%|███████▌  | 324/430 [10:53<04:19,  2.44s/it]2026-07-10 08:40:50,118 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:50,393 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  76%|███████▌  | 325/430 [10:53<03:08,  1.80s/it]2026-07-10 08:40:50,399 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:52,228 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  76%|███████▌  | 326/430 [10:55<03:07,  1.81s/it]2026-07-10 08:40:52,235 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:54,340 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  76%|███████▌  | 327/430 [10:57<03:15,  1.90s/it]2026-07-10 08:40:54,347 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:40:58,666 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  76%|███████▋  | 328/430 [11:02<04:27,  2.63s/it]2026-07-10 08:40:58,672 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:40:59,980 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  77%|███████▋  | 329/430 [11:03<03:45,  2.23s/it]2026-07-10 08:40:59,986 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.004s]
-2026-07-10 08:41:02,731 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  77%|███████▋  | 330/430 [11:06<03:58,  2.39s/it]2026-07-10 08:41:02,737 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:03,400 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  77%|███████▋  | 331/430 [11:06<03:05,  1.87s/it]2026-07-10 08:41:03,406 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:05,128 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  77%|███████▋  | 332/430 [11:08<02:59,  1.83s/it]2026-07-10 08:41:05,135 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:07,206 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  77%|███████▋  | 333/430 [11:10<03:04,  1.90s/it]2026-07-10 08:41:07,211 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:08,439 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  78%|███████▊  | 334/430 [11:11<02:43,  1.70s/it]2026-07-10 08:41:08,445 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:09,539 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  78%|███████▊  | 335/430 [11:12<02:24,  1.52s/it]2026-07-10 08:41:09,546 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:09,556 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 08:41:09,562 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:11,594 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  78%|███████▊  | 337/430 [11:14<02:00,  1.29s/it]2026-07-10 08:41:11,602 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:12,616 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  79%|███████▊  | 338/430 [11:15<01:52,  1.23s/it]2026-07-10 08:41:12,623 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:15,010 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  79%|███████▉  | 339/430 [11:18<02:19,  1.53s/it]2026-07-10 08:41:15,017 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:17,189 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  79%|███████▉  | 340/430 [11:20<02:33,  1.71s/it]2026-07-10 08:41:17,195 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:19,565 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  79%|███████▉  | 341/430 [11:22<02:48,  1.89s/it]2026-07-10 08:41:19,572 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:21,129 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  80%|███████▉  | 342/430 [11:24<02:38,  1.80s/it]2026-07-10 08:41:21,135 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:23,255 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  80%|███████▉  | 343/430 [11:26<02:44,  1.89s/it]2026-07-10 08:41:23,262 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:27,859 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  80%|████████  | 344/430 [11:31<03:51,  2.69s/it]2026-07-10 08:41:27,865 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:28,373 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  80%|████████  | 345/430 [11:31<02:53,  2.05s/it]2026-07-10 08:41:28,379 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:28,830 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  80%|████████  | 346/430 [11:32<02:12,  1.58s/it]2026-07-10 08:41:28,836 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:33,718 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  81%|████████  | 347/430 [11:37<03:32,  2.56s/it]2026-07-10 08:41:33,723 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:34,525 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  81%|████████  | 348/430 [11:37<02:47,  2.04s/it]2026-07-10 08:41:34,533 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:41:36,434 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  81%|████████  | 349/430 [11:39<02:41,  2.00s/it]2026-07-10 08:41:36,441 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:38,165 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  81%|████████▏ | 350/430 [11:41<02:33,  1.92s/it]2026-07-10 08:41:38,173 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:41,101 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  82%|████████▏ | 351/430 [11:44<02:55,  2.22s/it]2026-07-10 08:41:41,107 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:42,253 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  82%|████████▏ | 352/430 [11:45<02:28,  1.90s/it]2026-07-10 08:41:42,260 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:44,286 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  82%|████████▏ | 353/430 [11:47<02:29,  1.94s/it]2026-07-10 08:41:44,293 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:48,459 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  82%|████████▏ | 354/430 [11:51<03:18,  2.61s/it]2026-07-10 08:41:48,466 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:48,633 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  83%|████████▎ | 355/430 [11:51<02:20,  1.88s/it]2026-07-10 08:41:48,639 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:49,356 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  83%|████████▎ | 356/430 [11:52<01:53,  1.53s/it]2026-07-10 08:41:49,364 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:50,724 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  83%|████████▎ | 357/430 [11:54<01:48,  1.48s/it]2026-07-10 08:41:50,731 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:52,716 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  83%|████████▎ | 358/430 [11:56<01:57,  1.64s/it]2026-07-10 08:41:52,723 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:41:54,527 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  83%|████████▎ | 359/430 [11:57<01:59,  1.69s/it]2026-07-10 08:41:54,533 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:41:56,622 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  84%|████████▎ | 360/430 [11:59<02:06,  1.81s/it]2026-07-10 08:41:56,629 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:42:00,074 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  84%|████████▍ | 361/430 [12:03<02:38,  2.30s/it]2026-07-10 08:42:00,081 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:42:01,670 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  84%|████████▍ | 362/430 [12:05<02:22,  2.09s/it]2026-07-10 08:42:01,677 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:03,230 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  84%|████████▍ | 363/430 [12:06<02:09,  1.93s/it]2026-07-10 08:42:03,237 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:05,362 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  85%|████████▍ | 364/430 [12:08<02:11,  1.99s/it]2026-07-10 08:42:05,369 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:07,378 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  85%|████████▍ | 365/430 [12:10<02:09,  2.00s/it]2026-07-10 08:42:07,384 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:42:10,720 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  85%|████████▌ | 366/430 [12:14<02:33,  2.40s/it]2026-07-10 08:42:10,727 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:12,505 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  85%|████████▌ | 367/430 [12:15<02:19,  2.22s/it]2026-07-10 08:42:12,511 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:13,046 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  86%|████████▌ | 368/430 [12:16<01:46,  1.71s/it]2026-07-10 08:42:13,053 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:16,677 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  86%|████████▌ | 369/430 [12:20<02:19,  2.29s/it]2026-07-10 08:42:16,684 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:18,122 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  86%|████████▌ | 370/430 [12:21<02:02,  2.04s/it]2026-07-10 08:42:18,128 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:25,723 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  86%|████████▋ | 371/430 [12:29<03:38,  3.71s/it]2026-07-10 08:42:25,730 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:26,742 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  87%|████████▋ | 372/430 [12:30<02:48,  2.90s/it]2026-07-10 08:42:26,749 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:28,679 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  87%|████████▋ | 373/430 [12:32<02:28,  2.61s/it]2026-07-10 08:42:28,684 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:42:29,244 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  87%|████████▋ | 374/430 [12:32<01:51,  2.00s/it]2026-07-10 08:42:29,250 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:29,296 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 08:42:29,304 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:31,192 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  87%|████████▋ | 376/430 [12:34<01:22,  1.52s/it]2026-07-10 08:42:31,198 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:33,167 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  88%|████████▊ | 377/430 [12:36<01:26,  1.64s/it]2026-07-10 08:42:33,173 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:42:35,205 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  88%|████████▊ | 378/430 [12:38<01:30,  1.74s/it]2026-07-10 08:42:35,212 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:42:37,646 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  88%|████████▊ | 379/430 [12:41<01:38,  1.93s/it]2026-07-10 08:42:37,653 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:39,106 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  88%|████████▊ | 380/430 [12:42<01:29,  1.80s/it]2026-07-10 08:42:39,112 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:41,463 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  89%|████████▊ | 381/430 [12:44<01:35,  1.96s/it]2026-07-10 08:42:41,470 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:42,790 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  89%|████████▉ | 382/430 [12:46<01:25,  1.78s/it]2026-07-10 08:42:42,796 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:42:47,020 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  89%|████████▉ | 383/430 [12:50<01:57,  2.49s/it]2026-07-10 08:42:47,027 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:42:47,885 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  89%|████████▉ | 384/430 [12:51<01:32,  2.01s/it]2026-07-10 08:42:47,892 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:49,255 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  90%|████████▉ | 385/430 [12:52<01:22,  1.82s/it]2026-07-10 08:42:49,261 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:42:51,455 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  90%|████████▉ | 386/430 [12:54<01:25,  1.94s/it]2026-07-10 08:42:51,463 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:52,988 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  90%|█████████ | 387/430 [12:56<01:18,  1.81s/it]2026-07-10 08:42:52,993 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:42:55,290 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  90%|█████████ | 388/430 [12:58<01:22,  1.96s/it]2026-07-10 08:42:55,298 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:57,233 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  90%|█████████ | 389/430 [13:00<01:20,  1.96s/it]2026-07-10 08:42:57,240 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:42:59,384 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  91%|█████████ | 390/430 [13:02<01:20,  2.01s/it]2026-07-10 08:42:59,393 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.008s]
-2026-07-10 08:43:00,872 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  91%|█████████ | 391/430 [13:04<01:12,  1.86s/it]2026-07-10 08:43:00,881 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:43:03,412 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  91%|█████████ | 392/430 [13:06<01:18,  2.06s/it]2026-07-10 08:43:03,418 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.004s]
-2026-07-10 08:43:04,862 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  91%|█████████▏| 393/430 [13:08<01:09,  1.88s/it]2026-07-10 08:43:04,869 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:08,587 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  92%|█████████▏| 394/430 [13:11<01:27,  2.43s/it]2026-07-10 08:43:08,594 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:43:09,563 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  92%|█████████▏| 395/430 [13:12<01:09,  2.00s/it]2026-07-10 08:43:09,571 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:10,947 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  92%|█████████▏| 396/430 [13:14<01:01,  1.81s/it]2026-07-10 08:43:10,954 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:13,506 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  92%|█████████▏| 397/430 [13:16<01:07,  2.04s/it]2026-07-10 08:43:13,513 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:15,462 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  93%|█████████▎| 398/430 [13:18<01:04,  2.01s/it]2026-07-10 08:43:15,468 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:19,206 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  93%|█████████▎| 399/430 [13:22<01:18,  2.53s/it]2026-07-10 08:43:19,211 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.004s]
-2026-07-10 08:43:19,368 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  93%|█████████▎| 400/430 [13:22<00:54,  1.82s/it]2026-07-10 08:43:19,373 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.004s]
-2026-07-10 08:43:21,140 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  93%|█████████▎| 401/430 [13:24<00:52,  1.81s/it]2026-07-10 08:43:21,147 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:22,922 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  93%|█████████▎| 402/430 [13:26<00:50,  1.80s/it]2026-07-10 08:43:22,929 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:43:23,423 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  94%|█████████▎| 403/430 [13:26<00:38,  1.41s/it]2026-07-10 08:43:23,431 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:43:27,159 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  94%|█████████▍| 404/430 [13:30<00:54,  2.11s/it]2026-07-10 08:43:27,166 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:43:28,335 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  94%|█████████▍| 405/430 [13:31<00:45,  1.83s/it]2026-07-10 08:43:28,342 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:29,506 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  94%|█████████▍| 406/430 [13:32<00:39,  1.63s/it]2026-07-10 08:43:29,513 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:31,787 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  95%|█████████▍| 407/430 [13:35<00:42,  1.83s/it]2026-07-10 08:43:31,795 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.007s]
-2026-07-10 08:43:35,307 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  95%|█████████▍| 408/430 [13:38<00:51,  2.33s/it]2026-07-10 08:43:35,314 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:37,648 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  95%|█████████▌| 409/430 [13:41<00:49,  2.34s/it]2026-07-10 08:43:37,654 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:38,363 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  95%|█████████▌| 410/430 [13:41<00:36,  1.85s/it]2026-07-10 08:43:38,369 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:39,826 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  96%|█████████▌| 411/430 [13:43<00:32,  1.73s/it]2026-07-10 08:43:39,833 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:43:41,811 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  96%|█████████▌| 412/430 [13:45<00:32,  1.81s/it]2026-07-10 08:43:41,817 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:43:45,310 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  96%|█████████▌| 413/430 [13:48<00:39,  2.32s/it]2026-07-10 08:43:45,318 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:48,561 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  96%|█████████▋| 414/430 [13:51<00:41,  2.60s/it]2026-07-10 08:43:48,568 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:43:50,090 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  97%|█████████▋| 415/430 [13:53<00:34,  2.28s/it]2026-07-10 08:43:50,096 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:43:50,716 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  97%|█████████▋| 416/430 [13:54<00:24,  1.78s/it]2026-07-10 08:43:50,723 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:43:53,644 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  97%|█████████▋| 417/430 [13:57<00:27,  2.13s/it]2026-07-10 08:43:53,650 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:43:56,265 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  97%|█████████▋| 418/430 [13:59<00:27,  2.27s/it]2026-07-10 08:43:56,272 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:43:58,986 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  97%|█████████▋| 419/430 [14:02<00:26,  2.41s/it]2026-07-10 08:43:58,991 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.004s]
-2026-07-10 08:44:00,408 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  98%|█████████▊| 420/430 [14:03<00:21,  2.11s/it]2026-07-10 08:44:00,414 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:44:00,689 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  98%|█████████▊| 421/430 [14:04<00:14,  1.56s/it]2026-07-10 08:44:00,696 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:44:04,868 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  98%|█████████▊| 422/430 [14:08<00:18,  2.35s/it]2026-07-10 08:44:04,873 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:44:06,451 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  98%|█████████▊| 423/430 [14:09<00:14,  2.12s/it]2026-07-10 08:44:06,459 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:44:08,008 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  99%|█████████▊| 424/430 [14:11<00:11,  1.95s/it]2026-07-10 08:44:08,015 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.006s]
-2026-07-10 08:44:09,908 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  99%|█████████▉| 425/430 [14:13<00:09,  1.93s/it]2026-07-10 08:44:09,914 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.005s]
-2026-07-10 08:44:11,881 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  99%|█████████▉| 426/430 [14:15<00:07,  1.95s/it]2026-07-10 08:44:11,887 INFO elastic_transport.transport - POST https://10.43.233.46:9200/nim_curated/_search [status:200 duration:0.004s]
-2026-07-10 08:44:13,852 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B:  99%|█████████▉| 427/430 [14:17<00:05,  1.95s/it]2026-07-10 08:44:18,602 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B: 100%|█████████▉| 428/430 [14:21<00:05,  2.79s/it]2026-07-10 08:44:18,676 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 08:44:24,159 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1B: 100%|██████████| 430/430 [14:27<00:00,  2.79s/it]Stage 1B: 100%|██████████| 430/430 [14:27<00:00,  2.02s/it]
-2026-07-10 08:44:24,169 INFO scripts.pipeline.stage1b_synthesis - Stage 1B: 858 KVPs → curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/stage1b_synthesis.jsonl
-2026-07-10 08:44:24,260 INFO le_downstream - LE downstream done: curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3

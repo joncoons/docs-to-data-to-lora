@@ -1,8 +1,0 @@
-{
-  "dataset.stage3_nim_curated_curator_diverseqa_20260629.bytes.training_jsonl": 2168949,
-  "dataset.stage3_nim_curated_curator_diverseqa_20260629.bytes.validation_jsonl": 260741,
-  "dataset.stage3_nim_curated_curator_diverseqa_20260629.lineage_files.uploaded.count": 1,
-  "dataset.stage3_nim_curated_curator_diverseqa_20260629.rows.training": 6845,
-  "dataset.stage3_nim_curated_curator_diverseqa_20260629.rows.validation": 815,
-  "datasets.count": 1
-}

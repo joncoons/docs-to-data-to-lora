@@ -6,7 +6,7 @@ def test_config_defaults():
     cfg = Config()
     assert cfg.es_host.startswith("https://")
     assert cfg.nim_endpoints  # at least one
-    assert cfg.external_judge_model == "nvidia/llama-3.3-nemotron-super-49b-v1.5"
+    assert cfg.external_judge_model == "frontier-judge"
     assert cfg.stage2_qa_endpoints == ["http://llm-judge.default.svc.cluster.local:8000/v1"]
     assert cfg.stage2_qa_model == "nvidia/nvidia/nemotron-3-super-v3"
     assert cfg.stage2_qa_temperature == 0.0

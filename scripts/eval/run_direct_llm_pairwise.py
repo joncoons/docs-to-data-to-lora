@@ -17,7 +17,7 @@ os.environ.setdefault("EVALUATOR_JUDGE_MODEL", "azure/anthropic/claude-sonnet-4-
 os.environ.setdefault("JUDGE_API_KEY_ENV", "LLM_API_KEY")
 os.environ.setdefault("PAIRWISE_OUTPUT_ROOT", "<EVAL_ROOT>/pairwise-llm")
 
-from scripts.eval.run_direct_kimi_pairwise import main  # noqa: E402
+from scripts.eval.direct_llm_pairwise_impl import main  # noqa: E402
 
 
 if __name__ == "__main__":

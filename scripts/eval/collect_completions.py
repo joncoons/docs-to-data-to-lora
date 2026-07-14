@@ -33,11 +33,6 @@ _THINK_PRELUDE = re.compile(r"^.*?</think>\s*", re.DOTALL | re.IGNORECASE)
 _LORA_LLAMA_RE = re.compile(
     r"^lora-(?P<corpus>.+)-llama-(?P<base>\d+(?:\.\d+)?-\d+b)-r(?P<rank>\d+)$"
 )
-_LORA_NEMOTRON_RE = re.compile(
-    r"^lora-(?P<corpus>.+)-nemotron-nano-30b-r(?P<rank>\d+)(?P<variant>-.+)?$"
-)
-
-
 def strip_think_tags(text: str) -> str:
     if not text:
         return text
@@ -153,20 +148,6 @@ def parse_model_descriptor(model_id: str) -> dict[str, Any]:
             "target_slug": f"lora-{_safe_slug(llama_lora.group('corpus'))}",
             "rank": rank,
             "rank_slug": f"r{rank}",
-        }
-    nemotron_lora = _LORA_NEMOTRON_RE.match(model)
-    if nemotron_lora:
-        rank = int(nemotron_lora.group("rank"))
-        variant = nemotron_lora.group("variant")
-        return {
-            "model_id": model_id,
-            "target_type": "lora",
-            "corpus_slug": _safe_slug(nemotron_lora.group("corpus")),
-            "base_slug": "nemotron-nano-30b",
-            "target_slug": f"lora-{_safe_slug(nemotron_lora.group('corpus'))}",
-            "rank": rank,
-            "rank_slug": f"r{rank}",
-            "adapter_variant": _safe_slug(variant[1:]) if variant else None,
         }
     base_slug = model
     if base_slug.startswith("llama-") and base_slug.endswith("-instruct"):

@@ -10,9 +10,6 @@ import statistics
 from pathlib import Path
 from typing import Any
 
-from tqdm import tqdm
-
-from scripts.pipeline.llm_client import LLMClient
 from scripts.pipeline.models import KVPRow, Passage
 from scripts.pipeline.provenance import SCHEMA_VERSION, sha256_json, stable_id, utc_now
 from scripts.pipeline.prompts import GAPFILL_RECIPE_USER
@@ -438,125 +435,6 @@ def write_gap_analysis_artifacts(
     )
 
 
-def gapfill_one_call(
-    es: Elasticsearch,
-    index: str,
-    product_family: str,
-    seed_styles: list[str],
-    llm: LLMClient,
-    top_n_chunks: int = 20,
-    pairs_count: int = 5,
-) -> list[KVPRow]:
-    """Legacy direct LLM fallback for gap-fill generation."""
-    hits = retrieve_chunks_for_product(
-        es,
-        index,
-        product_family,
-        target_vector=None,
-        top_n=top_n_chunks,
-    )
-    if not hits:
-        return []
-    retrieved_chunks = "\n\n---\n\n".join(_hit_text(hit) for hit in hits)
-    retrieved_urls = [_hit_url(hit) for hit in hits]
-    prompt = render_recipe_prompt(
-        retrieved_chunks,
-        product_family,
-        seed_styles,
-        pairs_count=pairs_count,
-    )
-    raw = llm.call(
-        "You are a precise NVIDIA technical assistant. Generate Q+A pairs grounded "
-        "ONLY in the provided documentation chunks. Return JSON only.",
-        prompt,
-        max_tokens=4096,
-    )
-    if not raw:
-        return []
-
-    rows: list[KVPRow] = []
-    for pair in _parse_pairs(raw):
-        if not pair.get("question") or not pair.get("answer"):
-            continue
-        rows.append(KVPRow(
-            passage_id=f"gapfill#{product_family}",
-            source_url="<multi-chunk retrieval>",
-            product_family=product_family,
-            stage="1.5",
-            target_product_family=product_family,
-            sample_id=stable_id(
-                "sample",
-                "1.5",
-                product_family,
-                pair["question"],
-                pair["answer"],
-            ),
-            question=pair["question"].strip(),
-            answer=pair["answer"].strip(),
-            context=retrieved_chunks[:5000],
-            retrieved_urls=retrieved_urls,
-            refined=False,
-            source_systems=["legacy_direct_llm_gapfill"],
-            source_kinds=["synthetic_gapfill"],
-            modalities=["text"],
-        ))
-    return rows
-
-
-def _run_legacy_direct_gapfill(
-    report: dict[str, Any],
-    existing_kvps: list[KVPRow],
-    es: Elasticsearch,
-    index: str,
-    llm: LLMClient,
-    output_dir: Path,
-    *,
-    target_factor: float,
-    top_n_chunks: int,
-    pairs_per_call: int,
-    max_attempt_factor: int,
-) -> list[KVPRow]:
-    target_density = float(report["median_density"]) * target_factor
-    underrepresented = [p for p in report["products"] if p["underrepresented"]]
-    log.info("Stage 1.5 legacy direct gap-fill: %d products", len(underrepresented))
-
-    all_rows: list[KVPRow] = []
-    out_file = output_dir / "stage1_5_gapfill.jsonl"
-
-    for product in tqdm(underrepresented, desc="Stage 1.5 legacy gap-fill"):
-        family = product["product_family"]
-        pairs_needed = max(
-            0,
-            math.ceil(target_density * product["chunk_count"]) - product["kvp_count"],
-        )
-        if pairs_needed <= 0:
-            continue
-        max_attempts = pairs_needed * max_attempt_factor
-        attempts = 0
-        accepted = 0
-        while accepted < pairs_needed and attempts < max_attempts:
-            seed_styles = build_seed_styles(existing_kvps + all_rows, family, n=3)
-            new_rows = gapfill_one_call(
-                es,
-                index,
-                family,
-                seed_styles,
-                llm,
-                top_n_chunks=top_n_chunks,
-                pairs_count=pairs_per_call,
-            )
-            attempts += pairs_per_call
-            if not new_rows:
-                continue
-            all_rows.extend(new_rows)
-            accepted += len(new_rows)
-
-    with out_file.open("w") as f:
-        for row in all_rows:
-            f.write(row.model_dump_json() + "\n")
-    log.info("Stage 1.5 legacy direct gap-fill: %d pairs -> %s", len(all_rows), out_file)
-    return all_rows
-
 
 def run_stage1_5_analysis(
     passages: list[Passage],
@@ -618,16 +496,14 @@ def run_stage1_5(
     existing_kvps: list[KVPRow],
     es: Elasticsearch,
     index: str,
-    llm: LLMClient,
     output_dir: Path,
     threshold_factor: float = 0.5,
     target_factor: float = 0.8,
     top_n_chunks: int = 20,
     pairs_per_call: int = 5,
     max_attempt_factor: int = 3,
-    legacy_direct: bool = False,
 ) -> list[KVPRow]:
-    analysis = run_stage1_5_analysis(
+    run_stage1_5_analysis(
         passages,
         existing_kvps,
         es,
@@ -639,21 +515,7 @@ def run_stage1_5(
         pairs_per_call=pairs_per_call,
         max_attempt_factor=max_attempt_factor,
     )
-    if not legacy_direct:
-        out_file = output_dir / "stage1_5_gapfill.jsonl"
-        out_file.write_text("")
-        log.info("Stage 1.5: generation deferred to NeMo Data Designer -> %s", out_file)
-        return []
-
-    return _run_legacy_direct_gapfill(
-        analysis["bias_report"],
-        existing_kvps,
-        es,
-        index,
-        llm,
-        output_dir,
-        target_factor=target_factor,
-        top_n_chunks=top_n_chunks,
-        pairs_per_call=pairs_per_call,
-        max_attempt_factor=max_attempt_factor,
-    )
+    out_file = output_dir / "stage1_5_gapfill.jsonl"
+    out_file.write_text("")
+    log.info("Stage 1.5: generation deferred to NeMo Data Designer -> %s", out_file)
+    return []

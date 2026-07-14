@@ -139,7 +139,7 @@ Tags:
 | Tag | Example |
 |---|---|
 | `nemo_evaluator_dataset` | `default/stage3-nim-curated-test` |
-| `eval_scope` | `singleaxis,pairwise,49b` |
+| `eval_scope` | `singleaxis,pairwise,reference` |
 
 Artifacts:
 
@@ -159,7 +159,7 @@ Metrics:
 | `eval.faithfulness.mean` | `4.71` |
 | `eval.clarity.mean` | `4.83` |
 | `eval.win_rate_vs_base` | `0.68` |
-| `eval.win_rate_vs_49b` | `0.54` |
+| `eval.win_rate_vs_reference` | `0.54` |
 
 ## NeMo Resource Back-References
 

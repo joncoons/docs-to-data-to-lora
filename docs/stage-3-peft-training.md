@@ -93,10 +93,9 @@ Adapter artifact (publishable)
 
 ## Key choices, not yet final
 
-- **Base model.** Options: Llama 3.x 8B / 70B, NeMotron-3-Nano-30B-A3B,
-  others. The choice affects training compute, adapter size, and inference
-  cost. Likely a small dense model first (8B-class) for fast iteration,
-  with a larger MoE option later.
+- **Base model.** The case study uses dense Llama 1B, 3B, and 8B models for
+  LoRA training, then compares the strongest LoRA candidates with a dense
+  Llama 3.3 70B no-adapter reference target.
 - **LoRA rank.** Common starting point is rank=16, alpha=32. Will tune
   based on validation metrics.
 - **Training framework.** NVIDIA NeMo Customizer (part of NeMo Microservices)
@@ -114,9 +113,6 @@ Adapter artifact (publishable)
 - Dense Llama 3.x training requires CUDA-capable GPUs with sufficient
   memory for the base model + LoRA gradients (16-24 GB for an 8B model
   with rank=16 in bf16).
-- MoE models (Nemotron, gpt-oss-20b) have specific constraints — sequence
-  packing is not supported, and certain optimizers don't work cleanly
-  with the routing layer. Plan accordingly.
 - Blackwell (sm_120) GPUs have some current incompatibilities with
   sequence-packed flash-attention. If your training framework offers
   sequence packing as an optimization, disable it on Blackwell hardware.

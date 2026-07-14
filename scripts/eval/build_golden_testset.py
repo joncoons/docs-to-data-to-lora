@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-"""Build immutable HTML-only golden test sets for Stage 3 evaluation.
+"""Build immutable golden test sets for Stage 3 evaluation.
 
-The builder starts from the prior held-out test sets, then removes rows that
-would leak into the current experiment by exact prompt overlap against any
-current LE or Curator train/validation file. It also enforces the current
-HTML-only provenance rule by requiring docs.nvidia.com context and excluding
-PDF/no-context/non-doc rows.
+The builder starts from held-out test rows, removes rows that would leak into
+current train/validation data by exact normalized prompt overlap, and writes a
+versioned test-set manifest with checksums. Source paths are supplied through a
+small JSON manifest so the public tool is reusable for any domain corpus rather
+than tied to one local experiment tree.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
 import re
 from collections import Counter
 from datetime import datetime, timezone
@@ -20,30 +21,8 @@ from typing import Any, Iterable
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_EXPERIMENT_ROOT = REPO_ROOT / "curator_dataset/experiments/20260709-curator-vs-le"
-DEFAULT_OUTPUT_DIR = DEFAULT_EXPERIMENT_ROOT / "golden_eval/golden-v1"
-
-CURRENT_TRAIN_VAL_PATHS = [
-    REPO_ROOT / "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/training.jsonl",
-    REPO_ROOT / "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/validation.jsonl",
-    REPO_ROOT / "curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/training.jsonl",
-    REPO_ROOT / "curator_dataset/data/nim_curated/qa/runs/full-20260629t2032z-retry1/dataset/final/validation.jsonl",
-    REPO_ROOT / "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/training.jsonl",
-    REPO_ROOT / "curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/validation.jsonl",
-    REPO_ROOT / "curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/training.jsonl",
-    REPO_ROOT / "curator_dataset/data/nemo_usvcs_curated/qa/runs/full-20260629t2120z/dataset/final/validation.jsonl",
-]
-
-SOURCE_TESTSETS = {
-    "nim_curated": {
-        "plain": Path("<DATASET_ROOT>/experiments/nim_curated_dd_deterministic_5x_combined_20260605/test_set.jsonl"),
-        "with_context": Path("<DATASET_ROOT>/experiments/nim_curated_dd_deterministic_5x_combined_20260605/test_set_with_context.jsonl"),
-    },
-    "nemo_usvcs_curated": {
-        "plain": Path("<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_combined_20260605/test_set.jsonl"),
-        "with_context": Path("<DATASET_ROOT>/experiments/nemo_usvcs_curated_dd_deterministic_5x_combined_20260605/test_set_with_context.jsonl"),
-    },
-}
+DEFAULT_OUTPUT_DIR = Path(os.getenv("GOLDEN_OUTPUT_DIR", "artifacts/evaluation/golden-v1"))
+DEFAULT_SOURCE_MANIFEST = os.getenv("GOLDEN_SOURCE_MANIFEST")
 
 PDF_RE = re.compile(r"(?i)\.pdf\b|\.pdf\s")
 
@@ -92,6 +71,51 @@ def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> int:
     return count
 
 
+def resolve_manifest_path(value: str | Path, *, manifest_dir: Path, dataset_root: Path | None) -> Path:
+    raw = str(value)
+    if dataset_root is not None:
+        raw = raw.replace("<DATASET_ROOT>", str(dataset_root))
+    path = Path(raw).expanduser()
+    if path.is_absolute():
+        return path
+    if dataset_root is not None:
+        candidate = dataset_root / path
+        if candidate.exists():
+            return candidate
+    return manifest_dir / path
+
+
+def load_source_manifest(path: Path) -> tuple[dict[str, dict[str, Path]], list[Path], dict[str, Any]]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    manifest_dir = path.parent
+    dataset_root_value = payload.get("dataset_root")
+    dataset_root = None
+    if dataset_root_value:
+        dataset_root = resolve_manifest_path(dataset_root_value, manifest_dir=manifest_dir, dataset_root=None)
+
+    source_testsets: dict[str, dict[str, Path]] = {}
+    for corpus, spec in (payload.get("corpora") or {}).items():
+        if not isinstance(spec, dict):
+            raise ValueError(f"corpus {corpus!r} must map to a dict")
+        try:
+            plain = spec["plain"]
+            with_context = spec["with_context"]
+        except KeyError as exc:
+            raise ValueError(f"corpus {corpus!r} requires plain and with_context paths") from exc
+        source_testsets[corpus] = {
+            "plain": resolve_manifest_path(plain, manifest_dir=manifest_dir, dataset_root=dataset_root),
+            "with_context": resolve_manifest_path(with_context, manifest_dir=manifest_dir, dataset_root=dataset_root),
+        }
+    if not source_testsets:
+        raise ValueError("source manifest must define at least one corpus under 'corpora'")
+
+    current_paths = [
+        resolve_manifest_path(item, manifest_dir=manifest_dir, dataset_root=dataset_root)
+        for item in payload.get("current_train_validation_paths", [])
+    ]
+    return source_testsets, current_paths, payload
+
+
 def load_current_prompt_set(paths: list[Path]) -> tuple[set[str], dict[str, Any]]:
     prompts: set[str] = set()
     files: list[dict[str, Any]] = []
@@ -115,17 +139,25 @@ def load_current_prompt_set(paths: list[Path]) -> tuple[set[str], dict[str, Any]
     }
 
 
-def exclusion_reason(row: dict[str, Any], context_row: dict[str, Any], current_prompts: set[str]) -> str | None:
+def exclusion_reason(
+    row: dict[str, Any],
+    context_row: dict[str, Any],
+    current_prompts: set[str],
+    *,
+    exclude_pdf_context: bool,
+    exclude_no_context: bool,
+    required_context_substring: str | None,
+) -> str | None:
     prompt = normalize_prompt(str(row.get("prompt") or ""))
     context_prompt = str(context_row.get("prompt") or "")
     if prompt in current_prompts:
         return "current_train_or_validation_prompt_overlap"
-    if PDF_RE.search(context_prompt):
+    if exclude_pdf_context and PDF_RE.search(context_prompt):
         return "pdf_context"
-    if "(no relevant context found)" in context_prompt.lower():
+    if exclude_no_context and "(no relevant context found)" in context_prompt.lower():
         return "no_relevant_context"
-    if "https://docs.nvidia.com/" not in context_prompt:
-        return "non_docs_nvidia_context"
+    if required_context_substring and required_context_substring not in context_prompt:
+        return "missing_required_context_substring"
     return None
 
 
@@ -142,7 +174,7 @@ def golden_id(corpus: str, source_index: int, row: dict[str, Any]) -> str:
     return f"golden_{sha256_bytes(payload.encode('utf-8'))[:24]}"
 
 
-def enrich(row: dict[str, Any], *, corpus: str, source_index: int, context_baked: bool) -> dict[str, Any]:
+def enrich(row: dict[str, Any], *, corpus: str, source_index: int, context_baked: bool, filters: dict[str, Any]) -> dict[str, Any]:
     out = dict(row)
     out["golden_id"] = golden_id(corpus, source_index, row)
     out["golden"] = {
@@ -151,25 +183,46 @@ def enrich(row: dict[str, Any], *, corpus: str, source_index: int, context_baked
         "corpus": corpus,
         "source_row_index": source_index,
         "context_baked": context_baked,
-        "html_only": True,
-        "leakage_filter": "exact_normalized_prompt_not_in_current_train_or_validation",
+        "filters": filters,
     }
     return out
 
 
-def build_one(corpus: str, paths: dict[str, Path], out_root: Path, current_prompts: set[str]) -> dict[str, Any]:
+def build_one(
+    corpus: str,
+    paths: dict[str, Path],
+    out_root: Path,
+    current_prompts: set[str],
+    *,
+    exclude_pdf_context: bool,
+    exclude_no_context: bool,
+    required_context_substring: str | None,
+) -> dict[str, Any]:
     plain_rows = read_jsonl(paths["plain"])
     context_rows = read_jsonl(paths["with_context"])
     if len(plain_rows) != len(context_rows):
         raise ValueError(f"{corpus}: source row mismatch: plain={len(plain_rows)} with_context={len(context_rows)}")
 
+    filter_settings = {
+        "exclude_pdf_context": exclude_pdf_context,
+        "exclude_no_context": exclude_no_context,
+        "required_context_substring": required_context_substring,
+        "leakage_filter": "exact_normalized_prompt_not_in_current_train_or_validation",
+    }
     kept_plain: list[dict[str, Any]] = []
     kept_context: list[dict[str, Any]] = []
     excluded: list[dict[str, Any]] = []
     reasons: Counter[str] = Counter()
 
     for idx, (row, context_row) in enumerate(zip(plain_rows, context_rows)):
-        reason = exclusion_reason(row, context_row, current_prompts)
+        reason = exclusion_reason(
+            row,
+            context_row,
+            current_prompts,
+            exclude_pdf_context=exclude_pdf_context,
+            exclude_no_context=exclude_no_context,
+            required_context_substring=required_context_substring,
+        )
         if reason:
             reasons[reason] += 1
             excluded.append({
@@ -178,8 +231,8 @@ def build_one(corpus: str, paths: dict[str, Path], out_root: Path, current_promp
                 "prompt_sha256": sha256_bytes(str(row.get("prompt") or "").encode("utf-8")),
             })
             continue
-        kept_plain.append(enrich(row, corpus=corpus, source_index=idx, context_baked=False))
-        kept_context.append(enrich(context_row, corpus=corpus, source_index=idx, context_baked=True))
+        kept_plain.append(enrich(row, corpus=corpus, source_index=idx, context_baked=False, filters=filter_settings))
+        kept_context.append(enrich(context_row, corpus=corpus, source_index=idx, context_baked=True, filters=filter_settings))
 
     corpus_dir = out_root / corpus
     plain_out = corpus_dir / "test_set.jsonl"
@@ -201,10 +254,7 @@ def build_one(corpus: str, paths: dict[str, Path], out_root: Path, current_promp
                 "sha256": sha256_file(paths["with_context"]),
             },
         },
-        "filters": {
-            "html_only": "Requires docs.nvidia.com context and excludes .pdf/no-context/non-doc rows.",
-            "leakage": "Excludes exact normalized prompt matches from current LE and Curator train/validation files.",
-        },
+        "filters": filter_settings,
         "counts": {
             "source_rows": len(plain_rows),
             "kept_rows": len(kept_plain),
@@ -234,20 +284,35 @@ def write_checksums(root: Path) -> None:
     (root / "checksums.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def build(output_dir: Path) -> dict[str, Any]:
-    current_prompts, current_manifest = load_current_prompt_set(CURRENT_TRAIN_VAL_PATHS)
+def build(
+    output_dir: Path,
+    *,
+    source_testsets: dict[str, dict[str, Path]],
+    current_train_val_paths: list[Path],
+    source_manifest_path: Path | None,
+    exclude_pdf_context: bool,
+    exclude_no_context: bool,
+    required_context_substring: str | None,
+) -> dict[str, Any]:
+    current_prompts, current_manifest = load_current_prompt_set(current_train_val_paths)
     corpus_manifests = {
-        corpus: build_one(corpus, paths, output_dir, current_prompts)
-        for corpus, paths in SOURCE_TESTSETS.items()
+        corpus: build_one(
+            corpus,
+            paths,
+            output_dir,
+            current_prompts,
+            exclude_pdf_context=exclude_pdf_context,
+            exclude_no_context=exclude_no_context,
+            required_context_substring=required_context_substring,
+        )
+        for corpus, paths in source_testsets.items()
     }
     manifest = {
         "schema_version": "stage3-golden-manifest/v1",
         "version": "golden-v1",
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "description": (
-            "Immutable HTML-only golden test sets for LE vs Curator and Llama 3.3 70B "
-            "reference evaluation."
-        ),
+        "description": "Immutable golden test sets for LE-vs-Curator and reference-model evaluation.",
+        "source_manifest": str(source_manifest_path) if source_manifest_path else None,
         "current_train_validation_prompt_set": current_manifest,
         "corpora": corpus_manifests,
     }
@@ -261,9 +326,31 @@ def build(output_dir: Path) -> dict[str, Any]:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--source-manifest", type=Path, default=Path(DEFAULT_SOURCE_MANIFEST) if DEFAULT_SOURCE_MANIFEST else None)
     ap.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    ap.add_argument("--current-train-val", type=Path, action="append", default=[])
+    ap.add_argument("--required-context-substring", default=None)
+    ap.add_argument("--allow-pdf-context", action="store_true")
+    ap.add_argument("--allow-no-context", action="store_true")
     args = ap.parse_args()
-    manifest = build(args.output_dir)
+
+    if args.source_manifest is None:
+        ap.error(
+            "--source-manifest is required. Provide JSON with corpora.<name>.plain, "
+            "corpora.<name>.with_context, and optional current_train_validation_paths."
+        )
+
+    source_testsets, current_paths, _manifest_payload = load_source_manifest(args.source_manifest)
+    current_paths.extend(args.current_train_val)
+    manifest = build(
+        args.output_dir,
+        source_testsets=source_testsets,
+        current_train_val_paths=current_paths,
+        source_manifest_path=args.source_manifest,
+        exclude_pdf_context=not args.allow_pdf_context,
+        exclude_no_context=not args.allow_no_context,
+        required_context_substring=args.required_context_substring,
+    )
     print(json.dumps({
         "output_dir": str(args.output_dir),
         "corpora": {

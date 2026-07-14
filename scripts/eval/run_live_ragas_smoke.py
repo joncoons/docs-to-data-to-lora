@@ -30,11 +30,11 @@ DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:7331")
 DEFAULT_TARGET_API_URL = os.getenv("TARGET_API_URL", "http://rag-oai-proxy.runai-rag:8080")
 DEFAULT_JUDGE_API_URL = os.getenv(
     "JUDGE_API_URL",
-    "https://maas.apps.ocp.cloud.rhai-tmm.dev/prelude-maas/kimi-k2-6/v1",
+    "http://llm-judge.default.svc.cluster.local:8000/v1",
 )
-DEFAULT_MODEL_ID = os.getenv("EVALUATOR_SMOKE_MODEL", "llama-3.3-nemotron-super-49b-v1.5")
-DEFAULT_JUDGE_MODEL_ID = os.getenv("EVALUATOR_JUDGE_MODEL", "kimi-k2-6")
-DEFAULT_JUDGE_API_KEY_ENV = os.getenv("JUDGE_API_KEY_ENV", "KIMI_KEY")
+DEFAULT_MODEL_ID = os.getenv("EVALUATOR_SMOKE_MODEL", "llama-3.3-70b-instruct")
+DEFAULT_JUDGE_MODEL_ID = os.getenv("EVALUATOR_JUDGE_MODEL", "frontier-judge")
+DEFAULT_JUDGE_API_KEY_ENV = os.getenv("JUDGE_API_KEY_ENV", "LLM_API_KEY")
 DEFAULT_DATASET_PATH = Path(
     os.getenv(
         "EVALUATOR_SMOKE_DATASET_PATH",
@@ -411,7 +411,7 @@ def main() -> int:
     ap.add_argument("--model-id", default=DEFAULT_MODEL_ID,
                     help="Target model ID used for precomputed responses.")
     ap.add_argument("--judge-model-id", default=DEFAULT_JUDGE_MODEL_ID,
-                    help="LLM judge model ID. Defaults to Kimi K2.")
+                    help="LLM judge model ID. Defaults to the configured LLM judge.")
     ap.add_argument("--judge-api-key-env", default=DEFAULT_JUDGE_API_KEY_ENV,
                     help="Environment variable containing the judge API key.")
     ap.add_argument("--judge-api-key", default=None,

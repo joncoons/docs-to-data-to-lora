@@ -1,272 +1,0 @@
-2026-07-10 00:08:33,242 INFO __main__ - Stage 1A durable: 163 passages selected, 335 already completed
-Stage 1A durable:   0%|          | 0/163 [00:00<?, ?it/s]2026-07-10 00:08:43,069 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:08:48,551 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:09:15,385 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:09:15,386 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/maisi/latest/release-notes.html#p0 status=complete rows=4 entailments=2 premises=4 missing=0
-Stage 1A durable:   1%|          | 1/163 [00:42<1:53:33, 42.06s/it]2026-07-10 00:09:26,051 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:09:29,806 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:09:29,807 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/maisi/latest/model-fine-tuning.html#p0 status=complete rows=9 entailments=3 premises=9 missing=0
-Stage 1A durable:   1%|          | 2/163 [00:56<1:09:13, 25.80s/it]2026-07-10 00:09:30,754 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:09:50,147 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:10:22,437 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:10:27,044 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:10:28,267 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:10:28,269 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/maisi/latest/getting-started.html#p0 status=complete rows=23 entailments=7 premises=23 missing=0
-Stage 1A durable:   2%|▏         | 3/163 [01:54<1:48:34, 40.71s/it]2026-07-10 00:10:29,189 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:10:38,777 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:10:56,023 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:10:56,025 INFO __main__ - passage=https://docs.nvidia.com/nim/nemoguard-jailbreakdetect/latest/integrate-guardrails.html#p0 status=complete rows=26 entailments=4 premises=26 missing=0
-Stage 1A durable:   2%|▏         | 4/163 [02:22<1:34:20, 35.60s/it]2026-07-10 00:11:00,520 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:11:02,088 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:11:02,089 INFO __main__ - passage=https://docs.nvidia.com/nim/nemoguard-jailbreakdetect/latest/getting-started.html#p0 status=complete rows=18 entailments=4 premises=18 missing=0
-Stage 1A durable:   3%|▎         | 5/163 [02:28<1:05:41, 24.95s/it]2026-07-10 00:11:20,574 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:11:20,577 INFO __main__ - passage=https://docs.nvidia.com/nim/medical/maisi/latest/advanced-usage.html#p0 status=complete rows=21 entailments=7 premises=21 missing=0
-Stage 1A durable:   4%|▎         | 6/163 [02:47<59:31, 22.75s/it]  2026-07-10 00:11:25,482 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:11:29,785 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:11:29,786 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/openfold2/latest/index.html#p0 status=complete rows=12 entailments=12 premises=12 missing=0
-Stage 1A durable:   4%|▍         | 7/163 [02:56<47:38, 18.32s/it]2026-07-10 00:11:34,060 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:11:42,973 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:11:48,226 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:11:50,073 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:11:50,075 INFO __main__ - passage=https://docs.nvidia.com/nim/nemoguard-jailbreakdetect/latest/configuration.html#p0 status=complete rows=20 entailments=4 premises=20 missing=0
-Stage 1A durable:   5%|▍         | 8/163 [03:16<48:57, 18.95s/it]2026-07-10 00:11:56,059 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:12:02,954 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:12:02,955 INFO __main__ - passage=https://docs.nvidia.com/nim/nemoguard-jailbreakdetect/latest/support-matrix.html#p0 status=complete rows=5 entailments=3 premises=5 missing=0
-Stage 1A durable:   6%|▌         | 9/163 [03:29<43:46, 17.05s/it]2026-07-10 00:12:17,676 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:12:30,982 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:12:30,984 INFO __main__ - passage=https://docs.nvidia.com/nim/ingestion/image-ocr/latest/index.html#p0 status=complete rows=6 entailments=1 premises=6 missing=0
-Stage 1A durable:   6%|▌         | 10/163 [03:57<52:07, 20.44s/it]2026-07-10 00:12:33,090 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:12:33,091 INFO __main__ - passage=https://docs.nvidia.com/nim/nemoguard-jailbreakdetect/latest/observability.html#p0 status=complete rows=12 entailments=3 premises=12 missing=0
-Stage 1A durable:   7%|▋         | 11/163 [03:59<37:34, 14.83s/it]2026-07-10 00:12:40,558 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:12:40,560 INFO __main__ - passage=https://docs.nvidia.com/nim/nemoguard-jailbreakdetect/latest/air-gapped.html#p0 status=complete rows=13 entailments=3 premises=13 missing=0
-Stage 1A durable:   7%|▋         | 12/163 [04:07<31:41, 12.59s/it]2026-07-10 00:12:43,964 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:12:48,926 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:12:56,017 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:12:56,019 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/get-started/prerequisites.html#p0 status=complete rows=25 entailments=8 premises=25 missing=0
-Stage 1A durable:   8%|▊         | 13/163 [04:22<33:38, 13.46s/it]2026-07-10 00:13:16,402 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:13:20,245 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:13:51,415 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:13:51,417 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html#p0 status=complete rows=8 entailments=8 premises=8 missing=0
-Stage 1A durable:   9%|▊         | 14/163 [05:18<1:04:52, 26.13s/it]2026-07-10 00:14:04,078 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:14:38,073 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:14:45,121 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:14:45,124 INFO __main__ - passage=https://docs.nvidia.com/nim/ingestion/image-ocr/latest/release-notes.html#p0 status=complete rows=27 entailments=18 premises=27 missing=0
-Stage 1A durable:   9%|▉         | 15/163 [06:11<1:24:57, 34.44s/it]2026-07-10 00:14:56,741 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:15:06,401 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:15:18,392 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:15:32,355 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:15:34,219 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:15:40,019 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:15:46,712 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:15:50,742 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:15:50,742 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/utilities.html#p0 status=complete rows=14 entailments=8 premises=14 missing=0
-Stage 1A durable:  10%|▉         | 16/163 [07:17<1:47:22, 43.83s/it]2026-07-10 00:16:01,499 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:16:02,490 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:16:29,969 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:16:32,942 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:16:49,039 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:16:51,800 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:17:14,167 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:17:20,465 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:17:26,359 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:17:26,361 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/profiles.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  10%|█         | 17/163 [08:53<2:24:32, 59.40s/it]2026-07-10 00:17:28,906 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:17:36,507 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:17:36,509 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/kv-cache-reuse.html#p0 status=complete rows=37 entailments=9 premises=37 missing=0
-Stage 1A durable:  11%|█         | 18/163 [09:03<1:47:46, 44.60s/it]2026-07-10 00:17:38,227 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:17:51,042 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:18:07,406 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:18:07,408 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/get-started/index.html#p0 status=complete rows=7 entailments=7 premises=7 missing=0
-Stage 1A durable:  12%|█▏        | 19/163 [09:34<1:37:09, 40.48s/it]2026-07-10 00:18:08,307 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:18:12,802 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:18:35,199 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:18:36,549 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:18:39,167 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:18:39,168 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/index.html#p0 status=complete rows=5 entailments=1 premises=5 missing=0
-Stage 1A durable:  12%|█▏        | 20/163 [10:05<1:30:14, 37.87s/it]2026-07-10 00:18:41,614 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:18:41,617 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/peft.html#p0 status=complete rows=45 entailments=13 premises=45 missing=0
-Stage 1A durable:  13%|█▎        | 21/163 [10:08<1:04:27, 27.23s/it]2026-07-10 00:19:00,123 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:19:06,644 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:19:08,998 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:19:15,844 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:19:49,793 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:20:05,805 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:20:32,101 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:20:39,671 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:20:57,878 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:20:57,882 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/getting-started.html#p0 status=complete rows=41 entailments=11 premises=41 missing=0
-Stage 1A durable:  13%|█▎        | 22/163 [12:24<2:20:53, 59.96s/it]2026-07-10 00:21:00,593 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:21:03,783 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:21:26,110 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:21:46,707 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:21:46,710 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/configuration.html#p0 status=complete rows=33 entailments=6 premises=33 missing=0
-Stage 1A durable:  14%|█▍        | 23/163 [13:13<2:12:06, 56.62s/it]2026-07-10 00:21:48,459 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:21:56,805 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:22:00,995 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:22:00,995 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/deploying.html#p0 status=complete rows=9 entailments=3 premises=9 missing=0
-Stage 1A durable:  15%|█▍        | 24/163 [13:27<1:41:44, 43.92s/it]2026-07-10 00:22:13,524 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:22:14,699 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:22:18,141 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:22:18,143 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/support-matrix.html#p0 status=complete rows=21 entailments=8 premises=21 missing=0
-Stage 1A durable:  15%|█▌        | 25/163 [13:44<1:22:31, 35.88s/it]2026-07-10 00:22:23,209 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:22:28,196 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:22:36,921 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:22:36,922 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/playbook.html#p0 status=complete rows=11 entailments=4 premises=11 missing=0
-Stage 1A durable:  16%|█▌        | 26/163 [14:03<1:10:12, 30.75s/it]2026-07-10 00:22:39,817 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:22:48,991 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:23:07,641 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:23:12,154 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:23:23,031 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:23:28,480 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:23:34,479 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:23:35,686 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:23:45,045 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:23:45,047 INFO __main__ - passage=https://docs.nvidia.com/nim/ingestion/image-ocr/latest/support-matrix.html#p0 status=complete rows=32 entailments=9 premises=32 missing=0
-Stage 1A durable:  17%|█▋        | 27/163 [15:11<1:35:07, 41.96s/it]2026-07-10 00:23:49,363 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:24:00,432 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:24:03,747 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:24:16,495 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:24:18,891 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:24:35,293 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:24:36,511 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:24:45,736 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:24:45,738 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/optimization.html#p0 status=complete rows=6 entailments=2 premises=6 missing=0
-Stage 1A durable:  17%|█▋        | 28/163 [16:12<1:47:03, 47.58s/it]2026-07-10 00:24:46,960 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:24:50,794 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:24:50,795 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/performance.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  18%|█▊        | 29/163 [16:17<1:17:46, 34.82s/it]2026-07-10 00:24:59,575 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:25:02,331 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:25:05,707 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:25:05,710 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/release-notes.html#p0 status=complete rows=40 entailments=40 premises=40 missing=0
-Stage 1A durable:  18%|█▊        | 30/163 [16:32<1:03:57, 28.85s/it]2026-07-10 00:25:13,400 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:25:20,602 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:25:21,626 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:25:26,780 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:25:35,460 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:25:38,995 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:25:41,515 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:25:46,859 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:25:51,903 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:01,711 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:05,571 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:12,373 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:13,691 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:15,577 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:19,057 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:24,970 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:28,215 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:32,299 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:38,525 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:48,363 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:54,984 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:26:58,785 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:01,309 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:06,824 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:08,570 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:08,571 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/troubleshoot.html#p0 status=complete rows=8 entailments=4 premises=8 missing=0
-Stage 1A durable:  19%|█▉        | 31/163 [18:35<2:05:31, 57.05s/it]2026-07-10 00:27:10,873 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:19,362 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:22,833 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:27,651 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:27,652 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/use-the-api-openai.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  20%|█▉        | 32/163 [18:54<1:39:41, 45.66s/it]2026-07-10 00:27:28,378 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:34,770 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:41,865 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:42,322 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:49,510 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:51,573 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:27:51,574 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/using-reranking.html#p0 status=complete rows=20 entailments=6 premises=20 missing=0
-Stage 1A durable:  20%|██        | 33/163 [19:18<1:24:48, 39.14s/it]2026-07-10 00:27:59,675 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:28:15,396 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:28:20,790 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:28:23,766 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:28:23,996 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:28:23,997 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/security.html#p0 status=partial rows=12 entailments=5 premises=13 missing=1
-Stage 1A durable:  21%|██        | 34/163 [19:50<1:19:49, 37.13s/it]2026-07-10 00:28:33,069 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:28:35,959 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:28:38,508 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:28:40,737 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:28:40,738 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/use-the-api-grpc.html#p0 status=complete rows=8 entailments=3 premises=8 missing=0
-Stage 1A durable:  21%|██▏       | 35/163 [20:07<1:06:09, 31.01s/it]2026-07-10 00:28:50,369 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:28:56,183 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:28:59,463 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:29:08,734 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:29:19,367 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:29:19,888 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:29:23,264 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:29:26,895 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:29:30,256 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:29:41,715 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:29:41,716 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/reference.html#p0 status=complete rows=7 entailments=5 premises=7 missing=0
-Stage 1A durable:  22%|██▏       | 36/163 [21:08<1:24:40, 40.00s/it]2026-07-10 00:29:49,934 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:29:51,108 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:29:57,190 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:29:57,192 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/reference-grpc.html#p0 status=complete rows=13 entailments=5 premises=13 missing=0
-Stage 1A durable:  23%|██▎       | 37/163 [21:23<1:08:33, 32.64s/it]2026-07-10 00:30:09,037 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:30:17,768 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:30:21,198 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:30:31,485 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:30:31,487 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/eula.html#p0 status=complete rows=4 entailments=2 premises=4 missing=0
-Stage 1A durable:  23%|██▎       | 38/163 [21:58<1:09:02, 33.14s/it]2026-07-10 00:30:38,592 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:30:41,263 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:30:47,148 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:30:47,400 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:30:54,890 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:31:23,325 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:31:24,331 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:31:54,688 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:31:55,869 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:32:14,311 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:32:14,313 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/observability.html#p0 status=complete rows=22 entailments=7 premises=22 missing=0
-Stage 1A durable:  24%|██▍       | 39/163 [23:40<1:51:41, 54.04s/it]2026-07-10 00:32:27,492 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:32:29,625 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:32:29,627 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/configuration.html#p0 status=complete rows=17 entailments=2 premises=17 missing=0
-Stage 1A durable:  25%|██▍       | 40/163 [23:56<1:26:58, 42.43s/it]2026-07-10 00:32:39,002 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:33:46,545 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:33:46,549 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/environment-variables.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  25%|██▌       | 41/163 [25:13<1:47:18, 52.77s/it]2026-07-10 00:33:55,433 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:33:56,294 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:33:56,296 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/about-nim-llm/nim-offerings.html#p0 status=complete rows=13 entailments=4 premises=13 missing=0
-Stage 1A durable:  26%|██▌       | 42/163 [25:22<1:20:23, 39.87s/it]2026-07-10 00:34:33,953 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:35:35,183 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:35:35,189 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/about-nim-llm/overview.html#p0 status=complete rows=44 entailments=9 premises=44 missing=0
-Stage 1A durable:  26%|██▋       | 43/163 [27:01<1:55:08, 57.57s/it]2026-07-10 00:35:42,243 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:35:49,079 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:36:02,544 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:36:02,547 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/about-nim-llm/enterprise-grade.html#p0 status=complete rows=15 entailments=6 premises=15 missing=0
-Stage 1A durable:  27%|██▋       | 44/163 [27:29<1:36:12, 48.51s/it]2026-07-10 00:36:12,259 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:36:12,263 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/parameters.html#p0 status=complete rows=46 entailments=7 premises=46 missing=0
-Stage 1A durable:  28%|██▊       | 45/163 [27:38<1:12:30, 36.87s/it]2026-07-10 00:36:31,876 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:36:31,878 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/get-started/quickstart.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  28%|██▊       | 46/163 [27:58<1:01:48, 31.69s/it]2026-07-10 00:37:27,638 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:37:31,907 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:37:31,908 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/get-started/installation.html#p0 status=complete rows=12 entailments=4 premises=12 missing=0
-Stage 1A durable:  29%|██▉       | 47/163 [28:58<1:17:42, 40.20s/it]2026-07-10 00:37:52,918 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:38:16,151 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:38:16,156 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/deployment/model-profiles-and-selection.html#p0 status=complete rows=45 entailments=13 premises=45 missing=0
-Stage 1A durable:  29%|██▉       | 48/163 [29:42<1:19:22, 41.41s/it]2026-07-10 00:38:36,515 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:38:36,519 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/about-nim-llm/release-notes.html#p0 status=complete rows=39 entailments=18 premises=39 missing=0
-Stage 1A durable:  30%|███       | 49/163 [30:03<1:06:41, 35.10s/it]2026-07-10 00:38:56,343 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:39:06,706 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:39:14,757 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:39:14,761 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/get-started/configuration.html#p0 status=complete rows=22 entailments=6 premises=22 missing=0
-Stage 1A durable:  31%|███       | 50/163 [30:41<1:07:52, 36.04s/it]2026-07-10 00:39:18,890 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:39:30,767 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:39:30,769 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/deployment/kubernetes-deployment/runai.html#p0 status=complete rows=21 entailments=6 premises=21 missing=0
-Stage 1A durable:  31%|███▏      | 51/163 [30:57<56:03, 30.03s/it]  2026-07-10 00:39:30,788 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 400 Bad Request"
-2026-07-10 00:39:30,788 WARNING __main__ - LLM call attempt 1/8 failed: Error code: 400 - {'error': {'message': "This model's maximum context length is 32768 tokens. However, you requested 16384 output tokens and your prompt contains at least 16385 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=16385)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}
-2026-07-10 00:39:50,631 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:39:52,518 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:40:13,703 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:40:13,725 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 400 Bad Request"
-2026-07-10 00:40:13,726 WARNING __main__ - LLM call attempt 1/8 failed: Error code: 400 - {'error': {'message': "This model's maximum context length is 32768 tokens. However, you requested 16384 output tokens and your prompt contains at least 16385 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=16385)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}
-2026-07-10 00:40:26,674 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:40:26,676 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/deployment/csp-deployment/index.html#p0 status=complete rows=6 entailments=5 premises=6 missing=0
-Stage 1A durable:  32%|███▏      | 52/163 [31:53<1:09:55, 37.79s/it]2026-07-10 00:40:43,748 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 400 Bad Request"
-2026-07-10 00:40:43,749 WARNING __main__ - LLM call attempt 2/8 failed: Error code: 400 - {'error': {'message': "This model's maximum context length is 32768 tokens. However, you requested 16384 output tokens and your prompt contains at least 16385 input tokens, for a total of at least 32769 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=16385)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}
-2026-07-10 00:41:22,358 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:41:24,413 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:41:32,954 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:41:36,499 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 00:41:36,502 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/deployment/kubernetes-deployment/nim-operator-deployment.html#p0 status=complete rows=45 entailments=18 premises=45 missing=0
-Stage 1A durable:  33%|███▎      | 53/163 [33:03<1:26:54, 47.40s/it]

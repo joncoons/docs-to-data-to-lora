@@ -59,7 +59,7 @@ def test_inject_basic_auth_url_encodes_credentials():
 
 def test_build_description_for_augmented_training_dataset(tmp_path):
     spec = DatasetSpec(
-        name="stage3-nim-curated-dd-kimi-v1",
+        name="stage3-nim-curated-dd-llm-v1",
         collection="nim_curated",
         dataset_role="augmented_training",
         source_dir=tmp_path,

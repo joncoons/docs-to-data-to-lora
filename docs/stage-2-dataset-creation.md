@@ -81,7 +81,7 @@ that materially change dataset coverage, cost, and recovery behavior.
 - `--stage` runs one stage or the full pipeline; `--resume` reuses durable stage
   artifacts and skips completed work where the stage supports per-passage
   status. `--max-passages` is the smoke-test lever.
-- `--stage1a-mode legacy|batched` chooses the original one-KVP-call-per-premise
+- `--stage1a-mode single|batched` chooses the one-KVP-call-per-premise
   path or the batched KVP expansion path. Both paths extract all entailments and
   all premises; there is no artificial entailment or premise cap.
 - `--stage1a-nim-endpoints`, `--stage1a-model`, `--stage1a-temperature`,
@@ -222,7 +222,7 @@ premises instead of merely matching a surface answer string.
    conclusion + source text); parse `QAKeyValuePair`.
 4. Emit one row per successful (premise, conclusion) → (question, answer) pair.
 
-The default production path preserves this one-KVP-call-per-premise behavior. An
+The default production path is `single`, which uses one KVP call per premise. An
 optional conservative efficiency path is available with `--stage1a-mode batched`.
 It keeps the LE call unchanged, batches only the KVP expansion over parsed
 premises, and falls back to the original per-premise KVP prompt for missing or
@@ -248,7 +248,7 @@ python scripts/build_v2_dataset.py \
 - Default model: `nvidia/nemotron-3-super-120b-a12b`. The hosted alias
   `nvidia/nvidia/nemotron-3-super-v3` is the same model family for this work and
   can be supplied with `--stage1a-model` when using OpenAI-compatible inference.
-- Legacy temperature: 0.2. Batched mode defaults to 0.95 for higher-recall
+- Single-call temperature: 0.2. Batched mode defaults to 0.95 for higher-recall
   extraction, unless `--stage1a-temperature` overrides it.
 - Endpoint/model overrides: use `--stage1a-nim-endpoints`, `--stage1a-model`,
   and `--stage1a-api-key` when an experiment needs hosted inference or a
@@ -428,7 +428,7 @@ Selection is controlled with `--stage1c-selection-mode` or
 `PIPELINE_STAGE1C_SELECTION_MODE`:
 
 - `stratified` - default; span density bands up to the configured target count.
-- `top_density` - legacy behavior; choose the highest-density passages only.
+- `top_density` - choose the highest-density passages only.
 - `all` - run instruction generation for every selected Stage 0 passage.
 
 The floor prevents small corpora from producing too few instruction-format pairs.
@@ -588,11 +588,9 @@ After collection, the normal Stage 2 QA admission/finalization path reads
 final `provenance/dataset_samples.jsonl` retains Data Designer job IDs, gap IDs,
 seed references, and recipe metadata.
 
-Use `python scripts/build_v2_dataset.py ... --stage1-5-mode legacy-direct` only
-when you intentionally want the older direct LLM fallback to emit synthetic rows
-locally. This mode is for controlled experiments or fallback diagnostics; the
-preferred production path is Data Designer handoff with a frontier-grade
-generator.
+The public pipeline does not emit Stage 1.5 synthetic rows directly. It writes
+coverage and seed artifacts for Data Designer, then the K8s-native handoff job
+collects accepted synthetic rows for the normal Stage 2 QA admission path.
 
 ### No-think mode and the May 2026 Jinja2 failure mode
 
@@ -646,13 +644,6 @@ Default handoff files:
   overlays matching Data Designer sidecar records by `sample_id`, preserving
   native service lineage even when Stage 2 refines the prompt or completion
   text.
-
-Legacy direct mode still writes `<DATASET_ROOT>/<collection>/stage1_5_gapfill.jsonl`
-with the Stage 1A-compatible row schema:
-
-- `stage: "1.5"`
-- `target_product_family: "..."`
-- `retrieved_urls: [...]`
 
 ### Expected yield
 
@@ -942,7 +933,7 @@ Supported flags:
 --resume                               reuse durable outputs and stage progress
 --dry-run                              print stage plan + estimated yield, no LLM calls
 --max-passages N                       smoke test with N passages
---stage1a-mode legacy|batched          choose per-premise or batched KVP expansion
+--stage1a-mode single|batched          choose per-premise or batched KVP expansion
 --stage1c-selection-mode MODE          stratified, top_density, or all
 --stage2-qa-endpoints URLS             comma-separated OpenAI-compatible QA endpoints
 --stage2-qa-model MODEL                QA admission model; Super 120B-class by default
@@ -1081,29 +1072,23 @@ requiring a full rerun after every interruption.
 
 ### Data Designer role: gap-fill only, not primary generation
 
-Earlier specs and the April pipeline experimented with NeMo Data Designer as a
-primary generation engine for the whole dataset. That approach was abandoned for
-two reasons: (1) parametric hallucination risk at scale, and (2) the May 2026
-Jinja2/`<think>` failure mode (see Stage 1.5 above). Data Designer is retained
-as an optional targeted gap-fill tool for under-represented products or small
-grounded datasets, where its controlled recipe format helps guarantee consistent
-output structure. When used, it should be backed by a frontier-grade generator.
-The Stages 1A/1B/1C LLM calls use direct API calls, not Data Designer.
+Data Designer is intentionally positioned as an optional targeted gap-fill tool
+rather than the default generator for the entire dataset. The LE, synthesis, and
+instruction stages preserve tight source grounding and per-row provenance; Data
+Designer is most useful when a bias report identifies under-represented slices or
+when a small grounded dataset needs controlled augmentation. When used, it
+should be backed by a frontier-grade generator. The Stages 1A/1B/1C LLM calls
+use direct API calls, not Data Designer.
 
 ---
 
 ## References
 
-### Historical Inputs
+### Implementation Inputs
 
-- Earlier local pipeline and methodology notes informed the first version of
-  this stage. The durable implementation for this repository is
-  `scripts/build_v2_dataset.py`.
-- Archive: `prompt_zoo.py` + `pydantic_models.py` in the `archive/` directory
-  of this repository (provenance for the Jan 2025 LE/KVP/QA-eval prompts; not
-  redistributed here, original path:
-  `<LOCAL_STORAGE_ROOT>/code_repo/LLM_Demos/NIM_CUDA_X_QA_public_website/archive/le_artifacts/`).
 - `scripts/build_v2_dataset.py` — this pipeline's implementation.
+- The prompt and schema lineage is preserved in the current pipeline modules and
+  tests rather than in historical local archives.
 - `data-designer-recipes/nim-gapfill.yaml` — Stage 1.5 Data Designer recipe for
   NIM gap-fill.
 - `data-designer-recipes/nemo-usvcs-gapfill.yaml` — Stage 1.5 recipe for NeMo

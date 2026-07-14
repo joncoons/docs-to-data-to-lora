@@ -37,7 +37,7 @@ log = logging.getLogger(__name__)
 
 DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://10.43.143.110:7331")
 DEFAULT_JUDGE_API_URL = os.getenv("JUDGE_API_URL", "http://llm-judge.default.svc.cluster.local:8000/v1")
-DEFAULT_JUDGE_MODEL_ID = os.getenv("EVALUATOR_JUDGE_MODEL", "azure/moonshotai/kimi-k2.6")
+DEFAULT_JUDGE_MODEL_ID = os.getenv("EVALUATOR_JUDGE_MODEL", "azure/anthropic/claude-sonnet-4-6")
 DEFAULT_JUDGE_API_KEY_ENV = os.getenv("JUDGE_API_KEY_ENV", "LLM_API_KEY")
 DEFAULT_JUDGE_EMBEDDING_API_URL = os.getenv(
     "JUDGE_EMBEDDING_API_URL",
@@ -53,11 +53,11 @@ DEFAULT_COMPLETIONS_ROOT = Path(
         "<EVAL_ROOT>/completions-question-only",
     )
 )
-DEFAULT_GOLDEN_ROOT = _REPO_ROOT / "curator_dataset" / "experiments" / "20260709-curator-vs-le" / "golden_eval" / "golden-v1"
+DEFAULT_GOLDEN_ROOT = Path(os.getenv("GOLDEN_ROOT", "artifacts/evaluation/golden-v1"))
 DEFAULT_OUTPUT_ROOT = Path(
-    os.getenv("NEMO_EVALUATOR_KIMI_OUTPUT_ROOT", "<EVAL_ROOT>/nemo-evaluator-kimi")
+    os.getenv("NEMO_EVALUATOR_OUTPUT_ROOT", "<EVAL_ROOT>/nemo-evaluator-llm")
 )
-DEFAULT_REPO_SUMMARY_DIR = _REPO_ROOT / "curator_dataset" / "experiments" / "20260709-curator-vs-le" / "golden_eval" / "evaluator_kimi_20260712"
+DEFAULT_REPO_SUMMARY_DIR = Path(os.getenv("NEMO_EVALUATOR_REPO_SUMMARY_DIR", "artifacts/evaluation/nemo-evaluator-summaries"))
 DEFAULT_MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://10.43.102.80:5000")
 DEFAULT_MLFLOW_EXPERIMENT = os.getenv("MLFLOW_EXPERIMENT_NAME", "docs-to-data-to-lora-golden-eval")
 DEFAULT_MLFLOW_ARTIFACT_LOCATION = os.getenv(
@@ -612,7 +612,7 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--golden-root", type=Path, default=DEFAULT_GOLDEN_ROOT)
     ap.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     ap.add_argument("--repo-summary-dir", type=Path, default=DEFAULT_REPO_SUMMARY_DIR)
-    ap.add_argument("--eval-run-id", default=datetime.now(timezone.utc).strftime("golden-v1-nemo-evaluator-kimi-%Y%m%dT%H%M%SZ"))
+    ap.add_argument("--eval-run-id", default=datetime.now(timezone.utc).strftime("golden-v1-nemo-evaluator-llm-%Y%m%dT%H%M%SZ"))
     ap.add_argument("--evaluator-url", default=DEFAULT_EVALUATOR_URL)
     ap.add_argument("--evaluator-api-key", default=os.getenv("EVALUATOR_API_KEY"))
     ap.add_argument("--judge-api-url", default=DEFAULT_JUDGE_API_URL)
@@ -685,7 +685,7 @@ def main() -> int:
         run_summaries.append(run_one_response_file(spec, args=args, judge_model=judge_model))
 
     repo_summary = {
-        "schema_version": "nemo-evaluator-kimi-run-summary/v1",
+        "schema_version": "nemo-evaluator-llm-run-summary/v1",
         "created_at": now_utc(),
         "eval_run_id": args.eval_run_id,
         "mode": "singleaxis",

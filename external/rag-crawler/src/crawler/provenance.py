@@ -225,7 +225,7 @@ def registry_provenance_fields(metadata: dict[str, Any]) -> dict[str, Any]:
 
 
 def normalize_registry_entry(entry: dict[str, Any]) -> dict[str, Any]:
-    """Normalize legacy registry hash fields in place and return the entry."""
+    """Normalize registry hash fields in place and return the entry."""
     for key in ("content_hash", "last_ingested_hash", "raw_sha256", "source_content_hash"):
         normalized = normalize_sha256_hash(entry.get(key))
         if normalized:

@@ -70,7 +70,7 @@ def parse_summary_metadata(eval_root: Path, summary_path: Path, eval_type: str) 
         "relative_dir": str(rel),
         "summary_path": str(summary_path),
     }
-    if eval_type == "singleaxis-kimi" and len(parts) >= 7:
+    if eval_type == "singleaxis-llm" and len(parts) >= 7:
         metadata.update(
             {
                 "dataset_slug": parts[1],
@@ -81,7 +81,7 @@ def parse_summary_metadata(eval_root: Path, summary_path: Path, eval_type: str) 
                 "eval_run_id": parts[6],
             }
         )
-    elif eval_type == "pairwise-kimi" and len(parts) >= 2:
+    elif eval_type == "pairwise-llm" and len(parts) >= 2:
         metadata["eval_run_id"] = parts[-1]
         metadata["pair_slug"] = "/".join(parts[1:-1])
     else:
@@ -92,7 +92,7 @@ def parse_summary_metadata(eval_root: Path, summary_path: Path, eval_type: str) 
 def summarize_one(eval_root: Path, ref: SummaryRef) -> dict[str, Any]:
     summary = read_json(ref.path)
     metadata = parse_summary_metadata(eval_root, ref.path, ref.eval_type)
-    if ref.eval_type == "pairwise-kimi":
+    if ref.eval_type == "pairwise-llm":
         row_count = _coerce_int(summary.get("rows_compared"))
         target = pairwise_target_totals(summary.get("target_generation") or {})
     else:
@@ -229,7 +229,7 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument(
         "--eval-type",
         action="append",
-        choices=["singleaxis-kimi", "pairwise-kimi"],
+        choices=["singleaxis-llm", "pairwise-llm"],
         help="Evaluation output type to scan. Defaults to both.",
     )
     ap.add_argument("--out", type=Path, help="Write JSON rollup to this path.")
@@ -239,7 +239,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    eval_types = args.eval_type or ["singleaxis-kimi", "pairwise-kimi"]
+    eval_types = args.eval_type or ["singleaxis-llm", "pairwise-llm"]
     refs = find_summaries(args.eval_root, eval_types, args.run_id)
     rows = [summarize_one(args.eval_root, ref) for ref in refs]
     payload = {

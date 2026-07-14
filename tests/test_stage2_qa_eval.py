@@ -26,7 +26,7 @@ def _llm(response):
     return llm
 
 
-def test_parse_eval_response_legacy_unchanged():
+def test_parse_eval_response_compact_payload_unchanged():
     raw = json.dumps({"prompt": "Q?", "completion": "A."})
     ev = parse_eval_response(raw)
     assert ev is not None

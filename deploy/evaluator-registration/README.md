@@ -23,13 +23,13 @@ Update `deploy/evaluator-registration/job.yaml` with that image.
 
 ## Training Session Log Input
 
-The registration script derives adapter targets from `evals/training_session.log`.
-For Kubernetes, create a ConfigMap from the current inventory:
+The registration script derives adapter targets from a generated training-session
+inventory. For Kubernetes, create a ConfigMap from the current inventory artifact:
 
 ```bash
 kubectl create configmap stage3-training-session-log \
   -n nemo-peft \
-  --from-file=training_session.log=evals/training_session.log
+  --from-file=training_session.log=<RUN_ARTIFACT_ROOT>/training_session.log
 ```
 
 If the adapter inventory changes, recreate or patch this ConfigMap before
@@ -71,7 +71,7 @@ python scripts/eval/register_evaluator_entities.py \
 
 - LoRA adapter model targets from the training-session log
 - Dense Llama base reference targets
-- Nemotron-Super-49B comparator target
+- Dense Llama 3.3 70B reference comparator target
 - Stage 3 single-axis and pairwise Evaluator configs
 
 Datasets are not registered by this Job. Stage 3 datasets belong in NeMo Entity

@@ -170,8 +170,8 @@ def test_ingest_updates_url_registry(registry_dir):
     assert entry["last_ingested"] != ""
 
 
-def test_load_url_registry_normalizes_legacy_bare_hash(registry_dir):
-    """Legacy bare hex content hashes are normalized on load."""
+def test_load_url_registry_normalizes_bare_hash(registry_dir):
+    """Bare hex content hashes are normalized on load."""
     bare_hash = "d" * 64
     path = Path(registry_dir) / "cuda_url_registry.json"
     path.write_text(json.dumps({
@@ -187,7 +187,7 @@ def test_load_url_registry_normalizes_legacy_bare_hash(registry_dir):
     assert entry["last_ingested_hash"] == "sha256:" + bare_hash
 
 
-def test_should_skip_binary_with_legacy_bare_hash():
+def test_should_skip_binary_with_bare_hash():
     """Bare and prefixed hashes compare equal during binary skip checks."""
     from crawler.crawl import _binary_unchanged
 

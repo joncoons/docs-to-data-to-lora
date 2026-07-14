@@ -121,8 +121,9 @@ docs-to-data-to-lora/
 │   ├── stage-2-dataset-creation.md        ← entailment + augmentation (WIP)
 │   ├── stage-3-peft-training.md           ← LoRA SFT pipeline (WIP)
 │   ├── methodology-rationale.md           ← why LE, Curator, model sizing, RL
+│   ├── results/                            ← curated case-study results + SVGs
 │   ├── integration-templates/              ← MLflow/NeMo orchestration plans
-│   └── integrations/                      ← optional Stage 1 enhancements
+│   └── integrations/                       ← optional Stage 1 enhancements
 │       ├── README.md                      (decision table — when to use which)
 │       ├── 01-semantic-chunking.md        (element-aware chunker for HTML/MD/PDF)
 │       ├── 02-cross-page-text-stitching.md (sentence stitching across PDF pages)
@@ -132,7 +133,10 @@ docs-to-data-to-lora/
 │   ├── nim.md                             ← NVIDIA Inference Microservices walkthrough
 │   └── nemo-microservices.md              ← NVIDIA NeMo Microservices walkthrough
 ├── scripts/
-│   └── sitemap_to_inventory.py            ← sitemap → CSV inventory tool
+│   ├── pipeline/                           ← dataset creation stages
+│   ├── stage3/                             ← Customizer LoRA training helpers
+│   ├── eval/                               ← completion capture and evaluation
+│   └── sitemap_to_inventory.py             ← sitemap → CSV inventory tool
 └── deployment/
     └── kubernetes-runai.md                ← one concrete deployment target
 ```
@@ -141,12 +145,13 @@ docs-to-data-to-lora/
 
 | Stage | Status | What's done |
 |---|---|---|
-| 1 — Corpus Ingestion | ✅ ready to use | Curated crawl methodology, inventory tool, two worked examples (NIM, NeMo Microservices), Kubernetes deployment reference, optional durable document extraction path |
-| 2 — Dataset Creation | 🚧 in progress | Approach outlined, pipeline not yet built |
-| 3 — PEFT Training | 🚧 in progress | Approach outlined, training scripts not yet committed |
+| 1 — Corpus Ingestion | ready to use | Curated crawl methodology, inventory tool, two worked examples, Kubernetes deployment reference, optional durable document extraction path |
+| 2 — Dataset Creation | ready to adapt | Resumable LE pipeline, optional Data Designer gap-fill, Curator handoff/finalization, provenance sidecars, validation gate |
+| 3 — PEFT Training | ready to adapt | Customizer LoRA SFT helpers for dense Llama bases, evaluator registration, completion capture, MLflow export, golden-test workflow |
 
-Stage 1 is self-contained — you can use it today to build domain corpora
-without committing to the later stages.
+The repo is intended to be adapted to your corpus. Generated datasets,
+training logs, raw evaluation traces, and cluster-local run manifests are
+excluded from the public branch by design.
 
 ## Quick start (Stage 1)
 
@@ -168,6 +173,14 @@ python scripts/sitemap_to_inventory.py \
 #    rag-crawler (https://github.com/joncoons/rag-crawler).
 ```
 
+
+
+## Case-Study Results
+
+The public repo includes distilled evaluation outcomes, but not raw run logs or
+generated corpora. See [`docs/results/evaluation-summary.md`](docs/results/evaluation-summary.md)
+for the validation-loss comparison, golden-test methodology, no-RAG/RAG score
+charts, and the current RAGAS diagnostic status.
 
 ## Tutorial Notebooks
 
@@ -272,8 +285,8 @@ state.
 
 ## Contributing
 
-Issues and PRs welcome. The current open work is captured in each stage
-doc under "Open work" — Stage 3 is the active edge.
+Issues and PRs welcome. Keep generated corpora, logs, credentials, cluster-specific
+run manifests, and one-off experiment outputs out of public commits.
 
 ## License
 

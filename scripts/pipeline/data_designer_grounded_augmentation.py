@@ -2,7 +2,7 @@
 """Submit and collect the grounded-dataset Data Designer augmentation experiment.
 
 This complements ``build_data_designer_seed_from_grounded.py``. It uploads the
-Kimi-authored seed CSV to NeMo Data Store, submits a native NeMo Data Designer
+LLM-authored seed CSV to NeMo Data Store, submits a native NeMo Data Designer
 job, and can poll/download results for later admission and merge steps.
 """
 from __future__ import annotations
@@ -38,16 +38,16 @@ from scripts.pipeline.provenance import SCHEMA_VERSION, utc_now  # noqa: E402
 DEFAULT_EXPERIMENT_DIR = Path(
     os.getenv(
         "DATA_DESIGNER_AUGMENTATION_DIR",
-        "<DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_20260529_kimi",
+        "<DATASET_ROOT>/experiments/nim_curated_dd_llm_1b",
     )
 )
 DEFAULT_DATA_DESIGNER_URL = os.getenv("DATA_DESIGNER_URL", "http://192.168.1.187:30812")
 DEFAULT_DATA_STORE_URL = os.getenv("DATA_STORE_URL", "http://192.168.1.187:30912")
 DEFAULT_DATA_STORE_GIT_BASE = os.getenv("DATA_STORE_GIT_BASE", DEFAULT_DATA_STORE_URL)
 DEFAULT_NAMESPACE = os.getenv("DATASET_NAMESPACE", "default")
-DEFAULT_SEED_REPO_NAME = os.getenv("DATA_DESIGNER_SEED_REPO_NAME", "stage3-nim-curated-dd-kimi-seeds")
-DEFAULT_MODEL_PROVIDER = os.getenv("DATA_DESIGNER_MODEL_PROVIDER", "kimi-k2")
-DEFAULT_MODEL = os.getenv("DATA_DESIGNER_MODEL", "kimi-k2-6")
+DEFAULT_SEED_REPO_NAME = os.getenv("DATA_DESIGNER_SEED_REPO_NAME", "stage3-nim-curated-dd-llm-seeds")
+DEFAULT_MODEL_PROVIDER = os.getenv("DATA_DESIGNER_MODEL_PROVIDER", "frontier-llm-provider")
+DEFAULT_MODEL = os.getenv("DATA_DESIGNER_MODEL", "frontier-llm-model")
 DEFAULT_MODEL_ALIAS = os.getenv("DATA_DESIGNER_MODEL_ALIAS", "generation_model")
 
 SYSTEM_PROMPT = (
@@ -248,7 +248,7 @@ def push_seed_repo(
     repo_id = f"{config.namespace}/{repo_name}"
     clone_url = f"{config.authenticated_git_base.rstrip('/')}/{repo_id}.git"
     seed_csv = experiment_dir / "data_designer" / "seed_dataset.csv"
-    seed_requests = experiment_dir / "data_designer" / "kimi_seed_requests.jsonl"
+    seed_requests = experiment_dir / "data_designer" / "llm_seed_requests.jsonl"
     submission_plan = experiment_dir / "data_designer" / "submission_plan.json"
     if not seed_csv.exists():
         raise FileNotFoundError(seed_csv)
@@ -257,14 +257,14 @@ def push_seed_repo(
         run_cmd(["git", "clone", clone_url, str(repo)])
         for src, dst_rel in (
             (seed_csv, "seed_dataset.csv"),
-            (seed_requests, "kimi_seed_requests.jsonl"),
+            (seed_requests, "llm_seed_requests.jsonl"),
             (submission_plan, "submission_plan.json"),
         ):
             if src.exists():
                 shutil.copyfile(src, repo / dst_rel)
         run_cmd(["git", "config", "user.email", config.git_user_email], cwd=repo)
         run_cmd(["git", "config", "user.name", config.git_user_name], cwd=repo)
-        run_cmd(["git", "add", "seed_dataset.csv", "kimi_seed_requests.jsonl", "submission_plan.json"], cwd=repo)
+        run_cmd(["git", "add", "seed_dataset.csv", "llm_seed_requests.jsonl", "submission_plan.json"], cwd=repo)
         with seed_csv.open(newline="", encoding="utf-8") as fh:
             rows = sum(1 for _ in csv.DictReader(fh))
         commit = run_cmd(
@@ -524,7 +524,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--seed-dataset-ref", default=None)
     ap.add_argument("--mode", choices=["upload", "preview", "submit", "status", "wait", "collect"], required=True)
     ap.add_argument("--job-id", default=os.getenv("DATA_DESIGNER_JOB_ID"))
-    ap.add_argument("--job-name", default="nim-curated-dd-kimi-1b-v1")
+    ap.add_argument("--job-name", default="nim-curated-dd-llm-1b-v1")
     ap.add_argument("--experiment-label", default=None)
     ap.add_argument("--description", default=None)
     ap.add_argument("--model-provider", default=DEFAULT_MODEL_PROVIDER)
@@ -575,7 +575,7 @@ def main(argv: list[str] | None = None) -> int:
             description=(
                 args.description
                 or f"{args.experiment_label or args.job_name}: Data Designer synthetic QA generation "
-                "from Kimi-authored public documentation seeds."
+                "from LLM-authored public documentation seeds."
             ),
             experiment_label=args.experiment_label or args.job_name,
         )

@@ -1,44 +1,0 @@
-2026-07-09 14:50:31,216 INFO __main__ - Stage 1A: shard 0/1 selected 8 of 8 passages
-Stage 1A:   0%|          | 0/8 [00:00<?, ?it/s]2026-07-09 14:50:36,927 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:50:38,279 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:50:43,737 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:50:45,072 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1A:  12%|█▎        | 1/8 [00:13<01:36, 13.80s/it]2026-07-09 14:50:53,928 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1A:  25%|██▌       | 2/8 [00:22<01:05, 10.89s/it]2026-07-09 14:51:08,778 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:13,651 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:14,748 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:15,832 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:26,357 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:27,504 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:29,041 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:30,407 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:31,842 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:33,177 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:43,058 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:44,865 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:49,612 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:51:53,859 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:52:00,249 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:52:01,266 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:52:12,676 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:52:13,969 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:52:20,817 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:52:21,921 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:52:30,694 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:52:36,147 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:52:43,962 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:52:47,538 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:52:57,734 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:53:05,068 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:53:12,107 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1A:  38%|███▊      | 3/8 [02:40<05:45, 69.01s/it]2026-07-09 14:53:26,186 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1A:  50%|█████     | 4/8 [02:54<03:09, 47.33s/it]2026-07-09 14:53:42,009 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1A:  62%|██████▎   | 5/8 [03:10<01:47, 35.97s/it]2026-07-09 14:53:44,596 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:53:49,276 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:53:51,081 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 14:54:00,392 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1A:  75%|███████▌  | 6/8 [03:29<00:59, 29.99s/it]2026-07-09 14:54:09,771 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1A:  88%|████████▊ | 7/8 [03:38<00:23, 23.25s/it]2026-07-09 14:54:19,946 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-Stage 1A: 100%|██████████| 8/8 [03:48<00:00, 19.09s/it]Stage 1A: 100%|██████████| 8/8 [03:48<00:00, 28.58s/it]
-2026-07-09 14:54:19,947 INFO __main__ - Stage 1A: 30 KVPs -> curator_dataset/experiments/20260709-ultra-550b-smoke/runs/le_micro/nemo_usvcs_curated/super-v3/stage1a_le.jsonl
-2026-07-09 14:54:19,948 INFO __main__ - Stage 1A: written observability files under curator_dataset/experiments/20260709-ultra-550b-smoke/runs/le_micro/nemo_usvcs_curated/super-v3/observability

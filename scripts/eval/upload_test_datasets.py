@@ -144,9 +144,9 @@ LINEAGE_FILE_CANDIDATES = (
         "data_designer_result_manifest",
     ),
     LineageFile(
-        Path("data_designer/kimi_seed_requests.jsonl"),
-        "data_designer/kimi_seed_requests.jsonl",
-        "data_designer_kimi_seed_requests",
+        Path("data_designer/llm_seed_requests.jsonl"),
+        "data_designer/llm_seed_requests.jsonl",
+        "data_designer_llm_seed_requests",
     ),
     LineageFile(
         Path("data_designer/results_manifest.json"),
@@ -525,7 +525,7 @@ def discover_provenance_artifacts(source_dir: Path) -> list[dict[str, Any]]:
         source_dir / "data_designer" / "seed_dataset.csv",
         source_dir / "data_designer" / "submission_plan.json",
         source_dir / "data_designer" / "result_manifest.json",
-        source_dir / "data_designer" / "kimi_seed_requests.jsonl",
+        source_dir / "data_designer" / "llm_seed_requests.jsonl",
         source_dir / "data_designer" / "results_manifest.json",
         source_dir / "data_designer" / "download_manifest.json",
         source_dir / "data_designer" / "generated_raw.jsonl",

@@ -37,7 +37,7 @@ class QAKeyValuePair(BaseModel):
 class QAEvaluation(BaseModel):
     """Output of Stage 2 QA admission/refinement.
 
-    ``admit`` defaults to true so legacy QA responses containing only prompt and
+    ``admit`` defaults to true so compact QA responses containing only prompt and
     completion remain valid. Newer frontier-judge prompts can explicitly reject
     irreparable rows and attach auditable quality signals.
     """

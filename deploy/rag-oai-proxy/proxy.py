@@ -3,10 +3,8 @@
 Single sidecar that the Evaluator calls for every eval job. Two responsibilities:
 
   1. Routing — derive the upstream {URL, model_id} from the inbound `model`.
-       Dense Llama adapter targets and base targets can share the same
-       LoRA-enabled NIM Service, but Nemotron-3-Nano uses separate base-only
-       and LoRA-capable deployments because its hybrid MoE profiles are not
-       interchangeable for base and adapter serving.
+       Dense Llama adapter targets and base targets share the same
+       LoRA-enabled NIM Service for each model size.
   2. <think>...</think> scrubbing — applied to every response. Idempotent on
      responses without think tags (dense Llama path is a passthrough no-op).
      Keeps thinking ENABLED upstream so reasoning quality is preserved, but
@@ -40,60 +38,35 @@ _NIM_LORA_SERVICE_FOR_BASE: dict[str, str] = {
     "meta/llama-3.2-1b-instruct":              "nim-llm-1b-bw-lora",
     "meta/llama-3.2-3b-instruct":              "nim-llm-3b-ada-lora",
     "meta/llama-3.1-8b-instruct":              "nim-llm-8b-bw-lora",
-    "nvidia/nemotron-3-nano-30b-a3b":          "nim-llm-nemotron-3-nano-nvfp4-lora-bw",
-    "nvidia/llama-3.3-nemotron-super-49b-v1.5": "nim-llm",
+    "meta/llama-3.3-70b-instruct":              "nim-llm-70b",
 }
 
 _NIM_BASE_SERVICE_FOR_BASE: dict[str, str] = {
     "meta/llama-3.2-1b-instruct":              "nim-llm-1b-bw-lora",
     "meta/llama-3.2-3b-instruct":              "nim-llm-3b-ada-lora",
     "meta/llama-3.1-8b-instruct":              "nim-llm-8b-bw-lora",
-    "nvidia/nemotron-3-nano-30b-a3b":          "nim-llm-nemotron-3-nano-nvfp4-nolora-bw",
-    "nvidia/llama-3.3-nemotron-super-49b-v1.5": "nim-llm",
+    "meta/llama-3.3-70b-instruct":              "nim-llm-70b",
 }
 
-# Stage 3 LoRA adapter inventory: (corpus_slug, base_model, rank)
+# Stage 3 LoRA adapter inventory: (corpus_slug, base_model, rank).
+# Keep this list to reusable final targets. Add project-specific adapter aliases
+# through a downstream overlay rather than committing one-off experiment names.
 _ADAPTERS: list[tuple[str, str, int]] = [
     ("nim",        "meta/llama-3.2-1b-instruct",     16),
     ("nim",        "meta/llama-3.2-1b-instruct",     32),
-    ("nim-dd-kimi","meta/llama-3.2-1b-instruct",     16),
-    ("nim-dd-kimi","meta/llama-3.2-1b-instruct",     32),
     ("nim",        "meta/llama-3.2-3b-instruct",     16),
     ("nim",        "meta/llama-3.2-3b-instruct",     32),
-    ("nim-dd5x",   "meta/llama-3.2-3b-instruct",     32),
-    ("nim-dd5x",   "meta/llama-3.2-3b-instruct",     16),
-    ("nim-dd5x-e5", "meta/llama-3.2-3b-instruct",    16),
-    ("nim-dd5x-e5", "meta/llama-3.2-3b-instruct",    32),
-    ("nim-e5",     "meta/llama-3.2-3b-instruct",     16),
-    ("nim-e5",     "meta/llama-3.2-3b-instruct",     32),
     ("nim",        "meta/llama-3.1-8b-instruct",     16),
     ("nim",        "meta/llama-3.1-8b-instruct",     32),
-    ("nim-e5",     "meta/llama-3.1-8b-instruct",     16),
-    ("nim-e5",     "meta/llama-3.1-8b-instruct",     32),
-    ("nim",        "nvidia/nemotron-3-nano-30b-a3b", 16),
     ("nemo-usvcs", "meta/llama-3.2-1b-instruct",     16),
     ("nemo-usvcs", "meta/llama-3.2-1b-instruct",     32),
     ("nemo-usvcs", "meta/llama-3.2-3b-instruct",     16),
     ("nemo-usvcs", "meta/llama-3.2-3b-instruct",     32),
-    ("nemo-usvcs-dd5x", "meta/llama-3.2-3b-instruct",     32),
-    ("nemo-usvcs-dd5x", "meta/llama-3.2-3b-instruct",     16),
     ("nemo-usvcs", "meta/llama-3.1-8b-instruct",     16),
     ("nemo-usvcs", "meta/llama-3.1-8b-instruct",     32),
-    ("nemo-usvcs-e5", "meta/llama-3.1-8b-instruct",  16),
-    ("nemo-usvcs-e5", "meta/llama-3.1-8b-instruct",  32),
-    ("nemo-usvcs", "nvidia/nemotron-3-nano-30b-a3b", 16),
 ]
 
-# Explicit replacement/experiment adapters that do not fit the base naming
-# convention above but should remain routable through the same LoRA deployment.
-_EXPLICIT_ADAPTERS: dict[str, str] = {
-    "lora-nemo-usvcs-nemotron-nano-30b-r16-retrain-20260530": "nvidia/nemotron-3-nano-30b-a3b",
-}
-
-
 def _adapter_name(corpus_slug: str, base: str, rank: int) -> str:
-    if base == "nvidia/nemotron-3-nano-30b-a3b":
-        return f"lora-{corpus_slug}-nemotron-nano-30b-r{rank}"
     size_slug = base.replace("meta/llama-", "").replace("-instruct", "")
     return f"lora-{corpus_slug}-llama-{size_slug}-r{rank}"
 
@@ -101,7 +74,7 @@ def _adapter_name(corpus_slug: str, base: str, rank: int) -> str:
 def _base_target_name(base: str) -> str:
     """Drop the org/ prefix, slashes aren't allowed in Evaluator names.
     'meta/llama-3.2-1b-instruct' -> 'llama-3.2-1b-instruct'
-    'nvidia/llama-3.3-nemotron-super-49b-v1.5' -> 'llama-3.3-nemotron-super-49b-v1.5'
+    'meta/llama-3.3-70b-instruct' -> 'llama-3.3-70b-instruct'
     """
     return base.split("/", 1)[1]
 
@@ -117,16 +90,8 @@ def _build_routes() -> dict[str, dict[str, Any]]:
             "url":            f"http://{nim_svc}.runai-rag:8000/v1/chat/completions",
             "upstream_model": adapter,
         }
-    for adapter, base in _EXPLICIT_ADAPTERS.items():
-        nim_svc = _NIM_LORA_SERVICE_FOR_BASE[base]
-        routes[adapter] = {
-            "url":            f"http://{nim_svc}.runai-rag:8000/v1/chat/completions",
-            "upstream_model": adapter,
-        }
 
-    # Base targets: use base-only services where the NIM profile requires it.
-    # Nano is the important case: its feat_lora profile is not used for the
-    # base-only reference target.
+    # Base targets share the same per-size service used for adapter serving.
     for base, nim_svc in _NIM_BASE_SERVICE_FOR_BASE.items():
         target_name = _base_target_name(base)
         routes[target_name] = {
@@ -206,7 +171,7 @@ def _wrap_as_text_completion(
     content: str,
     usage: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Wrap final response as legacy OAI text_completion (for /v1/completions).
+    """Wrap final response as OpenAI text_completion (for /v1/completions).
 
     Evaluator's openai-python client calls client.completions.create() which
     targets /v1/completions and expects choices[0].text — not the chat shape.
@@ -252,9 +217,9 @@ async def _run_inference(
         "stream":      False,
         "model":       route["upstream_model"],
         "messages":    messages,
-        # 8192 default for Stage 3: reasoning models (Nemotron-Super-49B,
-        # Nano MoE) emit hundreds-of-tokens <think> blocks; need budget for
-        # reasoning + final answer. Caller (Evaluator) typically overrides
+        # 8192 default for Stage 3: reasoning-capable targets may emit
+        # <think> blocks; keep budget for reasoning plus final answer.
+        # Caller (Evaluator) typically overrides
         # via the eval config's params.max_tokens.
         "max_tokens":  body.get("max_tokens", 8192),
         # rag-server / NIM enforce temperature > 0 (greedy-equivalent floor).
@@ -348,11 +313,11 @@ async def chat_completions(body: dict[str, Any]) -> dict[str, Any]:
 
 @app.post("/v1/completions")
 async def completions(body: dict[str, Any]) -> dict[str, Any]:
-    """Legacy OAI completions endpoint. The NeMo Evaluator uses
-    `client.completions.create()` which hits this path. We wrap the legacy
+    """OpenAI-compatible completions endpoint. The NeMo Evaluator uses
+    `client.completions.create()` which hits this path. We wrap the
     `prompt` (string or list of strings) as a single user-role message,
     delegate to the shared chat-completions inference path, then return in
-    the legacy text_completion shape."""
+    the text_completion shape."""
     model = body.get("model", "")
     prompt = body.get("prompt")
     if prompt is None:
@@ -367,5 +332,5 @@ async def completions(body: dict[str, Any]) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail=f"prompt must be string; got {type(prompt).__name__}")
 
     messages = [{"role": "user", "content": prompt}]
-    cleaned, usage = await _run_inference(model, messages, body, api_kind="legacy")
+    cleaned, usage = await _run_inference(model, messages, body, api_kind="completions")
     return _wrap_as_text_completion(model, cleaned, usage=usage)

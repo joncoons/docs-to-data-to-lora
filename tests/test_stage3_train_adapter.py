@@ -43,7 +43,7 @@ def _nim_curated_config(rank: int = 16) -> dict:
 # ---------------------------------------------------------------------------
 
 def test_build_config_top_level_shape():
-    """Top-level keys match Customizer 25.12 schema; legacy fields absent."""
+    """Top-level keys match Customizer 25.12 schema; deprecated fields absent."""
     cfg = _nim_curated_config()
 
     # Required top-level fields
@@ -58,7 +58,7 @@ def test_build_config_top_level_shape():
 
 
 def test_build_config_hyperparameters_shape():
-    """Hyperparameter block matches canonical schema; legacy fields absent."""
+    """Hyperparameter block matches canonical schema; deprecated fields absent."""
     hp = _nim_curated_config()["hyperparameters"]
 
     # Required fields with exact types / values
@@ -205,7 +205,7 @@ def test_submit_adapter_job_calls_client_and_returns_job_id():
 
 def test_cli_dry_run_produces_valid_json_with_correct_shape():
     """CLI --dry-run prints valid JSON matching the Customizer 25.12 wire schema."""
-    python = "<USER_HOME>/anaconda3/envs/nat/bin/python3"
+    python = sys.executable
     script = str(
         Path(__file__).resolve().parents[1]
         / "scripts" / "stage3" / "train_adapter.py"
@@ -236,7 +236,7 @@ def test_cli_dry_run_produces_valid_json_with_correct_shape():
     assert hp["lora"]["alpha"] == 32
     assert hp["lora"]["target_modules"] is None
 
-    # No legacy fields
+    # No deprecated fields
     assert "name" not in cfg
     assert "output_model_path" not in cfg
     assert "precision" not in hp
@@ -245,7 +245,7 @@ def test_cli_dry_run_produces_valid_json_with_correct_shape():
 
 def test_cli_dry_run_accepts_augmented_dataset_overrides():
     """CLI can target an augmented dataset entity without changing baseline mappings."""
-    python = "<USER_HOME>/anaconda3/envs/nat/bin/python3"
+    python = sys.executable
     script = str(
         Path(__file__).resolve().parents[1]
         / "scripts" / "stage3" / "train_adapter.py"
@@ -256,8 +256,8 @@ def test_cli_dry_run_accepts_augmented_dataset_overrides():
             "--collection", "nim_curated",
             "--base-model", "meta/llama-3.2-1b-instruct",
             "--rank", "16",
-            "--dataset-entity", "default/stage3-nim-curated-dd-kimi-v1",
-            "--adapter-name", "lora-nim-dd-kimi-llama-3.2-1b-r16",
+            "--dataset-entity", "default/stage3-nim-curated-dd-llm-v1",
+            "--adapter-name", "lora-nim-dd-llm-llama-3.2-1b-r16",
             "--description", "Stage 3 augmented NIM 1B r16 test",
             "--dry-run",
         ],
@@ -267,7 +267,7 @@ def test_cli_dry_run_accepts_augmented_dataset_overrides():
     assert result.returncode == 0, f"CLI exited non-zero:\n{result.stderr}"
     cfg = json.loads(result.stdout)
 
-    assert cfg["dataset"] == "default/stage3-nim-curated-dd-kimi-v1"
-    assert cfg["output_model"] == "default/lora-nim-dd-kimi-llama-3.2-1b-r16"
+    assert cfg["dataset"] == "default/stage3-nim-curated-dd-llm-v1"
+    assert cfg["output_model"] == "default/lora-nim-dd-llm-llama-3.2-1b-r16"
     assert cfg["description"] == "Stage 3 augmented NIM 1B r16 test"
     assert cfg["hyperparameters"]["lora"]["adapter_dim"] == 16

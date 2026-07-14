@@ -18,7 +18,7 @@ def _write_jsonl(path, rows):
     path.write_text("".join(json.dumps(row) + "\n" for row in rows))
 
 
-def _config(tmp_path, *, mode="prepare", allow_external_kimi=False):
+def _config(tmp_path, *, mode="prepare", allow_external_llm=False):
     return SeedConfig(
         dataset_dir=tmp_path / "nim_curated",
         output_dir=tmp_path / "experiment",
@@ -28,10 +28,10 @@ def _config(tmp_path, *, mode="prepare", allow_external_kimi=False):
         seed_count=2,
         pairs_per_seed=3,
         random_seed=7,
-        judge_api_url="https://maas.example.test/kimi/v1",
-        judge_model="kimi-k2-6",
-        judge_api_key_env="KIMI_KEY",
-        allow_external_kimi=allow_external_kimi,
+        judge_api_url="https://llm.example.test/v1",
+        judge_model="frontier-llm-model",
+        judge_api_key_env="LLM_API_KEY",
+        allow_external_llm=allow_external_llm,
         temperature=0.0,
         max_tokens=8192,
         timeout_s=30.0,
@@ -141,7 +141,7 @@ def test_run_prepare_writes_seed_csv_plan_and_observability(tmp_path):
 
     assert result["seed_records"] == 2
     assert result["synthetic_pairs_requested"] == 6
-    seed_requests = config.output_dir / "data_designer" / "kimi_seed_requests.jsonl"
+    seed_requests = config.output_dir / "data_designer" / "llm_seed_requests.jsonl"
     seed_csv = config.output_dir / "data_designer" / "seed_dataset.csv"
     submission_plan = config.output_dir / "data_designer" / "submission_plan.json"
     assert seed_requests.exists()
@@ -152,8 +152,8 @@ def test_run_prepare_writes_seed_csv_plan_and_observability(tmp_path):
     assert {seed["seed_author"] for seed in seeds} == {"heuristic"}
     assert all(seed["source_sample_ids"] for seed in seeds)
     assert all(seed["retrieved_chunks"] for seed in seeds)
-    assert all(seed["kimi"]["prompt_sha256"].startswith("sha256:") for seed in seeds)
-    assert all(seed["kimi"]["response_sha256"] is None for seed in seeds)
+    assert all(seed["llm"]["prompt_sha256"].startswith("sha256:") for seed in seeds)
+    assert all(seed["llm"]["response_sha256"] is None for seed in seeds)
 
     with seed_csv.open(newline="") as fh:
         csv_rows = list(csv.DictReader(fh))
@@ -168,11 +168,11 @@ def test_run_prepare_writes_seed_csv_plan_and_observability(tmp_path):
     assert (config.output_dir / "observability" / "data-designer-grounded-seeds" / "metrics.json").exists()
 
 
-def test_kimi_mode_requires_explicit_external_permission(tmp_path):
-    config = _config(tmp_path, mode="kimi", allow_external_kimi=False)
+def test_llm_mode_requires_explicit_external_permission(tmp_path):
+    config = _config(tmp_path, mode="llm", allow_external_llm=False)
     _write_dataset(config.dataset_dir)
 
-    with pytest.raises(RuntimeError, match="allow-external-kimi"):
+    with pytest.raises(RuntimeError, match="allow-external-llm"):
         run(config)
 
 

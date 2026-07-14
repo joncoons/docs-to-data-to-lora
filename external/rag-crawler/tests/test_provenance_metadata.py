@@ -10,7 +10,7 @@ from crawler.es_client import _build_doc
 from crawler.provenance import build_es_provenance, normalize_sha256_hash, sha256_text
 
 
-def test_normalize_sha256_hash_accepts_legacy_bare_hex():
+def test_normalize_sha256_hash_accepts_bare_hex():
     digest = "A" * 64
     assert normalize_sha256_hash(digest) == "sha256:" + digest.lower()
     assert normalize_sha256_hash("sha256:" + digest) == "sha256:" + digest.lower()

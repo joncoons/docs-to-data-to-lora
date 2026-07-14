@@ -10,7 +10,7 @@ The matrix has three waves:
 |---|---|---|
 | A | single-axis rubric over each LoRA and base target | absolute quality scores |
 | B | base-vs-adapter and adapter-vs-adapter within a corpus | prove adapter lift and rank variants |
-| C | 49B comparator vs each LoRA | compare smaller adapted targets to a stronger reference |
+| C | 70B dense reference vs selected LoRA winners | illustrate quality against a larger no-adapter target |
 
 The notebook uses the pure builder functions in `scripts/eval/run_evaluation_matrix.py` to inspect job counts and payload shape without submitting jobs.
 
@@ -31,13 +31,13 @@ Use direct single-axis and pairwise scripts when the Evaluator service cannot re
 Single-axis command shape:
 
 ```bash
-python scripts/eval/run_direct_kimi_singleaxis.py   --responses <EVAL_ROOT>/completions/.../responses.jsonl   --eval-run-id <run-id>   --limit 10
+python scripts/eval/run_direct_llm_singleaxis.py   --responses <EVAL_ROOT>/completions/.../responses.jsonl   --eval-run-id <run-id>   --limit 10
 ```
 
 Pairwise command shape:
 
 ```bash
-python scripts/eval/run_direct_kimi_pairwise.py   --pair base /path/to/base/responses.jsonl lora-r16 /path/to/lora/responses.jsonl   --eval-run-id <run-id>   --limit 10
+python scripts/eval/run_direct_llm_pairwise.py   --pair base /path/to/base/responses.jsonl lora-r16 /path/to/lora/responses.jsonl   --eval-run-id <run-id>   --limit 10
 ```
 
 ## Token Accounting

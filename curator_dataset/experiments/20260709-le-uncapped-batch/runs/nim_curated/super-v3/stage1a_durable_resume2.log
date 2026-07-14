@@ -1,16 +1,0 @@
-2026-07-09 20:58:32,003 INFO __main__ - Stage 1A durable: 383 passages selected, 115 already completed
-Stage 1A durable:   0%|          | 0/383 [00:00<?, ?it/s]2026-07-09 20:58:39,429 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 20:58:43,921 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 20:58:56,949 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 20:59:03,434 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 20:59:15,089 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 20:59:23,161 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 20:59:33,248 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 20:59:33,249 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemotron-safety-guard-8b/latest/integrate-guardrails.html#p0 status=complete rows=4 entailments=3 premises=4 missing=0
-Stage 1A durable:   0%|          | 1/383 [01:01<6:29:24, 61.16s/it]2026-07-09 20:59:50,606 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 20:59:55,855 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:00:05,928 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:00:05,929 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemotron-safety-guard-8b/latest/configuration.html#p0 status=complete rows=19 entailments=16 premises=19 missing=0
-Stage 1A durable:   1%|          | 2/383 [01:33<4:41:59, 44.41s/it]2026-07-09 21:00:23,866 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:00:41,542 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-09 21:01:01,960 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"

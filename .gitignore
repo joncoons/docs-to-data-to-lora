@@ -34,6 +34,17 @@ crawl-exports/
 # Pipeline outputs and local artifacts
 artifacts/
 outputs/
-# Local-only archives and provenance snapshots
-.local-archive/
+evals/
+crawl-exports/
+curator_dataset/
+archive/
+backups/
+refactors/
+docs/experiments/
+docs/redesign/
 .local_archive/
+.local-archive/
+
+# Local operational overrides
+scripts/ops/
+deploy/model-serving/*.SELECTION.yaml

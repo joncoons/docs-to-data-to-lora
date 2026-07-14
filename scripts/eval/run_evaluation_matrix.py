@@ -1,5 +1,5 @@
 """Orchestrate Wave A (single-axis), Wave B (base/LoRA pairwise), and
-Wave C (49B vs LoRA pairwise) Evaluator jobs."""
+Wave C (dense reference vs LoRA pairwise) Evaluator jobs."""
 from __future__ import annotations
 
 import argparse
@@ -46,14 +46,16 @@ _DATASET_FOR_COLLECTION = {
     "nemo_usvcs_curated":   "default/stage3-nemo-usvcs-curated-test-with-context",
 }
 
-# Bases that are NOT in the Wave A no-LoRA base-target sweep. 49B remains a
-# separate comparator target in Wave C; Nano now has its own base-only NIM
-# deployment and should be evaluated as a base reference target.
+# The dense reference target is evaluated only in Wave C. The default target
+# name corresponds to Llama 3.3 70B, but deployments can override it.
 _BASES_NOT_IN_WAVE_A_BASE_SWEEP = {
-    "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+    "meta/llama-3.3-70b-instruct",
 }
 
-_NEMOTRON_SUPER_49B_TARGET = "default/llama-3.3-nemotron-super-49b-v1.5"
+_REFERENCE_TARGET = os.getenv(
+    "EVALUATOR_REFERENCE_TARGET",
+    "default/llama-3.3-70b-instruct",
+)
 
 
 def _base_target_name(base_model: str) -> str:
@@ -64,12 +66,12 @@ def _base_target_name(base_model: str) -> str:
 def build_singleaxis_jobs(adapters: list[AdapterRow],
                           config_name: str) -> list[dict]:
     """Wave A single-axis: every LoRA + every dense Llama base, scored on the
-    matching-corpus -with-context test set. 49B is intentionally excluded from
-    single-axis per the 2026-05-27 redesign (it only appears in Wave C pairwise).
+    matching-corpus -with-context test set. The dense reference target is
+    intentionally excluded from this sweep and appears in Wave C pairwise.
 
-    For the Stage 3 inventory (14 adapters across 4 bases, 2 corpora):
-      - adapter jobs (one per adapter, paired with its corpus's test set)
-      - base jobs (dense Llama plus Nano base targets × 2 corpora)
+    For the dense LoRA inventory:
+      - adapter jobs, one per adapter paired with its corpus test set
+      - base jobs for 1B, 3B, and 8B dense Llama targets across both corpora
     """
     jobs: list[dict] = []
     for a in adapters:
@@ -138,26 +140,23 @@ def build_pairwise_jobs(adapters: list[AdapterRow],
     return jobs
 
 
-def build_49b_pairwise_jobs(adapters: list[AdapterRow],
-                            config_name: str) -> list[dict]:
-    """Wave C — single 49B target vs every LoRA adapter, paired with the
-    LoRA's matching-corpus -with-context test set.
+def build_reference_pairwise_jobs(adapters: list[AdapterRow],
+                                  config_name: str) -> list[dict]:
+    """Wave C — dense reference target vs every LoRA adapter.
 
-    Corpus disambiguation lives in the *dataset*, not the target: both Wave C
-    rows use the same Nemotron-Super-49B-v1.5 target, but each is paired with
-    the test set corresponding to the LoRA's training corpus.
-
-    14 LoRAs × 1 target each (matching dataset by corpus) = 14 jobs.
+    Corpus disambiguation lives in the dataset, not the target: all Wave C rows
+    use the same reference target, paired with the test set corresponding to
+    each LoRA's training corpus.
     """
     jobs: list[dict] = []
     for a in adapters:
         adapter_target = f"default/{a.name}"
         jobs.append({
             "config": config_name,
-            "target": _NEMOTRON_SUPER_49B_TARGET,  # nominal anchor (see pairwise note above)
+            "target": _REFERENCE_TARGET,  # nominal anchor (see pairwise note above)
             "dataset": _DATASET_FOR_COLLECTION[a.collection],
             "extra": {
-                "target_a": _NEMOTRON_SUPER_49B_TARGET,
+                "target_a": _REFERENCE_TARGET,
                 "target_b": adapter_target,
             },
         })
@@ -293,8 +292,8 @@ def main() -> int:
         if args.wave in ("C", "all"):
             submit_and_maybe_wait(
                 "wave_c",
-                "Wave C (49B vs LoRA)",
-                build_49b_pairwise_jobs(adapters, "default/stage3-pairwise-tournament"),
+                "Wave C (reference vs LoRA)",
+                build_reference_pairwise_jobs(adapters, "default/stage3-pairwise-tournament"),
             )
     return 0
 

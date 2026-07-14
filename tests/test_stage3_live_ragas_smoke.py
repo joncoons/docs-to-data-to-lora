@@ -48,17 +48,17 @@ def test_build_token_counts_keeps_raw_and_cleaned_roi_fields():
     assert counts["think_tokens_est"] < 100
 
 
-def test_build_judge_model_uses_8192_generation_budget_and_kimi_key():
+def test_build_judge_model_uses_8192_generation_budget_and_llm_key():
     judge = build_judge_model(
-        judge_api_url="https://maas.apps.ocp.cloud.rhai-tmm.dev/prelude-maas/kimi-k2-6/v1",
-        model_id="kimi-k2-6",
+        judge_api_url="http://llm-judge.default.svc.cluster.local:8000/v1",
+        model_id="azure/anthropic/claude-sonnet-4-6",
         api_key="secret-key",
     )
 
     assert judge["api_endpoint"]["url"] == (
-        "https://maas.apps.ocp.cloud.rhai-tmm.dev/prelude-maas/kimi-k2-6/v1/chat/completions"
+        "http://llm-judge.default.svc.cluster.local:8000/v1/chat/completions"
     )
-    assert judge["api_endpoint"]["model_id"] == "kimi-k2-6"
+    assert judge["api_endpoint"]["model_id"] == "azure/anthropic/claude-sonnet-4-6"
     assert judge["api_endpoint"]["api_key"] == "secret-key"
     assert judge["api_endpoint"]["format"] == "openai"
     assert judge["prompt"]["inference_params"]["max_tokens"] == REASONING_GENERATION_BUDGET
@@ -73,8 +73,8 @@ def test_redact_secrets_masks_judge_api_key():
 def test_build_live_payload_uses_rows_target_and_data_task():
     rows = [{"prompt": "Context\nQuestion?", "completion": "Answer", "response": "Answer"}]
     judge = build_judge_model(
-        judge_api_url="https://maas.apps.ocp.cloud.rhai-tmm.dev/prelude-maas/kimi-k2-6/v1",
-        model_id="kimi-k2-6",
+        judge_api_url="http://llm-judge.default.svc.cluster.local:8000/v1",
+        model_id="azure/anthropic/claude-sonnet-4-6",
         api_key="secret-key",
     )
 

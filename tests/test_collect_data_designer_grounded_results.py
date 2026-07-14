@@ -35,7 +35,7 @@ def test_run_collects_grounded_results_and_rejects_duplicates(tmp_path):
     _write_jsonl(source / "validation.jsonl", [
         {"prompt": "Holdout?", "completion": "Do not train."},
     ])
-    _write_jsonl(experiment / "data_designer" / "kimi_seed_requests.jsonl", [
+    _write_jsonl(experiment / "data_designer" / "llm_seed_requests.jsonl", [
         {
             "seed_id": "seed_1",
             "gap_id": "seed_1",
@@ -48,7 +48,7 @@ def test_run_collects_grounded_results_and_rejects_duplicates(tmp_path):
             "passage_id": "p7",
             "product_family": "NIM",
             "retrieved_urls": ["https://docs.example.com/nim"],
-            "seed_author": "kimi",
+            "seed_author": "llm",
             "coverage_axis": "deployment",
             "pairs_count": 3,
         },
@@ -63,7 +63,7 @@ def test_run_collects_grounded_results_and_rejects_duplicates(tmp_path):
     (experiment / "data_designer" / "job_request.json").write_text(json.dumps({
         "spec": {
             "config": {
-                "model_configs": [{"provider": "kimi-k2", "model": "kimi-k2-6"}],
+                "model_configs": [{"provider": "frontier-llm-provider", "model": "frontier-llm-model"}],
             }
         }
     }))

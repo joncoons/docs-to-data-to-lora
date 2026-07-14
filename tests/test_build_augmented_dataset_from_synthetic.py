@@ -44,8 +44,8 @@ def test_build_augmented_dataset_appends_synthetic_only_to_train_splits(tmp_path
     (experiment / "data_designer" / "result_manifest.json").parent.mkdir(parents=True, exist_ok=True)
     (experiment / "data_designer" / "result_manifest.json").write_text(json.dumps({
         "data_designer_job_id": "job_123",
-        "model_provider": "kimi-k2",
-        "model": "kimi-k2-6",
+        "model_provider": "frontier-llm-provider",
+        "model": "frontier-llm-model",
         "accepted_synthetic_pair_count": 2,
         "side_effect_columns_excluded": ["qa_pairs_json__reasoning_trace"],
         "source_support_check": "not_run",
@@ -59,7 +59,7 @@ def test_build_augmented_dataset_appends_synthetic_only_to_train_splits(tmp_path
         output_dir=output,
         accepted_samples_path=experiment / "data_designer" / "accepted_samples.jsonl",
         collection="nim_curated",
-        dataset_name="nim_curated_dd_kimi_1b",
+        dataset_name="nim_curated_dd_llm_1b",
         system_prompt="default system",
     ))
 

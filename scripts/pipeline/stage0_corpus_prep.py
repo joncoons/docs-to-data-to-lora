@@ -73,10 +73,10 @@ def classify_doc_kind(
     modality: str | None = None,
     source_kind: str | None = None,
 ) -> Literal["html", "pdf"]:
-    """Return Stage 0 grouping mode while preserving legacy html/pdf labels.
+    """Return Stage 0 grouping mode while preserving current html/pdf labels.
 
     Non-web source text, such as OCR, image captions, and video summaries, is
-    kept per ES chunk. The legacy Passage model only has html/pdf labels, so
+    kept per ES chunk. The Passage model currently has html/pdf labels, so
     `pdf` means per-chunk source text here, not strictly a PDF file.
     """
     source_system_l = (source_system or "").lower()

@@ -45,7 +45,7 @@ The template expects the dataset artifact PVC mounted at `/datasets`:
 uploads it and recognized lineage sidecars from `manifests/`, `provenance/`,
 and `data_designer/` to the NeMo Data Store dataset repository alongside the
 split JSONL files. Use
-`--allow-missing-lineage` only for legacy or ad hoc dry runs that have not yet
+`--allow-missing-lineage` only for ad hoc dry runs that have not yet
 passed through dataset finalization.
 
 ## Secrets

@@ -116,7 +116,7 @@ def main() -> int:
     ap.add_argument("--rank", required=True, type=int, choices=[16, 32])
     ap.add_argument(
         "--dataset-entity",
-        help="Override the registered Customizer dataset entity, e.g. default/stage3-nim-curated-dd-kimi-v1",
+        help="Override the registered Customizer dataset entity, e.g. default/stage3-nim-curated-dd-llm-v1",
     )
     ap.add_argument(
         "--adapter-name",

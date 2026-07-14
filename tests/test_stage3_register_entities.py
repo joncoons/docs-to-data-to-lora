@@ -1,7 +1,7 @@
 """Tests for Evaluator target/config payload builders.
 
 These tests intentionally cover the native NIM Proxy model-target path. The
-legacy rag-oai-proxy/RAG target path should not be the default showcase path.
+the rag-oai-proxy/RAG target path should not be the default showcase path.
 """
 import sys
 
@@ -10,7 +10,7 @@ import pytest
 import scripts.eval.register_evaluator_entities as ree
 from scripts.eval.register_evaluator_entities import (
     AdapterRow,
-    build_49b_target,
+    build_reference_target,
     build_adapter_target,
     build_base_target,
     build_dataset_payload,
@@ -53,15 +53,15 @@ def test_build_base_target_uses_base_slug_as_target_name():
     assert endpoint["format"] == "nim"
 
 
-def test_build_49b_target_is_model_target_not_rag_target():
-    target = build_49b_target(proxy_url="http://nemo-nim-proxy:8000")
+def test_build_reference_target_is_model_target_not_rag_target():
+    target = build_reference_target(proxy_url="http://nemo-nim-proxy:8000")
 
     endpoint = target["model"]["api_endpoint"]
     assert target["type"] == "model"
-    assert target["name"] == "llama-3.3-nemotron-super-49b-v1.5"
+    assert target["name"] == "llama-3.3-70b-instruct"
     assert "rag" not in target
     assert endpoint["url"] == "http://nemo-nim-proxy:8000/v1/chat/completions"
-    assert endpoint["model_id"] == "llama-3.3-nemotron-super-49b-v1.5"
+    assert endpoint["model_id"] == "llama-3.3-70b-instruct"
     assert endpoint["format"] == "nim"
 
 
@@ -93,7 +93,7 @@ def test_singleaxis_config_uses_ragas_metrics_and_external_judge_ref():
     metrics = task["metrics"]
     assert set(metrics) == {"faithfulness", "response_relevancy", "answer_accuracy"}
     for metric in metrics.values():
-        assert metric["params"]["judge"]["model"] == "default/llama-3.3-nemotron-super-49b-v1.5"
+        assert metric["params"]["judge"]["model"] == "default/frontier-judge"
         assert "retrieved_contexts" in metric["params"]["input_template"]
 
 
@@ -104,7 +104,7 @@ def test_pairwise_config_has_position_swap_and_judge():
     extra = cfg["params"]["extra"]
     assert extra["position_swap"] is True
     assert "A" in extra["pairwise_prompt"] and "B" in extra["pairwise_prompt"]
-    assert extra["judge_model"] == "nvidia/llama-3.3-nemotron-super-49b-v1.5"
+    assert extra["judge_model"] == "frontier-judge"
 
 
 # --- AdapterRow round-trip ----------------------------------------------
@@ -118,23 +118,6 @@ def test_adapter_row_from_log_line():
     assert row.base_model == "meta/llama-3.2-3b-instruct"
     assert row.collection == "nim_curated"
 
-
-def test_adapter_row_from_log_line_moe_nano():
-    line = ("| lora-nemo-usvcs-nemotron-nano-30b-r16 | "
-            "`<ARTIFACT_ROOT>/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/` "
-            "| 886 MB | This run (2026-05-27) |")
-    row = AdapterRow.from_log_line(line)
-    assert row.name == "lora-nemo-usvcs-nemotron-nano-30b-r16"
-    assert row.job_id == "ties-merged"
-    assert row.base_model == "nvidia/nemotron-3-nano-30b-a3b"
-    assert row.collection == "nemo_usvcs_curated"
-
-
-def test_adapter_row_from_log_line_skips_shard_rows():
-    line = ("| lora-nemo-usvcs-nemotron-nano-30b-r16-shard-a  | "
-            "cust-4dLpWrjfy2GUn14StTnnVY     |    0.488   |   1.042  |  ~87 min   |")
-    with pytest.raises(ValueError, match="shard row not registrable"):
-        AdapterRow.from_log_line(line)
 
 
 def test_adapter_row_from_log_line_raises_on_malformed():
@@ -195,9 +178,9 @@ def test_main_all_registers_targets_and_configs_via_nim_proxy(tmp_path, monkeypa
 
     assert ree.main() == 0
 
-    # One adapter target from the fixture log, four base targets,
-    # and the 49B comparator.
-    assert len(created_targets) == 6
+    # One adapter target from the fixture log, three dense base targets,
+    # and the 70B reference comparator.
+    assert len(created_targets) == 5
     assert len(created_configs) == 2
     assert {cfg["name"] for cfg in created_configs} == {
         "stage3-singleaxis-rubric",

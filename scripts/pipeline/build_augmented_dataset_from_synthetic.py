@@ -28,7 +28,7 @@ DEFAULT_SOURCE_DATASET_DIR = Path(os.getenv("SOURCE_DATASET_DIR", "<DATASET_ROOT
 DEFAULT_EXPERIMENT_DIR = Path(
     os.getenv(
         "DATA_DESIGNER_AUGMENTATION_DIR",
-        "<DATASET_ROOT>/experiments/nim_curated_dd_kimi_1b_20260529_kimi",
+        "<DATASET_ROOT>/experiments/nim_curated_dd_llm_1b",
     )
 )
 DEFAULT_SYSTEM_PROMPT = "You are a precise NVIDIA NIM technical assistant. Answer based on official documentation."
@@ -251,7 +251,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--output-dir", type=Path, default=None)
     ap.add_argument("--accepted-samples-path", type=Path, default=None)
     ap.add_argument("--collection", default="nim_curated")
-    ap.add_argument("--dataset-name", default="nim_curated_dd_kimi_1b")
+    ap.add_argument("--dataset-name", default="nim_curated_dd_llm_1b")
     ap.add_argument("--system-prompt", default=DEFAULT_SYSTEM_PROMPT)
     ap.add_argument("--synthetic-limit", type=int, default=None)
     ap.add_argument("--overwrite", action="store_true")

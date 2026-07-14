@@ -36,7 +36,7 @@ DEFAULT_SOURCE_DATASET_DIR = Path(os.getenv("SOURCE_DATASET_DIR", "<DATASET_ROOT
 DEFAULT_EXPERIMENT_DIR = Path(
     os.getenv(
         "DATA_DESIGNER_AUGMENTATION_DIR",
-        "<DATASET_ROOT>/experiments/nim_curated_dd_kimi_5x",
+        "<DATASET_ROOT>/experiments/nim_curated_dd_llm_5x",
     )
 )
 DEFAULT_SYSTEM_PROMPT = "You are a precise NVIDIA NIM technical assistant. Answer based on official documentation."
@@ -311,7 +311,7 @@ def _int_or_none(value: Any) -> int | None:
 
 
 def seed_index(experiment_dir: Path) -> dict[str, dict[str, Any]]:
-    seeds = read_jsonl(experiment_dir / "data_designer" / "kimi_seed_requests.jsonl")
+    seeds = read_jsonl(experiment_dir / "data_designer" / "llm_seed_requests.jsonl")
     return {str(seed.get("seed_id") or seed.get("gap_id")): seed for seed in seeds}
 
 
@@ -551,7 +551,7 @@ def run(config: CollectConfig) -> dict[str, Any]:
         config.overwrite,
     )
 
-    seed_rows = read_jsonl(data_designer_dir / "kimi_seed_requests.jsonl")
+    seed_rows = read_jsonl(data_designer_dir / "llm_seed_requests.jsonl")
     returned_seed_ids = {str(record.get("seed_id") or record.get("gap_id")) for record in records}
     omitted: list[dict[str, Any]] = []
     for idx, seed in enumerate(seed_rows):

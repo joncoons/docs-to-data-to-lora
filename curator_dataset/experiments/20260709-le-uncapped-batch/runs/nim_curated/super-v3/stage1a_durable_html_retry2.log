@@ -1,22 +1,0 @@
-2026-07-10 07:29:04,362 INFO __main__ - Stage 1A durable: 6 passages selected, 490 already completed
-Stage 1A durable:   0%|          | 0/6 [00:00<?, ?it/s]2026-07-10 07:29:22,743 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:29:29,740 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:29:29,741 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/boltz2/latest/deploy-helm.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
-Stage 1A durable:  17%|█▋        | 1/6 [00:25<02:06, 25.28s/it]2026-07-10 07:29:39,624 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:29:45,795 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:29:45,797 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemoguard-8b-topiccontrol/latest/prompt-template.html#p0 status=complete rows=9 entailments=3 premises=9 missing=0
-Stage 1A durable:  33%|███▎      | 2/6 [00:41<01:19, 19.86s/it]2026-07-10 07:29:47,298 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:29:54,677 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:29:54,680 INFO __main__ - passage=https://docs.nvidia.com/nim/ingestion/object-detection/latest/getting-started.html#p0 status=complete rows=33 entailments=6 premises=33 missing=0
-Stage 1A durable:  50%|█████     | 3/6 [00:50<00:44, 14.85s/it]2026-07-10 07:30:05,714 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:30:11,470 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:30:57,852 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:31:17,624 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:31:17,626 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2-multimer/latest/quickstart-guide.html#p0 status=complete rows=15 entailments=6 premises=15 missing=0
-Stage 1A durable:  67%|██████▋   | 4/6 [02:13<01:23, 41.73s/it]2026-07-10 07:31:21,696 INFO httpx - HTTP Request: POST https://llm.example.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:31:21,700 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/advanced-use-cases/prompt-embeds.html#p0 status=complete rows=61 entailments=11 premises=61 missing=0
-Stage 1A durable:  83%|████████▎ | 5/6 [02:17<00:28, 28.15s/it]2026-07-10 07:33:24,715 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:34:36,384 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
-2026-07-10 07:34:36,386 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/endpoints.html#p0 status=complete rows=23 entailments=5 premises=23 missing=0
-Stage 1A durable: 100%|██████████| 6/6 [05:31<00:00, 84.77s/it]Stage 1A durable: 100%|██████████| 6/6 [05:31<00:00, 55.32s/it]
-2026-07-10 07:34:37,053 INFO __main__ - Stage 1A durable complete: 9312 rows -> curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/stage1a_le.jsonl

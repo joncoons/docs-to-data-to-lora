@@ -47,8 +47,6 @@ _BASE_FROM_SIZE_SLUG = {
     "3.2-1b": "meta/llama-3.2-1b-instruct",
     "3.2-3b": "meta/llama-3.2-3b-instruct",
     "3.1-8b": "meta/llama-3.1-8b-instruct",
-    # MoE base (Stage 3 Nemotron Nano r=16, see training_session.log)
-    "nemotron-nano-30b": "nvidia/nemotron-3-nano-30b-a3b",
 }
 
 
@@ -61,24 +59,16 @@ class AdapterRow:
 
     @classmethod
     def from_log_line(cls, line: str) -> "AdapterRow":
-        """Parse one row of evals/training_session.log into AdapterRow.
+        """Parse one dense-Llama adapter row into AdapterRow.
 
-        Collection is derived from the adapter name prefix (lora-nim-* vs
-        lora-nemo-usvcs-*), not from the surrounding section header — section
-        headers are ambiguous when the MoE inventory table mixes both corpora
-        under one heading.
-
-        Dense-Llama row shape: `| <name> | <job_id> | <train> | <val> | <wall> |`
-        MoE merged-adapter row shape: `| <name> | <path> | <size> | <source> |`
-        Shard rows (`-shard-a` / `-shard-b` suffix) are skipped — only the
-        merged adapter is a usable eval target.
+        Expected row shape: `| <name> | <job_id> | <train> | <val> | <wall> |`.
+        Collection is derived from the adapter name prefix (`lora-nim-*` or
+        `lora-nemo-usvcs-*`) rather than from surrounding markdown headings.
         """
         cells = [c.strip() for c in line.split("|") if c.strip()]
         if len(cells) < 2:
             raise ValueError(f"Cannot parse row: {line!r}")
         name, second = cells[0], cells[1]
-        if re.search(r"-shard-[ab]$", name):
-            raise ValueError(f"shard row not registrable: {name!r}")
         # Derive collection from name prefix.
         if name.startswith("lora-nim-"):
             collection = "nim_curated"
@@ -86,13 +76,6 @@ class AdapterRow:
             collection = "nemo_usvcs_curated"
         else:
             raise ValueError(f"Cannot derive collection from name: {name!r}")
-        # MoE merged adapter pattern, e.g. "lora-nim-nemotron-nano-30b-r16".
-        # second cell is a filesystem path; use "ties-merged" sentinel for job_id
-        # because Round 1 source customizer ids are not recoverable.
-        m = re.search(r"-(nemotron-nano-30b)-r\d+$", name)
-        if m:
-            return cls(name=name, base_model=_BASE_FROM_SIZE_SLUG[m.group(1)],
-                       job_id="ties-merged", collection=collection)
         # Dense-Llama pattern, e.g. "lora-nim-llama-3.2-1b-r16"
         m = re.search(r"-(\d\.\d-\d+b)-r\d+$", name)
         if not m:
@@ -117,11 +100,14 @@ class AdapterRow:
 #   - LoRA adapters:  lora-{corpus}-{base_short}-r{rank}   (unchanged)
 #   - Base models:    bare base-model identifier, org/ stripped, e.g.
 #                       "llama-3.2-1b-instruct"
-#                       "llama-3.3-nemotron-super-49b-v1.5"
-#   - 49B is just another base target — corpus disambiguation lives in the
-#     *dataset* (-with-context variants per corpus), not in the target name.
+#                       "llama-3.3-nemotron-super-70b-v1.5"
+#   - 70B is a dense reference target, not the judge. Corpus disambiguation
+#     lives in the dataset, not in duplicate target names.
 
-_NEMOTRON_SUPER_49B_BASE = "nvidia/llama-3.3-nemotron-super-49b-v1.5"
+_REFERENCE_BASE_MODEL = os.getenv(
+    "EVALUATOR_REFERENCE_MODEL",
+    "meta/llama-3.3-70b-instruct",
+)
 
 
 def _base_target_name(base_model: str) -> str:
@@ -160,11 +146,13 @@ def build_base_target(base_model: str, proxy_url: str) -> dict:
     }
 
 
-def build_49b_target(proxy_url: str) -> dict:
-    """The Nemotron-Super-49B comparator. Registered as a model target;
-    corpus pairing is handled by which -with-context dataset it's evaluated on,
-    not by duplicating the target."""
-    return build_base_target(_NEMOTRON_SUPER_49B_BASE, proxy_url)
+def build_reference_target(proxy_url: str) -> dict:
+    """Dense reference comparator target.
+
+    Corpus pairing is handled by the evaluation dataset, not by duplicating
+    the model target per corpus.
+    """
+    return build_base_target(_REFERENCE_BASE_MODEL, proxy_url)
 
 
 def build_dataset_payload(collection: str, files_url: str) -> dict:
@@ -243,7 +231,7 @@ _RAGAS_INPUT_TEMPLATE = (
 
 _JUDGE_MODEL_REF = os.getenv(
     "EVALUATOR_JUDGE_MODEL_REF",
-    "default/llama-3.3-nemotron-super-49b-v1.5",
+    "default/frontier-judge",
 )
 
 
@@ -302,11 +290,11 @@ def build_pairwise_config() -> dict:
         "params": {
             "parallelism": 4,
             "temperature": 0.0001,  # Evaluator schema requires temperature > 0; greedy-equivalent
-            "max_tokens": 8192,     # target inference budget; reasoning models (49B) need room for <think> + answer
+            "max_tokens": 8192,     # target inference budget; reasoning models may need room for <think> + answer
             "extra": {
                 "judge_model": os.getenv(
                     "EVALUATOR_PAIRWISE_JUDGE_MODEL",
-                    "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+                    "frontier-judge",
                 ),
                 "judge_endpoint": "http://llm-judge.default.svc.cluster.local:8000/v1/chat/completions",
                 "pairwise_prompt": _PAIRWISE_PROMPT,
@@ -319,11 +307,10 @@ def build_pairwise_config() -> dict:
 # --- adapter inventory from log ---------------------------------------
 
 def load_adapters_from_log(log_path: Path) -> list[AdapterRow]:
-    """Parse evals/training_session.log into AdapterRow list.
+    """Parse a generated training-session inventory into AdapterRow entries.
 
     Walks all table rows starting with `| lora-`, derives collection from the
-    name itself, dedupes by name (the merged-adapter row may appear in both a
-    corpus section and the final inventory table).
+    name itself, and dedupes by adapter name.
     """
     seen: dict[str, AdapterRow] = {}
     for line in log_path.read_text().splitlines():
@@ -428,12 +415,12 @@ def main() -> int:
                     help="Register the 14 LoRA adapter targets (12 Llama + 2 Nano r=16)")
     ap.add_argument("--base-targets", action="store_true",
                     help="Register dense Llama plus Nano base reference targets")
-    ap.add_argument("--49b-target", "--rag-target", dest="target_49b", action="store_true",
-                    help="Register the single Nemotron-Super-49B-v1.5 comparator target")
+    ap.add_argument("--reference-target", "--70b-target", dest="reference_target", action="store_true",
+                    help="Register the dense reference comparator target")
     ap.add_argument("--configs", action="store_true",
                     help="Register both eval configs (singleaxis + pairwise)")
     ap.add_argument("--all", action="store_true",
-                    help="Register adapter targets, base targets, 49B comparator, and configs")
+                    help="Register adapter targets, dense base targets, the reference comparator, and configs")
     ap.add_argument("--proxy-url", default=DEFAULT_NIM_PROXY_URL,
                     help="OpenAI-compatible model proxy base URL. Defaults to "
                          "NIM_PROXY_URL or http://rag-oai-proxy.runai-rag:8080 "
@@ -446,25 +433,22 @@ def main() -> int:
 
     register_adapter_targets = args.all or args.adapter_targets
     register_base_targets = args.all or args.base_targets
-    register_49b_target = args.all or args.target_49b
+    register_reference_target = args.all or args.reference_target
     register_configs = args.all or args.configs
     if not any((register_adapter_targets, register_base_targets,
-                register_49b_target, register_configs)):
+                register_reference_target, register_configs)):
         log.warning("no registration flags selected; use --all or an individual flag")
         return 0
 
     adapters = load_adapters_from_log(args.log_path)
     log.info("loaded %d adapters from %s", len(adapters), args.log_path)
 
-    # Bases that get a no-LoRA reference target in the matrix. Nano is included
-    # because its hybrid MoE serving profiles require a separate base-only NIM
-    # deployment rather than using the LoRA-capable profile for base inference.
-    # 49B is registered via build_49b_target to keep comparator naming explicit.
+    # Dense no-LoRA base targets used by the matrix. The 70B-class reference is
+    # registered separately to keep comparator naming explicit.
     _BASE_TARGETS = [
         "meta/llama-3.2-1b-instruct",
         "meta/llama-3.2-3b-instruct",
         "meta/llama-3.1-8b-instruct",
-        "nvidia/nemotron-3-nano-30b-a3b",
     ]
 
     with EvaluatorClient(args.evaluator_url, api_key=args.evaluator_api_key) as client:
@@ -480,10 +464,10 @@ def main() -> int:
                 _create_target_idempotent(
                     client, p, label="base", update_existing=args.update_existing
                 )
-        if register_49b_target:
-            p = build_49b_target(proxy_url=args.proxy_url)
+        if register_reference_target:
+            p = build_reference_target(proxy_url=args.proxy_url)
             _create_target_idempotent(
-                client, p, label="49b", update_existing=args.update_existing
+                client, p, label="reference", update_existing=args.update_existing
             )
         if register_configs:
             for builder in (build_singleaxis_config, build_pairwise_config):

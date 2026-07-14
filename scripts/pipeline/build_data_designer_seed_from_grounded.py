@@ -6,8 +6,8 @@ selects provenance-rich rows from the grounded training split, writes a seed CSV
 that NeMo Data Designer can consume, and records enough lineage to merge
 accepted synthetic rows back into a new dataset entity later.
 
-By default this script does not call an external model. Use ``--mode kimi`` and
-``--allow-external-kimi`` to let Kimi K2 create the coverage briefs.
+By default this script does not call an external model. Use ``--mode llm`` and
+``--allow-external-llm`` to let a configured remote LLM create the coverage briefs.
 """
 from __future__ import annotations
 
@@ -38,15 +38,15 @@ DEFAULT_DATASET_DIR = Path(os.getenv("DATASET_DIR", "/datasets/nim_curated"))
 DEFAULT_OUTPUT_DIR = Path(
     os.getenv(
         "DATA_DESIGNER_AUGMENTATION_DIR",
-        "/datasets/experiments/nim_curated_dd_kimi_1b",
+        "/datasets/experiments/nim_curated_dd_llm_1b",
     )
 )
-DEFAULT_KIMI_URL = os.getenv(
-    "KIMI_API_URL",
-    "https://maas.apps.ocp.cloud.rhai-tmm.dev/prelude-maas/kimi-k2-6/v1",
+DEFAULT_LLM_URL = os.getenv(
+    "LLM_API_URL",
+    "https://llm.example.com/v1",
 )
-DEFAULT_KIMI_MODEL = os.getenv("KIMI_MODEL", "kimi-k2-6")
-DEFAULT_KIMI_KEY_ENV = os.getenv("KIMI_API_KEY_ENV", "KIMI_KEY")
+DEFAULT_LLM_MODEL = os.getenv("LLM_MODEL", "frontier-llm-model")
+DEFAULT_LLM_API_KEY_ENV = os.getenv("LLM_API_KEY_ENV", "LLM_API_KEY")
 
 SEED_SCHEMA_VERSION = "data-designer-grounded-seed.v1"
 
@@ -73,7 +73,7 @@ Return JSON only in this shape:
 {"pairs": [{"question": "...", "answer": "..."}]}
 """
 
-KIMI_SYSTEM_PROMPT = (
+LLM_SYSTEM_PROMPT = (
     "You create seed instructions for a synthetic data generation service. "
     "You do not create final training rows. You produce terse JSON only."
 )
@@ -107,7 +107,7 @@ class SeedConfig:
     judge_api_url: str
     judge_model: str
     judge_api_key_env: str
-    allow_external_kimi: bool
+    allow_external_llm: bool
     temperature: float
     max_tokens: int
     timeout_s: float
@@ -416,7 +416,7 @@ def heuristic_seed_payload(candidate: dict[str, Any], pairs_per_seed: int) -> di
     }
 
 
-def build_kimi_prompt(candidate: dict[str, Any], pairs_per_seed: int) -> str:
+def build_llm_prompt(candidate: dict[str, Any], pairs_per_seed: int) -> str:
     product = normalize_text(candidate.get("product_family") or "NIM")
     return f"""\
 Create one seed instruction record for NeMo Data Designer.
@@ -467,17 +467,17 @@ def parse_json_object(text: str) -> dict[str, Any]:
             raise
         parsed = json.loads(match.group(0))
     if not isinstance(parsed, dict):
-        raise ValueError("Kimi response was not a JSON object")
+        raise ValueError("LLM response was not a JSON object")
     return parsed
 
 
-def call_kimi(config: SeedConfig, prompt: str, api_key: str) -> tuple[dict[str, Any], str, dict[str, Any]]:
+def call_llm(config: SeedConfig, prompt: str, api_key: str) -> tuple[dict[str, Any], str, dict[str, Any]]:
     import httpx
 
     payload = {
         "model": config.judge_model,
         "messages": [
-            {"role": "system", "content": KIMI_SYSTEM_PROMPT},
+            {"role": "system", "content": LLM_SYSTEM_PROMPT},
             {"role": "user", "content": prompt},
         ],
         "temperature": config.temperature,
@@ -544,17 +544,17 @@ def build_seed_record(
     api_key: str | None,
 ) -> dict[str, Any]:
     fallback = heuristic_seed_payload(candidate, config.pairs_per_seed)
-    kimi_prompt = build_kimi_prompt(candidate, config.pairs_per_seed)
-    kimi_response_text = ""
-    kimi_metadata: dict[str, Any] = {}
+    llm_prompt = build_llm_prompt(candidate, config.pairs_per_seed)
+    llm_response_text = ""
+    llm_metadata: dict[str, Any] = {}
     seed_author = "heuristic"
     payload = fallback
-    if config.mode == "kimi":
+    if config.mode == "llm":
         if not api_key:
-            raise RuntimeError(f"{config.judge_api_key_env} is required for --mode kimi")
-        raw_payload, kimi_response_text, kimi_metadata = call_kimi(config, kimi_prompt, api_key)
+            raise RuntimeError(f"{config.judge_api_key_env} is required for --mode llm")
+        raw_payload, llm_response_text, llm_metadata = call_llm(config, llm_prompt, api_key)
         payload = coerce_seed_payload(raw_payload, fallback, config.pairs_per_seed)
-        seed_author = "kimi"
+        seed_author = "llm"
     else:
         payload = coerce_seed_payload(payload, fallback, config.pairs_per_seed)
 
@@ -607,19 +607,19 @@ def build_seed_record(
         "retrieved_urls": retrieved_urls,
         "seed_styles": f"Question: {candidate['prompt']}\nAnswer: {candidate['completion']}",
         "seed_author": seed_author,
-        "kimi": {
-            "endpoint": config.judge_api_url if config.mode == "kimi" else None,
-            "model": config.judge_model if config.mode == "kimi" else None,
-            "prompt_sha256": sha256_text(kimi_prompt),
-            "response_sha256": sha256_text(kimi_response_text) if kimi_response_text else None,
-            "max_tokens": config.max_tokens if config.mode == "kimi" else None,
-            "usage": kimi_metadata.get("usage") if kimi_metadata else {},
-            "finish_reason": kimi_metadata.get("finish_reason") if kimi_metadata else None,
-            "stop_reason": kimi_metadata.get("stop_reason") if kimi_metadata else None,
-            "raw_content_chars": kimi_metadata.get("raw_content_chars") if kimi_metadata else None,
-            "content_chars": kimi_metadata.get("content_chars") if kimi_metadata else None,
-            "inline_think_chars_stripped": kimi_metadata.get("inline_think_chars_stripped") if kimi_metadata else None,
-            "reasoning_chars": kimi_metadata.get("reasoning_chars") if kimi_metadata else None,
+        "llm": {
+            "endpoint": config.judge_api_url if config.mode == "llm" else None,
+            "model": config.judge_model if config.mode == "llm" else None,
+            "prompt_sha256": sha256_text(llm_prompt),
+            "response_sha256": sha256_text(llm_response_text) if llm_response_text else None,
+            "max_tokens": config.max_tokens if config.mode == "llm" else None,
+            "usage": llm_metadata.get("usage") if llm_metadata else {},
+            "finish_reason": llm_metadata.get("finish_reason") if llm_metadata else None,
+            "stop_reason": llm_metadata.get("stop_reason") if llm_metadata else None,
+            "raw_content_chars": llm_metadata.get("raw_content_chars") if llm_metadata else None,
+            "content_chars": llm_metadata.get("content_chars") if llm_metadata else None,
+            "inline_think_chars_stripped": llm_metadata.get("inline_think_chars_stripped") if llm_metadata else None,
+            "reasoning_chars": llm_metadata.get("reasoning_chars") if llm_metadata else None,
         },
     }
 
@@ -698,7 +698,7 @@ def build_submission_plan(
         "status": "prepared",
         "seed_dataset": {
             "local_path": str(seed_csv),
-            "repo_id": f"default/{config.collection}-dd-kimi-seeds",
+            "repo_id": f"default/{config.collection}-dd-llm-seeds",
             "filename": seed_csv.name,
             "record_count": len(seeds),
         },
@@ -720,10 +720,10 @@ def build_submission_plan(
             "seed_count_selected": len(seeds),
             "pairs_per_seed_requested": config.pairs_per_seed,
             "random_seed": config.random_seed,
-            "kimi": {
-                "endpoint": config.judge_api_url if config.mode == "kimi" else None,
-                "model": config.judge_model if config.mode == "kimi" else None,
-                "api_key_env": config.judge_api_key_env if config.mode == "kimi" else None,
+            "llm": {
+                "endpoint": config.judge_api_url if config.mode == "llm" else None,
+                "model": config.judge_model if config.mode == "llm" else None,
+                "api_key_env": config.judge_api_key_env if config.mode == "llm" else None,
             },
         },
         "metrics": {
@@ -761,9 +761,9 @@ def write_observability(
         "seed_records.eligible_training_pairs": plan["metrics"]["eligible_training_pairs"],
         "synthetic_pairs.requested": plan["metrics"]["synthetic_pairs_requested"],
         "holdout_pairs.excluded": plan["metrics"]["excluded_holdout_pairs"],
-        "kimi.prompt_tokens": plan["metrics"].get("kimi.prompt_tokens", 0),
-        "kimi.completion_tokens": plan["metrics"].get("kimi.completion_tokens", 0),
-        "kimi.total_tokens": plan["metrics"].get("kimi.total_tokens", 0),
+        "llm.prompt_tokens": plan["metrics"].get("llm.prompt_tokens", 0),
+        "llm.completion_tokens": plan["metrics"].get("llm.completion_tokens", 0),
+        "llm.total_tokens": plan["metrics"].get("llm.total_tokens", 0),
     })
     write_json(observability_dir / "artifacts_manifest.json", {
         "schema_version": "observability.v1",
@@ -776,7 +776,7 @@ def _build_seed_records(
     selected: list[dict[str, Any]],
     api_key: str | None,
 ) -> list[dict[str, Any]]:
-    if config.mode != "kimi" or config.max_workers <= 1:
+    if config.mode != "llm" or config.max_workers <= 1:
         return [
             build_seed_record(config, candidate, idx, api_key=api_key)
             for idx, candidate in enumerate(selected)
@@ -802,34 +802,34 @@ def _token_usage_metrics(seeds: list[dict[str, Any]]) -> dict[str, Any]:
     total_tokens = 0
     reasoning_chars = 0
     content_chars = 0
-    kimi_records = 0
+    llm_records = 0
     for seed in seeds:
-        kimi = seed.get("kimi") if isinstance(seed.get("kimi"), dict) else {}
-        usage = kimi.get("usage") if isinstance(kimi.get("usage"), dict) else {}
+        llm = seed.get("llm") if isinstance(seed.get("llm"), dict) else {}
+        usage = llm.get("usage") if isinstance(llm.get("usage"), dict) else {}
         if usage:
-            kimi_records += 1
+            llm_records += 1
         prompt_tokens += int(usage.get("prompt_tokens") or 0)
         completion_tokens += int(usage.get("completion_tokens") or 0)
         total_tokens += int(usage.get("total_tokens") or 0)
-        reasoning_chars += int(kimi.get("reasoning_chars") or 0)
-        content_chars += int(kimi.get("content_chars") or 0)
+        reasoning_chars += int(llm.get("reasoning_chars") or 0)
+        content_chars += int(llm.get("content_chars") or 0)
     return {
-        "kimi.records": kimi_records,
-        "kimi.prompt_tokens": prompt_tokens,
-        "kimi.completion_tokens": completion_tokens,
-        "kimi.total_tokens": total_tokens,
-        "kimi.reasoning_chars": reasoning_chars,
-        "kimi.content_chars": content_chars,
-        "kimi.reasoning_overhead_char_ratio": (
+        "llm.records": llm_records,
+        "llm.prompt_tokens": prompt_tokens,
+        "llm.completion_tokens": completion_tokens,
+        "llm.total_tokens": total_tokens,
+        "llm.reasoning_chars": reasoning_chars,
+        "llm.content_chars": content_chars,
+        "llm.reasoning_overhead_char_ratio": (
             reasoning_chars / content_chars if content_chars else None
         ),
     }
 
 
 def run(config: SeedConfig) -> dict[str, Any]:
-    if config.mode == "kimi" and not config.allow_external_kimi:
-        raise RuntimeError("--mode kimi requires --allow-external-kimi")
-    api_key = os.getenv(config.judge_api_key_env) if config.mode == "kimi" else None
+    if config.mode == "llm" and not config.allow_external_llm:
+        raise RuntimeError("--mode llm requires --allow-external-llm")
+    api_key = os.getenv(config.judge_api_key_env) if config.mode == "llm" else None
 
     candidates, metrics = load_candidate_rows(config)
     selected = select_candidates(candidates, config.seed_count, config.random_seed)
@@ -840,7 +840,7 @@ def run(config: SeedConfig) -> dict[str, Any]:
     write_json(source_manifest_path, source_file_manifest(config.dataset_dir))
 
     data_designer_dir = config.output_dir / "data_designer"
-    seed_requests = data_designer_dir / "kimi_seed_requests.jsonl"
+    seed_requests = data_designer_dir / "llm_seed_requests.jsonl"
     seed_csv = data_designer_dir / "seed_dataset.csv"
     submission_plan = data_designer_dir / "submission_plan.json"
     write_jsonl(seed_requests, seeds)
@@ -875,14 +875,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     ap.add_argument("--collection", default=os.getenv("COLLECTION", "nim_curated"))
     ap.add_argument("--source-dataset-name", default=None)
-    ap.add_argument("--mode", choices=["prepare", "kimi"], default="prepare")
+    ap.add_argument("--mode", choices=["prepare", "llm"], default="prepare")
     ap.add_argument("--seed-count", type=int, default=200)
     ap.add_argument("--pairs-per-seed", type=int, default=3)
     ap.add_argument("--random-seed", type=int, default=42)
-    ap.add_argument("--judge-api-url", default=DEFAULT_KIMI_URL)
-    ap.add_argument("--judge-model", default=DEFAULT_KIMI_MODEL)
-    ap.add_argument("--judge-api-key-env", default=DEFAULT_KIMI_KEY_ENV)
-    ap.add_argument("--allow-external-kimi", action="store_true")
+    ap.add_argument("--judge-api-url", default=DEFAULT_LLM_URL)
+    ap.add_argument("--judge-model", default=DEFAULT_LLM_MODEL)
+    ap.add_argument("--judge-api-key-env", default=DEFAULT_LLM_API_KEY_ENV)
+    ap.add_argument("--allow-external-llm", action="store_true")
     ap.add_argument("--temperature", type=float, default=0.0)
     ap.add_argument("--max-tokens", type=int, default=8192)
     ap.add_argument("--timeout-s", type=float, default=600.0)
@@ -904,7 +904,7 @@ def config_from_args(args: argparse.Namespace) -> SeedConfig:
         judge_api_url=args.judge_api_url,
         judge_model=args.judge_model,
         judge_api_key_env=args.judge_api_key_env,
-        allow_external_kimi=args.allow_external_kimi,
+        allow_external_llm=args.allow_external_llm,
         temperature=args.temperature,
         max_tokens=args.max_tokens,
         timeout_s=args.timeout_s,

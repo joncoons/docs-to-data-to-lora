@@ -27,16 +27,6 @@ def test_parse_dense_lora_descriptor_captures_rank_and_corpus():
 
 
 
-def test_parse_retrained_nano_lora_descriptor_keeps_rank_and_variant():
-    desc = parse_model_descriptor("lora-nemo-usvcs-nemotron-nano-30b-r16-retrain-20260530")
-
-    assert desc["target_type"] == "lora"
-    assert desc["base_slug"] == "nemotron-nano-30b"
-    assert desc["target_slug"] == "lora-nemo-usvcs"
-    assert desc["rank"] == 16
-    assert desc["rank_slug"] == "r16"
-    assert desc["adapter_variant"] == "retrain-20260530"
-
 def test_parse_base_descriptor_uses_base_rank_slug():
     desc = parse_model_descriptor("llama-3.2-1b-instruct")
 

@@ -112,4 +112,4 @@ def test_dataset_sample_source_and_synthetic_lineage():
     synthetic_sample = dataset_sample_from_kvp_row(synthetic_row)
     assert synthetic_sample.origin == "synthetic_gapfill"
     assert synthetic_sample.lineage["gap_id"].startswith("gap_")
-    assert synthetic_sample.lineage["data_designer_job_id"] == "legacy_direct_llm_gapfill"
+    assert synthetic_sample.lineage["data_designer_job_id"] == "nemo_data_designer_gapfill"

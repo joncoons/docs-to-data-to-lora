@@ -51,10 +51,10 @@ def test_stage1a_batched_llm_uses_super_defaults():
     assert llm.temperature == 0.95
 
 
-def test_stage1a_legacy_llm_uses_existing_config_defaults():
+def test_stage1a_single_llm_uses_existing_config_defaults():
     cfg = Config()
     args = argparse.Namespace(
-        stage1a_mode="legacy",
+        stage1a_mode="single",
         stage1a_nim_endpoints=None,
         stage1a_model=None,
         stage1a_api_key=None,

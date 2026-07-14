@@ -17,10 +17,9 @@ The current repository already has most of the NeMo-side operations:
 |---|---|---|
 | `scripts/build_v2_dataset.py` | Builds Stage 2 `training.jsonl` and `validation.jsonl` | Input step for a tracked MLflow run |
 | `scripts/stage3/train_adapter.py` | Builds and submits NeMo Customizer LoRA jobs | Called by the MLflow orchestrator |
-| `scripts/stage3/build_moe_shards.py` | Creates shard datasets in NeMo Data Store and Entity Store | Reused for MoE adapter dataset registration |
 | `scripts/eval/upload_test_datasets.py` | Registers training/test datasets in NeMo Data Store and Entity Store, with observability JSON | Reused for dataset lineage and later MLflow export |
 | `scripts/eval/register_evaluator_entities.py` | Builds Evaluator target/config payloads and dataset payload shape | Source of canonical Evaluator and dataset metadata |
-| `scripts/eval/run_evaluation_matrix.py` | Submits Evaluator jobs for adapter/base/49B-comparator comparisons | Called after Customizer jobs complete |
+| `scripts/eval/run_evaluation_matrix.py` | Submits Evaluator jobs for adapter/base/70B-reference comparisons | Called after Customizer jobs complete |
 
 ## Directory Contents
 
@@ -28,7 +27,6 @@ The current repository already has most of the NeMo-side operations:
 |---|---|
 | [integration-plan.md](integration-plan.md) | End-to-end architecture, phases, and ownership boundaries |
 | [metadata-contract.md](metadata-contract.md) | Required MLflow params, tags, artifacts, and NeMo IDs |
-| [../../redesign/mlflow-observability-contract.md](../../redesign/mlflow-observability-contract.md) | Redesigned K8s-era observability contract for dataset lineage, NeMo exports, and result artifacts |
 | [mlflow-orchestrator-template.md](mlflow-orchestrator-template.md) | Python orchestration skeleton and run layout |
 | [config.example.yaml](config.example.yaml) | Environment-specific config skeleton |
 
@@ -83,7 +81,7 @@ output_model_entity: default/lora-nim-llama-3.2-1b-r16
 
 After that path is reliable, extend to:
 
-- `nemo_usvcs_curated`,
+- additional corpora,
 - rank 32 variants,
-- MoE shard/TIES workflows,
+- additional dense base-model sizes,
 - registry or webhook-driven promotion.

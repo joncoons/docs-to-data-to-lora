@@ -1,6 +1,0 @@
-selected_adapters:
-  - lora-nim-e5-llama-3.1-8b-r16
-  - lora-nim-e5-llama-3.1-8b-r32
-  - lora-nemo-usvcs-e5-llama-3.1-8b-r16
-  - lora-nemo-usvcs-e5-llama-3.1-8b-r32
-selection_reason: 5-epoch 8B r16/r32 adapters for non-aug NIM and NeMo microservices curated datasets

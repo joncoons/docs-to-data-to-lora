@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import html
 import json
+import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,8 +13,8 @@ from typing import Any
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-GOLDEN_DIR = REPO_ROOT / "curator_dataset/experiments/20260709-curator-vs-le/golden_eval"
-GRAPHICS_DIR = GOLDEN_DIR / "graphics"
+GOLDEN_DIR = Path(os.getenv("GOLDEN_EVAL_DIR", "artifacts/evaluation/golden-eval"))
+GRAPHICS_DIR = Path(os.getenv("GOLDEN_GRAPHICS_DIR", "docs/results"))
 
 NORAG_ROOT = Path("<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-norag")
 RAG_ROOT = Path("<EVAL_ROOT>/singleaxis-claude-sonnet-4-6-rag-reduced")
@@ -240,14 +241,14 @@ def collect_result_data() -> dict[str, Any]:
     rag_singleaxis = read_json(GOLDEN_DIR / "rag_singleaxis_status_20260714.json") or {}
     ragas_smoke = read_json(
         GOLDEN_DIR
-        / "evaluator_kimi_20260712/golden-v1-nemo-evaluator-kimi-smoke-20260712_summary.json"
+        / "evaluator_claude_20260713/golden-v1-nemo-evaluator-llm-summary.json"
     )
     ragas_detail = read_json(
         Path(
-            "<EVAL_ROOT>/nemo-evaluator-kimi/singleaxis/"
+            "<EVAL_ROOT>/nemo-evaluator-llm/singleaxis/"
             "nim_curated_golden_v1_question_only/llama-3.2-1b/"
             "lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/"
-            "golden-v1-nemo-evaluator-kimi-smoke-20260712/batch-00000/summary.json"
+            "golden-v1-nemo-evaluator-llm/batch-00000/summary.json"
         )
     )
 

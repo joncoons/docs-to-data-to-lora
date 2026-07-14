@@ -8,7 +8,7 @@ promotion state, and NeMo Microservices perform the actual work:
 - NeMo Data Store stores dataset files.
 - NeMo Entity Store registers datasets and model entities.
 - NeMo Customizer trains LoRA adapters.
-- NeMo Evaluator scores adapters, bases, and the 49B comparator target.
+- NeMo Evaluator scores adapters, bases, and the 70B dense reference target.
 - MLflow links every step with a stable run graph.
 
 ## Control Plane Boundary
@@ -107,7 +107,7 @@ Input:
 - adapter inventory,
 - test dataset entity refs,
 - Evaluator targets and configs,
-- 49B comparator target.
+- 70B dense reference target.
 
 Steps:
 
@@ -131,14 +131,14 @@ Minimum metrics to normalize:
 | `eval.faithfulness.mean` | Mean rubric faithfulness |
 | `eval.clarity.mean` | Mean rubric clarity |
 | `eval.win_rate_vs_base` | Pairwise win rate over no-LoRA base |
-| `eval.win_rate_vs_49b` | Pairwise win rate over the 49B comparator |
+| `eval.win_rate_vs_reference` | Pairwise win rate over the 70B dense reference |
 
 ## Phase 4: Promotion
 
 Promotion is optional in the first pass. When added, keep it explicit:
 
 1. Define acceptance thresholds in config.
-2. Compare metrics against the no-LoRA base and 49B comparator.
+2. Compare metrics against the no-LoRA base and 70B dense reference.
 3. Mark the MLflow run with one of:
    - `promotion_status=candidate`
    - `promotion_status=approved`

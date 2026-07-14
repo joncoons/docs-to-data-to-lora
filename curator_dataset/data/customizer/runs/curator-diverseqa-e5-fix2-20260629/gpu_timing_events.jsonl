@@ -1,4 +1,0 @@
-{"customizer_status": "running", "job_id": "cust-SUFrUtLpBiduPqnma44F7t", "key": "nemo_usvcs_r16", "observed_at": "2026-06-29T23:59:45.575974Z", "worker_phase": "Pending"}
-{"customizer_status": "running", "job_id": "cust-8c4VynVebA9CCjwH5p1kHE", "key": "nemo_usvcs_r32", "observed_at": "2026-06-29T23:59:45.575974Z", "worker_phase": "Pending"}
-{"customizer_status": "running", "job_id": "cust-5HhTkEYiKpPvLAnRXJS62w", "key": "nim_r16", "observed_at": "2026-06-29T23:59:45.575974Z", "worker_phase": "Running"}
-{"customizer_status": "running", "job_id": "cust-MPT4gXsS5wWpLwcz2J3Dhx", "key": "nim_r32", "observed_at": "2026-06-29T23:59:45.575974Z", "worker_phase": "Running"}

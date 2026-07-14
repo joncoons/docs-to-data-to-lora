@@ -179,11 +179,8 @@ def test_run_stage1_5_analysis_writes_gap_manifest_and_data_designer_plan(tmp_pa
 
 def test_run_stage1_5_defaults_to_data_designer_handoff_without_llm_calls(tmp_path):
     passages, kvps, _ = _biased_inputs()
-    llm = MagicMock()
-
-    rows = run_stage1_5(passages, kvps, _fake_es(), "nim_curated", llm, tmp_path)
+    rows = run_stage1_5(passages, kvps, _fake_es(), "nim_curated", tmp_path)
 
     assert rows == []
-    llm.call.assert_not_called()
     assert (tmp_path / "stage1_5_gapfill.jsonl").read_text() == ""
     assert (tmp_path / "provenance" / "gap_manifest.json").exists()

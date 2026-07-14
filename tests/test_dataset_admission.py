@@ -106,4 +106,4 @@ def test_admitted_samples_fall_back_to_row_lineage_without_sidecar(tmp_path):
     )
 
     assert samples[0].origin == "synthetic_gapfill"
-    assert samples[0].lineage["data_designer_job_id"] == "legacy_direct_llm_gapfill"
+    assert samples[0].lineage["data_designer_job_id"] == "nemo_data_designer_gapfill"
