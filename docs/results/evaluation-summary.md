@@ -57,7 +57,7 @@ The completed single-axis pass selected the LE r32 adapters for the reduced foll
 
 The result supports the repo thesis: for small, domain-specific corpora, a provenance-preserving LE extraction path can produce high-utility SFT data for smaller dense LoRA adapters. The 8B LE r32 adapters were the strongest reduced-population LoRA targets in both corpora, and the 3B LE r32 adapters were close enough to be operationally relevant when serving cost or GPU footprint matters.
 
-RAG improved all reduced targets, which is expected: retrieval supplies source-grounded context at answer time. That RAG result is useful operationally, but the no-RAG result remains the cleaner measure of what the LoRA adapter itself learned.
+RAG improved all reduced targets in this retained case study, which is expected: retrieval supplies source-grounded context at answer time. This should be read as a workload-specific result, not as a claim that either LoRA-only or RAG-assisted serving is universally preferable. The no-RAG result is the cleaner measure of what the LoRA adapter itself learned; the RAG result shows the operational upside of pairing that domain-adapted model with retrieved context when freshness, citations, or auditability matter.
 
 ## RAGAS Status
 

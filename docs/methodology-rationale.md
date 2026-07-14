@@ -88,8 +88,8 @@ and optional DiverseQA/Data Designer paths.
 
 The comparison in this repo is therefore not "LE versus Curator" as a universal
 replacement argument. It is a case-study question: for small corpus-specific
-LoRA adaptation, does an LE-generated dataset provide better adapter utility
-than a Curator DiverseQA dataset on the same corpora, under matched training and
-evaluation conditions? The pipeline keeps both paths available because the
+LoRA adaptation, how does an LE-generated dataset compare with a Curator
+DiverseQA dataset on the same corpora, under matched training and evaluation
+conditions? The pipeline keeps both paths available because the
 right choice depends on corpus size, quality target, budget, and whether the
 desired outcome is a lightweight domain adapter or a larger full-SFT effort.

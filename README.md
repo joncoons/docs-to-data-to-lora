@@ -93,22 +93,26 @@ Common raw-source paths include:
 See [`docs/stage-1-curated-crawl.md`](docs/stage-1-curated-crawl.md) for
 the full scope details and host-allowlist guidance.
 
-## Why not RAG instead?
+## LoRA, RAG, Or Both?
 
 RAG retrieves at inference time; LoRA fine-tunes once. They're
 complementary:
 
 - **RAG** is right when answers must cite source passages, when docs
   change frequently, or when you can't trust the model to memorize.
-- **LoRA SFT** is right when the model needs to *speak the domain* — use
+- **LoRA SFT** is right when the model needs to *speak the domain* - use
   local nomenclature correctly, follow domain procedures, understand
   acronyms and process-specific constraints, and produce answers in the
-  expected operational style without consulting source material every turn.
+  expected operational style with minimal per-request overhead.
 
-For stable workflows, operating procedures, policy interpretation,
-troubleshooting patterns, and domain vocabulary, a LoRA adapter can handle
-the bulk of queries faster and cheaper than RAG. RAG fills in for the long
-tail, fast-changing facts, and source-cited answers.
+For latency-sensitive stable workflows, operating procedures, policy
+interpretation, troubleshooting patterns, and domain vocabulary, a LoRA
+adapter can reduce the amount of retrieval-time work needed to produce useful
+domain-specific answers. That does not make LoRA a replacement for
+RAG. When source grounding, freshness, or auditability matters, RAG remains the
+right retrieval layer. In many production systems, LoRA plus RAG is the
+strongest pattern: the adapter improves domain fluency and procedural behavior,
+while retrieval supplies current, citable context.
 
 ## Repo layout
 
