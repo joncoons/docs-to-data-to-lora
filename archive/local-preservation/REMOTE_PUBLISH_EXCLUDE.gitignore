@@ -1,0 +1,29 @@
+# Advisory exclude list for preparing a remote/public publishing branch.
+# This file does not affect the current local preservation commit.
+# Use it as a review checklist before any push to a shared remote.
+
+# Machine-local Python/runtime state
+.venv/
+venv/
+env/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+*.so
+
+# Generated or large local experiment material that should be reviewed before remote publication
+.local-archive/
+curator_dataset/cache/
+curator_dataset/data/
+evals/
+archive/generated/
+
+# One-off Kubernetes job snapshots and rendered evaluation artifacts
+deploy/evaluation-matrix/*202606*.yaml
+deploy/model-serving/
+docs/experiments/*.html
+docs/experiments/*.pdf
+
+# Raw line-oriented generated corpora and run outputs
+*.jsonl

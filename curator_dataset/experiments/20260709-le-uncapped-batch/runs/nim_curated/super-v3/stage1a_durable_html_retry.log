@@ -1,0 +1,50 @@
+2026-07-10 07:21:00,766 INFO __main__ - Stage 1A durable: 13 passages selected, 483 already completed
+Stage 1A durable:   0%|          | 0/13 [00:00<?, ?it/s]2026-07-10 07:21:15,694 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:21:24,332 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:21:24,334 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/genmol/latest/endpoints.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
+Stage 1A durable:   8%|▊         | 1/13 [00:23<04:41, 23.47s/it]2026-07-10 07:21:32,843 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:21:32,845 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/alphafold2-multimer/latest/quickstart-guide.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
+Stage 1A durable:  15%|█▌        | 2/13 [00:31<02:41, 14.67s/it]2026-07-10 07:22:00,950 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:22:01,196 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:22:01,198 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/quickstart-guide.html#p0 status=complete rows=9 entailments=5 premises=9 missing=0
+Stage 1A durable:  23%|██▎       | 3/13 [01:00<03:29, 20.92s/it]2026-07-10 07:22:07,887 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:22:24,226 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:22:34,206 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:22:34,209 INFO __main__ - passage=https://docs.nvidia.com/nim/alchemi/alchemi-bmd/latest/api-reference.html#p0 status=complete rows=19 entailments=12 premises=19 missing=0
+Stage 1A durable:  31%|███       | 4/13 [01:33<03:51, 25.69s/it]2026-07-10 07:22:37,232 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:22:37,236 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/msa-search/latest/release-notes.html#p0 status=complete rows=65 entailments=20 premises=65 missing=0
+Stage 1A durable:  38%|███▊      | 5/13 [01:36<02:20, 17.52s/it]2026-07-10 07:22:39,046 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:22:41,577 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:22:49,900 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:22:59,963 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:23:27,979 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:23:29,164 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:23:34,130 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:23:45,756 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:23:52,303 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:23:52,305 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemotron-safety-guard-8b/latest/prompt-template.html#p0 status=complete rows=10 entailments=5 premises=10 missing=0
+Stage 1A durable:  46%|████▌     | 6/13 [02:51<04:19, 37.09s/it]2026-07-10 07:23:57,926 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:00,733 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:01,955 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:16,819 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:16,822 INFO __main__ - passage=https://docs.nvidia.com/nim/ingestion/object-detection/latest/getting-started.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
+Stage 1A durable:  54%|█████▍    | 7/13 [03:15<03:17, 32.98s/it]2026-07-10 07:24:20,997 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:24,442 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:39,209 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:48,429 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:49,367 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:51,635 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:51,636 INFO __main__ - passage=https://docs.nvidia.com/nim/nvclip/latest/EULA.html#p0 status=complete rows=2 entailments=2 premises=2 missing=0
+Stage 1A durable:  62%|██████▏   | 8/13 [03:50<02:47, 33.56s/it]2026-07-10 07:24:55,721 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:55,725 INFO __main__ - passage=https://docs.nvidia.com/nim/bionemo/boltz2/latest/deploy-helm.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
+Stage 1A durable:  69%|██████▉   | 9/13 [03:54<01:37, 24.35s/it]2026-07-10 07:24:59,911 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:24:59,913 INFO __main__ - passage=https://docs.nvidia.com/nim/benchmarking/llm/latest/step-by-step.html#p0 status=complete rows=21 entailments=7 premises=21 missing=0
+Stage 1A durable:  77%|███████▋  | 10/13 [03:59<00:54, 18.12s/it]2026-07-10 07:25:03,462 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:25:03,464 INFO __main__ - passage=https://docs.nvidia.com/nim/nemo-retriever/text-reranking/latest/performance.html#p0 status=complete rows=14 entailments=5 premises=14 missing=0
+Stage 1A durable:  85%|████████▍ | 11/13 [04:02<00:27, 13.66s/it]2026-07-10 07:25:05,066 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:25:06,297 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:25:06,297 INFO __main__ - passage=https://docs.nvidia.com/nim/llama-3-1-nemoguard-8b-topiccontrol/latest/prompt-template.html#p0 status=partial rows=7 entailments=5 premises=9 missing=2
+Stage 1A durable:  92%|█████████▏| 12/13 [04:05<00:10, 10.37s/it]2026-07-10 07:26:04,420 INFO httpx - HTTP Request: POST http://10.43.114.25:8000/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-10 07:26:04,421 INFO __main__ - passage=https://docs.nvidia.com/nim/large-language-models/latest/advanced-use-cases/prompt-embeds.html#p0 status=le_parse_failed rows=0 entailments=0 premises=0 missing=0
+Stage 1A durable: 100%|██████████| 13/13 [05:03<00:00, 24.84s/it]Stage 1A durable: 100%|██████████| 13/13 [05:03<00:00, 23.35s/it]
+2026-07-10 07:26:05,081 INFO __main__ - Stage 1A durable complete: 9178 rows -> curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/stage1a_le.jsonl

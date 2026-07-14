@@ -1,0 +1,280 @@
+{
+  "corpora": {
+    "nemo_usvcs_curated": {
+      "outputs": {
+        "curator_input": {
+          "bytes": 85157,
+          "path": "curator_dataset/experiments/20260709-ultra-550b-smoke/inputs_micro/nemo_usvcs_curated.curator_input.jsonl",
+          "rows": 8,
+          "sha256": "c291f662f8dca9912780ed35bf512121ce117afb13e015d70f0c11d3a27f3c64"
+        },
+        "le_passages": {
+          "bytes": 81208,
+          "path": "curator_dataset/experiments/20260709-ultra-550b-smoke/inputs_micro/nemo_usvcs_curated.passages.jsonl",
+          "rows": 8,
+          "sha256": "7d0b6c0e890317bae8efae169fb7f0a724a5e7a394db55a9eb2f025b13254d53"
+        }
+      },
+      "selection": {
+        "bucket_counts_before_selection": {
+          "long": 60,
+          "medium": 241,
+          "short": 185,
+          "too_short": 95,
+          "very_long": 18
+        },
+        "bucket_targets": {
+          "long": 2,
+          "medium": 2,
+          "short": 2,
+          "very_long": 2
+        },
+        "eligible_rows": 228,
+        "eligible_rows_before_text_deduplication": 504,
+        "exact_duplicate_text_rows_excluded": 276,
+        "selected_bucket_counts": {
+          "long": 2,
+          "medium": 2,
+          "short": 2,
+          "very_long": 2
+        },
+        "selected_rows": 8,
+        "source_rows": 599
+      },
+      "source": {
+        "bytes": 3118158,
+        "manifest_path": "curator_dataset/data/nemo_usvcs_curated/url_documents.curator_ready.manifest.json",
+        "path": "curator_dataset/data/nemo_usvcs_curated/url_documents.curator_ready.jsonl",
+        "rows": 599,
+        "sha256": "faf576a44d6dac0290ae0bd80216b5f3ba5849b54976babc1eeb14300a104ed4"
+      }
+    },
+    "nim_curated": {
+      "outputs": {
+        "curator_input": {
+          "bytes": 75335,
+          "path": "curator_dataset/experiments/20260709-ultra-550b-smoke/inputs_micro/nim_curated.curator_input.jsonl",
+          "rows": 8,
+          "sha256": "92e7a082f7ef11f153a24f34fe9a5e18cbe9e8fd0bf0200051f76415a76314b5"
+        },
+        "le_passages": {
+          "bytes": 71411,
+          "path": "curator_dataset/experiments/20260709-ultra-550b-smoke/inputs_micro/nim_curated.passages.jsonl",
+          "rows": 8,
+          "sha256": "c687491814561ef1026e6a20ceb4872aec74ea4d0a7643472def139cefda2df0"
+        }
+      },
+      "selection": {
+        "bucket_counts_before_selection": {
+          "long": 113,
+          "medium": 201,
+          "short": 92,
+          "too_short": 17,
+          "very_long": 28
+        },
+        "bucket_targets": {
+          "long": 2,
+          "medium": 2,
+          "short": 2,
+          "very_long": 2
+        },
+        "eligible_rows": 425,
+        "eligible_rows_before_text_deduplication": 434,
+        "exact_duplicate_text_rows_excluded": 9,
+        "selected_bucket_counts": {
+          "long": 2,
+          "medium": 2,
+          "short": 2,
+          "very_long": 2
+        },
+        "selected_rows": 8,
+        "source_rows": 451
+      },
+      "source": {
+        "bytes": 2915338,
+        "manifest_path": "curator_dataset/data/nim_curated/url_documents.curator_ready.manifest.json",
+        "path": "curator_dataset/data/nim_curated/url_documents.curator_ready.jsonl",
+        "rows": 451,
+        "sha256": "abf36f4c74ba2364694d911b68bd84ab799c49bd9054ff835c8eb41c13d7aa45"
+      }
+    }
+  },
+  "created_at": "2026-07-09T18:49:54.840474Z",
+  "docs_per_corpus": 8,
+  "experiment": "20260709-ultra-550b-smoke",
+  "schema_version": "ultra_550b_smoke.slice_manifest.v1",
+  "seed": "20260709-ultra-550b-smoke-v1",
+  "selected_documents": [
+    {
+      "collection": "nim_curated",
+      "document_id": "url_doc_ad48469408445494c0e7bcaa",
+      "length_bucket": "medium",
+      "source_line_number": 5,
+      "text_sha256": "a114564916cf32b3244261fbc423839a68a6456c072a2542a37cc8c76d810c28",
+      "url": "https://docs.nvidia.com/nim/alchemi/alchemi-bgr/latest/custom-models.html",
+      "word_count": 393
+    },
+    {
+      "collection": "nim_curated",
+      "document_id": "url_doc_8b61a48f16542caa8d15662c",
+      "length_bucket": "medium",
+      "source_line_number": 87,
+      "text_sha256": "b7569f8ed0c3a466d5c85eb6c4caa61b555949f017c5dcd82786bd4da1d85e99",
+      "url": "https://docs.nvidia.com/nim/bionemo/evo2/latest/release-notes.html",
+      "word_count": 686
+    },
+    {
+      "collection": "nim_curated",
+      "document_id": "url_doc_07444ef7cd1ad543b5f21f80",
+      "length_bucket": "long",
+      "source_line_number": 129,
+      "text_sha256": "ad0869dc63717e3211c5aff6f7e87bf8bcd44a5e921c4cc8ae063bd970e71c5c",
+      "url": "https://docs.nvidia.com/nim/bionemo/openfold2/latest/prerequisites.html",
+      "word_count": 1263
+    },
+    {
+      "collection": "nim_curated",
+      "document_id": "url_doc_ce0555b07b348195d53e447c",
+      "length_bucket": "very_long",
+      "source_line_number": 178,
+      "text_sha256": "34fe8a34cd2a4fff9d06e4c8920ce64aa8bfa2edcb090305dda562c4490a3d70",
+      "url": "https://docs.nvidia.com/nim/cosmos/latest/quickstart-guide.html",
+      "word_count": 2692
+    },
+    {
+      "collection": "nim_curated",
+      "document_id": "url_doc_3fdba10d60339a8df2b5d954",
+      "length_bucket": "short",
+      "source_line_number": 211,
+      "text_sha256": "b904d8f28c4a3d595b0a468bb49c4088dc40d4a05647c98e0ae0a4c19de5365e",
+      "url": "https://docs.nvidia.com/nim/ingestion/image-ocr/latest/troubleshoot.html",
+      "word_count": 158
+    },
+    {
+      "collection": "nim_curated",
+      "document_id": "url_doc_2845222ecb65482b3012cb13",
+      "length_bucket": "short",
+      "source_line_number": 218,
+      "text_sha256": "8905e947055473413dc2c5afc1577c9ca9ae9e0829bd33f877386c128d911f2d",
+      "url": "https://docs.nvidia.com/nim/ingestion/object-detection/latest/index.html",
+      "word_count": 55
+    },
+    {
+      "collection": "nim_curated",
+      "document_id": "url_doc_9a9ef47896893950f205fced",
+      "length_bucket": "long",
+      "source_line_number": 268,
+      "text_sha256": "cd3204d71a82c9f0f97b2c7f0ee330525e717729dbc4b65fbb8a1e9934151f1d",
+      "url": "https://docs.nvidia.com/nim/large-language-models/latest/observability.html",
+      "word_count": 753
+    },
+    {
+      "collection": "nim_curated",
+      "document_id": "url_doc_359044c4d39453b398df6830",
+      "length_bucket": "very_long",
+      "source_line_number": 272,
+      "text_sha256": "3b86c3d17df79b7a9f22a7149fa4adba8310a82b07b56c8e1d850100aad67395",
+      "url": "https://docs.nvidia.com/nim/large-language-models/latest/reference/advanced-configuration.html",
+      "word_count": 2036
+    },
+    {
+      "collection": "nemo_usvcs_curated",
+      "document_id": "url_doc_6b1ccb4c9d620e6f9d036270",
+      "length_bucket": "short",
+      "source_line_number": 30,
+      "text_sha256": "80addcc069a0d09c7f8d1d453fb42281a38dc04d5bf3a8af5d1fbdd3947b4f8d",
+      "url": "https://docs.nvidia.com/nemo/microservices/latest/audit/configs/get-config.html",
+      "word_count": 127
+    },
+    {
+      "collection": "nemo_usvcs_curated",
+      "document_id": "url_doc_6fe29df62275cc9378d81a5d",
+      "length_bucket": "medium",
+      "source_line_number": 35,
+      "text_sha256": "0e395ca96ae7455e780ef4219d40cd8e724dfd4599566635ac8f7ab79c5c2ac2",
+      "url": "https://docs.nvidia.com/nemo/microservices/latest/audit/docker-compose.html",
+      "word_count": 288
+    },
+    {
+      "collection": "nemo_usvcs_curated",
+      "document_id": "url_doc_429bca3cbe2d9f399b0beb7e",
+      "length_bucket": "long",
+      "source_line_number": 62,
+      "text_sha256": "bba44bc9094962629b4d97f1ad7d87cc6dfe91d80fca6bba547d9b0d68922036",
+      "url": "https://docs.nvidia.com/nemo/microservices/latest/auth/troubleshooting.html",
+      "word_count": 922
+    },
+    {
+      "collection": "nemo_usvcs_curated",
+      "document_id": "url_doc_626fed8a9ac412040dba297b",
+      "length_bucket": "very_long",
+      "source_line_number": 77,
+      "text_sha256": "b93469f2da802cb6ccbfc9cfc9487eec52a938379615323ba72c2dfc7270af45",
+      "url": "https://docs.nvidia.com/nemo/microservices/latest/customizer/tutorials/understand-configurations-and-models.html",
+      "word_count": 2191
+    },
+    {
+      "collection": "nemo_usvcs_curated",
+      "document_id": "url_doc_2bb7661fda2a235ba73ad6f9",
+      "length_bucket": "very_long",
+      "source_line_number": 190,
+      "text_sha256": "5b01c31ac708788fc1a743730b06a2b87cf9c2f4ba3c5c44f697674a9693b4c0",
+      "url": "https://docs.nvidia.com/nemo/microservices/latest/evaluator/tutorials/run-llm-judge-evaluation.html",
+      "word_count": 2826
+    },
+    {
+      "collection": "nemo_usvcs_curated",
+      "document_id": "url_doc_ea383ea019e64e401a092be7",
+      "length_bucket": "short",
+      "source_line_number": 466,
+      "text_sha256": "76b204a25f4f7a67cba9f87a6f3261548a3b6bcc3636c587943e0cd52f897c61",
+      "url": "https://docs.nvidia.com/nemo/microservices/latest/pysdk/reference/quickstart/quickstart.prompts.html",
+      "word_count": 89
+    },
+    {
+      "collection": "nemo_usvcs_curated",
+      "document_id": "url_doc_ef5e94d7bf8d096095792d3d",
+      "length_bucket": "medium",
+      "source_line_number": 593,
+      "text_sha256": "99e91ed22945141bd6127b6bc851f78705bfbe2df38ef5887b58b1c30d91e0f0",
+      "url": "https://docs.nvidia.com/nemo/microservices/latest/troubleshooting/customizer.html",
+      "word_count": 282
+    },
+    {
+      "collection": "nemo_usvcs_curated",
+      "document_id": "url_doc_838e91af448e3804bdb11a8b",
+      "length_bucket": "long",
+      "source_line_number": 599,
+      "text_sha256": "63d9edeaf5d81bead17a848531dcca112907fac9ed9f0b9d4adf67c449504594",
+      "url": "https://raw.githubusercontent.com/NVIDIA/garak/main/garak/data/calibration/bag.md",
+      "word_count": 1352
+    }
+  ],
+  "selection_policy": {
+    "bucket_sampling": "deterministic SHA-256 sort by seed, collection, document_id, url, and text hash",
+    "length_buckets": [
+      {
+        "maximum_words": 249,
+        "minimum_words": 30,
+        "name": "short"
+      },
+      {
+        "maximum_words": 749,
+        "minimum_words": 250,
+        "name": "medium"
+      },
+      {
+        "maximum_words": 1999,
+        "minimum_words": 750,
+        "name": "long"
+      },
+      {
+        "maximum_words": null,
+        "minimum_words": 2000,
+        "name": "very_long"
+      }
+    ],
+    "minimum_words": 30,
+    "output_order": "original source JSONL line order"
+  }
+}

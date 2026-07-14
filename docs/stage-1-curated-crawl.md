@@ -1,48 +1,55 @@
 # Stage 1: Curated Crawl
 
-A small-but-clean documentation corpus is more useful for SFT training than a
-large noisy one. This stage covers how to turn a vendor's documentation site
-into a focused training corpus by curating *which* pages get ingested instead
-of relying on a broad crawl.
+A small-but-clean corpus is more useful for SFT training than a large noisy
+one. This document covers the reference web-ingestion path: turning a public
+or internal documentation site into a focused training corpus by curating
+*which* pages get ingested instead of relying on a broad crawl.
+
+Curated crawl is not the only Stage 1 path. PDF-heavy archives, offline
+knowledge bases, policy manuals, SOPs, field-service guides, and other raw
+document sets can enter the same downstream pipeline after durable document
+extraction, chunking, embedding, and provenance capture.
 
 ## Why curate
 
 | Broad crawl | Curated crawl |
 |---|---|
-| BFS from a seed URL, scope by host or path prefix | Explicit per-product URL prefix list |
-| Includes every version of every product page | One version per product (`/latest/` or highest-pinned) |
+| BFS from a seed URL, scope by host or path prefix | Explicit URL prefix list for the domain boundary |
+| Includes every version or duplicate branch of every page | One canonical version per source area (`/latest/` or highest-pinned where applicable) |
 | Same content ingested N times across versions | Each canonical page once |
 | Crawl time scales with link graph | Crawl time scales with curated list |
 | Retrieval has to disambiguate near-duplicates | Cleaner retrieval, cleaner SFT signal |
 
 For SFT specifically, version duplicates inject contradictions into
 ground-truth extraction ("In v1.2 X, in v1.5 Y — which is true?") that the
-LoRA may memorize incorrectly. `/latest/`-only is therefore not just a
-nice-to-have; it's a quality requirement.
+LoRA may memorize incorrectly. A canonical snapshot is therefore not just a
+nice-to-have; it is a quality requirement.
 
 ## Methodology
 
 A four-step process that works for any docs site with a published sitemap.
+For non-web corpora, use a durable document extraction path and start the
+downstream pipeline from the resulting chunk collection.
 
 ### Step 1: Find the authoritative sitemap
 
-Most vendor docs sites publish at least one sitemap. Discovery order:
+Most documentation sites publish at least one sitemap. Discovery order:
 
 1. **`robots.txt`** at the site root — typically lists all sitemaps the
-   vendor wants crawlers to find. `curl -s https://<host>/robots.txt | grep -i sitemap`.
+   site owner wants crawlers to find. `curl -s https://<host>/robots.txt | grep -i sitemap`.
 2. **Conventional locations** if `robots.txt` is silent: `/sitemap.xml`,
    `/sitemap_index.xml`, `/s3-sitemap-index.xml`.
-3. **Sitemap index files** that aggregate per-product sitemaps —
-   `grep -oE 'https://[^<]+sitemap[^<]+' <index>.xml | grep -i <product>`.
+3. **Sitemap index files** that aggregate per-area sitemaps —
+   `grep -oE 'https://[^<]+sitemap[^<]+' <index>.xml | grep -i <domain-area>`.
 
-The sitemap is the vendor's own statement of "which pages should be indexed."
+The sitemap is the source owner's statement of "which pages should be indexed."
 It is orders of magnitude faster to parse than a Selenium-rendered BFS that
 re-discovers the same content, and it surfaces pages BFS would miss (pages
 with no inbound link from the seed).
 
 ### Step 2: Inventory the URL list
 
-Parse the sitemap into a CSV with `url, product, version, page, path_depth,
+Parse the sitemap into a CSV with `url, source_area, version, page, path_depth,
 lastmod` columns. The provided script does this:
 
 ```bash
@@ -53,20 +60,20 @@ python scripts/sitemap_to_inventory.py \
 ```
 
 The classifier splits each URL on the first segment that looks like a version
-(`/\d+\.\d+/` or `latest|stable|dev|main`). Everything before is the product
+(`/\d+\.\d+/` or `latest|stable|dev|main`). Everything before is the source-area
 path; the segment itself is the version; everything after is the page.
 
-### Step 3: Curate per-product versions
+### Step 3: Curate versions and source areas
 
-For each distinct product:
+For each distinct source area, product family, workflow, or sub-domain:
 
 - If `/latest/` exists, use it.
 - If `/latest/` is missing or appears to be a stub (very few URLs vs. older
   versions — see Anomalies below), pick the highest non-deprecated version.
-- If a product only has versioned directories, pick the newest semver.
+- If the source area only has versioned directories, pick the newest semver.
 
-Output: one prefix per product, where each prefix is everything up to and
-including the version segment. Example:
+Output: one prefix per scoped source area, where each prefix is everything
+up to and including the version segment when the site is versioned. Example:
 
 ```
 https://docs.example.com/foo/widget-a/latest
@@ -88,7 +95,7 @@ escape the allowlist regardless of depth.
   "max_pages": null,
   "extract_linked_files": true,                           // capture linked binaries
   "use_product_url_map": false,                           // route binaries to this collection only
-  "allowed_url_prefixes": [ ... per-product /latest/ or pinned prefixes ... ],
+  "allowed_url_prefixes": [ ... per-source-area /latest/ or pinned prefixes ... ],
   "unblock_url_patterns": ["github.com"],                 // override default block list
   "binary_host_allowlist": [                              // permit cross-host downloads from
     "raw.githubusercontent.com/<vendor-org>"              //   these prefixes for binaries
@@ -101,8 +108,7 @@ escape the allowlist regardless of depth.
 HTML pages routinely link to files containing technical content not
 duplicated in the HTML — whitepapers, deployment guides, datasheets,
 architecture decks, plain-text READMEs on GitHub. For an SFT corpus
-covering "everything the vendor has documented about product X," you want
-these too.
+covering the domain boundary, you want these too.
 
 **Two paths, depending on file type:**
 
@@ -125,11 +131,11 @@ Running them sequentially lets the GPU profile adapt to the workload.
 
 | File type | Path | In default scope | Notes |
 |---|---|---|---|
-| `.pdf` | binary parse (Phase 3) | yes | Most vendor whitepapers and deployment guides |
+| `.pdf` | binary parse (Phase 3) | yes | Whitepapers, manuals, and long-form guides |
 | `.docx` | binary parse (Phase 3) | yes | Less common but worth capturing when present |
 | `.pptx` | binary parse (Phase 3) | yes | Architecture decks, technical webinar slides. Parser support varies by tool — nemotron-parse handles `.pptx` partially as of May 2026; confirm before relying on it |
 | `.txt` | inline text (HTML crawl) | yes | READMEs, plain config samples, license texts |
-| `.md` | inline text (HTML crawl) | yes | GitHub-hosted READMEs, common in vendor docs links |
+| `.md` | inline text (HTML crawl) | yes | GitHub-hosted READMEs, common in documentation links |
 | `.rst` | inline text (HTML crawl) | yes | Sphinx source occasionally linked directly |
 | `.zip`, `.tar.gz` | — | **no** | Code archives; ingest the docs *about* them, not the code itself |
 | `.json`, `.yaml` | — | **no** | Config/schema files; usually noise for SFT |
@@ -139,31 +145,32 @@ Running them sequentially lets the GPU profile adapt to the workload.
 
 Binaries and linked text often live outside the docs host:
 
-- **Vendor CDNs** for PDFs (e.g., `images.<vendor>.com`,
-  `developer.download.<vendor>.com`). NVIDIA, for example, ships many PDFs
-  from `images.nvidia.com` rather than `docs.nvidia.com`.
-- **GitHub** for READMEs and source-of-truth Markdown docs that vendor
-  HTML pages link out to. Most BFS crawlers block `github.com` and
+- **External file hosts or CDNs** for PDFs (e.g., `images.<org>.com`,
+  `download.<org>.com`, or internal object storage). NVIDIA, for example,
+  ships many PDFs from `images.nvidia.com` rather than `docs.nvidia.com`.
+- **GitHub or internal Git hosts** for READMEs and source-of-truth Markdown
+  docs that HTML pages link out to. Most BFS crawlers block `github.com` and
   `gitlab.com` by default (they're trip-wires for unbounded crawl scope);
   you need to explicitly override the block.
 
 Default to a small allowlist per crawl:
 
 ```
-docs.<vendor>.com
-images.<vendor>.com
-developer.download.<vendor>.com
-github.com/<vendor-org>/                    ← e.g., github.com/NVIDIA/
-raw.githubusercontent.com/<vendor-org>/     ← raw file content lives here
+docs.<org>.com
+images.<org>.com
+developer.download.<org>.com
+github.com/<org-or-project>/                ← e.g., github.com/NVIDIA/
+raw.githubusercontent.com/<org-or-project>/ ← raw file content lives here
 ```
 
 Avoid wildcards — `*.github.com` or any-github allowlist pulls in
-community examples, partner repos, third-party tutorials. Restrict to the
-vendor's GitHub organization only.
+community examples, partner repos, third-party tutorials, and unrelated
+code. Restrict to the organization, project, or repository set that belongs
+to the domain boundary.
 
 #### GitHub URL handling
 
-GitHub links in vendor docs typically point at `github.com/<org>/<repo>/blob/<branch>/<path>.md`,
+GitHub links in documentation sites often point at `github.com/<org>/<repo>/blob/<branch>/<path>.md`,
 which returns the *rendered* HTML view (with navigation chrome) rather
 than the raw Markdown. To get clean inline-text content, the crawler must
 either:
@@ -249,6 +256,28 @@ The reference implementation used in this repo is `rag-crawler`
 (https://github.com/joncoons/rag-crawler — check the deployment/ guide).
 Any equivalent crawler with the same primitives will work.
 
+
+## Alternative raw-document ingestion
+
+Use curated crawl when the source of truth is a web documentation site. Use a
+durable document extraction path when the source is a PDF-heavy archive, an
+offline knowledge base export, a file share, or any corpus where documents
+arrive as files rather than crawlable pages.
+
+The downstream contract is the same regardless of ingestion source: produce
+text chunks with stable source IDs, source kind, source URI or file path,
+chunk index, snapshot timestamp, and enough provenance to audit every later
+training row back to its raw material. Once those chunks are embedded and
+stored in the collection, Stage 2 does not need to know whether they came
+from HTML, PDFs, DOCX files, Markdown, or an internal export.
+
+For PDF and raw-document processing, the companion
+[`nv-ingest-265-durable-orchestration`](https://github.com/joncoons/nv-ingest-265-durable-orchestration)
+repo is the preferred NVAIE/NV-Ingest-oriented reference path. Treat it as an
+optional Stage 1 ingestion implementation that provides durability, retry,
+checkpointing, and provenance capture before this repo's dataset-generation
+stages begin.
+
 ## Filter at extraction, not at crawl
 
 Don't try to filter low-quality pages at crawl time. Crawl the full curated
@@ -259,8 +288,8 @@ than to re-crawl. Typical filters to apply *after* the crawl, not before:
 - Pages with `<main>` text length under ~500 characters
 - Paths matching `_static|genindex|webpack|404\.html`
 - Auto-generated API stubs with only signature + type info
-- Multi-product comparison tables (entailment claims span products in ways
-  that confuse single-product adapter training)
+- Cross-domain comparison tables where entailment claims span multiple
+  source areas in ways that confuse a narrowly scoped adapter
 
 ## Pre-flight checklist
 
@@ -274,9 +303,10 @@ Before running the crawl:
 3. Sample 5–10 pages from your curated prefix list in a browser. Read them.
    If they don't look like the content you want to train on, your curation
    logic is wrong; fix it before running a 500-page crawl.
-4. Record the crawl-start timestamp. The `/latest/` snapshot is the
-   ground-truth of record for the SFT dataset; if the vendor refreshes docs
-   mid-training, you need to know which snapshot trained which adapter.
+4. Record the crawl-start timestamp or source snapshot ID. The chosen
+   snapshot is the ground truth of record for the SFT dataset; if the source
+   refreshes mid-training, you need to know which snapshot trained which
+   adapter.
 
 ## Post-crawl verification
 

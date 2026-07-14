@@ -1,0 +1,9 @@
+{
+  "schema_version": "curator_dataset.failed_run.v1",
+  "status": "failed",
+  "failure_stage": "Curator Ray/Xenna JsonlWriter actor setup",
+  "reason": "Ray worker segmentation fault after object store fell back from 8 GiB /dev/shm to /tmp",
+  "raw_output_written": false,
+  "replacement_run": "../full-20260629t2032z-retry1",
+  "corrective_action": "Increased container shared memory to 64 GiB"
+}

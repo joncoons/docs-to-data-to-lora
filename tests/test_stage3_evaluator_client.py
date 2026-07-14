@@ -46,6 +46,17 @@ def test_submit_job_returns_job_id():
     assert mock_post.call_args.args[0] == "/v1/evaluation/jobs"
 
 
+def test_submit_live_returns_response_body():
+    client = EvaluatorClient(base_url="http://test:7331")
+    payload = {"config": {"type": "custom"}, "target": {"type": "rows", "rows": []}}
+    body = {"status": "completed", "result": {"tasks": {}}}
+    with patch.object(client._http, "post",
+                      return_value=_mock_resp(body)) as mock_post:
+        result = client.submit_live(payload)
+    assert result == body
+    assert mock_post.call_args.args[0] == "/v1/evaluation/live"
+
+
 def test_get_status_normalizes_to_enum():
     client = EvaluatorClient(base_url="http://test:7331")
     with patch.object(client._http, "get",

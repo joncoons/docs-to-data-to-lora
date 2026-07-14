@@ -1,0 +1,39 @@
+# NeMo Curator `filter_documents` CLI config for SFT QA samples.
+#
+# This file is intentionally CLI-shaped, separate from the higher-level
+# `sft-dedup-quality.yaml` handoff plan. It is consumed by
+# deploy/curator/native-filter-job.yaml through:
+#
+#   filter_documents --filter-config-file /workspace/configs/curator/sft-filter-documents.yaml
+#
+input_field: text
+filters:
+  - name: ScoreFilter
+    filter:
+      name: WordCountFilter
+      min_words: 8
+      max_words: 1200
+    text_field: text
+    score_field: word_count
+
+  - name: ScoreFilter
+    filter:
+      name: NonAlphaNumericFilter
+      max_non_alpha_numeric_to_text_ratio: 0.35
+    text_field: text
+    score_field: non_alpha_numeric_ratio
+
+  - name: ScoreFilter
+    filter:
+      name: PunctuationFilter
+      max_num_sentences_without_endmark_ratio: 0.9
+    text_field: text
+    score_field: punctuation_ratio
+
+  - name: ScoreFilter
+    filter:
+      name: RepeatingTopNGramsFilter
+      n: 3
+      max_repeating_ngram_ratio: 0.3
+    text_field: text
+    score_field: repeating_3gram_ratio

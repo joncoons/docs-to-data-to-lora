@@ -1,0 +1,565 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: three-b-fiveepoch-eval-gate
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: three-b-fiveepoch-eval-gate
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "20260608t150134z"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: three-b-fiveepoch-eval-gate
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: three-b-fiveepoch-eval-gate
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "20260608t150134z"
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments", "deployments/scale"]
+    resourceNames: ["nim-llm-3b-ada-lora"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    resourceNames: ["claude-sonnet-3b-fiveepoch-comparison-20260608t150134z"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: three-b-fiveepoch-eval-gate
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: three-b-fiveepoch-eval-gate
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "20260608t150134z"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: three-b-fiveepoch-eval-gate
+subjects:
+  - kind: ServiceAccount
+    name: three-b-fiveepoch-eval-gate
+    namespace: runai-rag
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: collect-3b-fiveepoch-comparison-20260608t150134z
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: completion-collector
+    app.kubernetes.io/component: llama-3.2-3b-fiveepoch-comparison
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "20260608t150134z"
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: completion-collector
+        app.kubernetes.io/component: llama-3.2-3b-fiveepoch-comparison
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+        eval-run-id: "20260608t150134z"
+    spec:
+      serviceAccountName: three-b-fiveepoch-eval-gate
+      restartPolicy: Never
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: gate-sync-collect
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              python -m pip install --no-cache-dir -q --target /tmp/pydeps httpx
+              export PYTHONPATH="/tmp/pydeps:${PYTHONPATH:-}"
+              python - <<'PYCODE'
+              import http.client
+              import json
+              import os
+              import shutil
+              import subprocess
+              import time
+              import urllib.parse
+              from pathlib import Path
+
+              import httpx
+
+              RUN_ID = os.environ["RUN_ID"]
+              NAMESPACE = os.environ.get("NAMESPACE", "runai-rag")
+              DEPLOYMENT = os.environ.get("NIM_DEPLOYMENT", "nim-llm-3b-ada-lora")
+              EVAL_JOB = os.environ["EVAL_JOB"]
+              CUSTOMIZER_URL = os.environ["CUSTOMIZER_URL"].rstrip("/")
+              DATASTORE_URL = os.environ["DATASTORE_URL"].rstrip("/")
+              PEFT_SOURCE = Path(os.environ["PEFT_SOURCE"])
+              PROXY_URL = os.environ["TARGET_API_URL"].rstrip("/")
+              NIM_READY_URL = os.environ["NIM_READY_URL"]
+              DATASET = os.environ["DATASET"]
+              COMPLETIONS_ROOT = os.environ["COMPLETIONS_OUTPUT_ROOT"]
+              EXPECTED_ROWS = int(os.environ.get("EXPECTED_ROWS", "540"))
+              POLL_S = int(os.environ.get("POLL_S", "60"))
+              TRAINING_TIMEOUT_S = int(os.environ.get("TRAINING_TIMEOUT_S", str(12 * 3600)))
+              READY_TIMEOUT_S = int(os.environ.get("READY_TIMEOUT_S", "3600"))
+              SCALE_DOWN_AFTER_COMPLETIONS = os.environ.get("SCALE_DOWN_AFTER_COMPLETIONS", "true").lower() == "true"
+
+              ADAPTERS = [
+                  {
+                      "label": "3b-nim-dd5x-e5-r32",
+                      "name": "lora-nim-dd5x-e5-llama-3.2-3b-r32",
+                      "job_id": "cust-5g7n3gqXDUomU34JCjUScS",
+                      "responses": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r32/{RUN_ID}/responses.jsonl",
+                      "summary": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r32/{RUN_ID}/token_summary.json",
+                  },
+                  {
+                      "label": "3b-nim-e5-r16",
+                      "name": "lora-nim-e5-llama-3.2-3b-r16",
+                      "job_id": "cust-43RQKeQBeqiuDYj4kGae23",
+                      "responses": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r16/{RUN_ID}/responses.jsonl",
+                      "summary": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r16/{RUN_ID}/token_summary.json",
+                  },
+                  {
+                      "label": "3b-nim-e5-r32",
+                      "name": "lora-nim-e5-llama-3.2-3b-r32",
+                      "job_id": "cust-9qPJMq2joy8EJsccAC8C74",
+                      "responses": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r32/{RUN_ID}/responses.jsonl",
+                      "summary": f"/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r32/{RUN_ID}/token_summary.json",
+                  },
+              ]
+
+              def kube_client() -> httpx.Client:
+                  host = os.environ["KUBERNETES_SERVICE_HOST"]
+                  port = os.environ.get("KUBERNETES_SERVICE_PORT_HTTPS") or os.environ.get("KUBERNETES_SERVICE_PORT", "443")
+                  token = Path("/var/run/secrets/kubernetes.io/serviceaccount/token").read_text(encoding="utf-8")
+                  ca = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+                  headers = {"Authorization": f"Bearer {token}"}
+                  return httpx.Client(base_url=f"https://{host}:{port}", headers=headers, verify=ca, timeout=30)
+
+              def patch_scale(replicas: int) -> None:
+                  with kube_client() as client:
+                      resp = client.patch(
+                          f"/apis/apps/v1/namespaces/{NAMESPACE}/deployments/{DEPLOYMENT}/scale",
+                          headers={"Content-Type": "application/merge-patch+json"},
+                          json={"spec": {"replicas": replicas}},
+                      )
+                      resp.raise_for_status()
+                  print(f"Scaled {DEPLOYMENT} to {replicas}", flush=True)
+
+              def release_eval_job() -> None:
+                  deadline = time.monotonic() + 600
+                  while True:
+                      try:
+                          with kube_client() as client:
+                              resp = client.patch(
+                                  f"/apis/batch/v1/namespaces/{NAMESPACE}/jobs/{EVAL_JOB}",
+                                  headers={"Content-Type": "application/merge-patch+json"},
+                                  json={"spec": {"suspend": False}},
+                              )
+                              resp.raise_for_status()
+                          print(f"Released suspended eval job {EVAL_JOB}", flush=True)
+                          return
+                      except Exception as exc:
+                          if time.monotonic() > deadline:
+                              raise
+                          print(f"Waiting to release {EVAL_JOB}: {exc}", flush=True)
+                          time.sleep(15)
+
+              def customizer_status(job_id: str) -> str:
+                  with httpx.Client(timeout=60) as client:
+                      resp = client.get(f"{CUSTOMIZER_URL}/v1/customization/jobs/{job_id}")
+                      resp.raise_for_status()
+                      return str(resp.json().get("status", "")).lower()
+
+              def sync_adapter(adapter: dict) -> None:
+                  name = adapter["name"]
+                  job_id = adapter["job_id"]
+                  out_dir = PEFT_SOURCE / name
+                  if (out_dir / "adapter_config.json").exists() and (out_dir / "adapter_model.safetensors").exists():
+                      print(f"Adapter already synced: {out_dir}", flush=True)
+                      return
+                  tmp_dir = PEFT_SOURCE / f".{name}.tmp"
+                  shutil.rmtree(tmp_dir, ignore_errors=True)
+                  tmp_dir.mkdir(parents=True, exist_ok=True)
+                  base = f"{DATASTORE_URL}/v1/hf/default/{name}/resolve/{job_id}"
+
+                  def download_file(url: str, target: Path) -> None:
+                      current = url
+                      for _ in range(5):
+                          parsed = urllib.parse.urlparse(current)
+                          path = parsed.path or "/"
+                          if parsed.query:
+                              path += f"?{parsed.query}"
+                          conn = http.client.HTTPConnection(parsed.netloc, timeout=300)
+                          try:
+                              conn.request("GET", path)
+                              resp = conn.getresponse()
+                              if 300 <= resp.status < 400:
+                                  location = resp.getheader("Location")
+                                  if not location:
+                                      raise RuntimeError(f"Redirect without Location for {current}")
+                                  current = urllib.parse.urljoin(current, location)
+                                  conn.close()
+                                  continue
+                              if resp.status >= 400:
+                                  body = resp.read(1000)
+                                  raise RuntimeError(f"GET {current} failed status={resp.status}: {body!r}")
+                              with target.open("wb") as fh:
+                                  while True:
+                                      chunk = resp.read(1024 * 1024)
+                                      if not chunk:
+                                          break
+                                      fh.write(chunk)
+                              return
+                          finally:
+                              conn.close()
+                      raise RuntimeError(f"Too many redirects for {url}")
+
+                  for fname in ("adapter_config.json", "adapter_model.safetensors"):
+                      url = f"{base}/{fname}"
+                      target = tmp_dir / fname
+                      print(f"Downloading {url}", flush=True)
+                      download_file(url, target)
+                  shutil.rmtree(out_dir, ignore_errors=True)
+                  tmp_dir.rename(out_dir)
+                  print(f"Synced adapter {name} to {out_dir}", flush=True)
+
+              def wait_and_sync(adapter: dict) -> None:
+                  deadline = time.monotonic() + TRAINING_TIMEOUT_S
+                  terminal_good = {"completed", "succeeded", "success"}
+                  terminal_maybe_exported = {"cancelled", "canceled"}
+                  terminal_bad = {"failed", "error"}
+                  while True:
+                      status = customizer_status(adapter["job_id"])
+                      print(f"Customizer {adapter['job_id']} {adapter['name']} status={status}", flush=True)
+                      if status in terminal_bad:
+                          raise RuntimeError(f"Customizer job {adapter['job_id']} ended {status}")
+                      if status in terminal_good or status in terminal_maybe_exported:
+                          try:
+                              sync_adapter(adapter)
+                              return
+                          except Exception as exc:
+                              if status in terminal_maybe_exported:
+                                  print(f"{adapter['job_id']} is {status}; retrying artifact sync before failing: {exc}", flush=True)
+                              else:
+                                  print(f"Artifact not ready yet for {adapter['job_id']}: {exc}", flush=True)
+                      if time.monotonic() > deadline:
+                          raise TimeoutError(f"Timed out waiting for {adapter['job_id']}")
+                      time.sleep(POLL_S)
+
+              def wait_http_ready(url: str, timeout_s: int) -> None:
+                  deadline = time.monotonic() + timeout_s
+                  with httpx.Client(timeout=30) as client:
+                      while True:
+                          try:
+                              resp = client.get(url)
+                              if resp.status_code < 500 and resp.status_code != 404:
+                                  print(f"Ready endpoint responded {resp.status_code}: {url}", flush=True)
+                                  return
+                          except Exception as exc:
+                              print(f"Waiting for ready endpoint {url}: {exc}", flush=True)
+                          if time.monotonic() > deadline:
+                              raise TimeoutError(f"Timed out waiting for {url}")
+                          time.sleep(30)
+
+              def smoke_model(model: str) -> None:
+                  deadline = time.monotonic() + READY_TIMEOUT_S
+                  payload = {
+                      "model": model,
+                      "messages": [{"role": "user", "content": "In one sentence, define NVIDIA NIM."}],
+                      "max_tokens": 32,
+                      "temperature": 0.01,
+                  }
+                  with httpx.Client(timeout=120) as client:
+                      while True:
+                          try:
+                              resp = client.post(f"{PROXY_URL}/v1/chat/completions", json=payload)
+                              if resp.status_code == 200:
+                                  print(f"Smoke OK for {model}", flush=True)
+                                  return
+                              print(f"Smoke waiting for {model}: {resp.status_code} {resp.text[:300]}", flush=True)
+                          except Exception as exc:
+                              print(f"Smoke waiting for {model}: {exc}", flush=True)
+                          if time.monotonic() > deadline:
+                              raise TimeoutError(f"Timed out smoke testing {model}")
+                          time.sleep(30)
+
+              def verify_summaries() -> None:
+                  for adapter in ADAPTERS:
+                      summary_path = Path(adapter["summary"])
+                      if not summary_path.exists():
+                          raise FileNotFoundError(summary_path)
+                      payload = json.loads(summary_path.read_text(encoding="utf-8"))
+                      completed = int(payload.get("rows_completed") or 0)
+                      failed = int(payload.get("rows_failed") or 0)
+                      if failed:
+                          raise RuntimeError(f"{summary_path} has rows_failed={failed}")
+                      if completed < EXPECTED_ROWS:
+                          raise RuntimeError(f"{summary_path} has rows_completed={completed}, expected >= {EXPECTED_ROWS}")
+                      print(f"Completion summary OK: {summary_path} rows_completed={completed}", flush=True)
+
+              def run_collector() -> None:
+                  cmd = [
+                      "python", "/scripts/collector/collect_completions.py",
+                      "--dataset", DATASET,
+                      "--dataset-slug", "nim_curated",
+                      "--run-id", RUN_ID,
+                      "--max-tokens", "8192",
+                      "--concurrency", os.environ.get("COMPLETION_CONCURRENCY", "2"),
+                      "--timeout-s", "900",
+                      "--resume",
+                      "--retry-failed",
+                      "--max-attempts", "3",
+                      "--retry-backoff-s", "5",
+                      "--retry-backoff-max-s", "120",
+                      "--log-every", "25",
+                  ]
+                  for adapter in ADAPTERS:
+                      cmd.extend(["--model", adapter["name"]])
+                  print("Running collector: " + " ".join(cmd), flush=True)
+                  subprocess.run(cmd, check=True)
+
+              for adapter in ADAPTERS:
+                  wait_and_sync(adapter)
+
+              try:
+                  patch_scale(0)
+                  time.sleep(30)
+                  patch_scale(1)
+                  wait_http_ready(NIM_READY_URL, READY_TIMEOUT_S)
+                  for adapter in ADAPTERS:
+                      smoke_model(adapter["name"])
+                  run_collector()
+                  verify_summaries()
+              finally:
+                  if SCALE_DOWN_AFTER_COMPLETIONS:
+                      try:
+                          patch_scale(0)
+                      except Exception as exc:
+                          print(f"Failed to scale down {DEPLOYMENT}: {exc}", flush=True)
+
+              release_eval_job()
+              PYCODE
+          env:
+            - name: RUN_ID
+              value: "20260608t150134z"
+            - name: EVAL_JOB
+              value: claude-sonnet-3b-fiveepoch-comparison-20260608t150134z
+            - name: CUSTOMIZER_URL
+              value: http://nemo-customizer.nemo-peft:8000
+            - name: DATASTORE_URL
+              value: http://nemo-data-store.nemo-peft:3000
+            - name: PEFT_SOURCE
+              value: /model-store/lora-adapters
+            - name: TARGET_API_URL
+              value: http://rag-oai-proxy.runai-rag:8080
+            - name: NIM_READY_URL
+              value: http://nim-llm-3b-ada-lora.runai-rag:8000/v1/health/ready
+            - name: DATASET
+              value: /mnt/nvme2/peft/datasets/v2/nim_curated/test_set_with_context.jsonl
+            - name: COMPLETIONS_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/completions
+            - name: COMPLETION_CONCURRENCY
+              value: "2"
+            - name: EXPECTED_ROWS
+              value: "540"
+            - name: TRAINING_TIMEOUT_S
+              value: "43200"
+            - name: READY_TIMEOUT_S
+              value: "3600"
+            - name: SCALE_DOWN_AFTER_COMPLETIONS
+              value: "true"
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+          volumeMounts:
+            - name: collector-script
+              mountPath: /scripts/collector
+              readOnly: true
+            - name: nvme2
+              mountPath: /mnt/nvme2
+            - name: model-store
+              mountPath: /model-store
+      volumes:
+        - name: collector-script
+          configMap:
+            name: completion-collector-script
+            defaultMode: 0555
+        - name: nvme2
+          persistentVolumeClaim:
+            claimName: nvme2-pvc
+        - name: model-store
+          persistentVolumeClaim:
+            claimName: nim-llm-3b-cache-pvc
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: claude-sonnet-3b-fiveepoch-comparison-20260608t150134z
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: direct-claude-sonnet-eval
+    app.kubernetes.io/component: llama-3.2-3b-fiveepoch-comparison
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "3b-fiveepoch-claude-sonnet-20260608t150134z"
+spec:
+  suspend: true
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: direct-claude-sonnet-eval
+        app.kubernetes.io/component: llama-3.2-3b-fiveepoch-comparison
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+        eval-run-id: "3b-fiveepoch-claude-sonnet-20260608t150134z"
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: direct-eval
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              python -m pip install --no-cache-dir -q --target /tmp/pydeps httpx
+              export PYTHONPATH="/tmp/pydeps:${PYTHONPATH:-}"
+              export NIM_BASE=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/base/base/20260608t005645z/responses.jsonl
+              export NIM_2E_R16=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r16/20260529t142723z/responses.jsonl
+              export NIM_2E_R32=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r32/20260529t142723z/responses.jsonl
+              export NIM_DD5X_2E_R16=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x/r16/20260608t005645z/responses.jsonl
+              export NIM_DD5X_2E_R32=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x/r32/20260608t005645z/responses.jsonl
+              export NIM_DD5X_E5_R16=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r16/20260608t061659z/responses.jsonl
+              export NIM_DD5X_E5_R32=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-dd5x-e5/r32/20260608t150134z/responses.jsonl
+              export NIM_E5_R16=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r16/20260608t150134z/responses.jsonl
+              export NIM_E5_R32=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim-e5/r32/20260608t150134z/responses.jsonl
+              export NIM_49B=/mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl
+              python - <<'PYCODE'
+              import json
+              import os
+              from pathlib import Path
+              required = [
+                  os.environ["NIM_BASE"], os.environ["NIM_2E_R16"], os.environ["NIM_2E_R32"],
+                  os.environ["NIM_DD5X_2E_R16"], os.environ["NIM_DD5X_2E_R32"], os.environ["NIM_DD5X_E5_R16"],
+                  os.environ["NIM_DD5X_E5_R32"], os.environ["NIM_E5_R16"], os.environ["NIM_E5_R32"], os.environ["NIM_49B"],
+              ]
+              for item in required:
+                  path = Path(item)
+                  if not path.exists():
+                      raise SystemExit(f"Missing responses file: {path}")
+                  summary = path.parent / "token_summary.json"
+                  if summary.exists():
+                      payload = json.loads(summary.read_text(encoding="utf-8"))
+                      if int(payload.get("rows_failed") or 0):
+                          raise SystemExit(f"Completion file has unresolved failures: {summary}")
+              print("All required completion files are present", flush=True)
+              PYCODE
+              echo "Starting single-axis Claude Sonnet eval for new 3B 5-epoch adapters"
+              python /scripts/singleaxis/run_direct_kimi_singleaxis.py \
+                --responses "$NIM_DD5X_E5_R32" \
+                --responses "$NIM_E5_R16" \
+                --responses "$NIM_E5_R32" \
+                --eval-run-id "3b-fiveepoch-claude-sonnet-singleaxis-20260608t150134z" \
+                --output-root "$SINGLEAXIS_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-timeout-s 600 \
+                --judge-max-attempts 5 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 4 \
+                --resume \
+                --log-every 25
+              echo "Starting pairwise Claude Sonnet eval for 3B 5-epoch comparison matrix"
+              python /scripts/pairwise/run_direct_kimi_pairwise.py \
+                --pair 3b-base "$NIM_BASE" 3b-nim-dd5x-e5-r32 "$NIM_DD5X_E5_R32" \
+                --pair 3b-nim-dd5x-e5-r16 "$NIM_DD5X_E5_R16" 3b-nim-dd5x-e5-r32 "$NIM_DD5X_E5_R32" \
+                --pair 3b-nim-dd5x-r32 "$NIM_DD5X_2E_R32" 3b-nim-dd5x-e5-r32 "$NIM_DD5X_E5_R32" \
+                --pair 49b "$NIM_49B" 3b-nim-dd5x-e5-r16 "$NIM_DD5X_E5_R16" \
+                --pair 49b "$NIM_49B" 3b-nim-dd5x-e5-r32 "$NIM_DD5X_E5_R32" \
+                --pair 3b-base "$NIM_BASE" 3b-nim-e5-r16 "$NIM_E5_R16" \
+                --pair 3b-base "$NIM_BASE" 3b-nim-e5-r32 "$NIM_E5_R32" \
+                --pair 3b-nim-e5-r16 "$NIM_E5_R16" 3b-nim-e5-r32 "$NIM_E5_R32" \
+                --pair 3b-nim-r16 "$NIM_2E_R16" 3b-nim-e5-r16 "$NIM_E5_R16" \
+                --pair 3b-nim-r32 "$NIM_2E_R32" 3b-nim-e5-r32 "$NIM_E5_R32" \
+                --pair 49b "$NIM_49B" 3b-nim-e5-r16 "$NIM_E5_R16" \
+                --pair 49b "$NIM_49B" 3b-nim-e5-r32 "$NIM_E5_R32" \
+                --pair 3b-nim-e5-r16 "$NIM_E5_R16" 3b-nim-dd5x-e5-r16 "$NIM_DD5X_E5_R16" \
+                --pair 3b-nim-e5-r32 "$NIM_E5_R32" 3b-nim-dd5x-e5-r32 "$NIM_DD5X_E5_R32" \
+                --eval-run-id "3b-fiveepoch-claude-sonnet-pairwise-20260608t150134z" \
+                --output-root "$PAIRWISE_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-timeout-s 600 \
+                --judge-max-attempts 5 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 4 \
+                --resume \
+                --position-swap \
+                --log-every 25
+          env:
+            - name: SINGLEAXIS_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/singleaxis-claude-sonnet
+            - name: PAIRWISE_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/pairwise-claude-sonnet
+            - name: JUDGE_API_URL
+              value: https://inference-api.nvidia.com/v1/chat/completions
+            - name: EVALUATOR_JUDGE_MODEL
+              value: azure/anthropic/claude-sonnet-4-6
+            - name: KIMI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kimi-judge-api
+                  key: KIMI_KEY
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+          volumeMounts:
+            - name: singleaxis-script
+              mountPath: /scripts/singleaxis
+              readOnly: true
+            - name: pairwise-script
+              mountPath: /scripts/pairwise
+              readOnly: true
+            - name: nvme2
+              mountPath: /mnt/nvme2
+      volumes:
+        - name: singleaxis-script
+          configMap:
+            name: direct-kimi-singleaxis-script
+            defaultMode: 0555
+        - name: pairwise-script
+          configMap:
+            name: direct-kimi-pairwise-script
+            defaultMode: 0555
+        - name: nvme2
+          persistentVolumeClaim:
+            claimName: nvme2-pvc

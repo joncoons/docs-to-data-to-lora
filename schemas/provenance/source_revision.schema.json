@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://docs-to-data-to-lora.local/schemas/provenance/source_revision.schema.json",
+  "title": "SourceRevision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_revision_id",
+    "crawl_run_id",
+    "canonical_url",
+    "retrieved_at",
+    "status",
+    "hashes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "provenance.v1"
+    },
+    "source_revision_id": {
+      "type": "string",
+      "pattern": "^srcrev_[A-Za-z0-9_.:-]+$"
+    },
+    "previous_source_revision_id": {
+      "type": ["string", "null"]
+    },
+    "crawl_run_id": {
+      "type": "string"
+    },
+    "canonical_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "final_url": {
+      "type": ["string", "null"],
+      "format": "uri"
+    },
+    "retrieved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "unchanged", "changed", "deleted", "redirected", "failed", "excluded"]
+    },
+    "http": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status_code": {
+          "type": ["integer", "null"]
+        },
+        "etag": {
+          "type": ["string", "null"]
+        },
+        "last_modified": {
+          "type": ["string", "null"]
+        },
+        "content_type": {
+          "type": ["string", "null"]
+        },
+        "cache_control": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_sha256", "normalized_sha256"],
+      "properties": {
+        "raw_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^(sha256:[a-fA-F0-9]{64})?$"
+        },
+        "normalized_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^(sha256:[a-fA-F0-9]{64})?$"
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "raw_uri": {
+          "type": ["string", "null"]
+        },
+        "normalized_uri": {
+          "type": ["string", "null"]
+        },
+        "language": {
+          "type": ["string", "null"]
+        },
+        "title": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "product_family": {
+          "type": ["string", "null"]
+        },
+        "product_name": {
+          "type": ["string", "null"]
+        },
+        "version": {
+          "type": ["string", "null"]
+        },
+        "doc_kind": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "error": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

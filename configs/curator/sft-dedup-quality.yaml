@@ -1,0 +1,74 @@
+# Repository-level NeMo Curator recipe for SFT QA samples.
+#
+# The `stages` section follows the Curator Hydra pipeline pattern documented for
+# text quality filtering. The `deduplication_plan` section is an execution note
+# for the surrounding K8s job/runbook because exact/fuzzy/semantic dedup often
+# run as separate Curator commands or modules depending on dataset scale.
+schema_version: docs-to-data-to-lora.curator.v1
+name: sft-dedup-quality
+description: Quality and deduplication handoff for source-grounded and Data Designer SFT samples.
+
+input_path: /datasets/nim_curated/curator/input
+output_path: /datasets/nim_curated/curator/retained
+removed_path: /datasets/nim_curated/curator/removed
+scores_path: /datasets/nim_curated/curator/scores
+quality_filter_config: /workspace/configs/curator/sft-filter-documents.yaml
+text_field: text
+id_field: id
+
+stages:
+  - _target_: nemo_curator.stages.text.io.reader.JsonlReader
+    file_paths: ${input_path}
+    fields: null
+
+  - _target_: nemo_curator.stages.text.filters.score_filter.ScoreFilter
+    filter_obj:
+      _target_: nemo_curator.stages.text.filters.heuristic.string.WordCountFilter
+      min_words: 8
+      max_words: 1200
+    text_field: ${text_field}
+    score_field: word_count
+
+  - _target_: nemo_curator.stages.text.filters.score_filter.ScoreFilter
+    filter_obj:
+      _target_: nemo_curator.stages.text.filters.heuristic.string.NonAlphaNumericFilter
+      max_non_alpha_numeric_to_text_ratio: 0.35
+    text_field: ${text_field}
+    score_field: non_alpha_numeric_ratio
+
+  - _target_: nemo_curator.stages.text.filters.score_filter.ScoreFilter
+    filter_obj:
+      _target_: nemo_curator.stages.text.filters.heuristic.string.PunctuationFilter
+      max_num_sentences_without_endmark_ratio: 0.9
+    text_field: ${text_field}
+    score_field: punctuation_ratio
+
+  - _target_: nemo_curator.stages.text.filters.score_filter.ScoreFilter
+    filter_obj:
+      _target_: nemo_curator.stages.text.filters.heuristic.repetition.RepeatingTopNGramsFilter
+      n: 3
+      max_repeating_ngram_ratio: 0.3
+    text_field: ${text_field}
+    score_field: repeating_3gram_ratio
+
+  - _target_: nemo_curator.stages.text.io.writer.JsonlWriter
+    path: ${output_path}
+
+deduplication_plan:
+  exact:
+    enabled: true
+    id_field: ${id_field}
+    text_field: ${text_field}
+    hash_method: md5
+  fuzzy:
+    enabled: true
+    text_field: ${text_field}
+    cache_dir: /datasets/nim_curated/curator/cache/fuzzy
+    gpu_recommended: true
+  semantic:
+    enabled: false
+    note: Enable after embedding model and GPU budget are selected for the showcase cluster.
+
+split:
+  train_ratio: 0.9
+  seed: 42

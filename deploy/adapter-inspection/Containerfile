@@ -1,0 +1,14 @@
+# Torch-free image for structural PEFT adapter inspection.
+#
+# Build example:
+#   docker build -f deploy/adapter-inspection/Containerfile -t docs-to-data-to-lora/adapter-inspection:latest .
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+WORKDIR /app
+COPY scripts/stage3/inspect_adapter_checkpoint.py /app/scripts/stage3/inspect_adapter_checkpoint.py
+
+ENTRYPOINT ["python", "scripts/stage3/inspect_adapter_checkpoint.py"]

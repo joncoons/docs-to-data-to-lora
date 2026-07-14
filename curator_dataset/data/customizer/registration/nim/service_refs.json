@@ -1,0 +1,40 @@
+{
+  "datasets": [
+    {
+      "collection": "nim_curated",
+      "dataset": "stage3-nim-curated-curator-diverseqa-20260629",
+      "dataset_role": "augmented_training",
+      "dataset_version_id": "nim-curator-diverseqa-20260629-abf36f4c",
+      "entity_ref": "default/stage3-nim-curated-curator-diverseqa-20260629",
+      "entity_status": "created",
+      "files_url": "hf://datasets/default/stage3-nim-curated-curator-diverseqa-20260629",
+      "git_status": "pushed",
+      "hf_endpoint": "http://nemo-data-store:3000/v1/hf",
+      "lineage_files": [
+        "manifests/dataset_version_manifest.json"
+      ],
+      "repo_status": "exists",
+      "source_composition": {
+        "entailment_count": 0,
+        "grounded_sample_count": 0,
+        "modality_counts": {},
+        "sample_count": 0,
+        "source_chunk_count": 0,
+        "source_kind_counts": {},
+        "source_revision_count": 0,
+        "source_system_counts": {},
+        "source_url_count": 0,
+        "synthetic_ratio": 0,
+        "synthetic_sample_count": 0
+      }
+    }
+  ],
+  "schema_version": "observability.v1",
+  "services": {
+    "data_store_git_base": "http://10.43.197.14:3000",
+    "data_store_hf_endpoint": "http://nemo-data-store:3000/v1/hf",
+    "data_store_url": "http://10.43.197.14:3000",
+    "entity_store_url": "http://10.43.187.212:8000",
+    "namespace": "default"
+  }
+}

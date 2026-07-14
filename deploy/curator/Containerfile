@@ -1,0 +1,16 @@
+# NeMo Curator handoff image.
+#
+# Build example:
+#   docker build -f deploy/curator/Containerfile -t docs-to-data-to-lora/curator:latest .
+ARG NEMO_CURATOR_IMAGE=nvcr.io/nvidia/nemo-curator:latest
+FROM ${NEMO_CURATOR_IMAGE}
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/workspace
+
+WORKDIR /workspace
+COPY scripts/pipeline /workspace/scripts/pipeline
+COPY configs/curator /workspace/configs/curator
+
+ENTRYPOINT ["python", "scripts/pipeline/curator_handoff.py"]

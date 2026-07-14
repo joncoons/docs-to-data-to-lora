@@ -1,0 +1,195 @@
+---
+# Nemotron-3-Nano-30B-A3B uses separate base-only and LoRA-capable NIM
+# deployments. The hybrid MoE profiles are not interchangeable for the Stage 3
+# eval matrix: base reference rows should hit the base-only profile, while LoRA
+# rows should hit the feat_lora profile with NIM_PEFT_SOURCE mounted.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nim-llm-nemotron-3-nano-nvfp4-nolora-bw
+  namespace: runai-rag
+  labels:
+    app: nim-llm-nemotron-3-nano-nvfp4-nolora-bw
+    app.kubernetes.io/name: nim-llm-nemotron-3-nano
+    app.kubernetes.io/component: base
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nim-llm-nemotron-3-nano-nvfp4-nolora-bw
+  template:
+    metadata:
+      annotations:
+        run.ai/gpu-memory: 36000M
+      labels:
+        app: nim-llm-nemotron-3-nano-nvfp4-nolora-bw
+        app.kubernetes.io/name: nim-llm-nemotron-3-nano
+        app.kubernetes.io/component: base
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: ubuntu-local-dev
+      imagePullSecrets:
+        - name: ngc-secret
+      containers:
+        - name: nim-llm-nano
+          image: nvcr.io/nim/nvidia/nemotron-3-nano:2.0.4
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NIM_CACHE_PATH
+              value: /opt/nim/.cache
+            - name: NIM_MODEL_PROFILE
+              value: 1fba9ecfcfb4cde28d4ce3fd55c40bca89a5a613e25e98f057befe6a7e99eada
+            - name: NIM_SERVED_MODEL_NAME
+              value: nvidia/nemotron-3-nano-30b-a3b
+            - name: NIM_MAX_MODEL_LEN
+              value: "32768"
+            - name: NIM_PASSTHROUGH_ARGS
+              value: --max-num-seqs 64
+            - name: NIM_HTTP_API_PORT
+              value: "8000"
+            - name: NGC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ngc-api
+                  key: NGC_API_KEY
+          ports:
+            - containerPort: 8000
+              name: http
+          resources:
+            requests:
+              nvidia.com/gpu: "1"
+            limits:
+              nvidia.com/gpu: "1"
+          volumeMounts:
+            - name: nim-cache
+              mountPath: /opt/nim/.cache
+            - name: nvme2
+              mountPath: /mnt/nvme2
+            - name: shm
+              mountPath: /dev/shm
+      volumes:
+        - name: nim-cache
+          persistentVolumeClaim:
+            claimName: nim-llm-3b-cache-pvc
+        - name: nvme2
+          persistentVolumeClaim:
+            claimName: nvme2-pvc
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nim-llm-nemotron-3-nano-nvfp4-nolora-bw
+  namespace: runai-rag
+  labels:
+    app: nim-llm-nemotron-3-nano-nvfp4-nolora-bw
+    app.kubernetes.io/name: nim-llm-nemotron-3-nano
+    app.kubernetes.io/component: base
+spec:
+  type: ClusterIP
+  selector:
+    app: nim-llm-nemotron-3-nano-nvfp4-nolora-bw
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nim-llm-nemotron-3-nano-nvfp4-lora-bw
+  namespace: runai-rag
+  labels:
+    app: nim-llm-nemotron-3-nano-nvfp4-lora-bw
+    app.kubernetes.io/name: nim-llm-nemotron-3-nano
+    app.kubernetes.io/component: lora
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: nim-llm-nemotron-3-nano-nvfp4-lora-bw
+  template:
+    metadata:
+      annotations:
+        run.ai/gpu-memory: 36000M
+      labels:
+        app: nim-llm-nemotron-3-nano-nvfp4-lora-bw
+        app.kubernetes.io/name: nim-llm-nemotron-3-nano
+        app.kubernetes.io/component: lora
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: ubuntu-local-dev
+      imagePullSecrets:
+        - name: ngc-secret
+      containers:
+        - name: nim-llm-nano
+          image: nvcr.io/nim/nvidia/nemotron-3-nano:2.0.4
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NIM_CACHE_PATH
+              value: /opt/nim/.cache
+            - name: NIM_MODEL_PROFILE
+              value: ed40e65304dfa496d9d4841d2556f4489d9ef7d725500247028264a07c36dff6
+            - name: NIM_SERVED_MODEL_NAME
+              value: nvidia/nemotron-3-nano-30b-a3b
+            - name: NIM_PEFT_SOURCE
+              value: /mnt/nvme2/peft/checkpoints/lora-nemotron-3-nano
+            - name: NIM_HTTP_API_PORT
+              value: "8000"
+            - name: NGC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ngc-api
+                  key: NGC_API_KEY
+          ports:
+            - containerPort: 8000
+              name: http
+          resources:
+            requests:
+              nvidia.com/gpu: "1"
+            limits:
+              nvidia.com/gpu: "1"
+          volumeMounts:
+            - name: nim-cache
+              mountPath: /opt/nim/.cache
+            - name: nvme2
+              mountPath: /mnt/nvme2
+            - name: shm
+              mountPath: /dev/shm
+      volumes:
+        - name: nim-cache
+          persistentVolumeClaim:
+            claimName: nim-llm-3b-cache-pvc
+        - name: nvme2
+          persistentVolumeClaim:
+            claimName: nvme2-pvc
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nim-llm-nemotron-3-nano-nvfp4-lora-bw
+  namespace: runai-rag
+  labels:
+    app: nim-llm-nemotron-3-nano-nvfp4-lora-bw
+    app.kubernetes.io/name: nim-llm-nemotron-3-nano
+    app.kubernetes.io/component: lora
+spec:
+  type: ClusterIP
+  selector:
+    app: nim-llm-nemotron-3-nano-nvfp4-lora-bw
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000

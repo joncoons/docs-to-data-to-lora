@@ -1,94 +1,100 @@
-"""Tests for entity payload builders (single-axis config, pairwise config,
-target shapes, dataset shapes). Doesn't make real network calls."""
+"""Tests for Evaluator target/config payload builders.
+
+These tests intentionally cover the native NIM Proxy model-target path. The
+legacy rag-oai-proxy/RAG target path should not be the default showcase path.
+"""
+import sys
+
 import pytest
 
+import scripts.eval.register_evaluator_entities as ree
 from scripts.eval.register_evaluator_entities import (
     AdapterRow,
+    build_49b_target,
     build_adapter_target,
     build_base_target,
     build_dataset_payload,
     build_pairwise_config,
-    build_rag_target,
     build_singleaxis_config,
 )
 
 
-# --- adapter target -------------------------------------------------------
+# --- model targets -------------------------------------------------------
 
-def test_build_adapter_target_for_3b():
+def test_build_adapter_target_points_at_nim_proxy():
     row = AdapterRow(
         name="lora-nim-llama-3.2-3b-r16",
         base_model="meta/llama-3.2-3b-instruct",
         job_id="cust-abc",
         collection="nim_curated",
     )
-    t = build_adapter_target(row, nim_url="http://nim-llama-3.2-3b:8000")
-    assert t["name"] == "lora-nim-llama-3.2-3b-r16"
-    assert t["namespace"] == "default"
-    assert t["type"] == "model"
-    assert t["model"]["api_endpoint"]["url"] == "http://nim-llama-3.2-3b:8000/v1/chat/completions"
-    assert t["model"]["api_endpoint"]["model_id"] == "lora-nim-llama-3.2-3b-r16"
+    target = build_adapter_target(row, proxy_url="http://nemo-nim-proxy:8000")
+
+    endpoint = target["model"]["api_endpoint"]
+    assert target["name"] == "lora-nim-llama-3.2-3b-r16"
+    assert target["namespace"] == "default"
+    assert target["type"] == "model"
+    assert endpoint["url"] == "http://nemo-nim-proxy:8000/v1/chat/completions"
+    assert endpoint["model_id"] == "lora-nim-llama-3.2-3b-r16"
+    assert endpoint["format"] == "nim"
 
 
-# --- base target ----------------------------------------------------------
-
-def test_build_base_target_omits_adapter_model_id():
-    t = build_base_target(base_model="meta/llama-3.2-3b-instruct",
-                          nim_url="http://nim-llama-3.2-3b-base:8000")
-    assert t["name"] == "base-llama-3.2-3b-instruct"
-    assert t["type"] == "model"
-    # base model identifier is the base slug, not an adapter dir name
-    assert t["model"]["api_endpoint"]["model_id"] == "meta/llama-3.2-3b-instruct"
-
-
-# --- RAG target -----------------------------------------------------------
-
-def test_build_rag_target_scopes_to_collection():
-    t = build_rag_target(
-        collection="nim_curated",
-        rag_url="http://rag-agent-toolkit:8000",
+def test_build_base_target_uses_base_slug_as_target_name():
+    target = build_base_target(
+        base_model="meta/llama-3.2-3b-instruct",
+        proxy_url="http://nemo-nim-proxy:8000",
     )
-    assert t["type"] == "rag"
-    assert t["name"] == "rag-49b-nim-curated"
-    # the spec's collection-scope expectation:
-    assert t["rag"]["collection_name"] == "nim_curated"
+
+    endpoint = target["model"]["api_endpoint"]
+    assert target["name"] == "llama-3.2-3b-instruct"
+    assert target["type"] == "model"
+    assert endpoint["url"] == "http://nemo-nim-proxy:8000/v1/chat/completions"
+    assert endpoint["model_id"] == "llama-3.2-3b-instruct"
+    assert endpoint["format"] == "nim"
 
 
-# --- dataset --------------------------------------------------------------
+def test_build_49b_target_is_model_target_not_rag_target():
+    target = build_49b_target(proxy_url="http://nemo-nim-proxy:8000")
+
+    endpoint = target["model"]["api_endpoint"]
+    assert target["type"] == "model"
+    assert target["name"] == "llama-3.3-nemotron-super-49b-v1.5"
+    assert "rag" not in target
+    assert endpoint["url"] == "http://nemo-nim-proxy:8000/v1/chat/completions"
+    assert endpoint["model_id"] == "llama-3.3-nemotron-super-49b-v1.5"
+    assert endpoint["format"] == "nim"
+
+
+# --- dataset -------------------------------------------------------------
 
 def test_build_dataset_payload_for_nim():
-    d = build_dataset_payload("nim_curated",
-                              files_url="hf://datasets/default/stage3-nim-curated-test")
-    assert d["name"] == "stage3-nim-curated-test"
-    assert d["namespace"] == "default"
-    assert d["format"] == "hf"
-    assert d["files_url"] == "hf://datasets/default/stage3-nim-curated-test"
+    payload = build_dataset_payload(
+        "nim_curated",
+        files_url="hf://datasets/default/stage3-nim-curated-test",
+    )
+    assert payload["name"] == "stage3-nim-curated-test"
+    assert payload["namespace"] == "default"
+    assert payload["format"] == "hf"
+    assert payload["files_url"] == "hf://datasets/default/stage3-nim-curated-test"
+    assert payload["hf_endpoint"] == "http://nemo-data-store:3000/v1/hf"
 
 
-# --- configs --------------------------------------------------------------
+# --- configs -------------------------------------------------------------
 
-def test_singleaxis_config_has_4_axis_rubric_and_judge():
+def test_singleaxis_config_uses_ragas_metrics_and_external_judge_ref():
     cfg = build_singleaxis_config()
     assert cfg["name"] == "stage3-singleaxis-rubric"
     assert cfg["type"] == "custom"
-    rubric_text = cfg["params"]["extra"]["rubric_prompt"]
-    for axis in ("Accuracy", "Completeness", "Faithfulness", "Clarity"):
-        assert axis in rubric_text
-    assert cfg["params"]["extra"]["judge_model"] == \
-        "aws/anthropic/bedrock-claude-sonnet-4-6"
-    # adapter inference temperature must be 0.0 — deterministic
-    assert cfg["params"]["temperature"] == 0.0
-    assert cfg["params"]["max_tokens"] == 600
+    assert cfg["params"]["temperature"] == 0.0001
+    assert cfg["params"]["max_tokens"] == 8192
 
-
-def test_singleaxis_judge_prompt_includes_context_but_inference_does_not():
-    cfg = build_singleaxis_config()
-    extra = cfg["params"]["extra"]
-    # judge prompt sees the source context (for grounding/faithfulness)
-    assert "{context}" in extra["rubric_prompt"]
-    # inference prompt receives only the question (no context leakage)
-    assert "{context}" not in extra["inference_prompt"]
-    assert "{question}" in extra["inference_prompt"]
+    task = cfg["tasks"]["ragas_rubric"]
+    assert task["type"] == "chat-completion"
+    metrics = task["metrics"]
+    assert set(metrics) == {"faithfulness", "response_relevancy", "answer_accuracy"}
+    for metric in metrics.values():
+        assert metric["params"]["judge"]["model"] == "default/llama-3.3-nemotron-super-49b-v1.5"
+        assert "retrieved_contexts" in metric["params"]["input_template"]
 
 
 def test_pairwise_config_has_position_swap_and_judge():
@@ -98,13 +104,12 @@ def test_pairwise_config_has_position_swap_and_judge():
     extra = cfg["params"]["extra"]
     assert extra["position_swap"] is True
     assert "A" in extra["pairwise_prompt"] and "B" in extra["pairwise_prompt"]
-    assert extra["judge_model"] == "aws/anthropic/bedrock-claude-sonnet-4-6"
+    assert extra["judge_model"] == "nvidia/llama-3.3-nemotron-super-49b-v1.5"
 
 
-# --- AdapterRow round-trip ------------------------------------------------
+# --- AdapterRow round-trip ----------------------------------------------
 
 def test_adapter_row_from_log_line():
-    """Parse a dense-Llama row of evals/training_session.log into AdapterRow."""
     line = ("| lora-nim-llama-3.2-3b-r16     | cust-96dMd4ziS1inhYUG7Q8nBM     "
             "|     1.204  |   1.506  | ~12 min    |")
     row = AdapterRow.from_log_line(line)
@@ -115,7 +120,6 @@ def test_adapter_row_from_log_line():
 
 
 def test_adapter_row_from_log_line_moe_nano():
-    """Parse a MoE merged-adapter row (Final r=16 MoE adapter inventory)."""
     line = ("| lora-nemo-usvcs-nemotron-nano-30b-r16 | "
             "`/mnt/nvme2/peft/checkpoints/lora/lora-nemo-usvcs-nemotron-nano-30b-r16/` "
             "| 886 MB | This run (2026-05-27) |")
@@ -127,7 +131,6 @@ def test_adapter_row_from_log_line_moe_nano():
 
 
 def test_adapter_row_from_log_line_skips_shard_rows():
-    """Shard rows (-shard-a / -shard-b) are not registrable eval targets."""
     line = ("| lora-nemo-usvcs-nemotron-nano-30b-r16-shard-a  | "
             "cust-4dLpWrjfy2GUn14StTnnVY     |    0.488   |   1.042  |  ~87 min   |")
     with pytest.raises(ValueError, match="shard row not registrable"):
@@ -135,13 +138,72 @@ def test_adapter_row_from_log_line_skips_shard_rows():
 
 
 def test_adapter_row_from_log_line_raises_on_malformed():
-    """Lines without pipe delimiters or missing cells must raise ValueError."""
     with pytest.raises(ValueError, match="Cannot parse row"):
         AdapterRow.from_log_line("not a pipe-delimited row at all")
 
 
 def test_adapter_row_from_log_line_raises_on_unknown_size():
-    """An adapter name whose size suffix isn't 1B/3B/8B/Nano must raise ValueError."""
     bad = "| lora-nim-llama-9.9-99b-r16 | cust-xyz | 1.0 | 1.0 | ~5 min |"
     with pytest.raises(ValueError, match="Unknown base size in name"):
         AdapterRow.from_log_line(bad)
+
+
+def test_main_all_registers_targets_and_configs_via_nim_proxy(tmp_path, monkeypatch):
+    log_path = tmp_path / "training_session.log"
+    log_path.write_text(
+        "| lora-nim-llama-3.2-3b-r16 | cust-abc | 1.0 | 1.0 | ~5 min |\n"
+    )
+    created_targets = []
+    created_configs = []
+
+    class DummyClient:
+        def __init__(self, base_url, api_key=None):
+            assert base_url == "http://evaluator.test"
+            assert api_key == "secret-token"
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return None
+
+        def create_target(self, payload):
+            created_targets.append(payload)
+            return f"target-{len(created_targets)}"
+
+        def create_config(self, payload):
+            created_configs.append(payload)
+            return f"config-{len(created_configs)}"
+
+    monkeypatch.setattr(ree, "EvaluatorClient", DummyClient)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "register_evaluator_entities.py",
+            "--all",
+            "--evaluator-url",
+            "http://evaluator.test",
+            "--evaluator-api-key",
+            "secret-token",
+            "--proxy-url",
+            "http://nim-proxy.test",
+            "--log-path",
+            str(log_path),
+        ],
+    )
+
+    assert ree.main() == 0
+
+    # One adapter target from the fixture log, four base targets,
+    # and the 49B comparator.
+    assert len(created_targets) == 6
+    assert len(created_configs) == 2
+    assert {cfg["name"] for cfg in created_configs} == {
+        "stage3-singleaxis-rubric",
+        "stage3-pairwise-tournament",
+    }
+    for target in created_targets:
+        endpoint = target["model"]["api_endpoint"]
+        assert endpoint["url"] == "http://nim-proxy.test/v1/chat/completions"
+        assert endpoint["format"] == "nim"

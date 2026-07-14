@@ -1,0 +1,584 @@
+{
+  "created_at": "2026-07-12T12:33:41.287480+00:00",
+  "formal_eval_gate": "Full LE-vs-Curator and LoRA-winner-vs-70B evaluation requires serving the selected local LoRA adapters and collecting their responses on golden-v1.",
+  "judge": {
+    "credential_source": "Kubernetes Secret runai-rag/nvidia-inference-key key api-key; value not persisted",
+    "endpoint": "https://inference-api.nvidia.com/v1",
+    "model": "azure/moonshotai/kimi-k2.6"
+  },
+  "not_formal_winner_evaluation": true,
+  "purpose": "Hosted endpoint smoke for Llama 3.3 70B target completions and Kimi K2.6 single-axis judging on golden-v1.",
+  "schema_version": "golden-eval-smoke-summary/v1",
+  "smoke_runs": {
+    "nemo_usvcs_curated_golden_v1": {
+      "completion_manifest": {
+        "chat_url": "https://inference-api.nvidia.com/v1/chat/completions",
+        "completed_at": "2026-07-12T12:26:56.943534+00:00",
+        "dataset_path": "curator_dataset/experiments/20260709-curator-vs-le/golden_eval/golden-v1/nemo_usvcs_curated/test_set_with_context.jsonl",
+        "dataset_slug": "nemo_usvcs_curated_golden_v1",
+        "generation": {
+          "concurrency": 1,
+          "max_tokens": 1024,
+          "temperature": 0.0001,
+          "timeout_s": 900.0,
+          "top_p": 0.95
+        },
+        "model": {
+          "base_slug": "meta-llama-3.3-70b-instruct",
+          "corpus_slug": null,
+          "model_id": "nvidia/meta/llama-3.3-70b-instruct",
+          "rank": null,
+          "rank_slug": "base",
+          "target_slug": "base",
+          "target_type": "base"
+        },
+        "output_files": {
+          "errors": "/mnt/nvme2/peft/evals/completions/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/errors.jsonl",
+          "responses": "/mnt/nvme2/peft/evals/completions/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/responses.jsonl",
+          "token_summary": "/mnt/nvme2/peft/evals/completions/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/token_summary.json"
+        },
+        "resume": {
+          "enabled": false,
+          "existing_completed_rows": 0,
+          "existing_failed_rows": 0,
+          "retry_failed": false
+        },
+        "retry": {
+          "max_attempts": 3,
+          "retry_backoff_max_s": 60.0,
+          "retry_backoff_s": 10.0,
+          "retry_status_codes": [
+            408,
+            429,
+            500,
+            502,
+            503,
+            504
+          ]
+        },
+        "run_id": "golden-v1-70b-smoke-20260712",
+        "schema_version": "completion-run/v1",
+        "started_at": "2026-07-12T12:26:46.911344+00:00",
+        "summary": {
+          "cleaned_completion_ratio_est": 1.0,
+          "cleaned_response_chars": 2328,
+          "completion_tokens_cleaned_est": 506,
+          "completion_tokens_raw": 506,
+          "prompt_tokens": 5534,
+          "raw_response_chars": 2328,
+          "reasoning_overhead_ratio_est": 0.0,
+          "row_errors_this_invocation": 0,
+          "rows_completed": 2,
+          "rows_failed": 0,
+          "rows_skipped_existing": 0,
+          "think_chars_stripped": 0,
+          "think_tokens_est": 0,
+          "total_tokens_raw": 6040
+        },
+        "target_api_key_supplied": true,
+        "target_api_url": "https://inference-api.nvidia.com/v1"
+      },
+      "completion_run_dir": "/mnt/nvme2/peft/evals/completions/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712",
+      "completion_token_summary": {
+        "cleaned_completion_ratio_est": 1.0,
+        "cleaned_response_chars": 2328,
+        "completion_tokens_cleaned_est": 506,
+        "completion_tokens_raw": 506,
+        "prompt_tokens": 5534,
+        "raw_response_chars": 2328,
+        "reasoning_overhead_ratio_est": 0.0,
+        "row_errors_this_invocation": 0,
+        "rows_completed": 2,
+        "rows_failed": 0,
+        "rows_skipped_existing": 0,
+        "think_chars_stripped": 0,
+        "think_tokens_est": 0,
+        "total_tokens_raw": 6040
+      },
+      "score_manifest": {
+        "completed_at": "2026-07-12T12:32:25.974694+00:00",
+        "created_at": "2026-07-12T12:31:46.906059+00:00",
+        "eval_run_id": "golden-v1-kimi-70b-smoke-20260712-v2",
+        "judge": {
+          "endpoint": "https://inference-api.nvidia.com/v1",
+          "max_attempts": 2,
+          "max_tokens": 8192,
+          "max_total_attempts_per_row": 2,
+          "model": "azure/moonshotai/kimi-k2.6",
+          "retry_backoff_max_s": 120.0,
+          "retry_backoff_s": 10.0,
+          "retry_jitter_s": 2.0,
+          "temperature": 0.0
+        },
+        "output_dir": "/mnt/nvme2/peft/evals/singleaxis-kimi/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2",
+        "output_files": {
+          "errors": "/mnt/nvme2/peft/evals/singleaxis-kimi/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/errors.jsonl",
+          "failed_lines": "/mnt/nvme2/peft/evals/singleaxis-kimi/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/failed_lines.jsonl",
+          "missing_rows": "/mnt/nvme2/peft/evals/singleaxis-kimi/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/missing_rows.jsonl",
+          "retry_exhausted_rows": "/mnt/nvme2/peft/evals/singleaxis-kimi/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/retry_exhausted_rows.jsonl",
+          "rows_to_judge": "/mnt/nvme2/peft/evals/singleaxis-kimi/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/rows_to_judge.jsonl",
+          "scores": "/mnt/nvme2/peft/evals/singleaxis-kimi/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/scores.jsonl",
+          "scores_deduped": "/mnt/nvme2/peft/evals/singleaxis-kimi/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/scores_deduped.jsonl",
+          "summary": "/mnt/nvme2/peft/evals/singleaxis-kimi/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/summary.json"
+        },
+        "responses_manifest": {
+          "chat_url": "https://inference-api.nvidia.com/v1/chat/completions",
+          "completed_at": "2026-07-12T12:26:56.943534+00:00",
+          "dataset_path": "curator_dataset/experiments/20260709-curator-vs-le/golden_eval/golden-v1/nemo_usvcs_curated/test_set_with_context.jsonl",
+          "dataset_slug": "nemo_usvcs_curated_golden_v1",
+          "generation": {
+            "concurrency": 1,
+            "max_tokens": 1024,
+            "temperature": 0.0001,
+            "timeout_s": 900.0,
+            "top_p": 0.95
+          },
+          "model": {
+            "base_slug": "meta-llama-3.3-70b-instruct",
+            "corpus_slug": null,
+            "model_id": "nvidia/meta/llama-3.3-70b-instruct",
+            "rank": null,
+            "rank_slug": "base",
+            "target_slug": "base",
+            "target_type": "base"
+          },
+          "output_files": {
+            "errors": "/mnt/nvme2/peft/evals/completions/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/errors.jsonl",
+            "responses": "/mnt/nvme2/peft/evals/completions/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/responses.jsonl",
+            "token_summary": "/mnt/nvme2/peft/evals/completions/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/token_summary.json"
+          },
+          "resume": {
+            "enabled": false,
+            "existing_completed_rows": 0,
+            "existing_failed_rows": 0,
+            "retry_failed": false
+          },
+          "retry": {
+            "max_attempts": 3,
+            "retry_backoff_max_s": 60.0,
+            "retry_backoff_s": 10.0,
+            "retry_status_codes": [
+              408,
+              429,
+              500,
+              502,
+              503,
+              504
+            ]
+          },
+          "run_id": "golden-v1-70b-smoke-20260712",
+          "schema_version": "completion-run/v1",
+          "started_at": "2026-07-12T12:26:46.911344+00:00",
+          "summary": {
+            "cleaned_completion_ratio_est": 1.0,
+            "cleaned_response_chars": 2328,
+            "completion_tokens_cleaned_est": 506,
+            "completion_tokens_raw": 506,
+            "prompt_tokens": 5534,
+            "raw_response_chars": 2328,
+            "reasoning_overhead_ratio_est": 0.0,
+            "row_errors_this_invocation": 0,
+            "rows_completed": 2,
+            "rows_failed": 0,
+            "rows_skipped_existing": 0,
+            "think_chars_stripped": 0,
+            "think_tokens_est": 0,
+            "total_tokens_raw": 6040
+          },
+          "target_api_key_supplied": true,
+          "target_api_url": "https://inference-api.nvidia.com/v1"
+        },
+        "responses_path": "/mnt/nvme2/peft/evals/completions/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/responses.jsonl",
+        "resume": {
+          "enabled": false,
+          "existing_scores": 0,
+          "missing_rows": 2,
+          "raw_score_duplicate_rows": 0,
+          "retry_exhausted_rows": 0,
+          "rows_to_judge": 2
+        },
+        "schema_version": "direct-kimi-singleaxis-run/v1",
+        "summary": {
+          "combined_total_tokens_raw": 18302,
+          "judge_scoring": {
+            "completion_tokens_cleaned_est": 0,
+            "completion_tokens_raw": 5975,
+            "prompt_tokens": 6287,
+            "think_tokens_est": 0,
+            "total_tokens_raw": 12262
+          },
+          "row_error_attempts": 0,
+          "rows_failed": 0,
+          "rows_scored": 2,
+          "rows_scored_raw": 2,
+          "score_duplicate_rows": 0,
+          "score_means": {
+            "mean_accuracy": 3.5,
+            "mean_clarity": 4.0,
+            "mean_completeness": 3.5,
+            "mean_faithfulness": 3.5
+          },
+          "target_generation": {
+            "completion_tokens_cleaned_est": 506,
+            "completion_tokens_raw": 506,
+            "prompt_tokens": 5534,
+            "think_tokens_est": 0,
+            "total_tokens_raw": 6040
+          },
+          "unresolved_source_row_indices": []
+        }
+      },
+      "score_run_dir": "/mnt/nvme2/peft/evals/singleaxis-kimi/nemo_usvcs_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2",
+      "score_summary": {
+        "combined_total_tokens_raw": 18302,
+        "judge_scoring": {
+          "completion_tokens_cleaned_est": 0,
+          "completion_tokens_raw": 5975,
+          "prompt_tokens": 6287,
+          "think_tokens_est": 0,
+          "total_tokens_raw": 12262
+        },
+        "row_error_attempts": 0,
+        "rows_failed": 0,
+        "rows_scored": 2,
+        "rows_scored_raw": 2,
+        "score_duplicate_rows": 0,
+        "score_means": {
+          "mean_accuracy": 3.5,
+          "mean_clarity": 4.0,
+          "mean_completeness": 3.5,
+          "mean_faithfulness": 3.5
+        },
+        "target_generation": {
+          "completion_tokens_cleaned_est": 506,
+          "completion_tokens_raw": 506,
+          "prompt_tokens": 5534,
+          "think_tokens_est": 0,
+          "total_tokens_raw": 6040
+        },
+        "unresolved_source_row_indices": []
+      },
+      "superseded_score_summary": {
+        "combined_total_tokens_raw": 6193,
+        "judge_scoring": {
+          "completion_tokens_cleaned_est": 0,
+          "completion_tokens_raw": 680,
+          "prompt_tokens": 2806,
+          "think_tokens_est": 0,
+          "total_tokens_raw": 3486
+        },
+        "row_error_attempts": 1,
+        "rows_failed": 1,
+        "rows_scored": 1,
+        "rows_scored_raw": 1,
+        "score_duplicate_rows": 0,
+        "score_means": {
+          "mean_accuracy": 5.0,
+          "mean_clarity": 5.0,
+          "mean_completeness": 5.0,
+          "mean_faithfulness": 5.0
+        },
+        "target_generation": {
+          "completion_tokens_cleaned_est": 168,
+          "completion_tokens_raw": 168,
+          "prompt_tokens": 2539,
+          "think_tokens_est": 0,
+          "total_tokens_raw": 2707
+        },
+        "unresolved_source_row_indices": [
+          0
+        ]
+      }
+    },
+    "nim_curated_golden_v1": {
+      "completion_manifest": {
+        "chat_url": "https://inference-api.nvidia.com/v1/chat/completions",
+        "completed_at": "2026-07-12T12:26:46.848811+00:00",
+        "dataset_path": "curator_dataset/experiments/20260709-curator-vs-le/golden_eval/golden-v1/nim_curated/test_set_with_context.jsonl",
+        "dataset_slug": "nim_curated_golden_v1",
+        "generation": {
+          "concurrency": 1,
+          "max_tokens": 1024,
+          "temperature": 0.0001,
+          "timeout_s": 900.0,
+          "top_p": 0.95
+        },
+        "model": {
+          "base_slug": "meta-llama-3.3-70b-instruct",
+          "corpus_slug": null,
+          "model_id": "nvidia/meta/llama-3.3-70b-instruct",
+          "rank": null,
+          "rank_slug": "base",
+          "target_slug": "base",
+          "target_type": "base"
+        },
+        "output_files": {
+          "errors": "/mnt/nvme2/peft/evals/completions/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/errors.jsonl",
+          "responses": "/mnt/nvme2/peft/evals/completions/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/responses.jsonl",
+          "token_summary": "/mnt/nvme2/peft/evals/completions/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/token_summary.json"
+        },
+        "resume": {
+          "enabled": false,
+          "existing_completed_rows": 0,
+          "existing_failed_rows": 0,
+          "retry_failed": false
+        },
+        "retry": {
+          "max_attempts": 3,
+          "retry_backoff_max_s": 60.0,
+          "retry_backoff_s": 10.0,
+          "retry_status_codes": [
+            408,
+            429,
+            500,
+            502,
+            503,
+            504
+          ]
+        },
+        "run_id": "golden-v1-70b-smoke-20260712",
+        "schema_version": "completion-run/v1",
+        "started_at": "2026-07-12T12:26:44.028565+00:00",
+        "summary": {
+          "cleaned_completion_ratio_est": 1.0,
+          "cleaned_response_chars": 496,
+          "completion_tokens_cleaned_est": 101,
+          "completion_tokens_raw": 101,
+          "prompt_tokens": 3381,
+          "raw_response_chars": 496,
+          "reasoning_overhead_ratio_est": 0.0,
+          "row_errors_this_invocation": 0,
+          "rows_completed": 2,
+          "rows_failed": 0,
+          "rows_skipped_existing": 0,
+          "think_chars_stripped": 0,
+          "think_tokens_est": 0,
+          "total_tokens_raw": 3482
+        },
+        "target_api_key_supplied": true,
+        "target_api_url": "https://inference-api.nvidia.com/v1"
+      },
+      "completion_run_dir": "/mnt/nvme2/peft/evals/completions/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712",
+      "completion_token_summary": {
+        "cleaned_completion_ratio_est": 1.0,
+        "cleaned_response_chars": 496,
+        "completion_tokens_cleaned_est": 101,
+        "completion_tokens_raw": 101,
+        "prompt_tokens": 3381,
+        "raw_response_chars": 496,
+        "reasoning_overhead_ratio_est": 0.0,
+        "row_errors_this_invocation": 0,
+        "rows_completed": 2,
+        "rows_failed": 0,
+        "rows_skipped_existing": 0,
+        "think_chars_stripped": 0,
+        "think_tokens_est": 0,
+        "total_tokens_raw": 3482
+      },
+      "score_manifest": {
+        "completed_at": "2026-07-12T12:31:46.905118+00:00",
+        "created_at": "2026-07-12T12:31:11.937476+00:00",
+        "eval_run_id": "golden-v1-kimi-70b-smoke-20260712-v2",
+        "judge": {
+          "endpoint": "https://inference-api.nvidia.com/v1",
+          "max_attempts": 2,
+          "max_tokens": 8192,
+          "max_total_attempts_per_row": 2,
+          "model": "azure/moonshotai/kimi-k2.6",
+          "retry_backoff_max_s": 120.0,
+          "retry_backoff_s": 10.0,
+          "retry_jitter_s": 2.0,
+          "temperature": 0.0
+        },
+        "output_dir": "/mnt/nvme2/peft/evals/singleaxis-kimi/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2",
+        "output_files": {
+          "errors": "/mnt/nvme2/peft/evals/singleaxis-kimi/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/errors.jsonl",
+          "failed_lines": "/mnt/nvme2/peft/evals/singleaxis-kimi/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/failed_lines.jsonl",
+          "missing_rows": "/mnt/nvme2/peft/evals/singleaxis-kimi/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/missing_rows.jsonl",
+          "retry_exhausted_rows": "/mnt/nvme2/peft/evals/singleaxis-kimi/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/retry_exhausted_rows.jsonl",
+          "rows_to_judge": "/mnt/nvme2/peft/evals/singleaxis-kimi/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/rows_to_judge.jsonl",
+          "scores": "/mnt/nvme2/peft/evals/singleaxis-kimi/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/scores.jsonl",
+          "scores_deduped": "/mnt/nvme2/peft/evals/singleaxis-kimi/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/scores_deduped.jsonl",
+          "summary": "/mnt/nvme2/peft/evals/singleaxis-kimi/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2/summary.json"
+        },
+        "responses_manifest": {
+          "chat_url": "https://inference-api.nvidia.com/v1/chat/completions",
+          "completed_at": "2026-07-12T12:26:46.848811+00:00",
+          "dataset_path": "curator_dataset/experiments/20260709-curator-vs-le/golden_eval/golden-v1/nim_curated/test_set_with_context.jsonl",
+          "dataset_slug": "nim_curated_golden_v1",
+          "generation": {
+            "concurrency": 1,
+            "max_tokens": 1024,
+            "temperature": 0.0001,
+            "timeout_s": 900.0,
+            "top_p": 0.95
+          },
+          "model": {
+            "base_slug": "meta-llama-3.3-70b-instruct",
+            "corpus_slug": null,
+            "model_id": "nvidia/meta/llama-3.3-70b-instruct",
+            "rank": null,
+            "rank_slug": "base",
+            "target_slug": "base",
+            "target_type": "base"
+          },
+          "output_files": {
+            "errors": "/mnt/nvme2/peft/evals/completions/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/errors.jsonl",
+            "responses": "/mnt/nvme2/peft/evals/completions/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/responses.jsonl",
+            "token_summary": "/mnt/nvme2/peft/evals/completions/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/token_summary.json"
+          },
+          "resume": {
+            "enabled": false,
+            "existing_completed_rows": 0,
+            "existing_failed_rows": 0,
+            "retry_failed": false
+          },
+          "retry": {
+            "max_attempts": 3,
+            "retry_backoff_max_s": 60.0,
+            "retry_backoff_s": 10.0,
+            "retry_status_codes": [
+              408,
+              429,
+              500,
+              502,
+              503,
+              504
+            ]
+          },
+          "run_id": "golden-v1-70b-smoke-20260712",
+          "schema_version": "completion-run/v1",
+          "started_at": "2026-07-12T12:26:44.028565+00:00",
+          "summary": {
+            "cleaned_completion_ratio_est": 1.0,
+            "cleaned_response_chars": 496,
+            "completion_tokens_cleaned_est": 101,
+            "completion_tokens_raw": 101,
+            "prompt_tokens": 3381,
+            "raw_response_chars": 496,
+            "reasoning_overhead_ratio_est": 0.0,
+            "row_errors_this_invocation": 0,
+            "rows_completed": 2,
+            "rows_failed": 0,
+            "rows_skipped_existing": 0,
+            "think_chars_stripped": 0,
+            "think_tokens_est": 0,
+            "total_tokens_raw": 3482
+          },
+          "target_api_key_supplied": true,
+          "target_api_url": "https://inference-api.nvidia.com/v1"
+        },
+        "responses_path": "/mnt/nvme2/peft/evals/completions/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/responses.jsonl",
+        "resume": {
+          "enabled": false,
+          "existing_scores": 0,
+          "missing_rows": 2,
+          "raw_score_duplicate_rows": 0,
+          "retry_exhausted_rows": 0,
+          "rows_to_judge": 2
+        },
+        "schema_version": "direct-kimi-singleaxis-run/v1",
+        "summary": {
+          "combined_total_tokens_raw": 12971,
+          "judge_scoring": {
+            "completion_tokens_cleaned_est": 0,
+            "completion_tokens_raw": 5670,
+            "prompt_tokens": 3819,
+            "think_tokens_est": 0,
+            "total_tokens_raw": 9489
+          },
+          "row_error_attempts": 0,
+          "rows_failed": 0,
+          "rows_scored": 2,
+          "rows_scored_raw": 2,
+          "score_duplicate_rows": 0,
+          "score_means": {
+            "mean_accuracy": 5.0,
+            "mean_clarity": 5.0,
+            "mean_completeness": 4.0,
+            "mean_faithfulness": 5.0
+          },
+          "target_generation": {
+            "completion_tokens_cleaned_est": 101,
+            "completion_tokens_raw": 101,
+            "prompt_tokens": 3381,
+            "think_tokens_est": 0,
+            "total_tokens_raw": 3482
+          },
+          "unresolved_source_row_indices": []
+        }
+      },
+      "score_run_dir": "/mnt/nvme2/peft/evals/singleaxis-kimi/nim_curated_golden_v1/meta-llama-3.3-70b-instruct/base/base/golden-v1-70b-smoke-20260712/golden-v1-kimi-70b-smoke-20260712-v2",
+      "score_summary": {
+        "combined_total_tokens_raw": 12971,
+        "judge_scoring": {
+          "completion_tokens_cleaned_est": 0,
+          "completion_tokens_raw": 5670,
+          "prompt_tokens": 3819,
+          "think_tokens_est": 0,
+          "total_tokens_raw": 9489
+        },
+        "row_error_attempts": 0,
+        "rows_failed": 0,
+        "rows_scored": 2,
+        "rows_scored_raw": 2,
+        "score_duplicate_rows": 0,
+        "score_means": {
+          "mean_accuracy": 5.0,
+          "mean_clarity": 5.0,
+          "mean_completeness": 4.0,
+          "mean_faithfulness": 5.0
+        },
+        "target_generation": {
+          "completion_tokens_cleaned_est": 101,
+          "completion_tokens_raw": 101,
+          "prompt_tokens": 3381,
+          "think_tokens_est": 0,
+          "total_tokens_raw": 3482
+        },
+        "unresolved_source_row_indices": []
+      },
+      "superseded_score_summary": {
+        "combined_total_tokens_raw": 0,
+        "judge_scoring": {
+          "completion_tokens_cleaned_est": 0,
+          "completion_tokens_raw": 0,
+          "prompt_tokens": 0,
+          "think_tokens_est": 0,
+          "total_tokens_raw": 0
+        },
+        "row_error_attempts": 2,
+        "rows_failed": 2,
+        "rows_scored": 0,
+        "rows_scored_raw": 0,
+        "score_duplicate_rows": 0,
+        "score_means": {
+          "mean_accuracy": null,
+          "mean_clarity": null,
+          "mean_completeness": null,
+          "mean_faithfulness": null
+        },
+        "target_generation": {
+          "completion_tokens_cleaned_est": 0,
+          "completion_tokens_raw": 0,
+          "prompt_tokens": 0,
+          "think_tokens_est": 0,
+          "total_tokens_raw": 0
+        },
+        "unresolved_source_row_indices": [
+          0,
+          1
+        ]
+      }
+    }
+  },
+  "superseded_attempt": {
+    "eval_run_id": "golden-v1-kimi-70b-smoke-20260712",
+    "judge_max_tokens": 1024,
+    "result": "Superseded. Three of four Kimi score rows failed JSON parsing because the response hit finish_reason=length before emitting parseable JSON."
+  },
+  "target": {
+    "endpoint": "https://inference-api.nvidia.com/v1",
+    "model": "nvidia/meta/llama-3.3-70b-instruct"
+  }
+}

@@ -6,18 +6,25 @@
 
 ## What this stage produces
 
-Two independent runs of the same pipeline — one per Stage 1 ES collection — each
-producing a `training.jsonl` + `validation.jsonl` pair in NeMo Customizer SFT
+Independent runs of the same pipeline — one per Stage 1 collection — each
+produce a `training.jsonl` + `validation.jsonl` pair in NeMo Customizer SFT
 format, split 90/10. Every record has the shape `{prompt, completion, system}`.
-The two datasets are entirely independent: no chunks cross between them, and the
-resulting LoRA adapters are specialized for their respective domains. The
-`nim_curated` collection (2,086 chunks, 50 NIM products) produces a NIM-specific
-adapter; the `nemo_usvcs_curated` collection (1,289 chunks, NeMo Microservices
-platform) produces a NeMo Microservices-specific adapter.
+Collections are intentionally scoped: chunks do not cross boundaries, and the
+resulting LoRA adapters specialize in their respective enterprise domains or
+sub-domains. The NIM and NeMo Microservices collections in this repo are case
+studies, not a constraint on the approach.
 
 Every generated pair is grounded in retrieved corpus text. No parametric-only
 generation is used anywhere in the pipeline — the LLM synthesizes or transforms
 chunks already in the corpus, it does not draw on its own training knowledge.
+
+The reference implementation is NVAIE-centered. NIM endpoints provide the
+foundation/frontier model interface for LE extraction, synthesis, auditing, and
+inference; NeMo Curator/Data Designer provide dataset transformation and
+quality tooling; NeMo Customizer consumes the resulting SFT JSONL; and NeMo
+Evaluator plus MLflow provide formal evaluation and artifact lineage. The
+LE-based QA/KVP extraction and durability patterns in this repo are examples of
+solution-level augmentation built on top of that foundation.
 
 ## Pipeline overview
 
@@ -32,20 +39,76 @@ The pipeline has eight stages, run in order for each collection:
    k-nearest neighbor chunks and generate BRIDGING and CONTRASTIVE questions
    whose answers require synthesizing across passages. Output:
    `stage1b_synthesis.jsonl`.
-4. **Stage 1C — Instruction Diversity Pass**: for the highest-density 25% of
-   passages, generate SUMMARY / LISTICLE / PROCEDURAL instruction-following
-   examples. Output: `stage1c_instruction.jsonl`.
-5. **Stage 1.5 — Bias analysis + Data Designer gap-fill**: measure per-product
-   KVP density; for under-represented products, run RAG-grounded NeMo Data
-   Designer recipes to synthesize additional pairs. Output: `bias_report.json` +
+4. **Stage 1C — Instruction Diversity Pass**: for selected passages, generate
+   SUMMARY / LISTICLE / PROCEDURAL instruction-following examples. The default
+   selection mode is stratified across density bands; top-density and all-passage
+   modes are available. Output: `stage1c_instruction.jsonl`.
+5. **Stage 1.5 — Optional Bias analysis + Data Designer gap-fill**: measure
+   per-slice KVP density (for example product family, workflow, policy area,
+   or source collection segment) and, only when synthetic augmentation is
+   desired, hand under-represented slices to NeMo Data Designer for grounded
+   synthetic generation. Output: `bias_report.json` + optional
    `stage1_5_gapfill.jsonl`.
-6. **Stage 2 — QA Eval Refinement**: super-120b self-eval — refine or drop each
-   pair. Output: `stage2_eval.jsonl`.
+6. **Stage 2 — QA Admission + Refinement**: Curator-backed LLM quality gating
+   with a Super 120B-class or similar model by default — refine or drop each
+   pair based on source grounding and answer fidelity. Escalate to
+   Ultra/foundation-grade only for critical audits or small, high-value
+   datasets. Output: `stage2_eval.jsonl`.
 7. **Stage 3 — NeMo Curator**: exact dedup, MinHash fuzzy dedup, length filter,
-   quality filter, train/val split. Outputs: `training.jsonl` + `validation.jsonl`.
-8. **Stage 4 — Validation Gate**: independent external judge (Claude Sonnet 4.6
-   via NVIDIA Inference API) spot-checks 100 pairs per collection on three binary
-   criteria; pipeline passes if grounding rate ≥ 90%.
+   non-LLM quality filters, train/val split. Outputs: `training.jsonl` +
+   `validation.jsonl`.
+8. **Stage 4 — Validation Gate**: an independent external judge spot-checks 100
+   pairs per collection on three binary criteria; pipeline passes if grounding
+   rate ≥ 90%.
+
+### Operational levers
+
+The main runner is designed to be runnable as-is, while still exposing the knobs
+that materially change dataset coverage, cost, and recovery behavior.
+
+- `--stage` runs one stage or the full pipeline; `--resume` reuses durable stage
+  artifacts and skips completed work where the stage supports per-passage
+  status. `--max-passages` is the smoke-test lever.
+- `--stage1a-mode legacy|batched` chooses the original one-KVP-call-per-premise
+  path or the batched KVP expansion path. Both paths extract all entailments and
+  all premises; there is no artificial entailment or premise cap.
+- `--stage1a-nim-endpoints`, `--stage1a-model`, `--stage1a-temperature`,
+  `--stage1a-le-max-tokens`, `--stage1a-batched-kvp-max-tokens`,
+  `--stage1a-max-premises-per-batch`, and `--stage1a-batch-parse-attempts`
+  control Stage 1A endpoint placement, model selection, recall temperature,
+  response budget, batch size, and fallback behavior. The project default for
+  Stage 1A is Nemotron 3 Super 120B; Ultra 550B is reserved for downstream audit
+  or augmentation unless explicitly requested for an experiment.
+- `--stage1c-selection-mode stratified|top_density|all` controls how much
+  instruction diversity is added. `stratified` is the default because it keeps
+  high-density passages represented without making Stage 1C a narrow
+  high-density-only sample.
+- Source-kind filtering is optional. The canonical pipeline can use all Stage 0
+  passages; experiment runners may expose `--source-doc-kind html` when a run
+  intentionally excludes parsed PDFs for publication or comparison.
+- Stage 1B and Stage 1C append rows as each passage finishes and write
+  `stage1b_passage_results.jsonl` / `stage1c_passage_results.jsonl`. Interrupted
+  runs can resume without replaying completed passages or losing already written
+  rows.
+- Stage 1B and Stage 1C should use a frontier-level synthesis model. The
+  current experiments use Nemotron 3 Ultra 550B through NVIDIA-hosted inference,
+  but the downstream runner accepts any OpenAI-compatible chat-completions
+  endpoint/model pair via repeated `--target ENDPOINT=MODEL[@MAX_CONTEXT]`
+  arguments.
+- Stage 1.5 is optional. For grounded-only dataset creation, proceed from Stage
+  1C directly to Stage 2. Enable Stage 1.5 when the source-grounded set is small,
+  product coverage is visibly imbalanced, or a controlled synthetic augmentation
+  experiment is explicitly part of the plan. Synthetic generation should use a
+  frontier-grade model, not a small local fallback, because it can otherwise
+  introduce style drift or shallow paraphrases into the training mix.
+- Stage 2 is a required logical quality/admission stage. The preferred execution
+  surface is Curator-backed LLM filtering/refinement using a Super 120B-class
+  model such as Nemotron 3 Super by default. Escalate to Ultra or another
+  foundation/frontier-grade model only when the dataset is small, the audit is
+  critical, or the expected value justifies the higher cost. The older direct
+  `qa_eval` prompt path remains useful as a local fallback and ablation path,
+  but should not be the canonical production posture when Curator LLM quality
+  tooling is available.
 
 ---
 
@@ -131,26 +194,57 @@ with the Pydantic schemas `LogEntailment` and `QAKeyValuePair`.
 1. Call super-120b with the LE prompt; parse `LogEntailment` (conclusion,
    premises[], context, entities, recommendations).
 2. If `conclusion` is empty OR `premises` is empty/missing → skip this passage.
-3. For each premise (up to 3): call super-120b with the KVP prompt (premise +
+3. For each premise: call super-120b with the KVP prompt (premise +
    conclusion + source text); parse `QAKeyValuePair`.
 4. Emit one row per successful (premise, conclusion) → (question, answer) pair.
 
+The default production path preserves this one-KVP-call-per-premise behavior. An
+optional conservative efficiency path is available with `--stage1a-mode batched`.
+It keeps the LE call unchanged, batches only the KVP expansion over parsed
+premises, and falls back to the original per-premise KVP prompt for missing or
+invalid batched rows. The batched path writes the same canonical outputs:
+`stage1a_le.jsonl` and `provenance/entailments.jsonl`.
+
+Example:
+
+```bash
+python scripts/build_v2_dataset.py \
+  --collection nim_curated \
+  --output /mnt/nvme2/peft/datasets/v2/nim_curated \
+  --stage 1a \
+  --stage1a-mode batched
+```
+
 ### LLM details
 
-- Endpoint: round-robin over `nim-llm-super-120b-bw` pod IPs. Falls back to the
-  ClusterIP service if pod discovery fails.
-- Model: `nvidia/nemotron-3-super-120b-a12b`
-- Temperature: 0.2
+- Default endpoint: the configured Nemotron 3 Super endpoint list from
+  `PIPELINE_NIM_ENDPOINTS` / `Config.nim_endpoints`, usually the local
+  `nim-llm-super-120b-bw` service. Multiple endpoints are round-robined by the
+  shared LLM client.
+- Default model: `nvidia/nemotron-3-super-120b-a12b`. The hosted alias
+  `nvidia/nvidia/nemotron-3-super-v3` is the same model family for this work and
+  can be supplied with `--stage1a-model` when using NVIDIA-hosted inference.
+- Legacy temperature: 0.2. Batched mode defaults to 0.95 for higher-recall
+  extraction, unless `--stage1a-temperature` overrides it.
+- Endpoint/model overrides: use `--stage1a-nim-endpoints`, `--stage1a-model`,
+  and `--stage1a-api-key` when an experiment needs hosted inference or a
+  local-plus-hosted endpoint mix. Ultra 550B is not the default Stage 1A
+  extraction model; use it here only as an explicit experiment.
+- Batched KVP controls: `--stage1a-max-premises-per-batch`,
+  `--stage1a-batch-parse-attempts`, `--stage1a-le-max-tokens`, and
+  `--stage1a-batched-kvp-max-tokens`. The default completion budget is 16,384
+  tokens for LE and batched KVP calls; this is an operational budget, not a
+  schema cap.
 - `MAX_WORKERS=5`, `MIN_INTERVAL=0.5s`, 3 retries with linear backoff (5s × attempt).
 
 ### Multi-premise expansion
 
-The LE step extracts up to 3 premises per passage. Each premise independently
-supports the passage's main conclusion and generates its own Q+A pair. This
-multi-premise expansion is the mechanism that allows a 500-passage corpus to
-produce ~750-930 pairs at Stage 1A — ratio of ~1.5 pairs/passage on the smaller
-by-URL passages (compared to ~2.5 on the April 2026 900-token passages, which
-often spanned multiple logical claims).
+The LE step extracts all premises needed for each entailment. Each premise
+independently supports its entailment's conclusion and generates its own Q+A
+pair. This multi-premise expansion is the mechanism that allows a 500-passage
+corpus to produce ~750-930 pairs at Stage 1A — ratio of ~1.5 pairs/passage on
+the smaller by-URL passages (compared to ~2.5 on the April 2026 900-token
+passages, which often spanned multiple logical claims).
 
 ### Output schema
 
@@ -185,8 +279,8 @@ File: `/mnt/nvme2/peft/datasets/v2/<collection>/stage1a_le.jsonl`
    chunks sharing the same `content_url`.
 3. Trim neighbors to top-3 by score. Combine seed passage + top-3 neighbor chunks
    into a context capped at ~1,200 tokens.
-4. Call super-120b with the synthesis prompt (BRIDGING + CONTRASTIVE in a single
-   request, structured JSON output).
+4. Call the configured frontier-level synthesis model with the synthesis prompt
+   (BRIDGING + CONTRASTIVE in a single request, structured JSON output).
 5. Emit one row per question (typically 2 per neighborhood).
 
 ### Prompts
@@ -228,11 +322,33 @@ Output JSON:
 }
 ```
 
+### Model and endpoint guidance
+
+Stage 1B is a synthesis step, not raw entailment extraction. Use a
+frontier-level instruction/reasoning model for this stage so cross-passage
+bridging and contrastive questions are not bottlenecked by a smaller local model.
+The current experiment uses `nvidia/nvidia/nemotron-3-ultra`, but the downstream
+runner is model-agnostic as long as the endpoint implements OpenAI-compatible
+chat completions. Use repeated `--target ENDPOINT=MODEL[@MAX_CONTEXT]` arguments
+to choose one or more endpoints; non-NVIDIA secured endpoints can use
+`--api-key`, and NVIDIA-hosted inference reads the configured Kubernetes secret.
+
 ### Coverage
 
-Stage 1B runs on **all** Stage 0 passages — full coverage, no subsampling. The
-kNN retrieval with `num_candidates=50` is the only meaningful cost; on the two
-corpora (500-620 passages each), the full pass completes in ~30-45 min per
+Stage 1B runs on **all** Stage 0 passages selected for the run - full
+coverage, no subsampling. The kNN retrieval with `num_candidates=50` is scoped
+to the active `--collection`, so NIM passages retrieve NIM neighbors and NeMo
+Microservices passages retrieve NeMo Microservices neighbors.
+
+Rows are appended to `stage1b_synthesis.jsonl` as each passage finishes.
+`stage1b_passage_results.jsonl` records per-passage status, row count, source
+URL, finish time, and any exception text. With `--resume`, passages that already
+have persisted rows, no seed vector, or no neighbors are skipped; transient
+exceptions remain retryable. This avoids holding the whole stage in memory and
+prevents an interrupted run from discarding completed work.
+
+The kNN retrieval with `num_candidates=50` is the only meaningful cost; on the
+two corpora (500-620 passages each), the full pass completes in ~30-45 min per
 collection.
 
 ### Output schema
@@ -253,9 +369,19 @@ Same schema as Stage 1A, with:
 
 ## Stage 1C: Instruction Diversity Pass
 
+### Model and endpoint guidance
+
+Stage 1C should use the same frontier-level model posture as Stage 1B. Its job
+is to rewrite grounded passage content into diverse instruction formats, so the
+model should be strong enough to preserve factual boundaries while changing task
+shape. The active downstream runner uses the same `--target
+ENDPOINT=MODEL[@MAX_CONTEXT]` mechanism described for Stage 1B; examples may
+name Nemotron 3 Ultra, but any OpenAI-compatible endpoint/model pair can be
+used when it meets the quality bar.
+
 ### Selection
 
-Rank passages by **chunk-index span × unique product-term hit density**:
+Stage 1C uses the same density score as the earlier high-density-only design:
 
 ```
 density_score = (max_chunk_index - min_chunk_index + 1)
@@ -264,12 +390,26 @@ density_score = (max_chunk_index - min_chunk_index + 1)
 
 where `unique_product_terms` is the count of distinct values from
 `metadata.product_family` + `metadata.product_name` + anchor-tagged section
-headings that appear in the body. The top **25% of passages per collection, with
-an absolute floor of 100 passages**, advance to Stage 1C.
+headings that appear in the body. Raw token count is intentionally NOT used as
+the primary heuristic because it breaks down on the smaller by-URL passages
+produced by Stage 0.
+
+The default selection mode is `stratified`: compute a target count using
+`max(stage1c_min_passages, int(stage1c_top_percent * passage_count))`, cap it at
+the corpus size, then select across density bands. This keeps dense technical
+pages in the sample while allowing lower-density but still useful documentation
+pages to contribute summary/list/procedure behavior.
+
+Selection is controlled with `--stage1c-selection-mode` or
+`PIPELINE_STAGE1C_SELECTION_MODE`:
+
+- `stratified` - default; span density bands up to the configured target count.
+- `top_density` - legacy behavior; choose the highest-density passages only.
+- `all` - run instruction generation for every selected Stage 0 passage.
 
 The floor prevents small corpora from producing too few instruction-format pairs.
-Raw token count is intentionally NOT used here — that heuristic breaks down on
-the smaller by-URL passages produced by Stage 0.
+`stage1c_top_percent` remains the cost-control knob, and `stage1c_min_passages`
+remains the minimum-coverage knob for non-`all` modes.
 
 ### Prompts
 
@@ -315,14 +455,41 @@ Same schema as Stage 1A, with:
 - `stage: "1c"`
 - `instr_type: "summary"|"listicle"|"procedural"`
 
+Rows are appended as each passage finishes. `stage1c_passage_results.jsonl`
+records per-passage status and row count. With `--resume`, passages with
+existing rows or terminal no-work statuses (`no_pairs`, `no_valid_pairs`) are
+skipped; passages with transient exceptions remain retryable.
+
 ### Expected yield
 
-- NIM: top 25% of ~500 passages = 125 passages × 2.5 avg types = **~310 pairs**.
-- NeMo USvcs: top 25% of ~620 = 155 × 2.5 = **~390 pairs**.
+Yield depends on `--stage1c-selection-mode`:
+
+- `stratified` default: target count is max(25% of passages, 100), capped by
+  corpus size, times ~2.5 instruction rows per passage.
+- `top_density`: same target count, but concentrated in the highest-density
+  passages.
+- `all`: every selected Stage 0 passage, times ~2.5 instruction rows per
+  passage.
+
+For the default `stratified` mode, approximate yields are **~310 NIM pairs** and
+**~390 NeMo USvcs pairs**.
 
 ---
 
-## Stage 1.5: Bias Analysis + Data Designer Gap-Fill
+## Stage 1.5: Optional Bias Analysis + Data Designer Handoff
+
+Stage 1.5 is an optional synthetic-augmentation stage, not a required step for
+every dataset. The default grounded path for the current LE rerun is to skip it
+and continue from Stage 1C to Stage 2. Use it when the grounded dataset is too
+small for the target adapter, when product-family coverage is materially
+imbalanced, or when the experiment is explicitly testing synthetic-data lift.
+
+When Stage 1.5 performs synthetic generation, use a frontier-grade model through
+Data Designer or an equivalent OpenAI-compatible endpoint. The generator should
+be strong enough to preserve source constraints while creating genuinely useful
+new questions, not just superficial paraphrases. Smaller models can be useful
+for smoke testing the handoff mechanics, but they should not be the production
+synthetic generator.
 
 ### Bias analysis
 
@@ -343,7 +510,12 @@ The bias signal comes from the `product_family` / `product_name` metadata that
 `CRAWLER_PRODUCT_URL_MAP` already attaches to every chunk during ingest — there
 are no hand-curated keyword lists involved.
 
-Output file: `/mnt/nvme2/peft/datasets/v2/<collection>/bias_report.json`
+Output files:
+
+- `/mnt/nvme2/peft/datasets/v2/<collection>/bias_report.json`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/provenance/gap_manifest.json`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/data_designer/gapfill_requests.jsonl`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/data_designer/request_manifest.json`
 
 ```json
 {
@@ -364,35 +536,51 @@ Output file: `/mnt/nvme2/peft/datasets/v2/<collection>/bias_report.json`
 
 ### Gap-fill via NeMo Data Designer
 
-For each under-represented product `T`:
+Stage 1.5 now stops at a native handoff boundary by default. For each
+under-represented product `T` it writes a gap record and a Data Designer seed
+record instead of directly calling an LLM. If generation is enabled, configure
+Data Designer with a frontier-grade model and preserve all synthetic lineage:
 
-1. **ES retrieval (same collection only)**: hybrid query combining BM25 on
-   `product_family == T` AND kNN over a target-density vector (mean of T's chunk
-   vectors), top-20 chunks. Cap at ~1,500 tokens combined; rank-blend if
-   oversize.
-2. **Data Designer recipe** (one recipe per collection, parametrized by topic):
-   - Input fields: `retrieved_chunks` (text), `product_family` (string),
-     `seed_question_styles` (list of 3 styles from existing KVPs for T to prime
-     variation)
-   - Template uses Jinja2 `{{ retrieved_chunks }}`, `{{ product_family }}`,
-     `{{ seed_question_styles[0] }}`, etc.
-   - LLM: super-120b via OpenAI-compatible endpoint with `reasoning_effort:
-     "minimal"` (no-think mode — see below)
-   - Output: 5 Q+A pairs per call, all derivable from `retrieved_chunks` only.
-3. **Target**: bring each under-represented product up to ≥ `median × 0.8`.
-   Compute pairs-needed; issue N Data Designer recipe calls until target met OR
-   `max_attempts = 3 × pairs_needed`.
+1. **Gap manifest**: `provenance/gap_manifest.json` records `gap_id`, coverage
+   dimension, observed count, target count, severity, seed entailment IDs, seed
+   chunk IDs, and a generation brief.
+2. **ES retrieval (same collection only)**: retrieve top documentation chunks
+   for `product_family == T` and embed the retrieved text plus source URLs into
+   `data_designer/gapfill_requests.jsonl`.
+3. **Data Designer recipe**: one recipe per collection consumes the seed record
+   fields: `gap_id`, `retrieved_chunks`, `product_family`, `pairs_count`,
+   `seed_styles`, and `generation_brief`.
+4. **Target**: bring each under-represented product up to ≥ `median × 0.8`.
+   Stage 1.5 computes pairs-needed and number of requested seed records; the
+   native Data Designer submission/result-collection Job owns generation.
+
+The K8s-native handoff job is `deploy/data-designer-gapfill/`. Its `prepare`
+mode creates `data_designer/seed_dataset.csv` and `submission_plan.json`; its
+`collect` mode converts Data Designer result records into `stage1_5_gapfill.jsonl`,
+`data_designer/generated_samples.jsonl`, and `provenance/data_designer_samples.jsonl`.
+After collection, the normal Stage 2 QA admission/finalization path reads
+`stage1_5_gapfill.jsonl` automatically and admits matching
+`provenance/data_designer_samples.jsonl` sidecar records by `sample_id`, so the
+final `provenance/dataset_samples.jsonl` retains Data Designer job IDs, gap IDs,
+seed references, and recipe metadata.
+
+Use `python scripts/build_v2_dataset.py ... --stage1-5-mode legacy-direct` only
+when you intentionally want the older direct LLM fallback to emit synthetic rows
+locally. This mode is for controlled experiments or fallback diagnostics; the
+preferred production path is Data Designer handoff with a frontier-grade
+generator.
 
 ### No-think mode and the May 2026 Jinja2 failure mode
 
-Super-120b is a reasoning model. If `reasoning_effort: "minimal"` (or
-`chat_template_kwargs={"enable_thinking": false}` in vLLM 0.7+) is not honored,
-the model wraps its response in `<think>...</think>` blocks. When these land
-inside a Jinja2 template, the `{{ }}` inside the `<think>` block causes a Jinja2
-parse error that silently produces empty output or raises a TemplateError — the
-failure mode observed in May 2026 with NeMo Customizer jobs.
+Many frontier-grade models are reasoning models. If `reasoning_effort:
+"minimal"` (or `chat_template_kwargs={"enable_thinking": false}` in vLLM 0.7+)
+is not honored, the model may wrap its response in `<think>...</think>` blocks.
+When these land inside a Jinja2 template, the `{{ }}` inside the `<think>` block
+causes a Jinja2 parse error that silently produces empty output or raises a
+TemplateError — the failure mode observed in May 2026 with NeMo Customizer jobs.
 
-**Verification**: before running Stage 1.5, probe the super-120b endpoint:
+**Verification**: before running Stage 1.5 generation, probe the configured
+frontier endpoint, for example:
 
 ```bash
 curl -s -X POST http://nim-llm-super-120b-bw:8000/v1/chat/completions \
@@ -408,48 +596,99 @@ If the response contains `<think>...</think>`, no-think mode is not working.
 
 ### Fallback path
 
-If super-120b cannot be coerced into no-think mode, fall back to:
-
-- **Llama-3.1-8B-Instruct** via `nim-llm-8b-blackwell:8000/v1` (deployed on
-  demand from the PEFT cluster), or
-- **Llama-3.3-Nemotron-Super-49B-v1.5** NVFP4 TP1 in non-reasoning mode.
-
-Recipe templates are identical; only the `model` field changes. The non-reasoning
-fallback loses some synthesis nuance but keeps the pipeline deterministic.
+If the chosen frontier-grade generator cannot be coerced into no-think mode,
+prefer switching to another frontier-grade model or provider that can produce
+clean structured output. Smaller non-reasoning models may be acceptable for
+smoke tests of the Data Designer handoff, but they should not be used as the
+production synthetic generator unless an experiment is explicitly measuring that
+tradeoff. Recipe templates are identical; only the `model` and provider fields
+change.
 
 ### Output schema
 
-File: `/mnt/nvme2/peft/datasets/v2/<collection>/stage1_5_gapfill.jsonl`
+Default handoff files:
 
-Same schema as Stage 1A, with:
+- `provenance/gap_manifest.json` follows `schemas/provenance/gap_manifest.schema.json`.
+- `data_designer/gapfill_requests.jsonl` contains one seed record per gap, with
+  retrieved chunks, source URLs, seed IDs, and requested pair counts.
+- `data_designer/seed_dataset.csv` and `data_designer/submission_plan.json` are
+  written by the Data Designer gap-fill Job before native submission.
+- `stage1_5_gapfill.jsonl` is written empty by Stage 1.5 to make resume behavior
+  explicit; the Data Designer collect path overwrites it with normalized
+  synthetic rows after generation.
+- `provenance/data_designer_samples.jsonl` carries the exact Data Designer job,
+  gap, seed, and recipe lineage for those rows.
+- `provenance/dataset_samples.jsonl` is written after Stage 2 QA admission and
+  overlays matching Data Designer sidecar records by `sample_id`, preserving
+  native service lineage even when Stage 2 refines the prompt or completion
+  text.
+
+Legacy direct mode still writes `/mnt/nvme2/peft/datasets/v2/<collection>/stage1_5_gapfill.jsonl`
+with the Stage 1A-compatible row schema:
+
 - `stage: "1.5"`
 - `target_product_family: "..."`
 - `retrieved_urls: [...]`
 
 ### Expected yield
 
-Highly variable. The NIM corpus is known to be skewed (LLM-NIM ≈ 88% in the
-April 2026 analysis); expect **~200-400 gap-fill pairs** rebalancing the
-under-represented 30-40 NIM product families. NeMo USvcs is more uniform
-(single-prefix crawl); expect **~50-150 pairs**.
+Optional and highly variable. For grounded-only runs, Stage 1.5 yield is **0**
+by design. When synthetic augmentation is enabled, the NIM corpus is known to be
+skewed (LLM-NIM ≈ 88% in the April 2026 analysis); expect **~200-400 gap-fill
+pairs** rebalancing the under-represented 30-40 NIM product families. NeMo USvcs
+is more uniform (single-prefix crawl); expect **~50-150 pairs**. For very small
+grounded datasets, a larger controlled synthetic ratio may be useful, but keep
+validation/test splits grounded and unchanged.
 
 ---
 
-## Stage 2: QA Eval Refinement
+## Stage 2: QA Admission + Refinement
 
-A direct port of `prompt_zoo.qa_eval()` + `QAEvaluation` Pydantic model.
+This stage is the semantic quality gate for generated Q+A pairs. It is not
+optional, but the preferred implementation should move through Curator-backed
+LLM quality filtering/refinement rather than a standalone self-eval script. The
+direct `prompt_zoo.qa_eval()` + `QAEvaluation` path remains a compatibility
+fallback and an ablation tool.
+
+Operationally, Stage 2 earns its place before Stage 3 because it prevents raw
+LLM-generated rows from becoming curation inputs before they have been judged
+against their source context. Stage 2 handles semantic admission: repair a weak
+but source-grounded pair, drop an irreparable or ungrounded pair, and write an
+auditable quality decision. Stage 3 then performs structural curation over the
+admitted set: deduplication, heuristic quality filters, and train/validation
+splitting. Keeping this boundary avoids three failure modes:
+
+- Curator deduplication can preserve a polished but ungrounded answer if no
+  earlier semantic gate rejects it.
+- Train/validation splits become polluted if bad rows are only identified after
+  splitting, because removing them later changes split composition and lineage.
+- Expensive native Curator work is wasted on rows that a semantic QA gate could
+  have repaired or rejected first.
+
+The net effect is a cleaner Stage 3 input contract: every row handed to Curator
+has already been admitted by a source-grounded QA gate, and every rejection has a
+local reason in `stage2_dropped.jsonl` plus `provenance/stage2_quality.jsonl`.
 
 ### Per-pair flow
 
-For every pair from Stages 1A + 1B + 1C + 1.5:
+For every pair from Stages 1A + 1B + 1C plus optional Stage 1.5 synthetic rows:
 
-1. Call super-120b with the QA-eval prompt (current Q, current A, source
-   `context`).
+1. Call the configured QA admission model with the QA-eval prompt (current Q,
+   current A, source `context`). The default should be Nemotron 3 Super
+   120B-class or a similar high-quality dense model through an
+   OpenAI-compatible endpoint. Use Nemotron 3 Ultra 550B, or another
+   foundation/frontier-grade model, only for critical admission audits or
+   small high-value datasets where the cost is justified.
 2. Parse `QAEvaluation`:
    - If the model rewrites Q or A → flag `refined: true`, write the new pair.
    - If the model indicates the pair is ungrounded and cannot be repaired from
      context → drop the pair (log to `stage2_dropped.jsonl` for inspection).
    - If unchanged → flag `refined: false`, pass through.
+3. Preserve Curator or direct-run quality metadata with each admitted row so
+   later dedup, train/val splitting, and audit reports can attribute why a pair
+   was retained or rejected. The durable runner appends each admitted row and
+   each quality decision as work finishes so interrupted frontier-model runs can
+   resume without replaying completed rows.
 
 ### Output schema
 
@@ -457,37 +696,88 @@ File: `/mnt/nvme2/peft/datasets/v2/<collection>/stage2_eval.jsonl`
 
 Same schema as Stage 1A, `refined` may now be `true`.
 
-Also: `/mnt/nvme2/peft/datasets/v2/<collection>/stage2_dropped.jsonl`
-(dropped pairs with drop reason, for post-run inspection).
+Also:
 
-### Self-eval caveat
+- `/mnt/nvme2/peft/datasets/v2/<collection>/stage2_dropped.jsonl` — rejected or
+  retryable failed pairs with QA status and reason.
+- `/mnt/nvme2/peft/datasets/v2/<collection>/provenance/stage2_quality.jsonl` —
+  one append-only decision record per attempted row, including judge model,
+  endpoint labels, admission status, grounding flags, repairability, and reason.
 
-Super-120b is judging its own output here — a known agreement bias: the model
-tends to approve pairs that share its own generation style, even when they
-contain subtle errors. Stage 4 (external judge) compensates by independently
-sampling Stage 2 output. Stage 2 stays in the pipeline because it is cheap,
-removes obviously broken pairs, and reduces the volume the external judge has to
-spot-check.
+### Curator migration posture
+
+Generic Curator filters are not a substitute for source-grounded QA checks by
+themselves. The migrated Stage 2 gate should explicitly score grounding, answer
+fidelity, hallucination risk, repairability, and schema validity. Curator should
+be the execution surface where possible because it centralizes quality metadata,
+rejection lineage, and downstream curation handoff. The direct Python QA runner
+should remain available for smoke tests, fallback execution, and A/B comparison
+against native Curator quality results.
+
+From an operator's perspective, Stage 2 is the point where model choice matters
+most for dataset integrity and cost. The default should be a Super 120B-class
+model such as Nemotron 3 Super, at low temperature, with
+no-think/structured-output controls when needed and durable resume settings
+appropriate for hosted endpoint rate limits. Escalate to Nemotron 3 Ultra 550B
+or another foundation/frontier-grade model when a critical audit needs the
+extra reasoning margin. Stage 3 should not be asked to infer source grounding
+from generic text-quality signals; it should consume the Stage 2-admitted rows
+and the Stage 2 quality sidecar.
+
+### Agreement-bias caveat
+
+Even with a strong QA admission model, Stage 2 can still inherit agreement bias
+if the same model family generated a substantial share of the rows being
+judged. Stage 4 compensates by independently sampling post-Curator output with
+a separate judge model. If Stage 2 is escalated to Nemotron 3 Ultra, Stage 4
+should use a different frontier-level judge such as Claude Sonnet 4.6 through
+the NVIDIA-hosted OpenAI-compatible endpoint.
 
 ---
 
 ## Stage 3: NeMo Curator
 
-Curator's role in this pipeline is **dedup + quality filtering only**. The
-synthetic-augmentation step that originally lived inside Curator has been moved
-upstream to Stage 1.5, where it is RAG-grounded. Curator here is a dedup and
-quality gate, not a generation step.
+After Stage 2 QA admission, Curator's Stage 3 role is **dedup + structural
+quality filtering + train/val splitting**. Synthetic augmentation is no longer a
+Curator responsibility; when enabled, it is handled as optional Stage 1.5
+RAG-grounded Data Designer handoff before Stage 2. LLM-based QA/refinement is
+treated as the Stage 2 logical gate even when Curator is the native execution
+surface.
 
 ### Pipeline steps
 
-1. **Exact dedup** on the `question` field.
-2. **MinHash fuzzy dedup** on concatenated `question + answer`, Jaccard threshold
-   0.85.
-3. **Length filter**: drop pairs where `question` < 8 tokens OR `answer` < 25
-   tokens.
-4. **Heuristic quality**: drop pairs where `answer` is a substring of `question`.
-5. **Train/val split**: 90/10 random stratified by `stage` (ensures train and val
-   both contain LE/synthesis/instruction/gapfill in proportion).
+The showcase path uses `scripts/pipeline/curator_handoff.py` and
+`deploy/curator/` to hand native NeMo Curator a normalized
+`curator/input/dataset_samples.jsonl` file. Curator should run exact/fuzzy
+deduplication and non-LLM quality filters in the official Curator container or
+Curator-backed cluster, then the collect step maps retained/removed records back
+to dataset sample lineage.
+
+1. **Prepare Curator input** from `provenance/dataset_samples.jsonl`.
+2. **Native Curator non-LLM quality filters** using `configs/curator/sft-dedup-quality.yaml`.
+3. **Native Curator deduplication** for exact and fuzzy duplicates; semantic dedup
+   remains disabled until the embedding model/GPU budget is selected.
+4. **Collect Curator outputs** into `curator/accepted_samples.jsonl`,
+   `curator/rejected_samples.jsonl`, and `curator/curation_manifest.json`.
+5. **Train/val split**: 90/10 random stratified by sample origin and task type.
+
+The older pure-Python `scripts/pipeline/stage3_curator.py` path remains a local
+offline fallback for exact dedup, MinHash, token length filters, substring
+checks, and split writing. Its token length filter must use the production
+training/serving tokenizer, not a generic tokenizer. For the current Llama 3.1
+8B Customizer target, the default tokenizer resolves from the local NIM cache at
+`$LOCAL_NIM_CACHE/ngc/hub/models--nim--meta--llama-3.1-8b-instruct/snapshots/fp8-tool-calling`;
+if `LOCAL_NIM_CACHE` is unset, the resolver uses the standard
+`~/.cache/nim` NIM layout. Override it with `PIPELINE_STAGE3_TOKENIZER` or
+`--stage3-tokenizer` when targeting another base model, or set
+`PIPELINE_STAGE3_TOKENIZER_SNAPSHOT` when the same NIM cache has a different
+production snapshot. The default QA-shaped cutoffs are `question >= 12` and
+`answer >= 8` production-tokenizer tokens, because concise grounded technical
+answers are valid and should not be dropped merely for being short.
+
+The local fallback writes `stage3_curator_summary.json` and
+`stage3_curator_summary.md` so every run records exact dedup, MinHash, length
+filter, answer-subset filter, and split counts.
 
 The 10% val split (vs. the April-era 5%) is intentional: the smaller
 post-Curator counts (~2,000-2,400 per collection) would yield only ~100-120 val
@@ -496,6 +786,10 @@ pairs at 5% — too few for stable val_loss during LoRA training.
 ### Output format
 
 Files:
+- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/input/dataset_samples.jsonl`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/accepted_samples.jsonl`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/rejected_samples.jsonl`
+- `/mnt/nvme2/peft/datasets/v2/<collection>/curator/curation_manifest.json`
 - `/mnt/nvme2/peft/datasets/v2/<collection>/training.jsonl`
 - `/mnt/nvme2/peft/datasets/v2/<collection>/validation.jsonl`
 
@@ -511,14 +805,17 @@ Format (NeMo Customizer SFT convention):
 
 ### Expected final yield
 
-| Collection | Pre-Curator | Post-Curator | Train (90%) | Val (10%) |
+| Collection | Pre-Curator grounded-only | Post-Curator | Train (90%) | Val (10%) |
 |---|---:|---:|---:|---:|
-| `nim_curated` | ~2,360 | ~2,090 | ~1,880 | ~210 |
-| `nemo_usvcs_curated` | ~2,660 | ~2,390 | ~2,150 | ~240 |
+| `nim_curated` | ~2,060 | ~1,850 | ~1,665 | ~185 |
+| `nemo_usvcs_curated` | ~2,560 | ~2,300 | ~2,070 | ~230 |
 
-Pre-Curator totals: Stage 1A (750/930) + 1B at 100% (1,000/1,240) + 1C at 25%
-(310/390) + 1.5 gap-fill (~300/~100) ≈ 2,360/2,660. Post-Curator assumes ~10%
-loss to exact/MinHash dedup + length filter.
+Pre-Curator grounded-only totals: Stage 1A (750/930) + 1B at 100%
+(1,000/1,240) + 1C default stratified target (310/390) ≈ 2,060/2,560. Optional
+Stage 1.5 synthetic gap-fill can add roughly ~300/~100 rows when enabled.
+Post-Curator yield depends on duplicate density and the production-tokenizer
+length filter. Do not estimate retention from a generic tokenizer; record the
+per-step Curator summary sidecars for each run.
 
 These totals are smaller than the April 2026 7,049-sample dataset because the
 source corpora are roughly half the size (2,086 and 1,289 chunks vs. 7,189 in the
@@ -531,18 +828,21 @@ is quality (smaller, RAG-grounded, less repetitive) over volume.
 
 ### Purpose
 
-Break the closed-loop agreement bias of Stage 2 (super-120b refining
-super-120b output) by validating a sample with an independent model that had no
-role in generating the pairs.
+Break the closed-loop agreement bias of Stage 2 by validating a sample with an
+independent model that had no role in generating, refining, or admitting the
+pairs.
 
 ### Method
 
-1. Random stratified sample of 100 pairs per collection from Stage 3
-   `training.jsonl` (stratified by `stage` so all generation strategies are
-   represented).
-2. For each sampled pair, call Claude Sonnet 4.6 via NVIDIA Inference API
-   (`https://inference-api.nvidia.com/v1`) with the validation prompt. API key
-   read from k8s secret `nvidia-inference-key` in `runai-rag`.
+1. Random stratified sample of 100 pairs per collection from finalized Stage 3
+   `training.jsonl`. The local runner joins each prompt/completion back to
+   `stage2_eval.jsonl` so the judge sees the exact curated row plus its original
+   source context and generation stage.
+2. For each sampled pair, call the configured independent judge endpoint with
+   the validation prompt. API key material is read from a Kubernetes Secret.
+   For the LE comparison run, the default judge is Claude Sonnet 4.6 through
+   `https://inference-api.nvidia.com/v1` as
+   `azure/anthropic/claude-sonnet-4-6`.
 3. Score each pair on three binary criteria:
    - **Grounded**: every factual claim in the answer is supported by the source
      `context`.
@@ -554,7 +854,8 @@ role in generating the pairs.
 ### Threshold
 
 **Pass gate if grounding rate ≥ 90%.** Fail otherwise — investigate the failing
-pairs, tighten the Stage 2 QA-eval prompt, and re-run Stage 2 forward.
+pairs, tighten the Stage 2 QA/Curator quality prompt or filters, and re-run
+Stage 2 forward.
 
 The 90% threshold is a deliberate underrun of perfect: some pairs may be
 factually grounded but ambiguously phrased, and the external judge may conservatively
@@ -563,7 +864,13 @@ systematically hallucinated batches.
 
 ### Output schema
 
-File: `/mnt/nvme2/peft/datasets/v2/<collection>/validation_report.json`
+Primary file: `/mnt/nvme2/peft/datasets/v2/<collection>/validation_report.json`
+
+The local runner also writes:
+
+- `validation_sample.jsonl`: sampled rows with restored context.
+- `validation_judgments.jsonl`: one row per judge decision with row identifiers
+  and failure reasons.
 
 ```json
 {
@@ -607,14 +914,33 @@ Supported flags:
 
 ```
 --stage [0|1a|1b|1c|1.5|2|3|4|all]   run a single stage or all in sequence
---resume                               skip stages whose output file already exists
+                                       use explicit stages to skip optional 1.5
+--resume                               reuse durable outputs and stage progress
 --dry-run                              print stage plan + estimated yield, no LLM calls
 --max-passages N                       smoke test with N passages
+--stage1a-mode legacy|batched          choose per-premise or batched KVP expansion
+--stage1c-selection-mode MODE          stratified, top_density, or all
+--stage2-qa-endpoints URLS             comma-separated OpenAI-compatible QA endpoints
+--stage2-qa-model MODEL                QA admission model; Super 120B-class by default
+--stage2-qa-max-tokens N               QA admission completion budget
+--stage2-execution-surface LABEL       audit label, e.g. curator_llm_quality
+--stage3-tokenizer PATH_OR_MODEL       override production tokenizer directory/model
+--stage3-min-question-tokens N         default 12 with the production tokenizer
+--stage3-min-answer-tokens N           default 8 with the production tokenizer
+--stage4-judge-endpoint URL            default https://inference-api.nvidia.com/v1
+--stage4-judge-model MODEL             default azure/anthropic/claude-sonnet-4-6
+--stage4-sample-size N                 default 100
+--stage4-threshold FLOAT               default 0.90
+
+LE experiment runner only:
+--stage2-target ENDPOINT=MODEL[@CTX]   Stage 2 QA endpoint/model override
+--stage2-canonical-model MODEL         canonical Stage 2 model recorded in summaries
 ```
 
 Each stage writes its output file and a checkpoint to `<output>/progress.json`.
-Resume re-reads `progress.json` and skips already-completed work units (by
-`passage_id` or `pair_id`), so interrupted runs pick up where they left off.
+Stages with per-passage status files re-read those files on resume and skip
+already-completed work units, so interrupted runs pick up where they left off
+without replaying completed passages.
 
 ### Two parallel runs
 
@@ -652,15 +978,17 @@ wait
 │   ├── passages.jsonl               ← Stage 0 output
 │   ├── stage1a_le.jsonl             ← Stage 1A: LE → KVP
 │   ├── stage1b_synthesis.jsonl      ← Stage 1B: kNN synthesis
+│   ├── stage1b_passage_results.jsonl  ← Stage 1B: per-passage durable status
 │   ├── stage1c_instruction.jsonl    ← Stage 1C: instruction diversity
-│   ├── bias_report.json             ← Stage 1.5: per-product density
-│   ├── stage1_5_gapfill.jsonl       ← Stage 1.5: RAG-grounded gap-fill
+│   ├── stage1c_passage_results.jsonl  ← Stage 1C: per-passage durable status
+│   ├── bias_report.json             ← Optional Stage 1.5: per-product density
+│   ├── stage1_5_gapfill.jsonl       ← Optional Stage 1.5: RAG-grounded gap-fill
 │   ├── stage2_eval.jsonl            ← Stage 2: refined pairs
 │   ├── stage2_dropped.jsonl         ← Stage 2: dropped pairs (inspection log)
 │   ├── training.jsonl               ← Stage 3 output — registered with Customizer
 │   ├── validation.jsonl             ← Stage 3 output
 │   ├── validation_report.json       ← Stage 4: external-judge report
-│   └── progress.json               ← checkpoint for --resume
+│   └── progress.json                ← checkpoint for --resume
 └── nemo/
     └── (same structure)
 ```
@@ -675,10 +1003,11 @@ registration, training-pod paths, and adapter naming from that point forward.
 
 ### Per-collection scoping
 
-Each ES collection gets its own independent pipeline run and produces its own
-adapter. No mixing of NIM chunks into the NeMo Microservices dataset, and vice
-versa. This keeps each adapter specialized and prevents cross-product
-hallucination where the model blends product details from two domains.
+Each collection gets its own independent pipeline run and can produce its own
+adapter. No chunks should cross scoped domain boundaries unless the experiment
+explicitly tests a shared-domain adapter. This keeps each adapter specialized
+and prevents cross-domain blending where the model mixes terms, procedures,
+constraints, or policy details from unrelated source areas.
 
 ### All generation is RAG-grounded
 
@@ -686,8 +1015,9 @@ The April 2026 pipeline had a gap-fill step (NeMo Data Designer or Curator's
 synthetic-gen) that called the LLM without grounding it in retrieved corpus
 chunks. Super-120b has weak parametric knowledge of NIM/NeMo product minutiae —
 exactly the topics that most need accurate training signal. This pipeline
-eliminates parametric-only generation: every pair, including Stage 1.5 gap-fill,
-uses retrieved chunks as the LLM's sole factual source.
+eliminates parametric-only generation: every pair, including optional Stage
+1.5 gap-fill when enabled, uses retrieved chunks as the LLM's sole factual
+source.
 
 ### Chunk grouping by URL, not token count
 
@@ -700,10 +1030,12 @@ model will see at inference time in a RAG setting.
 
 ### External judge for closed-loop avoidance
 
-Stage 2 uses super-120b to evaluate pairs that super-120b generated. The
-agreement bias is real: models tend to approve output that resembles their own
-generation style. Stage 4 breaks this loop by using Claude Sonnet 4.6 — an
-independent model that had no role in generating the data — as the final gate.
+Stage 2 uses a strong QA admission model to evaluate and refine rows generated
+by the LE/synthesis stages. Agreement bias is still real when the QA model
+resembles or matches the generation model: models tend to approve output that
+resembles their own generation style. Stage 4 breaks this loop by using an
+independent judge model that had no role in generating or admitting the data as
+the final gate.
 This pattern follows the `[[feedback_external_frontier_judge]]` principle: for
 LLM-as-judge tasks, independence over self-contained is the priority.
 
@@ -714,27 +1046,35 @@ are ~2,000-2,400, which yields only ~100-120 val pairs at 5% — too few for
 stable val_loss curves during LoRA training. 10% gives ~200-240 val pairs, which
 is sufficient.
 
+### Durable recovery as a first-class control
+
+The generation-heavy stages are expected to run against local or hosted NIM
+endpoints where transient failures, rate limits, and user interruptions are
+normal operational events. Stage 1B and Stage 1C therefore append completed rows
+immediately and record per-passage status. The net effect is that retry policy,
+endpoint fanout, and `--resume` can be used as operational controls instead of
+requiring a full rerun after every interruption.
+
 ### Data Designer role: gap-fill only, not primary generation
 
 Earlier specs and the April pipeline experimented with NeMo Data Designer as a
 primary generation engine for the whole dataset. That approach was abandoned for
 two reasons: (1) parametric hallucination risk at scale, and (2) the May 2026
 Jinja2/`<think>` failure mode (see Stage 1.5 above). Data Designer is retained
-as a targeted gap-fill tool for under-represented products, where its controlled
-recipe format helps guarantee consistent output structure. The Stages 1A/1B/1C
-LLM calls use direct API calls, not Data Designer.
+as an optional targeted gap-fill tool for under-represented products or small
+grounded datasets, where its controlled recipe format helps guarantee consistent
+output structure. When used, it should be backed by a frontier-grade generator.
+The Stages 1A/1B/1C LLM calls use direct API calls, not Data Designer.
 
 ---
 
 ## References
 
-### Code (this cluster)
+### Historical Inputs
 
-- `/home/joncoons/claude/rag/scripts/build_nim_dataset.py` — April 2026
-  production pipeline (LE + kNN synthesis + instruction + Curator). The Stage 2
-  `build_v2_dataset.py` extends this.
-- `/home/joncoons/claude/rag/custom_dataset_creation.md` — April 2026 methodology
-  doc that this pipeline supersedes.
+- Earlier local pipeline and methodology notes informed the first version of
+  this stage. The durable implementation for this repository is
+  `scripts/build_v2_dataset.py`.
 - Archive: `prompt_zoo.py` + `pydantic_models.py` in the `archive/` directory
   of this repository (provenance for the Jan 2025 LE/KVP/QA-eval prompts; not
   redistributed here, original path:

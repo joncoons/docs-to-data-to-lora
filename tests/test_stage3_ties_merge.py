@@ -3,8 +3,17 @@
 All tests use in-memory torch.Tensor fixtures with small (3-adapter, 1-tensor)
 setups. No safetensors writes, no network calls.
 """
-import torch
+import importlib.metadata as md
+
 import pytest
+
+try:
+    md.version("torch")
+    md.version("safetensors")
+except md.PackageNotFoundError:
+    pytest.skip("TIES merge tests require torch and safetensors", allow_module_level=True)
+
+import torch
 
 from scripts.stage3.ties_merge import ties_merge_one_tensor
 

@@ -1,0 +1,12 @@
+{
+  "credential_source": "Kubernetes Secret runai-rag/nvidia-inference-key key api-key; value not persisted",
+  "endpoint": "https://inference-api.nvidia.com/v1",
+  "http_status_code": 200,
+  "model": "azure/moonshotai/kimi-k2.6",
+  "notes": [
+    "nemo-peft/kimi-judge-api was not accepted by this endpoint; use the NVIDIA inference key for the inference-api path."
+  ],
+  "schema_version": "judge-availability-check/v1",
+  "status": "available",
+  "tested_at": "2026-07-12T12:10:00Z"
+}

@@ -1,0 +1,105 @@
+{
+  "by_cell": {
+    "nemo_usvcs_curated/super": {
+      "avg_scores": {
+        "correctness": 5.0,
+        "groundedness": 5.0,
+        "leakage": 5.0,
+        "overall": 4.75,
+        "specificity": 4.75,
+        "usefulness": 4.75
+      },
+      "decisions": {
+        "borderline": 0,
+        "fail": 0,
+        "pass": 4
+      },
+      "rows_judged": 4
+    },
+    "nemo_usvcs_curated/ultra": {
+      "avg_scores": {
+        "correctness": 5.0,
+        "groundedness": 5.0,
+        "leakage": 4.5,
+        "overall": 4.75,
+        "specificity": 4.75,
+        "usefulness": 4.75
+      },
+      "decisions": {
+        "borderline": 1,
+        "fail": 0,
+        "pass": 3
+      },
+      "rows_judged": 4
+    },
+    "nim_curated/super": {
+      "avg_scores": {
+        "correctness": 5.0,
+        "groundedness": 5.0,
+        "leakage": 5.0,
+        "overall": 4.5,
+        "specificity": 4.5,
+        "usefulness": 4.5
+      },
+      "decisions": {
+        "borderline": 0,
+        "fail": 0,
+        "pass": 4
+      },
+      "rows_judged": 4
+    },
+    "nim_curated/ultra": {
+      "avg_scores": {
+        "correctness": 5.0,
+        "groundedness": 5.0,
+        "leakage": 4.75,
+        "overall": 4.5,
+        "specificity": 4.5,
+        "usefulness": 4.25
+      },
+      "decisions": {
+        "borderline": 1,
+        "fail": 0,
+        "pass": 3
+      },
+      "rows_judged": 4
+    }
+  },
+  "created_at": "2026-07-09T20:04:57.915209Z",
+  "judge": {
+    "api_key_source": "Kubernetes Secret runai-rag/nvidia-inference-key:api-key; value not persisted",
+    "endpoint": "https://inference-api.nvidia.com/v1",
+    "max_tokens": 700,
+    "model": "azure/anthropic/claude-sonnet-4-6",
+    "temperature": 0.0
+  },
+  "rows_judged": 16,
+  "schema_version": "le_micro_judge.summary.v1",
+  "selection": {
+    "rows_per_cell": 4,
+    "seed": "20260709-ultra-550b-le-micro-judge-v1"
+  },
+  "token_usage": {
+    "completion_tokens": 1864,
+    "prompt_tokens": 53749,
+    "total_tokens": 55613
+  },
+  "ultra_minus_super_deltas": {
+    "nemo_usvcs_curated": {
+      "correctness": 0.0,
+      "groundedness": 0.0,
+      "leakage": -0.5,
+      "overall": 0.0,
+      "specificity": 0.0,
+      "usefulness": 0.0
+    },
+    "nim_curated": {
+      "correctness": 0.0,
+      "groundedness": 0.0,
+      "leakage": -0.25,
+      "overall": 0.0,
+      "specificity": 0.0,
+      "usefulness": -0.25
+    }
+  }
+}

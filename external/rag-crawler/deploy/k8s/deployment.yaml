@@ -1,0 +1,156 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rag-crawler
+  namespace: runai-rag
+  labels:
+    app: rag-crawler
+spec:
+  type: NodePort
+  selector:
+    app: rag-crawler
+  ports:
+    - name: http
+      port: 8085
+      targetPort: 8085
+      nodePort: 30085
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rag-crawler
+  namespace: runai-rag
+  labels:
+    app: rag-crawler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rag-crawler
+  template:
+    metadata:
+      labels:
+        app: rag-crawler
+    spec:
+      # Run on the primary node — same network as ES and the embedding NIM
+      nodeSelector:
+        kubernetes.io/hostname: ubuntu-local-dev
+
+      containers:
+        - name: rag-crawler
+          image: rag-crawler:1.0.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8085
+
+          env:
+            # ── Embedding NIM ──────────────────────────────────────────────
+            - name: CRAWLER_EMBED_URL
+              value: "http://nemoretriever-embedding-ms:8000/v1/embeddings"
+            - name: CRAWLER_EMBED_MODEL
+              value: "nvidia/llama-3.2-nv-embedqa-1b-v2"
+            - name: CRAWLER_EMBED_DIMENSIONS
+              value: "2048"
+            - name: CRAWLER_EMBED_BATCH_SIZE
+              value: "32"
+            - name: CRAWLER_EMBED_CONCURRENCY
+              value: "4"
+
+            # ── Elasticsearch ──────────────────────────────────────────────
+            - name: CRAWLER_ES_URL
+              value: "https://rag-eck-elasticsearch-es-http:9200"
+            - name: CHROMIUM_BIN
+              value: "/usr/bin/chromium"
+            - name: CRAWLER_ES_USER
+              value: "elastic"
+            - name: CRAWLER_ES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: rag-eck-elasticsearch-es-elastic-user
+                  key: elastic
+            - name: CRAWLER_ES_CA_CERT
+              value: "/etc/ssl/eck/ca.crt"
+            - name: CRAWLER_ES_BULK_BATCH_SIZE
+              value: "200"
+
+            # ── Ingestor (binary Phase 3 hand-off) ────────────────────────
+            - name: CRAWLER_INGESTOR_URL
+              value: "http://ingestor-server.runai-rag.svc.cluster.local:8082"
+
+            # ── Redis task state ───────────────────────────────────────────
+            - name: ENABLE_REDIS_BACKEND
+              value: "True"
+            - name: REDIS_HOST
+              value: "rag-redis-master.runai-rag.svc.cluster.local"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: "0"
+            - name: REDIS_STATUS_TTL_SECONDS
+              value: "172800"
+
+            # ── Storage dirs ───────────────────────────────────────────────
+            - name: CRAWLER_EXPORT_DIR
+              value: "/crawl-exports"
+            - name: CRAWLER_REGISTRY_DIR
+              value: "/mnt/nvme2/crawler-registry"
+            - name: CRAWLER_PDF_REPO_DIR
+              value: "/mnt/nvme2/pdf-repo"
+            - name: CRAWLER_DOCS_REPO_DIR
+              value: "/mnt/nvme2/docs-repo"
+            - name: CRAWLER_AUDIO_REPO_DIR
+              value: "/mnt/nvme2/audio-repo"
+            - name: CRAWLER_VIDEO_REPO_DIR
+              value: "/mnt/nvme2/video-repo"
+
+          volumeMounts:
+            # ECK CA cert — same ConfigMap used by ingestor-server
+            - name: eck-ca
+              mountPath: /etc/ssl/eck
+              readOnly: true
+            # Crawl exports — host path so files survive pod restarts
+            - name: crawl-exports
+              mountPath: /crawl-exports
+            # NFS repo dirs for binary files (PDF, DOCX, audio, video)
+            - name: nvme2
+              mountPath: /mnt/nvme2
+
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "6Gi"
+              cpu: "2000m"
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8085
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 6
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8085
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+
+      volumes:
+        - name: eck-ca
+          configMap:
+            name: eck-es-ca-cert
+        - name: crawl-exports
+          hostPath:
+            path: /home/joncoons/crawl-exports
+            type: DirectoryOrCreate
+        - name: nvme2
+          hostPath:
+            path: /mnt/nvme2
+            type: DirectoryOrCreate

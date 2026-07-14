@@ -1,0 +1,420 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: direct-kimi-pairwise-stage3-49b-nim-20260602t161342z
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: direct-kimi-pairwise
+    app.kubernetes.io/component: stage3-49b-nim
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "20260602t161342z"
+spec:
+  suspend: true
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: direct-kimi-pairwise
+        app.kubernetes.io/component: stage3-49b-nim
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+        eval-run-id: "20260602t161342z"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: direct-kimi-pairwise
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              pip install --no-cache-dir -q httpx
+              python /scripts/run_direct_kimi_pairwise.py \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 1b-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim/r16/20260529t142723z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 1b-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim/r32/20260529t142723z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 1b-aug-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim-dd-kimi/r16/20260530t005356z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 1b-aug-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-1b/lora-nim-dd-kimi/r32/20260530t005356z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 3b-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r16/20260529t142723z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 3b-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r32/20260529t142723z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 8b-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim/r16/20260530t000400z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 8b-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.1-8b/lora-nim/r32/20260530t000400z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl nano-nim-r16 /mnt/nvme2/peft/evals/completions/nim_curated/nemotron-nano-30b/lora-nim/r16/20260529t194029z/responses.jsonl \
+                --eval-run-id "$EVAL_RUN_ID" \
+                --output-root "$PAIRWISE_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-max-attempts 5 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 8 \
+                --resume \
+                --position-swap \
+                --log-every 25
+          env:
+            - name: EVAL_RUN_ID
+              value: "20260602T161342Z"
+            - name: PAIRWISE_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/pairwise-kimi
+            - name: JUDGE_API_URL
+              value: https://inference-api.nvidia.com/v1/chat/completions
+            - name: EVALUATOR_JUDGE_MODEL
+              value: nvidia/moonshotai/kimi-k2.6
+            - name: KIMI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kimi-judge-api
+                  key: KIMI_KEY
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          volumeMounts:
+            - name: pairwise-script
+              mountPath: /scripts
+              readOnly: true
+            - name: nvme2
+              mountPath: /mnt/nvme2
+      volumes:
+        - name: pairwise-script
+          configMap:
+            name: direct-kimi-pairwise-script
+            defaultMode: 0555
+        - name: nvme2
+          persistentVolumeClaim:
+            claimName: nvme2-pvc
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: direct-kimi-pairwise-stage3-49b-nemo-20260602t161342z
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: direct-kimi-pairwise
+    app.kubernetes.io/component: stage3-49b-nemo
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "20260602t161342z"
+spec:
+  suspend: true
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: direct-kimi-pairwise
+        app.kubernetes.io/component: stage3-49b-nemo
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+        eval-run-id: "20260602t161342z"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: direct-kimi-pairwise
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              pip install --no-cache-dir -q httpx
+              python /scripts/run_direct_kimi_pairwise.py \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 1b-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-1b/lora-nemo-usvcs/r16/20260529t142723z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 1b-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-1b/lora-nemo-usvcs/r32/20260529t142723z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 3b-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r16/20260529t142723z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 3b-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r32/20260529t142723z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 8b-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs/r16/20260530t000400z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 8b-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.1-8b/lora-nemo-usvcs/r32/20260530t000400z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl nano-nemo-usvcs-r16-retrain /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/nemotron-nano-30b/lora-nemo-usvcs/r16/20260530t153804z/responses.jsonl \
+                --eval-run-id "$EVAL_RUN_ID" \
+                --output-root "$PAIRWISE_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-max-attempts 5 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 8 \
+                --resume \
+                --position-swap \
+                --log-every 25
+          env:
+            - name: EVAL_RUN_ID
+              value: "20260602T161342Z"
+            - name: PAIRWISE_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/pairwise-kimi
+            - name: JUDGE_API_URL
+              value: https://inference-api.nvidia.com/v1/chat/completions
+            - name: EVALUATOR_JUDGE_MODEL
+              value: nvidia/moonshotai/kimi-k2.6
+            - name: KIMI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kimi-judge-api
+                  key: KIMI_KEY
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          volumeMounts:
+            - name: pairwise-script
+              mountPath: /scripts
+              readOnly: true
+            - name: nvme2
+              mountPath: /mnt/nvme2
+      volumes:
+        - name: pairwise-script
+          configMap:
+            name: direct-kimi-pairwise-script
+            defaultMode: 0555
+        - name: nvme2
+          persistentVolumeClaim:
+            claimName: nvme2-pvc
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: direct-kimi-pw-s3-49b-nim-gate-20260602t161342z
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: direct-kimi-pairwise-release-gate
+    app.kubernetes.io/component: stage3-49b-nim-release
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "20260602t161342z"
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: direct-kimi-pairwise-release-gate
+        app.kubernetes.io/component: stage3-49b-nim-release
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+        eval-run-id: "20260602t161342z"
+    spec:
+      serviceAccountName: direct-kimi-pairwise-release-gate
+      restartPolicy: Never
+      containers:
+        - name: release-gate
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              python - <<'PYCODE'
+              import json
+              import os
+              import ssl
+              import time
+              import urllib.request
+
+              namespace = os.environ["POD_NAMESPACE"]
+              host = os.environ["KUBERNETES_SERVICE_HOST"]
+              port = os.environ.get("KUBERNETES_SERVICE_PORT", "443")
+              base_url = f"https://{host}:{port}/apis/batch/v1/namespaces/{namespace}/jobs"
+              token_path = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+              ca_path = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+              token = open(token_path, encoding="utf-8").read().strip()
+              context = ssl.create_default_context(cafile=ca_path)
+              wait_jobs = [item.strip() for item in os.environ["WAIT_JOBS"].split(",") if item.strip()]
+              release_job = os.environ["RELEASE_JOB"]
+              poll_interval_s = int(os.environ.get("POLL_INTERVAL_S", "60"))
+              max_wait_s = int(os.environ.get("MAX_WAIT_S", "172800"))
+
+              def call(method, job_name, body=None):
+                  data = None
+                  headers = {"Authorization": f"Bearer {token}"}
+                  if body is not None:
+                      data = json.dumps(body).encode("utf-8")
+                      headers["Content-Type"] = "application/merge-patch+json"
+                  request = urllib.request.Request(
+                      f"{base_url}/{job_name}",
+                      data=data,
+                      headers=headers,
+                      method=method,
+                  )
+                  with urllib.request.urlopen(request, context=context, timeout=30) as response:
+                      return json.loads(response.read().decode("utf-8"))
+
+              started = time.monotonic()
+              while True:
+                  complete = []
+                  pending = []
+                  failed = []
+                  for job_name in wait_jobs:
+                      job = call("GET", job_name)
+                      status = job.get("status", {})
+                      if int(status.get("succeeded", 0) or 0) > 0:
+                          complete.append(job_name)
+                      elif int(status.get("failed", 0) or 0) > 0:
+                          failed.append(job_name)
+                      else:
+                          pending.append(job_name)
+                  if failed:
+                      raise SystemExit(f"Refusing to release {release_job} because dependencies failed: {failed}")
+                  if not pending:
+                      break
+                  if time.monotonic() - started > max_wait_s:
+                      raise SystemExit(f"Timed out waiting for dependencies: {pending}")
+                  print(f"Waiting before releasing {release_job}. complete={complete} pending={pending}", flush=True)
+                  time.sleep(poll_interval_s)
+
+              job = call("GET", release_job)
+              if job.get("spec", {}).get("suspend") is False:
+                  print(f"{release_job} is already unsuspended", flush=True)
+              else:
+                  call("PATCH", release_job, {"spec": {"suspend": False}})
+                  print(f"Unsuspended {release_job}", flush=True)
+              PYCODE
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: WAIT_JOBS
+              value: direct-kimi-pairwise-stage2-nim-20260602t161342z,direct-kimi-pairwise-stage2-nemo-20260602t161342z,direct-kimi-pairwise-stage2-nano-20260602t161342z
+            - name: RELEASE_JOB
+              value: direct-kimi-pairwise-stage3-49b-nim-20260602t161342z
+            - name: POLL_INTERVAL_S
+              value: "60"
+            - name: MAX_WAIT_S
+              value: "172800"
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: direct-kimi-pw-s3-49b-nemo-gate-20260602t161342z
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: direct-kimi-pairwise-release-gate
+    app.kubernetes.io/component: stage3-49b-nemo-release
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "20260602t161342z"
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: direct-kimi-pairwise-release-gate
+        app.kubernetes.io/component: stage3-49b-nemo-release
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+        eval-run-id: "20260602t161342z"
+    spec:
+      serviceAccountName: direct-kimi-pairwise-release-gate
+      restartPolicy: Never
+      containers:
+        - name: release-gate
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              python - <<'PYCODE'
+              import json
+              import os
+              import ssl
+              import time
+              import urllib.request
+
+              namespace = os.environ["POD_NAMESPACE"]
+              host = os.environ["KUBERNETES_SERVICE_HOST"]
+              port = os.environ.get("KUBERNETES_SERVICE_PORT", "443")
+              base_url = f"https://{host}:{port}/apis/batch/v1/namespaces/{namespace}/jobs"
+              token_path = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+              ca_path = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+              token = open(token_path, encoding="utf-8").read().strip()
+              context = ssl.create_default_context(cafile=ca_path)
+              wait_jobs = [item.strip() for item in os.environ["WAIT_JOBS"].split(",") if item.strip()]
+              release_job = os.environ["RELEASE_JOB"]
+              poll_interval_s = int(os.environ.get("POLL_INTERVAL_S", "60"))
+              max_wait_s = int(os.environ.get("MAX_WAIT_S", "172800"))
+
+              def call(method, job_name, body=None):
+                  data = None
+                  headers = {"Authorization": f"Bearer {token}"}
+                  if body is not None:
+                      data = json.dumps(body).encode("utf-8")
+                      headers["Content-Type"] = "application/merge-patch+json"
+                  request = urllib.request.Request(
+                      f"{base_url}/{job_name}",
+                      data=data,
+                      headers=headers,
+                      method=method,
+                  )
+                  with urllib.request.urlopen(request, context=context, timeout=30) as response:
+                      return json.loads(response.read().decode("utf-8"))
+
+              started = time.monotonic()
+              while True:
+                  complete = []
+                  pending = []
+                  failed = []
+                  for job_name in wait_jobs:
+                      job = call("GET", job_name)
+                      status = job.get("status", {})
+                      if int(status.get("succeeded", 0) or 0) > 0:
+                          complete.append(job_name)
+                      elif int(status.get("failed", 0) or 0) > 0:
+                          failed.append(job_name)
+                      else:
+                          pending.append(job_name)
+                  if failed:
+                      raise SystemExit(f"Refusing to release {release_job} because dependencies failed: {failed}")
+                  if not pending:
+                      break
+                  if time.monotonic() - started > max_wait_s:
+                      raise SystemExit(f"Timed out waiting for dependencies: {pending}")
+                  print(f"Waiting before releasing {release_job}. complete={complete} pending={pending}", flush=True)
+                  time.sleep(poll_interval_s)
+
+              job = call("GET", release_job)
+              if job.get("spec", {}).get("suspend") is False:
+                  print(f"{release_job} is already unsuspended", flush=True)
+              else:
+                  call("PATCH", release_job, {"spec": {"suspend": False}})
+                  print(f"Unsuspended {release_job}", flush=True)
+              PYCODE
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: WAIT_JOBS
+              value: direct-kimi-pairwise-stage3-49b-nim-20260602t161342z
+            - name: RELEASE_JOB
+              value: direct-kimi-pairwise-stage3-49b-nemo-20260602t161342z
+            - name: POLL_INTERVAL_S
+              value: "60"
+            - name: MAX_WAIT_S
+              value: "172800"
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+

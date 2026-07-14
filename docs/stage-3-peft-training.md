@@ -8,16 +8,19 @@
 
 A LoRA (Low-Rank Adaptation) adapter trained on the Stage 2 dataset.
 Loaded onto a base model at inference time, the adapter biases responses
-toward the source vendor's product domain — without retraining the base.
+toward a target enterprise domain or sub-domain without retraining the base.
+The adapter is meant to improve how the model handles domain nomenclature,
+procedures, abbreviations, constraints, and expected answer style.
 
 ## Why LoRA / PEFT
 
-For a single-product expert adapter, LoRA is the right tool:
+For a domain-specific adapter, LoRA is the right tool:
 
 - **Small artifact.** Tens to hundreds of MB vs. full-model checkpoints
   measured in GB. Easy to swap, version, and ship alongside the base.
-- **Composable.** Multiple per-product adapters can live alongside one base
-  model; switch adapters per request based on the user's query intent.
+- **Composable.** Multiple domain or sub-domain adapters can live alongside
+  one base model; switch adapters per request based on the user's query
+  intent, tenant, workflow, or collection boundary.
 - **Preserves base capabilities.** Full SFT can degrade generic
   capabilities; LoRA's narrow update path makes domain specialization
   without catastrophic forgetting more achievable.
@@ -25,18 +28,22 @@ For a single-product expert adapter, LoRA is the right tool:
 The trade-off: LoRA learns less per training pass than full SFT, so signal
 quality (Stage 2) matters more than for full fine-tuning.
 
-## Two adapters, one base
+## Domain adapters, one base
 
-This project trains **two adapters** from the same base model:
+The case study trains two adapters from the same base model, one per scoped
+collection. These adapters happen to use NIM and NeMo Microservices
+documentation, but the pattern is general: each collection can represent a
+department, workflow, compliance area, engineering system, field-service
+procedure set, or other enterprise sub-domain.
 
-| Adapter | Trained on | Use case |
+| Adapter pattern | Trained on | Use case |
 |---|---|---|
-| `nim_expert` | Stage 2 dataset derived from `nim_curated` collection | Questions about NIM deployment, API shapes, profiles |
-| `nemo_usvcs_expert` | Stage 2 dataset derived from `nemo_usvcs_curated` | Questions about NeMo Microservices platform operations |
+| `domain_a_expert` | Stage 2 dataset derived from one scoped collection | Questions requiring that collection's terminology, workflows, and constraints |
+| `domain_b_expert` | Stage 2 dataset derived from a second scoped collection | Questions requiring a different process, policy, or technical vocabulary |
 
-Routing between them happens at the application layer (or via a small
-classifier upstream). The base model handles questions outside either
-domain unchanged.
+Routing between adapters happens at the application layer (or via a small
+classifier upstream). The base model handles questions outside the adapted
+domains unchanged.
 
 ## Planned training workflow
 
@@ -63,7 +70,7 @@ Checkpoint (LoRA adapter weights)
 Evaluation
    - vs. base model (no adapter)
    - vs. RAG-only baseline
-   - product-specific QA accuracy
+   - domain-specific QA accuracy
         │
         ▼
 Adapter artifact (publishable)
@@ -82,7 +89,9 @@ Adapter artifact (publishable)
   and makes adapter deployment via NIM straightforward.
 - **Evaluation strategy.** External frontier judge for response quality;
   domain-specific QA benchmark for factual accuracy. Eval split held out
-  from the source collection so it represents the same distribution.
+  from the source collection so it represents the same distribution, while
+  optional RAG/RAGAS diagnostics measure retrieval-augmented behavior
+  separately.
 
 ## Hardware notes
 

@@ -1,0 +1,295 @@
+{
+  "schema_version": "stage5_customizer_training_submission.v1",
+  "run_variant": "curator-diverseqa-1b-e5-blackwell",
+  "submitted_at": "2026-07-12T08:06:41.921281+00:00",
+  "customizer_url": "http://192.168.1.187:30910",
+  "node": "ubuntu-local-dev",
+  "node_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "base_model": "meta/llama-3.2-1b-instruct",
+  "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+  "epochs": 5,
+  "template_assertions": {
+    "num_gpus": 1,
+    "tensor_parallel_size": 1,
+    "data_parallel_size": 1,
+    "finetuning_type": "lora",
+    "training_type": "sft",
+    "sequence_packing_enabled": false
+  },
+  "dataset_access_note": "Curator DiverseQA dataset entities are HF-style Entity/Data Store registrations backed by the local Data Store Git/LFS compatibility shim; do not submit raw local JSONL paths.",
+  "comparison_baseline": {
+    "le_1b_training_record": "curator_dataset/experiments/20260709-le-uncapped-batch/stage5_customizer_training_1b_5epoch_20260712.json",
+    "le_1b_completion_commit": "d36f72f"
+  },
+  "cancelled_initial_attempts": [
+    {
+      "job_id": "cust-8AnnvyqNfzUmV5uqkMZUKD",
+      "adapter_name": "lora-nim-curator-diverseqa-e5-llama-3.2-1b-r16-20260712-bw",
+      "status": "cancelled",
+      "reason": "Initial naming pattern caused the paired NeMo output-model revision to exceed Customizer 96-character maximum after appending @cust-...; accepted NIM job was cancelled and its orphaned worker pod was deleted before replacement submission.",
+      "orphaned_worker_pod_deleted": "cust-8annvyqnfzumv5uqkmzukd-training-job-worker-0"
+    }
+  ],
+  "submission_order": [
+    "nim r16",
+    "nemo r16",
+    "nim r32",
+    "nemo r32"
+  ],
+  "pre_submission_checks": {
+    "blackwell_gpu_allocation_before_submission": 0,
+    "ada_gpu_allocation_before_submission": 0,
+    "customizer_training_node_selector": {
+      "kubernetes.io/hostname": "ubuntu-local-dev"
+    },
+    "existing_completed_le_worker_pods_left_for_audit_ttl": true
+  },
+  "jobs": [
+    {
+      "adapter_name": "lora-nim-cqa-e5-llama32-1b-r16-20260712-bw",
+      "alpha": 32,
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+      "collection": "nim_curated",
+      "corpus": "NIM",
+      "dataset_entity": "default/stage3-nim-curated-curator-diverseqa-20260629",
+      "dataset_kind": "Curator DiverseQA extraction dataset",
+      "description": "Stage 5 1B LoRA SFT on NIM Curator DiverseQA dataset; rank=16, alpha=32, epochs=5, Blackwell TP1/DP1",
+      "epochs": 5,
+      "expected_node": "ubuntu-local-dev",
+      "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "finetuning_type": "lora",
+      "job_id": "cust-5mXjLLoVBN4kpnmpUhgedW",
+      "output_model_entity": "default/lora-nim-cqa-e5-llama32-1b-r16-20260712-bw",
+      "rank": 16,
+      "sequence_packing_enabled": false,
+      "status_at_submission": "submitted",
+      "submitted_at": "2026-07-12T08:06:45.170795+00:00",
+      "tensor_parallel_size": 1,
+      "data_parallel_size": 1,
+      "training_type": "sft",
+      "customizer_status_after_submission": "running",
+      "kubernetes_worker_pod": "cust-5mxjllovbn4kpnmpuhgedw-training-job-worker-0",
+      "kubernetes_worker_status_after_submission": "Running",
+      "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
+      "verified_node_selector": {
+        "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.7259588241577148,
+        "elapsed_time_seconds": 1736.429635,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nim-cqa-e5-llama32-1b-r16-20260712-bw@cust-5mXjLLoVBN4kpnmpUhgedW",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
+      }
+    },
+    {
+      "adapter_name": "lora-nemo-cqa-e5-llama32-1b-r16-20260712-bw",
+      "alpha": 32,
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+      "collection": "nemo_usvcs_curated",
+      "corpus": "NeMo microservices",
+      "dataset_entity": "default/stage3-nemo-usvcs-curated-curator-diverseqa-20260629",
+      "dataset_kind": "Curator DiverseQA extraction dataset",
+      "description": "Stage 5 1B LoRA SFT on NeMo microservices Curator DiverseQA dataset; rank=16, alpha=32, epochs=5, Blackwell TP1/DP1",
+      "epochs": 5,
+      "expected_node": "ubuntu-local-dev",
+      "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "finetuning_type": "lora",
+      "job_id": "cust-9fzUTq1KHnvUii2mZ5Pjop",
+      "output_model_entity": "default/lora-nemo-cqa-e5-llama32-1b-r16-20260712-bw",
+      "rank": 16,
+      "sequence_packing_enabled": false,
+      "status_at_submission": "submitted",
+      "submitted_at": "2026-07-12T08:06:48.477050+00:00",
+      "tensor_parallel_size": 1,
+      "data_parallel_size": 1,
+      "training_type": "sft",
+      "customizer_status_after_submission": "running",
+      "kubernetes_worker_pod": "cust-9fzutq1khnvuii2mz5pjop-training-job-worker-0",
+      "kubernetes_worker_status_after_submission": "Running",
+      "kubernetes_worker_node_after_submission": "ubuntu-local-dev",
+      "verified_node_selector": {
+        "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.7155851125717163,
+        "elapsed_time_seconds": 1023.400193,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nemo-cqa-e5-llama32-1b-r16-20260712-bw@cust-9fzUTq1KHnvUii2mZ5Pjop",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
+      }
+    },
+    {
+      "adapter_name": "lora-nim-cqa-e5-llama32-1b-r32-20260712-bw",
+      "alpha": 64,
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+      "collection": "nim_curated",
+      "corpus": "NIM",
+      "dataset_entity": "default/stage3-nim-curated-curator-diverseqa-20260629",
+      "dataset_kind": "Curator DiverseQA extraction dataset",
+      "description": "Stage 5 1B LoRA SFT on NIM Curator DiverseQA dataset; rank=32, alpha=64, epochs=5, Blackwell TP1/DP1",
+      "epochs": 5,
+      "expected_node": "ubuntu-local-dev",
+      "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "finetuning_type": "lora",
+      "job_id": "cust-HZ3QepjwFzP7Z3SgEjWULd",
+      "output_model_entity": "default/lora-nim-cqa-e5-llama32-1b-r32-20260712-bw",
+      "rank": 32,
+      "sequence_packing_enabled": false,
+      "status_at_submission": "submitted",
+      "submitted_at": "2026-07-12T08:06:51.681232+00:00",
+      "tensor_parallel_size": 1,
+      "data_parallel_size": 1,
+      "training_type": "sft",
+      "customizer_status_after_submission": "pending",
+      "kubernetes_worker_pod": "cust-hz3qepjwfzp7z3sgejwuld-training-job-worker-0",
+      "kubernetes_worker_status_after_submission": "Pending",
+      "kubernetes_worker_node_after_submission": null,
+      "verified_node_selector": {
+        "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.6970833539962769,
+        "elapsed_time_seconds": 2775.882017,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nim-cqa-e5-llama32-1b-r32-20260712-bw@cust-HZ3QepjwFzP7Z3SgEjWULd",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
+      }
+    },
+    {
+      "adapter_name": "lora-nemo-cqa-e5-llama32-1b-r32-20260712-bw",
+      "alpha": 64,
+      "base_model": "meta/llama-3.2-1b-instruct",
+      "base_template": "meta/llama-3.2-1b-instruct@v1.0.0+80GB",
+      "collection": "nemo_usvcs_curated",
+      "corpus": "NeMo microservices",
+      "dataset_entity": "default/stage3-nemo-usvcs-curated-curator-diverseqa-20260629",
+      "dataset_kind": "Curator DiverseQA extraction dataset",
+      "description": "Stage 5 1B LoRA SFT on NeMo microservices Curator DiverseQA dataset; rank=32, alpha=64, epochs=5, Blackwell TP1/DP1",
+      "epochs": 5,
+      "expected_node": "ubuntu-local-dev",
+      "expected_gpu": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "finetuning_type": "lora",
+      "job_id": "cust-9CK259NS4y7mCVeuv5Rj2Z",
+      "output_model_entity": "default/lora-nemo-cqa-e5-llama32-1b-r32-20260712-bw",
+      "rank": 32,
+      "sequence_packing_enabled": false,
+      "status_at_submission": "submitted",
+      "submitted_at": "2026-07-12T08:06:54.922745+00:00",
+      "tensor_parallel_size": 1,
+      "data_parallel_size": 1,
+      "training_type": "sft",
+      "customizer_status_after_submission": "pending",
+      "kubernetes_worker_pod": "cust-9ck259ns4y7mcveuv5rj2z-training-job-worker-0",
+      "kubernetes_worker_status_after_submission": "Pending",
+      "kubernetes_worker_node_after_submission": null,
+      "verified_node_selector": {
+        "kubernetes.io/hostname": "ubuntu-local-dev"
+      },
+      "observed_status": "completed",
+      "final_status_details": {
+        "status": "completed",
+        "best_epoch": 1,
+        "val_loss": 1.6934744119644165,
+        "elapsed_time_seconds": 2773.898755,
+        "epochs_completed": 5,
+        "percentage_done": 100.0,
+        "output_model": "default/lora-nemo-cqa-e5-llama32-1b-r32-20260712-bw@cust-9CK259NS4y7mCVeuv5Rj2Z",
+        "worker_node": "ubuntu-local-dev",
+        "worker_phase": "Succeeded"
+      }
+    }
+  ],
+  "latest_status": {
+    "updated_at": "2026-07-12T08:54:26.527333+00:00",
+    "state": "completed",
+    "completed_jobs": [
+      "cust-5mXjLLoVBN4kpnmpUhgedW",
+      "cust-9CK259NS4y7mCVeuv5Rj2Z",
+      "cust-9fzUTq1KHnvUii2mZ5Pjop",
+      "cust-HZ3QepjwFzP7Z3SgEjWULd"
+    ],
+    "blackwell_worker_node": "ubuntu-local-dev",
+    "next_action": "Switch Customizer to ubuntu2 and submit 3B Curator DiverseQA LoRA SFT r16/r32 for NIM and NeMo Microservices."
+  },
+  "placement_verification": {
+    "verified_at": "2026-07-12T08:07:27.535508+00:00",
+    "blackwell_allocated_gpus_after_submission": 2,
+    "expected_queueing": "Two r16 workers run immediately on the two Blackwell GPUs; two r32 workers remain pending until GPUs free.",
+    "node_selector_verified_on_training_crs": {
+      "kubernetes.io/hostname": "ubuntu-local-dev"
+    },
+    "customizer_status": {
+      "cust-5mXjLLoVBN4kpnmpUhgedW": "running",
+      "cust-9fzUTq1KHnvUii2mZ5Pjop": "running",
+      "cust-HZ3QepjwFzP7Z3SgEjWULd": "pending",
+      "cust-9CK259NS4y7mCVeuv5Rj2Z": "pending"
+    },
+    "kubernetes_workers": {
+      "cust-5mXjLLoVBN4kpnmpUhgedW": {
+        "customizer_status": "running",
+        "worker_pod": "cust-5mxjllovbn4kpnmpuhgedw-training-job-worker-0",
+        "worker_status": "Running",
+        "worker_node": "ubuntu-local-dev"
+      },
+      "cust-9fzUTq1KHnvUii2mZ5Pjop": {
+        "customizer_status": "running",
+        "worker_pod": "cust-9fzutq1khnvuii2mz5pjop-training-job-worker-0",
+        "worker_status": "Running",
+        "worker_node": "ubuntu-local-dev"
+      },
+      "cust-HZ3QepjwFzP7Z3SgEjWULd": {
+        "customizer_status": "pending",
+        "worker_pod": "cust-hz3qepjwfzp7z3sgejwuld-training-job-worker-0",
+        "worker_status": "Pending",
+        "worker_node": null
+      },
+      "cust-9CK259NS4y7mCVeuv5Rj2Z": {
+        "customizer_status": "pending",
+        "worker_pod": "cust-9ck259ns4y7mcveuv5rj2z-training-job-worker-0",
+        "worker_status": "Pending",
+        "worker_node": null
+      }
+    }
+  },
+  "final_verification": {
+    "verified_at": "2026-07-12T08:54:26.527320+00:00",
+    "customizer_status": {
+      "cust-5mXjLLoVBN4kpnmpUhgedW": "completed",
+      "cust-9fzUTq1KHnvUii2mZ5Pjop": "completed",
+      "cust-HZ3QepjwFzP7Z3SgEjWULd": "completed",
+      "cust-9CK259NS4y7mCVeuv5Rj2Z": "completed"
+    },
+    "worker_node": {
+      "cust-5mXjLLoVBN4kpnmpUhgedW": "ubuntu-local-dev",
+      "cust-9fzUTq1KHnvUii2mZ5Pjop": "ubuntu-local-dev",
+      "cust-HZ3QepjwFzP7Z3SgEjWULd": "ubuntu-local-dev",
+      "cust-9CK259NS4y7mCVeuv5Rj2Z": "ubuntu-local-dev"
+    },
+    "worker_phase": {
+      "cust-5mXjLLoVBN4kpnmpUhgedW": "Succeeded",
+      "cust-9fzUTq1KHnvUii2mZ5Pjop": "Succeeded",
+      "cust-HZ3QepjwFzP7Z3SgEjWULd": "Succeeded",
+      "cust-9CK259NS4y7mCVeuv5Rj2Z": "Succeeded"
+    },
+    "all_output_models_reported": true
+  }
+}

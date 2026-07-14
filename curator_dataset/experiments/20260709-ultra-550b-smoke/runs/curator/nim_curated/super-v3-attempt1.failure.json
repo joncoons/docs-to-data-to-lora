@@ -1,0 +1,12 @@
+{
+  "schema_version": "ultra_550b_smoke.generation_attempt.v1",
+  "status": "failed",
+  "attempt": 1,
+  "pipeline": "curator_diverse_qa",
+  "collection": "nim_curated",
+  "generator_model": "nvidia/nvidia/nemotron-3-super-v3",
+  "input": "curator_dataset/experiments/20260709-ultra-550b-smoke/inputs/nim_curated.curator_input.jsonl",
+  "launch_log": "curator_dataset/experiments/20260709-ultra-550b-smoke/runs/curator/nim_curated/super-v3.launch.log",
+  "failure_summary": "Pinned Curator image failed under host UID because packaged editable install path /opt/Curator/nemo_curator was not readable.",
+  "remediation": "Run the pinned image as its packaged user and chown generated output after completion."
+}

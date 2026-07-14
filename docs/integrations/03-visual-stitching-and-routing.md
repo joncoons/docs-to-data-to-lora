@@ -424,7 +424,7 @@ def route_document(
 
 ## Origin
 
-Extracted from `/home/joncoons/claude/rag/src/nvidia_rag/tools/parse_document.py`:
+Extracted from a local fork of the NVIDIA AI Blueprints RAG ingest pipeline:
 
 - `DocumentClassifierRouter` class — lines 285-357
 - `route_document` main entry point — lines 392-540

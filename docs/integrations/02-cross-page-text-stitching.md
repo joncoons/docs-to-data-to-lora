@@ -173,9 +173,8 @@ SFT corpora don't need this — the punctuation rule is sufficient.
 
 ## Origin
 
-Extracted from
-`/home/joncoons/claude/rag/src/nvidia_rag/tools/parse_document.py:_stitch_page_boundaries`
-(lines 793-840). The local fork wires this into
+Extracted from a local fork of the NVIDIA AI Blueprints RAG ingest pipeline's
+`DocumentClassifierRouter._stitch_page_boundaries` helper. The local fork wires this into
 `DocumentClassifierRouter.route_document()` between the per-page parse
 loop and the chunker (see [Module 03](03-visual-stitching-and-routing.md)
 for the full orchestration).

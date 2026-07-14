@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://docs-to-data-to-lora.local/schemas/provenance/source_chunk.schema.json",
+  "title": "SourceChunk",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "chunk_id",
+    "source_revision_id",
+    "chunker",
+    "text_sha256",
+    "text"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "provenance.v1"
+    },
+    "chunk_id": {
+      "type": "string",
+      "pattern": "^chunk_[A-Za-z0-9_.:-]+$"
+    },
+    "source_revision_id": {
+      "type": "string"
+    },
+    "previous_chunk_id": {
+      "type": ["string", "null"]
+    },
+    "chunker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "config_hash"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "config_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-fA-F0-9]{64}$"
+        },
+        "extraction_method": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "anchors": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "heading_path": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "dom_path": {
+          "type": ["string", "null"]
+        },
+        "markdown_anchor": {
+          "type": ["string", "null"]
+        },
+        "page_number": {
+          "type": ["integer", "null"]
+        },
+        "parser_element_id": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "spans": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "byte_start": {
+          "type": ["integer", "null"]
+        },
+        "byte_end": {
+          "type": ["integer", "null"]
+        },
+        "char_start": {
+          "type": ["integer", "null"]
+        },
+        "char_end": {
+          "type": ["integer", "null"]
+        }
+      }
+    },
+    "text_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-fA-F0-9]{64}$"
+    },
+    "text": {
+      "type": "string"
+    },
+    "token_count": {
+      "type": ["integer", "null"]
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

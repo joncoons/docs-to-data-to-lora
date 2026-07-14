@@ -10,8 +10,8 @@ from pydantic import BaseModel, Field
 class LogEntailment(BaseModel):
     """Output of Stage 1A entailment extraction."""
     conclusion: str = Field(description="Identified theme, concept or topic")
-    premises: list[str] = Field(min_length=1, max_length=3,
-                                description="1-3 logical premises supporting the conclusion")
+    premises: list[str] = Field(min_length=1,
+                                description="Logical premises supporting the conclusion")
     context: str = Field(default="", description="Ancillary details supporting the main theme")
     entities: str = Field(default="", description="Identified noteworthy entities")
     recommendations: str = Field(default="", description="Additional suggested actions")
@@ -25,7 +25,7 @@ class LogEntailmentList(BaseModel):
     notebook handled this via semantic sub-chunking; we collapse the
     same intent into a single LLM call returning a list.
     """
-    entailments: list[LogEntailment] = Field(min_length=1, max_length=10)
+    entailments: list[LogEntailment] = Field(min_length=1)
 
 
 class QAKeyValuePair(BaseModel):
@@ -35,9 +35,20 @@ class QAKeyValuePair(BaseModel):
 
 
 class QAEvaluation(BaseModel):
-    """Output of Stage 2 QA Eval refinement."""
-    prompt: str
-    completion: str
+    """Output of Stage 2 QA admission/refinement.
+
+    ``admit`` defaults to true so legacy QA responses containing only prompt and
+    completion remain valid. Newer frontier-judge prompts can explicitly reject
+    irreparable rows and attach auditable quality signals.
+    """
+    prompt: str = ""
+    completion: str = ""
+    admit: bool = True
+    grounded: bool | None = None
+    answer_fidelity: bool | None = None
+    no_hallucination: bool | None = None
+    repairable: bool | None = None
+    reason: str = ""
 
 
 class SynthesisPair(BaseModel):
@@ -48,7 +59,7 @@ class SynthesisPair(BaseModel):
 
 class SynthesisPairs(BaseModel):
     """Output of Stage 1B kNN synthesis (one bridging + one contrastive per call)."""
-    pairs: list[dict]  # dicts for backwards-compat with Claude raw JSON
+    pairs: list[dict]  # dicts for backwards-compatible raw judge JSON
 
 
 class InstructionPair(BaseModel):
@@ -72,6 +83,11 @@ class Passage(BaseModel):
     product_family: str
     product_name: str
     doc_kind: Literal["html", "pdf"]
+    source_revision_id: str | None = None
+    source_chunk_ids: list[str] | None = None
+    source_systems: list[str] | None = None
+    source_kinds: list[str] | None = None
+    modalities: list[str] | None = None
 
 
 class KVPRow(BaseModel):
@@ -92,3 +108,28 @@ class KVPRow(BaseModel):
     target_product_family: str | None = None  # for 1.5
     retrieved_urls: list[str] | None = None   # for 1.5
     neighbor_urls: list[str] | None = None    # for 1b
+    # Provenance sidecar fields. These are optional so older JSONL outputs still
+    # load and the Customizer-facing shape remains unchanged downstream.
+    sample_id: str | None = None
+    entailment_id: str | None = None
+    entailment_claim: str | None = None
+    entailment_premises: list[str] | None = None
+    source_revision_ids: list[str] | None = None
+    source_chunk_ids: list[str] | None = None
+    source_systems: list[str] | None = None
+    source_kinds: list[str] | None = None
+    modalities: list[str] | None = None
+    extractor_model: str | None = None
+    extractor_prompt_hash: str | None = None
+    extractor_temperature: float | None = None
+    qa_work_id: str | None = None
+    qa_status: str | None = None
+    qa_admitted: bool | None = None
+    qa_judge_model: str | None = None
+    qa_judge_endpoints: list[str] | None = None
+    qa_execution_surface: str | None = None
+    qa_grounded: bool | None = None
+    qa_answer_fidelity: bool | None = None
+    qa_no_hallucination: bool | None = None
+    qa_repairable: bool | None = None
+    qa_reason: str | None = None

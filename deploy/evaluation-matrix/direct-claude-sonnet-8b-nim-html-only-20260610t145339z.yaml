@@ -1,0 +1,162 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: claude-sonnet-8b-nim-html-only-20260610t145339z
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: direct-claude-sonnet-eval
+    app.kubernetes.io/component: 8b-nim-html-only-phase1-phase2-phase3
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "8b-nim-html-only-claude-sonnet-20260610t145339z"
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: direct-claude-sonnet-eval
+        app.kubernetes.io/component: 8b-nim-html-only-phase1-phase2-phase3
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+        eval-run-id: "8b-nim-html-only-claude-sonnet-20260610t145339z"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: direct-eval
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              pip install --no-cache-dir -q httpx
+
+              export NIM_HTML_BASE=/mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/base/base/20260610t032644z/responses.jsonl
+              export NIM_HTML_R16=/mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r16/20260610t032644z/responses.jsonl
+              export NIM_HTML_R32=/mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.1-8b/lora-nim-html-only-e5/r32/20260610t032644z/responses.jsonl
+              export NIM_HTML_49B=/mnt/nvme2/peft/evals/completions/nim_curated_html_only/llama-3.3-nemotron-super-49b-v1/base/base/20260610t032644z/responses.jsonl
+
+              python - <<'PYCODE'
+              import os
+              from pathlib import Path
+
+              required = [
+                  "NIM_HTML_BASE",
+                  "NIM_HTML_R16",
+                  "NIM_HTML_R32",
+                  "NIM_HTML_49B",
+              ]
+              missing = [os.environ[name] for name in required if not Path(os.environ[name]).is_file()]
+              if missing:
+                  raise SystemExit("Missing required completion files:\n" + "\n".join(missing))
+              print("All required 8B NIM HTML-only completion files are present.", flush=True)
+              PYCODE
+
+              echo "Starting Phase 1 Claude Sonnet single-axis for 8B NIM HTML-only"
+              python /scripts/singleaxis/run_direct_kimi_singleaxis.py \
+                --responses "$NIM_HTML_BASE" \
+                --responses "$NIM_HTML_R16" \
+                --responses "$NIM_HTML_R32" \
+                --eval-run-id "$SINGLEAXIS_EVAL_RUN_ID" \
+                --output-root "$SINGLEAXIS_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-timeout-s 600 \
+                --judge-max-attempts 7 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 4 \
+                --resume \
+                --log-every 25
+
+              echo "Starting Phase 2 Claude Sonnet pairwise for 8B NIM HTML-only"
+              python /scripts/pairwise/run_direct_kimi_pairwise.py \
+                --pair 8b-base "$NIM_HTML_BASE" 8b-nim-html-e5-r16 "$NIM_HTML_R16" \
+                --pair 8b-base "$NIM_HTML_BASE" 8b-nim-html-e5-r32 "$NIM_HTML_R32" \
+                --pair 8b-nim-html-e5-r16 "$NIM_HTML_R16" 8b-nim-html-e5-r32 "$NIM_HTML_R32" \
+                --eval-run-id "$PAIRWISE_EVAL_RUN_ID" \
+                --output-root "$PAIRWISE_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-timeout-s 600 \
+                --judge-max-attempts 7 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 4 \
+                --resume \
+                --position-swap \
+                --log-every 25
+
+              echo "Starting Phase 3 Claude Sonnet pairwise: 49B vs 8B NIM HTML-only"
+              python /scripts/pairwise/run_direct_kimi_pairwise.py \
+                --pair 49b-super "$NIM_HTML_49B" 8b-base "$NIM_HTML_BASE" \
+                --pair 49b-super "$NIM_HTML_49B" 8b-nim-html-e5-r16 "$NIM_HTML_R16" \
+                --pair 49b-super "$NIM_HTML_49B" 8b-nim-html-e5-r32 "$NIM_HTML_R32" \
+                --eval-run-id "$PHASE3_EVAL_RUN_ID" \
+                --output-root "$PAIRWISE_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-timeout-s 600 \
+                --judge-max-attempts 7 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 4 \
+                --resume \
+                --position-swap \
+                --log-every 25
+          env:
+            - name: SINGLEAXIS_EVAL_RUN_ID
+              value: "8b-nim-html-only-claude-sonnet-20260610t145339z"
+            - name: PAIRWISE_EVAL_RUN_ID
+              value: "8b-nim-html-only-claude-sonnet-pairwise-20260610t145339z"
+            - name: PHASE3_EVAL_RUN_ID
+              value: "phase3-49b-vs-8b-nim-html-only-claude-sonnet-20260610t145339z"
+            - name: SINGLEAXIS_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/singleaxis-claude-sonnet
+            - name: PAIRWISE_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/pairwise-claude-sonnet
+            - name: JUDGE_API_URL
+              value: https://inference-api.nvidia.com/v1/chat/completions
+            - name: EVALUATOR_JUDGE_MODEL
+              value: azure/anthropic/claude-sonnet-4-6
+            - name: KIMI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kimi-judge-api
+                  key: KIMI_KEY
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          volumeMounts:
+            - name: singleaxis-script
+              mountPath: /scripts/singleaxis
+              readOnly: true
+            - name: pairwise-script
+              mountPath: /scripts/pairwise
+              readOnly: true
+            - name: nvme2
+              mountPath: /mnt/nvme2
+      volumes:
+        - name: singleaxis-script
+          configMap:
+            name: direct-kimi-singleaxis-script
+            defaultMode: 0555
+        - name: pairwise-script
+          configMap:
+            name: direct-kimi-pairwise-script
+            defaultMode: 0555
+        - name: nvme2
+          persistentVolumeClaim:
+            claimName: nvme2-pvc

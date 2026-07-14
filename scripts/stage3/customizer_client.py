@@ -55,6 +55,8 @@ class CustomizerClient:
     def submit_job(self, config: dict) -> str:
         """POST a Customizer job. Returns the job id."""
         resp = self._http.post("/v1/customization/jobs", json=config)
+        if resp.is_error:
+            log.error("Customizer job submission failed: %s", resp.text)
         resp.raise_for_status()
         body = resp.json()
         return body["id"]

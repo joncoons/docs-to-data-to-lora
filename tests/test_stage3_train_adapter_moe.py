@@ -75,9 +75,9 @@ def test_moe_config_hyperparameters():
     assert hp["training_type"] == "sft"
     assert hp["epochs"] == 2
     assert hp["learning_rate"] == 1.0e-4
-    # MoE-specific: batch_size=8, warmup_steps=100 (different from dense defaults)
+    # MoE-specific: batch_size=8, warmup_steps=20 (different from dense defaults)
     assert hp["batch_size"] == 8
-    assert hp["warmup_steps"] == 100
+    assert hp["warmup_steps"] == 20
     assert hp["seed"] == 42
     assert hp["optimizer"] == "adamw_with_cosine_annealing"
     assert hp["sequence_packing_enabled"] is False
@@ -181,7 +181,7 @@ def test_cli_dry_run_produces_valid_json():
 
     hp = cfg["hyperparameters"]
     assert hp["batch_size"] == 8
-    assert hp["warmup_steps"] == 100
+    assert hp["warmup_steps"] == 20
     assert hp["lora"]["alpha"] == 16
     assert hp["lora"]["adapter_dim"] == 16
     assert hp["sequence_packing_enabled"] is False

@@ -1,0 +1,21 @@
+{
+  "schema_version": "curator_dataset.customizer_dataset_version.v1",
+  "dataset_version_id": "nim-curator-diverseqa-20260629-abf36f4c",
+  "collection": "nim_curated",
+  "generator": {
+    "framework": "NeMo Curator 1.2.0",
+    "pipeline": "Nemotron-CC DiverseQAStage",
+    "model": "nvidia/nvidia/nemotron-3-super-v3"
+  },
+  "source_run": "full-20260629t2032z-retry1",
+  "curator_input_sha256": "abf36f4c74ba2364694d911b68bd84ab799c49bd9054ff835c8eb41c13d7aa45",
+  "normalized_source_sha256": "7e9840135c2d164febb869221b1c0a00d71d918eb3dbb37b2ed871adddc35e13",
+  "training": {
+    "rows": 6845,
+    "sha256": "095dec04be3c75ba3877535a26b6d8c0aa2586a37dad93fcf8dba90bae0f45b0"
+  },
+  "validation": {
+    "rows": 815,
+    "sha256": "aeae824049b9e52a34ad047be9d3c791b207e8440aa5f7fb192539030879ee67"
+  }
+}

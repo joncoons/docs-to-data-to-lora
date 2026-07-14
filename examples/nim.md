@@ -288,7 +288,7 @@ Coarse `product_family` granularity reflects the rag-crawler's
 the single `NIM` family. Finer per-product analysis would require either
 extending the URL map or a post-hoc classifier.
 
-### Validation gate (Claude Sonnet 4.6, 99-pair stratified sample)
+### Validation gate (independent external judge, 99-pair stratified sample)
 
 | Criterion | Pass |
 |---|---:|

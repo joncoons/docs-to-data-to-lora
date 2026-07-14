@@ -1,0 +1,15 @@
+{
+  "archive_dir": ".local-archive/20260710-nim-super-stage1a-html-retry2-prep",
+  "created_at": "2026-07-10T12:28:14.952483Z",
+  "remaining_entailment_rows": 3018,
+  "remaining_stage1a_rows": 9171,
+  "removed_stage1a_rows": 7,
+  "retry_input": "passages_html_retry2.jsonl",
+  "retry_passage_count": 6,
+  "retry_status_counts": {
+    "le_parse_failed": 5,
+    "partial": 1
+  },
+  "schema_version": "nim_stage1a_html_retry2_prep.v1",
+  "source_policy": "html_only"
+}

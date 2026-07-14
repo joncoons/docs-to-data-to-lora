@@ -1,0 +1,67 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: run-stage3-evaluation-matrix
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: evaluation-matrix
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: evaluation-matrix
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: evaluation-matrix
+          image: <registry>/docs-to-data-to-lora/evaluation-matrix:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: EVALUATOR_URL
+              value: "http://nemo-evaluator:7331"
+            - name: EVALUATOR_JOB_IDS_OUT
+              value: /outputs/evaluator_job_ids.json
+            - name: EVALUATOR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nemo-evaluator-api
+                  key: EVALUATOR_API_KEY
+                  optional: true
+          args:
+            - --wave
+            - all
+            - --log-path
+            - /inputs/training_session.log
+            - --out
+            - /outputs/evaluator_job_ids.json
+            - --poll-interval
+            - "30"
+            - --max-wait-s
+            - "21600"
+            - --max-consecutive-errors
+            - "10"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: training-session-log
+              mountPath: /inputs
+              readOnly: true
+            - name: evaluator-results
+              mountPath: /outputs
+      volumes:
+        - name: training-session-log
+          configMap:
+            name: stage3-training-session-log
+        - name: evaluator-results
+          persistentVolumeClaim:
+            claimName: evaluator-results

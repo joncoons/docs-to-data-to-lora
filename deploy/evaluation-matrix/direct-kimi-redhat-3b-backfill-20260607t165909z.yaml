@@ -1,0 +1,269 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kimi-redhat-3b-backfill-20260607t165909z
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: direct-kimi-redhat-backfill
+    app.kubernetes.io/component: 3b-phase2-phase3
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "kimi-redhat-3b-backfill-20260607t165909z"
+spec:
+  suspend: true
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: direct-kimi-redhat-backfill
+        app.kubernetes.io/component: 3b-phase2-phase3
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+        eval-run-id: "kimi-redhat-3b-backfill-20260607t165909z"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: backfill
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              pip install --no-cache-dir -q httpx
+              python - <<'PYCODE'
+              import json
+              import os
+              import time
+              import urllib.error
+              import urllib.request
+
+              endpoint = os.environ["JUDGE_API_URL"].rstrip("/")
+              if endpoint.endswith("/chat/completions"):
+                  chat_url = endpoint
+              elif endpoint.endswith("/v1"):
+                  chat_url = endpoint + "/chat/completions"
+              else:
+                  chat_url = endpoint + "/v1/chat/completions"
+              key = os.environ["KIMI_KEY"]
+              model = os.environ["EVALUATOR_JUDGE_MODEL"]
+              poll_s = int(os.environ.get("SMOKE_POLL_S", "300"))
+              max_wait_s = int(os.environ.get("SMOKE_MAX_WAIT_S", "86400"))
+              started = time.monotonic()
+              payload = json.dumps({
+                  "model": model,
+                  "messages": [{"role": "user", "content": "Return JSON only: {\"ok\": true}"}],
+                  "temperature": 0,
+                  "max_tokens": 32,
+              }).encode("utf-8")
+              headers = {
+                  "Authorization": f"Bearer {key}",
+                  "Content-Type": "application/json",
+              }
+              attempt = 0
+              while True:
+                  attempt += 1
+                  request = urllib.request.Request(chat_url, data=payload, headers=headers, method="POST")
+                  try:
+                      with urllib.request.urlopen(request, timeout=180) as response:
+                          body = json.loads(response.read().decode("utf-8"))
+                      if body.get("choices"):
+                          print(f"Kimi Red Hat smoke passed on attempt {attempt}", flush=True)
+                          break
+                      print(f"Kimi Red Hat smoke attempt {attempt} returned no choices", flush=True)
+                  except urllib.error.HTTPError as exc:
+                      print(f"Kimi Red Hat smoke attempt {attempt} failed: HTTP {exc.code}", flush=True)
+                  except Exception as exc:
+                      print(f"Kimi Red Hat smoke attempt {attempt} failed: {type(exc).__name__}", flush=True)
+                  if time.monotonic() - started > max_wait_s:
+                      raise SystemExit("Kimi Red Hat smoke timed out before scoring")
+                  time.sleep(poll_s)
+              PYCODE
+
+              echo "Starting Phase 2 Kimi Red Hat 3B base comparison backfill"
+              python /scripts/pairwise/run_direct_kimi_pairwise.py \
+                --pair 3b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r16 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r16/20260529t142723z/responses.jsonl \
+                --pair 3b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r32 /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/lora-nim/r32/20260529t142723z/responses.jsonl \
+                --pair 3b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r16 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r16/20260529t142723z/responses.jsonl \
+                --pair 3b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl 3b-r32 /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/lora-nemo-usvcs/r32/20260529t142723z/responses.jsonl \
+                --eval-run-id "$PHASE2_EVAL_RUN_ID" \
+                --output-root "$PAIRWISE_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-max-attempts 5 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 2 \
+                --resume \
+                --position-swap \
+                --log-every 25
+
+              echo "Starting Phase 3 Kimi Red Hat 49B vs 3B base backfill"
+              python /scripts/pairwise/run_direct_kimi_pairwise.py \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t142723z-plus-retry/responses.jsonl 3b-base /mnt/nvme2/peft/evals/completions/nim_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl \
+                --pair 49b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.3-nemotron-super-49b-v1.5/base/base/20260529t220127z/responses.jsonl 3b-base /mnt/nvme2/peft/evals/completions/nemo_usvcs_curated/llama-3.2-3b/base/base/20260529t142723z/responses.jsonl \
+                --eval-run-id "$PHASE3_EVAL_RUN_ID" \
+                --output-root "$PAIRWISE_OUTPUT_ROOT" \
+                --judge-api-url "$JUDGE_API_URL" \
+                --judge-model "$EVALUATOR_JUDGE_MODEL" \
+                --judge-api-key-env KIMI_KEY \
+                --judge-max-tokens 8192 \
+                --judge-max-attempts 5 \
+                --retry-backoff-s 5 \
+                --retry-backoff-max-s 120 \
+                --retry-jitter-s 2 \
+                --concurrency 2 \
+                --resume \
+                --position-swap \
+                --log-every 25
+          env:
+            - name: PAIRWISE_OUTPUT_ROOT
+              value: /mnt/nvme2/peft/evals/pairwise-kimi
+            - name: PHASE2_EVAL_RUN_ID
+              value: 3b-kimi-redhat-phase2-base-backfill-20260607t165909z
+            - name: PHASE3_EVAL_RUN_ID
+              value: phase3-49b-vs-3b-base-kimi-redhat-backfill-20260607t165909z
+            - name: JUDGE_API_URL
+              value: https://maas.apps.ocp.cloud.rhai-tmm.dev/prelude-maas/kimi-k2-6/v1
+            - name: EVALUATOR_JUDGE_MODEL
+              value: kimi-k2-6
+            - name: SMOKE_POLL_S
+              value: "300"
+            - name: SMOKE_MAX_WAIT_S
+              value: "86400"
+            - name: KIMI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kimi-redhat-judge-api
+                  key: KIMI_KEY
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          volumeMounts:
+            - name: pairwise-script
+              mountPath: /scripts/pairwise
+              readOnly: true
+            - name: nvme2
+              mountPath: /mnt/nvme2
+      volumes:
+        - name: pairwise-script
+          configMap:
+            name: direct-kimi-pairwise-script
+            defaultMode: 0555
+        - name: nvme2
+          persistentVolumeClaim:
+            claimName: nvme2-pvc
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kimi-redhat-3b-backfill-gate-20260607t165909z
+  namespace: runai-rag
+  labels:
+    app.kubernetes.io/name: direct-kimi-redhat-release-gate
+    app.kubernetes.io/component: 3b-after-8b-release
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+    eval-run-id: "kimi-redhat-3b-backfill-20260607t165909z"
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: direct-kimi-redhat-release-gate
+        app.kubernetes.io/component: 3b-after-8b-release
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+        eval-run-id: "kimi-redhat-3b-backfill-20260607t165909z"
+    spec:
+      serviceAccountName: direct-kimi-pairwise-release-gate
+      restartPolicy: Never
+      containers:
+        - name: release-gate
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              python - <<'PYCODE'
+              import json
+              import os
+              import ssl
+              import time
+              import urllib.request
+
+              namespace = os.environ["POD_NAMESPACE"]
+              host = os.environ["KUBERNETES_SERVICE_HOST"]
+              port = os.environ.get("KUBERNETES_SERVICE_PORT", "443")
+              base_url = f"https://{host}:{port}/apis/batch/v1/namespaces/{namespace}/jobs"
+              token_path = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+              ca_path = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+              token = open(token_path, encoding="utf-8").read().strip()
+              context = ssl.create_default_context(cafile=ca_path)
+              wait_job = os.environ["WAIT_JOB"]
+              release_job = os.environ["RELEASE_JOB"]
+              poll_interval_s = int(os.environ.get("POLL_INTERVAL_S", "60"))
+              max_wait_s = int(os.environ.get("MAX_WAIT_S", "172800"))
+
+              def call(method, job_name, body=None):
+                  data = None
+                  headers = {"Authorization": f"Bearer {token}"}
+                  if body is not None:
+                      data = json.dumps(body).encode("utf-8")
+                      headers["Content-Type"] = "application/merge-patch+json"
+                  request = urllib.request.Request(
+                      f"{base_url}/{job_name}",
+                      data=data,
+                      headers=headers,
+                      method=method,
+                  )
+                  with urllib.request.urlopen(request, context=context, timeout=30) as response:
+                      return json.loads(response.read().decode("utf-8"))
+
+              started = time.monotonic()
+              while True:
+                  job = call("GET", wait_job)
+                  status = job.get("status", {})
+                  if int(status.get("succeeded", 0) or 0) > 0:
+                      break
+                  if int(status.get("failed", 0) or 0) > 0:
+                      raise SystemExit(f"Refusing to release {release_job} because {wait_job} failed")
+                  if time.monotonic() - started > max_wait_s:
+                      raise SystemExit(f"Timed out waiting for {wait_job}")
+                  print(f"Waiting for {wait_job} before releasing {release_job}", flush=True)
+                  time.sleep(poll_interval_s)
+
+              job = call("GET", release_job)
+              if job.get("spec", {}).get("suspend") is False:
+                  print(f"{release_job} is already unsuspended", flush=True)
+              else:
+                  call("PATCH", release_job, {"spec": {"suspend": False}})
+                  print(f"Unsuspended {release_job}", flush=True)
+              PYCODE
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: WAIT_JOB
+              value: kimi-redhat-8b-backfill-20260607t165718z
+            - name: RELEASE_JOB
+              value: kimi-redhat-3b-backfill-20260607t165909z
+            - name: POLL_INTERVAL_S
+              value: "60"
+            - name: MAX_WAIT_S
+              value: "172800"
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "64Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"

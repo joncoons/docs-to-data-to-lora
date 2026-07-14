@@ -236,7 +236,7 @@ Single-product crawl: every NeMo Microservices doc URL maps to the
 `NeMo Microservices` family in `CRAWLER_PRODUCT_URL_MAP`. The 25 `unknown`
 chunks are URLs that fell outside the crawler's prefix map.
 
-### Validation gate (Claude Sonnet 4.6, 100-pair stratified sample)
+### Validation gate (independent external judge, 100-pair stratified sample)
 
 | Criterion | Pass |
 |---|---:|

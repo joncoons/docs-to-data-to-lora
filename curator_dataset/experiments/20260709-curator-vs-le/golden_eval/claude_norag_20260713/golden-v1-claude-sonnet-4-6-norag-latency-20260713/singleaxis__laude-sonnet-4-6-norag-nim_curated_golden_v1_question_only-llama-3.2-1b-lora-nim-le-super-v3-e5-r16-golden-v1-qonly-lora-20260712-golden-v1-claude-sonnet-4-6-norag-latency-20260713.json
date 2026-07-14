@@ -1,0 +1,64 @@
+{
+  "artifact_dir": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-latency-20260713",
+  "eval_run_id": "golden-v1-claude-sonnet-4-6-norag-latency-20260713",
+  "judge": {
+    "endpoint": "https://inference-api.nvidia.com/v1",
+    "max_attempts": 3,
+    "max_tokens": 8192,
+    "max_total_attempts_per_row": 3,
+    "model": "azure/anthropic/claude-sonnet-4-6",
+    "retry_backoff_max_s": 120.0,
+    "retry_backoff_s": 5.0,
+    "retry_jitter_s": 2.0,
+    "temperature": 0.0
+  },
+  "manifest_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-latency-20260713/manifest.json",
+  "mlflow": {
+    "artifact_location": "file:///mnt/nvme2/peft/mlflow-artifacts/golden-eval",
+    "experiment": "docs-to-data-to-lora-golden-eval",
+    "run_id": "91710120a8084d8dba9ddd18cee77d46",
+    "tracking_uri": "http://10.43.102.80:5000"
+  },
+  "rubric": {
+    "mode": "golden_reference_no_rag",
+    "score_fields": [
+      "accuracy",
+      "completeness",
+      "faithfulness",
+      "clarity"
+    ],
+    "uses_source_context": false
+  },
+  "schema_version": "golden-eval-repo-summary/v1",
+  "scope": "singleaxis",
+  "summary": {
+    "combined_total_tokens_raw": 2985,
+    "judge_scoring": {
+      "completion_tokens_cleaned_est": 0,
+      "completion_tokens_raw": 612,
+      "prompt_tokens": 1801,
+      "think_tokens_est": 0,
+      "total_tokens_raw": 2413
+    },
+    "row_error_attempts": 0,
+    "rows_failed": 0,
+    "rows_scored": 5,
+    "rows_scored_raw": 5,
+    "score_duplicate_rows": 0,
+    "score_means": {
+      "mean_accuracy": 1.0,
+      "mean_clarity": 3.0,
+      "mean_completeness": 1.2,
+      "mean_faithfulness": 1.0
+    },
+    "target_generation": {
+      "completion_tokens_cleaned_est": 183,
+      "completion_tokens_raw": 183,
+      "prompt_tokens": 389,
+      "think_tokens_est": 0,
+      "total_tokens_raw": 572
+    },
+    "unresolved_source_row_indices": []
+  },
+  "summary_path": "/mnt/nvme2/peft/evals/singleaxis-claude-sonnet-4-6-norag/nim_curated_golden_v1_question_only/llama-3.2-1b/lora-nim-le-super-v3-e5/r16/golden-v1-qonly-lora-20260712/golden-v1-claude-sonnet-4-6-norag-latency-20260713/summary.json"
+}

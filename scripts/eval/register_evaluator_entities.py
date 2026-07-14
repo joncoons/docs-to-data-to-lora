@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import re
 import sys
 from dataclasses import dataclass
@@ -26,6 +27,18 @@ if str(_REPO_ROOT) not in sys.path:
 from scripts.eval.evaluator_client import EvaluatorClient  # noqa: E402
 
 log = logging.getLogger(__name__)
+
+DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:7331")
+DEFAULT_NIM_PROXY_URL = os.getenv(
+    "NIM_PROXY_URL",
+    "http://rag-oai-proxy.runai-rag:8080",
+)
+DEFAULT_TRAINING_SESSION_LOG = Path(
+    os.getenv(
+        "TRAINING_SESSION_LOG",
+        str(_REPO_ROOT / "evals" / "training_session.log"),
+    )
+)
 
 
 # --- adapter metadata --------------------------------------------------
@@ -93,21 +106,37 @@ class AdapterRow:
 
 # --- payload builders --------------------------------------------------
 
-# NeMo Evaluator target schema (validated against current /openapi.json):
-# top-level type must be one of model|cached_outputs|retriever|rag|rows|dataset.
-# We use "model" for all three target kinds (adapter, base, RAG-as-model) with
-# the nested ModelInput.api_endpoint (APIEndpointData) carrying the URL and
-# model_id (=OAI model_name routing). A single LoRA-enabled NIM serves both
-# base and adapter via the model_id routing.
+# NeMo Evaluator target schema (validated against /openapi.json): top-level
+# type=model with nested ModelInput.api_endpoint (url + model_id + format).
+#
+# Every Stage 3 target should point at native NeMo NIM Proxy. Payload or
+# response adaptation should be handled by Evaluator target/configuration or
+# Evaluator interceptors before introducing a custom proxy.
+#
+# Target naming convention (post-2026-05-27 redesign):
+#   - LoRA adapters:  lora-{corpus}-{base_short}-r{rank}   (unchanged)
+#   - Base models:    bare base-model identifier, org/ stripped, e.g.
+#                       "llama-3.2-1b-instruct"
+#                       "llama-3.3-nemotron-super-49b-v1.5"
+#   - 49B is just another base target — corpus disambiguation lives in the
+#     *dataset* (-with-context variants per corpus), not in the target name.
 
-def build_adapter_target(row: AdapterRow, nim_url: str) -> dict:
+_NEMOTRON_SUPER_49B_BASE = "nvidia/llama-3.3-nemotron-super-49b-v1.5"
+
+
+def _base_target_name(base_model: str) -> str:
+    """Strip org/ prefix — slashes aren't allowed in Evaluator entity names."""
+    return base_model.split("/", 1)[1]
+
+
+def build_adapter_target(row: AdapterRow, proxy_url: str) -> dict:
     return {
         "name": row.name,
         "namespace": "default",
         "type": "model",
         "model": {
             "api_endpoint": {
-                "url": f"{nim_url.rstrip('/')}/v1/chat/completions",
+                "url": f"{proxy_url.rstrip('/')}/v1/chat/completions",
                 "model_id": row.name,
                 "format": "nim",
             },
@@ -115,49 +144,27 @@ def build_adapter_target(row: AdapterRow, nim_url: str) -> dict:
     }
 
 
-def build_base_target(base_model: str, nim_url: str) -> dict:
-    # "meta/llama-3.2-3b-instruct" → "base-llama-3.2-3b-instruct"
-    suffix = base_model.split("/", 1)[1]
+def build_base_target(base_model: str, proxy_url: str) -> dict:
+    target_name = _base_target_name(base_model)
     return {
-        "name": f"base-{suffix}",
+        "name": target_name,
         "namespace": "default",
         "type": "model",
         "model": {
             "api_endpoint": {
-                "url": f"{nim_url.rstrip('/')}/v1/chat/completions",
-                "model_id": base_model,
+                "url": f"{proxy_url.rstrip('/')}/v1/chat/completions",
+                "model_id": target_name,
                 "format": "nim",
             },
         },
     }
 
 
-def build_rag_target(collection: str, rag_url: str) -> dict:
-    """RAG target — registered as type=model pointing at rag-server /generate.
-
-    The Evaluator's native RAGTargetInput requires a full pipeline definition
-    (retriever + generator + cached_outputs) that's structurally heavier than
-    we need. Simpler: treat the RAG path as a single model endpoint and let
-    rag-server own the retrieval. Per-request collection scoping requires
-    either:
-      (a) a proxy that translates Evaluator's OAI-style request body to
-          rag-server's Prompt schema and injects collection_names=[<coll>], or
-      (b) two rag-server deployments with different default collections.
-    Decide empirically when the first RAG smoke job runs.
-    """
-    short = collection.replace("_", "-")
-    return {
-        "name": f"rag-49b-{short}",
-        "namespace": "default",
-        "type": "model",
-        "model": {
-            "api_endpoint": {
-                "url": f"{rag_url.rstrip('/')}/generate",
-                "model_id": f"rag-49b-{short}",  # sentinel; rag-server ignores
-                "format": "nim",
-            },
-        },
-    }
+def build_49b_target(proxy_url: str) -> dict:
+    """The Nemotron-Super-49B comparator. Registered as a model target;
+    corpus pairing is handled by which -with-context dataset it's evaluated on,
+    not by duplicating the target."""
+    return build_base_target(_NEMOTRON_SUPER_49B_BASE, proxy_url)
 
 
 def build_dataset_payload(collection: str, files_url: str) -> dict:
@@ -214,21 +221,73 @@ Return JSON: {{"winner": "A"|"B"|"TIE", "reason": str}}.
 """
 
 
+# RAGAS input_template: maps our test-row + model-sample fields to the schema
+# RAGAS's EvaluationDataset.from_list expects. Renders to a JSON object using
+# Jinja's `tojson` filter to safely escape strings (newlines, quotes).
+#
+# Field mapping rationale:
+#   user_input         ← `prompt` (full baked prompt; question is at the end)
+#   retrieved_contexts ← `[prompt]` (single-element list containing the full
+#                        baked prompt — chunks are inside it. Question text is
+#                        harmless noise for grounding judging.)
+#   response           ← `response` (model output from sample)
+#   reference          ← `completion` (ground-truth answer)
+_RAGAS_INPUT_TEMPLATE = (
+    '{\n'
+    '  "user_input":         {{ prompt | tojson }},\n'
+    '  "retrieved_contexts": [{{ prompt | tojson }}],\n'
+    '  "response":           {{ response | tojson }},\n'
+    '  "reference":          {{ completion | tojson }}\n'
+    '}'
+)
+
+_JUDGE_MODEL_REF = os.getenv(
+    "EVALUATOR_JUDGE_MODEL_REF",
+    "default/llama-3.3-nemotron-super-49b-v1.5",
+)
+
+
+def _ragas_metric(metric_type: str) -> dict:
+    """Build one RAGAS metric config entry for the rubric tasks block."""
+    return {
+        "type": metric_type,
+        "params": {
+            "judge": {"model": _JUDGE_MODEL_REF},
+            "input_template": _RAGAS_INPUT_TEMPLATE,
+        },
+    }
+
+
 def build_singleaxis_config() -> dict:
+    """Stage 3 single-axis RAGAS rubric: Faithfulness + ResponseRelevancy + AnswerAccuracy.
+
+    These three are the canonical RAG-eval subset (the prior nim-sft-final
+    experiment used a near-identical set: faithfulness, answer_relevancy,
+    context_precision). All are scored by the configured independent judge
+    model entity.
+    """
     return {
         "name": "stage3-singleaxis-rubric",
         "namespace": "default",
-        "description": "Stage 3 single-axis 4-criteria rubric, Claude Sonnet judge",
+        "description": (
+            "Stage 3 single-axis RAGAS — Faithfulness + ResponseRelevancy + "
+            "AnswerAccuracy, independent judge"
+        ),
         "type": "custom",
         "params": {
-            "parallelism": 4,
-            "temperature": 0.0001,  # Evaluator schema requires temperature > 0; greedy-equivalent
-            "max_tokens": 600,
-            "extra": {
-                "judge_model": "aws/anthropic/bedrock-claude-sonnet-4-6",
-                "judge_endpoint": "https://inference-api.nvidia.com/v1/chat/completions",
-                "inference_prompt": _INFERENCE_PROMPT,
-                "rubric_prompt": _RUBRIC_PROMPT,
+            "parallelism":  4,
+            "temperature":  0.0001,
+            "max_tokens":   8192,
+        },
+        "tasks": {
+            "ragas_rubric": {
+                "type": "chat-completion",
+                "params": {"template": "{{prompt}}"},
+                "metrics": {
+                    "faithfulness":       _ragas_metric("faithfulness"),
+                    "response_relevancy": _ragas_metric("response_relevancy"),
+                    "answer_accuracy":    _ragas_metric("answer_accuracy"),
+                },
             },
         },
     }
@@ -238,14 +297,17 @@ def build_pairwise_config() -> dict:
     return {
         "name": "stage3-pairwise-tournament",
         "namespace": "default",
-        "description": "Stage 3 pairwise A/B/Tie with position swap, Claude judge",
+        "description": "Stage 3 pairwise A/B/Tie with position swap, independent judge",
         "type": "custom",
         "params": {
             "parallelism": 4,
             "temperature": 0.0001,  # Evaluator schema requires temperature > 0; greedy-equivalent
-            "max_tokens": 300,
+            "max_tokens": 8192,     # target inference budget; reasoning models (49B) need room for <think> + answer
             "extra": {
-                "judge_model": "aws/anthropic/bedrock-claude-sonnet-4-6",
+                "judge_model": os.getenv(
+                    "EVALUATOR_PAIRWISE_JUDGE_MODEL",
+                    "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+                ),
                 "judge_endpoint": "https://inference-api.nvidia.com/v1/chat/completions",
                 "pairwise_prompt": _PAIRWISE_PROMPT,
                 "position_swap": True,
@@ -278,31 +340,72 @@ def load_adapters_from_log(log_path: Path) -> list[AdapterRow]:
 
 # --- idempotent create helpers ----------------------------------------
 
-def _create_target_idempotent(client: EvaluatorClient, payload: dict,
-                               label: str) -> None:
-    """POST a target; tolerate 409 (already exists), re-raise everything else."""
+def _create_target_idempotent(
+    client: EvaluatorClient,
+    payload: dict,
+    label: str,
+    update_existing: bool = False,
+) -> None:
+    """POST a target; optionally PATCH on 409 when payloads need refresh."""
     import httpx
     try:
         tid = client.create_target(payload)
         log.info("%s target id=%s name=%s", label, tid, payload["name"])
     except httpx.HTTPStatusError as e:
         if e.response.status_code == 409:
-            log.warning("%s target already exists, skipping: %s",
-                        label, payload["name"])
+            if update_existing:
+                namespace = payload.get("namespace", "default")
+                try:
+                    tid = client.update_target(namespace, payload["name"], payload)
+                    log.info("%s target updated id=%s name=%s", label, tid, payload["name"])
+                except httpx.HTTPStatusError as update_error:
+                    if update_error.response.status_code != 501:
+                        raise
+                    log.warning(
+                        "%s target PATCH unsupported; deleting and recreating: %s",
+                        label,
+                        payload["name"],
+                    )
+                    client.delete_target(namespace, payload["name"])
+                    tid = client.create_target(payload)
+                    log.info("%s target recreated id=%s name=%s", label, tid, payload["name"])
+            else:
+                log.warning("%s target already exists, skipping: %s",
+                            label, payload["name"])
         else:
             raise
 
 
-def _create_config_idempotent(client: EvaluatorClient, payload: dict) -> None:
-    """POST a config; tolerate 409 (already exists), re-raise everything else."""
+def _create_config_idempotent(
+    client: EvaluatorClient,
+    payload: dict,
+    update_existing: bool = False,
+) -> None:
+    """POST a config; optionally PATCH on 409 when payloads need refresh."""
     import httpx
     try:
         cid = client.create_config(payload)
         log.info("config id=%s name=%s", cid, payload["name"])
     except httpx.HTTPStatusError as e:
         if e.response.status_code == 409:
-            log.warning("config already exists, skipping: %s",
-                        payload["name"])
+            if update_existing:
+                namespace = payload.get("namespace", "default")
+                try:
+                    cid = client.update_config(namespace, payload["name"], payload)
+                    log.info("config updated id=%s name=%s", cid, payload["name"])
+                except httpx.HTTPStatusError as update_error:
+                    if update_error.response.status_code != 501:
+                        raise
+                    log.warning(
+                        "config PATCH unsupported; deleting and recreating: %s",
+                        payload["name"],
+                    )
+                    client.delete_config(namespace, payload["name"])
+                    cid = client.create_config(payload)
+                    log.info("config recreated id=%s name=%s", cid, payload["name"])
+            else:
+                log.warning("config already exists, skipping: %s",
+                            payload["name"])
         else:
             raise
 
@@ -311,70 +414,81 @@ def _create_config_idempotent(client: EvaluatorClient, payload: dict) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--evaluator-url",
-                    default="http://192.168.1.187:30913")
-    ap.add_argument("--log-path", type=Path,
-                    default=_REPO_ROOT / "evals" / "training_session.log")
+    ap.add_argument("--evaluator-url", default=DEFAULT_EVALUATOR_URL,
+                    help="NeMo Evaluator base URL. Defaults to EVALUATOR_URL or "
+                         "http://nemo-evaluator:7331.")
+    ap.add_argument("--evaluator-api-key", default=os.getenv("EVALUATOR_API_KEY"),
+                    help="Optional Evaluator bearer token. Defaults to EVALUATOR_API_KEY.")
+    ap.add_argument("--log-path", type=Path, default=DEFAULT_TRAINING_SESSION_LOG,
+                    help="Training-session inventory log. Defaults to TRAINING_SESSION_LOG "
+                         "or evals/training_session.log.")
+    ap.add_argument("--update-existing", action="store_true",
+                    help="Refresh existing targets/configs on HTTP 409. Uses PATCH when supported; falls back to delete/recreate on 501.")
     ap.add_argument("--adapter-targets", action="store_true",
-                    help="Register 12 adapter targets")
+                    help="Register the 14 LoRA adapter targets (12 Llama + 2 Nano r=16)")
     ap.add_argument("--base-targets", action="store_true",
-                    help="Register 3 base reference targets")
-    ap.add_argument("--rag-targets", action="store_true",
-                    help="Register 2 RAG targets")
+                    help="Register dense Llama plus Nano base reference targets")
+    ap.add_argument("--49b-target", "--rag-target", dest="target_49b", action="store_true",
+                    help="Register the single Nemotron-Super-49B-v1.5 comparator target")
     ap.add_argument("--configs", action="store_true",
                     help="Register both eval configs (singleaxis + pairwise)")
-    # A single LoRA-enabled NIM per base model serves BOTH base-only inference
-    # (request body model=<base_model>) and LoRA-applied inference (model=<adapter>)
-    # via OpenAI-API model routing. No separate base NIM is needed.
-    ap.add_argument("--nim-url-1b", default="http://nim-llama-3.2-1b:8000")
-    ap.add_argument("--nim-url-3b", default="http://nim-llama-3.2-3b:8000")
-    ap.add_argument("--nim-url-8b", default="http://nim-llama-3.1-8b:8000")
-    ap.add_argument("--nim-url-nano", default="http://nim-nemotron-nano:8000",
-                    help="Nano-30B-A3B MoE adapter-serving NIM (r=16 LoRA)")
-    ap.add_argument("--rag-url", default="http://rag-server.runai-rag:8081",
-                    help="rag-server /generate base; was rag-agent-toolkit but "
-                         "switched to bypass the agent for per-request collection "
-                         "scoping (see build_rag_target docstring)")
+    ap.add_argument("--all", action="store_true",
+                    help="Register adapter targets, base targets, 49B comparator, and configs")
+    ap.add_argument("--proxy-url", default=DEFAULT_NIM_PROXY_URL,
+                    help="OpenAI-compatible model proxy base URL. Defaults to "
+                         "NIM_PROXY_URL or http://rag-oai-proxy.runai-rag:8080 "
+                         "for the current eval test cluster. Native NIM Proxy can "
+                         "be substituted when available.")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(message)s")
 
+    register_adapter_targets = args.all or args.adapter_targets
+    register_base_targets = args.all or args.base_targets
+    register_49b_target = args.all or args.target_49b
+    register_configs = args.all or args.configs
+    if not any((register_adapter_targets, register_base_targets,
+                register_49b_target, register_configs)):
+        log.warning("no registration flags selected; use --all or an individual flag")
+        return 0
+
     adapters = load_adapters_from_log(args.log_path)
     log.info("loaded %d adapters from %s", len(adapters), args.log_path)
 
-    nim_url_for = {
-        "meta/llama-3.2-1b-instruct": args.nim_url_1b,
-        "meta/llama-3.2-3b-instruct": args.nim_url_3b,
-        "meta/llama-3.1-8b-instruct": args.nim_url_8b,
-        "nvidia/nemotron-3-nano-30b-a3b": args.nim_url_nano,
-    }
-    # Base targets reuse the same LoRA-enabled NIMs (model-id routing handles
-    # which inference path runs). Nano is intentionally excluded from the
-    # base-target sweep — only its LoRA variant is in scope per Stage 3.
-    base_url_for = {
-        "meta/llama-3.2-1b-instruct": args.nim_url_1b,
-        "meta/llama-3.2-3b-instruct": args.nim_url_3b,
-        "meta/llama-3.1-8b-instruct": args.nim_url_8b,
-    }
+    # Bases that get a no-LoRA reference target in the matrix. Nano is included
+    # because its hybrid MoE serving profiles require a separate base-only NIM
+    # deployment rather than using the LoRA-capable profile for base inference.
+    # 49B is registered via build_49b_target to keep comparator naming explicit.
+    _BASE_TARGETS = [
+        "meta/llama-3.2-1b-instruct",
+        "meta/llama-3.2-3b-instruct",
+        "meta/llama-3.1-8b-instruct",
+        "nvidia/nemotron-3-nano-30b-a3b",
+    ]
 
-    with EvaluatorClient(args.evaluator_url) as client:
-        if args.adapter_targets:
+    with EvaluatorClient(args.evaluator_url, api_key=args.evaluator_api_key) as client:
+        if register_adapter_targets:
             for a in adapters:
-                p = build_adapter_target(a, nim_url=nim_url_for[a.base_model])
-                _create_target_idempotent(client, p, label="adapter")
-        if args.base_targets:
-            for base, url in base_url_for.items():
-                p = build_base_target(base, nim_url=url)
-                _create_target_idempotent(client, p, label="base")
-        if args.rag_targets:
-            for coll in ("nim_curated", "nemo_usvcs_curated"):
-                p = build_rag_target(coll, rag_url=args.rag_url)
-                _create_target_idempotent(client, p, label="rag")
-        if args.configs:
+                p = build_adapter_target(a, proxy_url=args.proxy_url)
+                _create_target_idempotent(
+                    client, p, label="adapter", update_existing=args.update_existing
+                )
+        if register_base_targets:
+            for base in _BASE_TARGETS:
+                p = build_base_target(base, proxy_url=args.proxy_url)
+                _create_target_idempotent(
+                    client, p, label="base", update_existing=args.update_existing
+                )
+        if register_49b_target:
+            p = build_49b_target(proxy_url=args.proxy_url)
+            _create_target_idempotent(
+                client, p, label="49b", update_existing=args.update_existing
+            )
+        if register_configs:
             for builder in (build_singleaxis_config, build_pairwise_config):
                 p = builder()
-                _create_config_idempotent(client, p)
+                _create_config_idempotent(client, p, update_existing=args.update_existing)
     return 0
 
 

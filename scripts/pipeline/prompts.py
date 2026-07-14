@@ -17,8 +17,8 @@ A passage may cover multiple topics — each warrants its own entailment.
 
 For each entailment:
 - conclusion: the central claim or main topic of that thread (one sentence)
-- premises: 1-3 supporting facts that logically justify this conclusion;
-  derive from the text if not explicit
+- premises: one or more supporting facts that logically justify this conclusion;
+  derive from the text if not explicit, and include all facts needed for support
 - context: ancillary technical details specific to this entailment (1-2 sentences)
 - entities: comma-separated list of notable entities for this entailment
 
@@ -26,8 +26,8 @@ Rules:
 - All content must come ONLY from the passage — no outside knowledge
 - Ensure every truth assignment satisfying the premises also satisfies the
   corresponding conclusion
-- Return 1 to 10 entailments depending on how many distinct topics the
-  passage covers
+- Return as many entailments as needed to cover the distinct topics the
+  passage contains
 
 Note: 'recommendations' field exists in LogEntailment with default="" for
 downstream compatibility; not requested here to keep output tight.
@@ -156,20 +156,25 @@ Output JSON (2 or 3 pairs — omit procedural if not applicable):
 }}"""
 
 
-# ── Stage 2: QA Evaluation refinement ────────────────────────────────────────
+# ── Stage 2: QA admission/refinement ─────────────────────────────────────────
 
 QA_EVAL_SYSTEM = (
-    "You are a technical documentation editor. Verify and refine QA pairs against "
-    "their source. Return ONLY valid JSON."
+    "You are a rigorous technical documentation QA gate. Verify and refine "
+    "question-answer pairs against their source text. Return ONLY valid JSON."
 )
 
 QA_EVAL_USER = """\
 Evaluate the question and answer below against the source text.
 
 Rules:
-1. If the QA cannot be derived using ONLY the text, rewrite as a grounded pair.
-2. If the QA are not logically associated using the text as context, rewrite.
-3. If the QA are grounded and logically consistent, return them unchanged.
+1. Use ONLY the source text as factual support.
+2. If the QA is grounded but phrasing can be improved, rewrite it.
+3. If the QA is not logically associated with the source, rewrite it only when a
+   corrected grounded pair can be derived from the source text.
+4. If the QA is ungrounded and cannot be repaired from the source text, set
+   admit=false and explain why.
+5. If the QA is grounded and logically consistent, return it unchanged with
+   admit=true.
 
 Question: {question}
 Answer:   {answer}
@@ -178,12 +183,18 @@ Source text:
 
 Output JSON:
 {{
-  "prompt":     "...",
-  "completion": "..."
+  "admit": true,
+  "prompt": "...",
+  "completion": "...",
+  "grounded": true,
+  "answer_fidelity": true,
+  "no_hallucination": true,
+  "repairable": true,
+  "reason": "one concise audit note"
 }}"""
 
 
-# ── Stage 4: External judge (Claude Sonnet) ──────────────────────────────────
+# ── Stage 4: External judge ─────────────────────────────────────────────────
 
 JUDGE_SYSTEM = (
     "You are an impartial grader of question-answer pairs against their source text. "

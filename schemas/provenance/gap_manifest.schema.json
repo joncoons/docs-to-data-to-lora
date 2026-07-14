@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://docs-to-data-to-lora.local/schemas/provenance/gap_manifest.schema.json",
+  "title": "GapManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "gap_manifest_id",
+    "dataset_version_id",
+    "analysis",
+    "gaps"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "provenance.v1"
+    },
+    "gap_manifest_id": {
+      "type": "string",
+      "pattern": "^gapmanifest_[A-Za-z0-9_.:-]+$"
+    },
+    "dataset_version_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analyzer_name", "analyzer_version", "config_hash"],
+      "properties": {
+        "analyzer_name": {
+          "type": "string"
+        },
+        "analyzer_version": {
+          "type": "string"
+        },
+        "config_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-fA-F0-9]{64}$"
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gap_id", "dimension", "severity", "recommendation"],
+        "properties": {
+          "gap_id": {
+            "type": "string",
+            "pattern": "^gap_[A-Za-z0-9_.:-]+$"
+          },
+          "dimension": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "product": {
+                "type": ["string", "null"]
+              },
+              "microservice": {
+                "type": ["string", "null"]
+              },
+              "task_type": {
+                "type": ["string", "null"]
+              },
+              "api_surface": {
+                "type": ["string", "null"]
+              },
+              "failure_mode": {
+                "type": ["string", "null"]
+              },
+              "version": {
+                "type": ["string", "null"]
+              }
+            }
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"]
+          },
+          "observed_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "target_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "seed_entailment_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": []
+          },
+          "seed_chunk_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": []
+          },
+          "recommendation": {
+            "type": "string",
+            "enum": ["generate_synthetic", "needs_human_review", "blocked", "ignore"]
+          },
+          "generation_brief": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    }
+  }
+}

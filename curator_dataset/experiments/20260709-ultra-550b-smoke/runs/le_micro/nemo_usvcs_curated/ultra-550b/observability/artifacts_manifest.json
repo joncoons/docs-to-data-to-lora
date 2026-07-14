@@ -1,0 +1,29 @@
+{
+  "artifacts": [
+    {
+      "artifact_kind": "input_passages",
+      "artifact_path": "passages.jsonl",
+      "bytes": 81208,
+      "path": "curator_dataset/experiments/20260709-ultra-550b-smoke/inputs_micro/nemo_usvcs_curated.passages.jsonl",
+      "rows": 8,
+      "sha256": "sha256:7d0b6c0e890317bae8efae169fb7f0a724a5e7a394db55a9eb2f025b13254d53"
+    },
+    {
+      "artifact_kind": "stage1a_rows",
+      "artifact_path": "stage1a_le.jsonl",
+      "bytes": 2084659,
+      "path": "curator_dataset/experiments/20260709-ultra-550b-smoke/runs/le_micro/nemo_usvcs_curated/ultra-550b/stage1a_le.jsonl",
+      "rows": 103,
+      "sha256": "sha256:fe7eecf5f4851ff8e9e8f5bb4031d0539854f0da7c930fc1dc7f2c093575ea5e"
+    },
+    {
+      "artifact_kind": "entailment_provenance",
+      "artifact_path": "provenance/entailments.jsonl",
+      "bytes": 50370,
+      "path": "curator_dataset/experiments/20260709-ultra-550b-smoke/runs/le_micro/nemo_usvcs_curated/ultra-550b/provenance/entailments.jsonl",
+      "rows": 37,
+      "sha256": "sha256:ed0314aae1b25df5b0bc52a7f2eb895cc04b14480c3e0867e4f8053f6853f01b"
+    }
+  ],
+  "schema_version": "observability.v1"
+}

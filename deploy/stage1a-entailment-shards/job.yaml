@@ -1,0 +1,81 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: stage1a-le-kvp-nim-curated
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: stage1a-entailment-shards
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+spec:
+  completionMode: Indexed
+  completions: 8
+  parallelism: 2
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: stage1a-entailment-shards
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: stage1a-entailment-shard
+          image: <registry>/docs-to-data-to-lora/stage1a-entailment-shards:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SHARD_INDEX
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
+            - name: SHARD_COUNT
+              value: "8"
+            - name: PIPELINE_NIM_ENDPOINTS
+              value: "http://nim-llm-super-120b-bw.runai-rag:8000/v1"
+            - name: PIPELINE_LLM_MODEL
+              value: "nvidia/nemotron-3-super-120b-a12b"
+            - name: PIPELINE_NIM_API_KEY
+              value: "local"
+            - name: PIPELINE_LLM_NO_THINK
+              value: "true"
+            - name: MLFLOW_TRACKING_URI
+              value: "http://mlflow:5000"
+            - name: MLFLOW_EXPERIMENT_NAME
+              value: "docs-to-data-to-lora"
+            - name: PIPELINE_RUN_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+          args:
+            - --input-passages
+            - /datasets/nim_curated/passages.jsonl
+            - --output-dir
+            - /datasets/nim_curated
+            - --observability-dir
+            - /observability/stage1a-le-kvp/nim_curated/$(SHARD_INDEX)
+            - --shard-index
+            - $(SHARD_INDEX)
+            - --shard-count
+            - $(SHARD_COUNT)
+            - --max-workers
+            - "5"
+          resources:
+            requests:
+              cpu: "1"
+              memory: 2Gi
+            limits:
+              cpu: "4"
+              memory: 8Gi
+          volumeMounts:
+            - name: dataset-artifacts
+              mountPath: /datasets
+            - name: observability-output
+              mountPath: /observability
+      volumes:
+        - name: dataset-artifacts
+          persistentVolumeClaim:
+            claimName: stage3-datasets
+        - name: observability-output
+          persistentVolumeClaim:
+            claimName: pipeline-observability

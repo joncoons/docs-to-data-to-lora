@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://docs-to-data-to-lora.local/schemas/provenance/entailment.schema.json",
+  "title": "Entailment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "entailment_id",
+    "claim",
+    "evidence",
+    "status",
+    "extractor"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "provenance.v1"
+    },
+    "entailment_id": {
+      "type": "string",
+      "pattern": "^ent_[A-Za-z0-9_.:-]+$"
+    },
+    "supersedes_entailment_id": {
+      "type": ["string", "null"]
+    },
+    "claim": {
+      "type": "string"
+    },
+    "premises": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["chunk_id", "source_revision_id"],
+        "properties": {
+          "chunk_id": {
+            "type": "string"
+          },
+          "source_revision_id": {
+            "type": "string"
+          },
+          "quote": {
+            "type": ["string", "null"]
+          },
+          "char_start": {
+            "type": ["integer", "null"]
+          },
+          "char_end": {
+            "type": ["integer", "null"]
+          },
+          "support_role": {
+            "type": "string",
+            "enum": ["primary", "secondary", "contrast", "context"],
+            "default": "primary"
+          }
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "superseded", "retracted", "rejected", "needs_review"]
+    },
+    "status_reason": {
+      "type": ["string", "null"]
+    },
+    "extractor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model", "prompt_hash", "created_at"],
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "prompt_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-fA-F0-9]{64}$"
+        },
+        "temperature": {
+          "type": ["number", "null"]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "validator": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "prompt_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-fA-F0-9]{64}$"
+        },
+        "entailment_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "grounding_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "validated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

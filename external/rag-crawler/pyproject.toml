@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rag-crawler"
+version = "1.0.1"
+description = "Standalone async web crawler — HTML→embed→Elasticsearch, binaries→ingestor"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "aiohttp>=3.9",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.0",
+    "selenium>=4.20",
+    "redis>=5.0",
+    "certifi>=2024.1",
+    "pillow>=10.0",
+    "pydantic>=2.0",
+    "requests>=2.31",
+    "apscheduler>=3.10,<4",
+    "croniter>=2.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/crawler"]
+
+[project.scripts]
+rag-crawler = "crawler.server:app"

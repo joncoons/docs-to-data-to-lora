@@ -1,0 +1,58 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dataset-finalization-nim-curated
+  namespace: nemo-peft
+  labels:
+    app.kubernetes.io/name: dataset-finalization
+    app.kubernetes.io/part-of: docs-to-data-to-lora
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dataset-finalization
+        app.kubernetes.io/part-of: docs-to-data-to-lora
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: dataset-finalization
+          image: <registry>/docs-to-data-to-lora/dataset-finalization:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MLFLOW_TRACKING_URI
+              value: "http://mlflow:5000"
+            - name: MLFLOW_EXPERIMENT_NAME
+              value: "docs-to-data-to-lora"
+            - name: PIPELINE_RUN_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+          args:
+            - --dataset-dir
+            - /datasets/nim_curated
+            - --dataset-name
+            - nim_curated
+            - --observability-dir
+            - /observability/dataset-finalization/nim_curated
+          resources:
+            requests:
+              cpu: "500m"
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 2Gi
+          volumeMounts:
+            - name: dataset-artifacts
+              mountPath: /datasets
+            - name: observability-output
+              mountPath: /observability
+      volumes:
+        - name: dataset-artifacts
+          persistentVolumeClaim:
+            claimName: stage3-datasets
+        - name: observability-output
+          persistentVolumeClaim:
+            claimName: pipeline-observability

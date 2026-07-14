@@ -33,3 +33,6 @@ crawl-exports/
 
 # Pipeline outputs (mounted on NFS, not in repo)
 /mnt/nvme2/peft/datasets/v2/
+# Local-only archives and provenance snapshots
+.local-archive/
+.local_archive/

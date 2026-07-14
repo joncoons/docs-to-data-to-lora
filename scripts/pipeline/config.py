@@ -7,6 +7,8 @@ import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from scripts.pipeline.stage3_tokenizer import default_stage3_tokenizer_name_or_path
+
 
 # Defaults assume in-cluster pod DNS. Override via env vars when running from
 # a host that can't resolve cluster service names (e.g., from ubuntu-local-dev,
@@ -21,9 +23,28 @@ DEFAULT_NIM_ENDPOINTS: tuple[str, ...] = tuple(
         "http://nim-llm-super-120b-bw.runai-rag:8000/v1",
     ).split(",")
 )
-DEFAULT_CLAUDE_BASE = os.environ.get(
-    "PIPELINE_CLAUDE_BASE",
+DEFAULT_EXTERNAL_JUDGE_BASE = os.environ.get(
+    "PIPELINE_EXTERNAL_JUDGE_BASE",
     "https://inference-api.nvidia.com/v1",
+)
+DEFAULT_EXTERNAL_JUDGE_MODEL = os.environ.get(
+    "PIPELINE_EXTERNAL_JUDGE_MODEL",
+    "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+)
+DEFAULT_STAGE2_QA_ENDPOINTS: tuple[str, ...] = tuple(
+    endpoint.strip()
+    for endpoint in os.environ.get(
+        "PIPELINE_STAGE2_QA_ENDPOINTS",
+        DEFAULT_EXTERNAL_JUDGE_BASE,
+    ).split(",")
+    if endpoint.strip()
+)
+# Stage 2 defaults to Super 120B-class QA for cost. Override with Ultra or
+# another foundation/frontier-grade model only when the admission pass is
+# operationally critical enough to justify the extra spend.
+DEFAULT_STAGE2_QA_MODEL = os.environ.get(
+    "PIPELINE_STAGE2_QA_MODEL",
+    "nvidia/nvidia/nemotron-3-super-v3",
 )
 
 
@@ -31,8 +52,16 @@ DEFAULT_CLAUDE_BASE = os.environ.get(
 class Config:
     es_host: str = DEFAULT_ES_HOST
     nim_endpoints: list[str] = field(default_factory=lambda: list(DEFAULT_NIM_ENDPOINTS))
-    claude_base_url: str = DEFAULT_CLAUDE_BASE
-    claude_model: str = "aws/anthropic/bedrock-claude-sonnet-4-6"
+    external_judge_base_url: str = DEFAULT_EXTERNAL_JUDGE_BASE
+    external_judge_model: str = DEFAULT_EXTERNAL_JUDGE_MODEL
+    stage2_qa_endpoints: list[str] = field(default_factory=lambda: list(DEFAULT_STAGE2_QA_ENDPOINTS))
+    stage2_qa_model: str = DEFAULT_STAGE2_QA_MODEL
+    stage2_qa_temperature: float = float(os.environ.get("PIPELINE_STAGE2_QA_TEMPERATURE", "0.0"))
+    stage2_qa_max_tokens: int = int(os.environ.get("PIPELINE_STAGE2_QA_MAX_TOKENS", "2048"))
+    stage2_execution_surface: str = os.environ.get(
+        "PIPELINE_STAGE2_EXECUTION_SURFACE",
+        "curator_llm_quality",
+    )
     super120b_model: str = "nvidia/nemotron-3-super-120b-a12b"
 
     base_output_dir: Path = field(default_factory=lambda: Path("/mnt/nvme2/peft/datasets/v2"))
@@ -48,6 +77,7 @@ class Config:
     knn_max_context_tokens: int = 1200
 
     # Stage 1C
+    stage1c_selection_mode: str = os.environ.get("PIPELINE_STAGE1C_SELECTION_MODE", "stratified")
     stage1c_top_percent: float = 0.25
     stage1c_min_passages: int = 100
 
@@ -61,8 +91,11 @@ class Config:
     # Stage 3
     train_val_split: float = 0.90
     minhash_threshold: float = 0.85
-    min_question_tokens: int = 8
-    min_answer_tokens: int = 25
+    stage3_tokenizer_name_or_path: str = field(
+        default_factory=default_stage3_tokenizer_name_or_path
+    )
+    min_question_tokens: int = int(os.environ.get("PIPELINE_STAGE3_MIN_QUESTION_TOKENS", "12"))
+    min_answer_tokens: int = int(os.environ.get("PIPELINE_STAGE3_MIN_ANSWER_TOKENS", "8"))
 
     # Stage 4
     judge_sample_size: int = 100
@@ -105,6 +138,6 @@ def get_es_password() -> str:
     )
 
 
-def get_claude_api_key() -> str:
-    """Get the NVIDIA Inference API key (used for Claude Sonnet judge calls)."""
+def get_external_judge_api_key() -> str:
+    """Get the NVIDIA Inference API key used for external judge calls."""
     return get_k8s_secret("nvidia-inference-key", "runai-rag", "api-key")

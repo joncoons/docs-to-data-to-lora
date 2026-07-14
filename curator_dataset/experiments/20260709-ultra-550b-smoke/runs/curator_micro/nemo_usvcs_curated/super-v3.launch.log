@@ -1,0 +1,520 @@
+2026-07-09 18:57:47.976 | INFO     | nemo_curator.core.utils:init_cluster:185 - Ray start command: ray start --head --node-ip-address 127.0.1.1 --port 6379 --metrics-export-port 8080 --dashboard-host 127.0.0.1 --dashboard-port 8265 --ray-client-server-port 10001 --temp-dir /tmp/ray --disable-usage-stats --block
+2026-07-09 18:57:49,310 - INFO - Note: NumExpr detected 32 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-07-09 18:57:49,310 - INFO - NumExpr defaulting to 16 threads.
+2026-07-09 18:57:53,074	WARNING services.py:2168 -- WARNING: The object store is using /tmp instead of /dev/shm because /dev/shm has only 8589934592 bytes available. This will harm performance! You may be able to free up space by deleting files in /dev/shm. If you are inside a Docker container, you can increase /dev/shm size by passing '--shm-size=10.24gb' to 'docker run' (or add it to the run_options list in a Ray cluster config). Make sure to set this to more than 30% of available RAM.
+2026-07-09 18:57:49,829	INFO usage_lib.py:447 -- Usage stats collection is disabled.
+2026-07-09 18:57:49,829	INFO scripts.py:936 -- [37mLocal node IP[39m: [1m127.0.1.1[22m
+2026-07-09 18:57:55,196	SUCC scripts.py:975 -- [32m--------------------[39m
+2026-07-09 18:57:55,197	SUCC scripts.py:976 -- [32mRay runtime started.[39m
+2026-07-09 18:57:55,197	SUCC scripts.py:977 -- [32m--------------------[39m
+2026-07-09 18:57:55,197	INFO scripts.py:979 -- [36mNext steps[39m
+2026-07-09 18:57:55,197	INFO scripts.py:982 -- To add another node to this Ray cluster, run
+2026-07-09 18:57:55,197	INFO scripts.py:985 -- [1m  ray start --address='127.0.1.1:6379'[22m
+2026-07-09 18:57:55,197	INFO scripts.py:996 -- To connect to this Ray cluster:
+2026-07-09 18:57:55,197	INFO scripts.py:998 -- [35mimport[39m[26m ray
+2026-07-09 18:57:55,197	INFO scripts.py:999 -- ray[35m.[39m[26minit(_node_ip_address[35m=[39m[26m[33m'127.0.1.1'[39m[26m)
+2026-07-09 18:57:55,197	INFO scripts.py:1013 -- To submit a Ray job using the Ray Jobs CLI:
+2026-07-09 18:57:55,197	INFO scripts.py:1014 -- [1m  RAY_API_SERVER_ADDRESS='http://127.0.0.1:8265' ray job submit --working-dir . -- python my_script.py[22m
+2026-07-09 18:57:55,197	INFO scripts.py:1023 -- See https://docs.ray.io/en/latest/cluster/running-applications/job-submission/index.html 
+2026-07-09 18:57:55,197	INFO scripts.py:1027 -- for more information on submitting Ray jobs to the Ray cluster.
+2026-07-09 18:57:55,197	INFO scripts.py:1032 -- To terminate the Ray runtime, run
+2026-07-09 18:57:55,197	INFO scripts.py:1033 -- [1m  ray stop[22m
+2026-07-09 18:57:55,197	INFO scripts.py:1036 -- To view the status of the cluster, use
+2026-07-09 18:57:55,197	INFO scripts.py:1037 --   [1mray status[22m[26m
+2026-07-09 18:57:55,197	INFO scripts.py:1041 -- To monitor and debug Ray, view the dashboard at 
+2026-07-09 18:57:55,197	INFO scripts.py:1042 --   [1m127.0.0.1:8265[22m[26m
+2026-07-09 18:57:55,197	INFO scripts.py:1049 -- [4mIf connection to the dashboard fails, check your firewall settings and network configuration.[24m
+2026-07-09 18:57:55,197	INFO scripts.py:1155 -- [36m[1m--block[22m[39m
+2026-07-09 18:57:55,197	INFO scripts.py:1156 -- This command will now block forever until terminated by a signal.
+2026-07-09 18:57:55,198	INFO scripts.py:1159 -- Running subprocesses are monitored and a message will be printed if any of them terminate unexpectedly. Subprocesses exit with SIGTERM will be treated as graceful, thus NOT reported.
+2026-07-09 18:57:55,198	INFO scripts.py:1164 -- Process exit logs will be saved to: [1m/tmp/ray/session_2026-07-09_18-57-49_829709_141/logs/ray_process_exit.log[22m[26m
+2026-07-09 18:57:57.151 | INFO     | nemo_curator.pipeline.pipeline:add_stage:61 - Added stage 'jsonl_reader' to pipeline 'nim_curator_diverse_qa'
+2026-07-09 18:57:57.153 | INFO     | nemo_curator.pipeline.pipeline:add_stage:61 - Added stage 'token_count' to pipeline 'nim_curator_diverse_qa'
+2026-07-09 18:57:57.153 | INFO     | nemo_curator.pipeline.pipeline:add_stage:61 - Added stage 'document_splitter' to pipeline 'nim_curator_diverse_qa'
+2026-07-09 18:57:57.153 | INFO     | nemo_curator.pipeline.pipeline:add_stage:61 - Added stage 'token_count' to pipeline 'nim_curator_diverse_qa'
+2026-07-09 18:57:57.153 | INFO     | nemo_curator.pipeline.pipeline:add_stage:61 - Added stage 'document_joiner' to pipeline 'nim_curator_diverse_qa'
+2026-07-09 18:57:57.153 | INFO     | nemo_curator.pipeline.pipeline:add_stage:61 - Added stage 'filter_fn' to pipeline 'nim_curator_diverse_qa'
+2026-07-09 18:57:57.153 | INFO     | nemo_curator.pipeline.pipeline:add_stage:61 - Added stage 'NemotronCCBaseStage' to pipeline 'nim_curator_diverse_qa'
+2026-07-09 18:57:57.173 | INFO     | nemo_curator.utils.file_utils:check_output_mode:342 - Overwrite mode: output directory /workspace/curator_dataset/experiments/20260709-ultra-550b-smoke/runs/curator_micro/nemo_usvcs_curated/super-v3/raw does not exist; nothing to remove
+2026-07-09 18:57:57.173 | INFO     | nemo_curator.pipeline.pipeline:add_stage:61 - Added stage 'jsonl_writer' to pipeline 'nim_curator_diverse_qa'
+2026-07-09 18:57:57.173 | INFO     | nemo_curator.pipeline.pipeline:build:70 - Planning pipeline: nim_curator_diverse_qa
+2026-07-09 18:57:57.173 | INFO     | nemo_curator.pipeline.pipeline:_decompose_stages:106 - Decomposing composite stage: jsonl_reader
+2026-07-09 18:57:57.173 | INFO     | nemo_curator.pipeline.pipeline:_decompose_stages:120 - Expanded 'jsonl_reader' into 2 execution stages
+2026-07-09 18:57:57.176 | INFO     | nemo_curator.backends.xenna.executor:execute:135 - Execution mode: STREAMING
+2026-07-09 18:57:57,176	INFO worker.py:1669 -- Using address 127.0.1.1:6379 set in the environment variable RAY_ADDRESS
+2026-07-09 18:57:57,178	INFO worker.py:1810 -- Connecting to existing Ray cluster at address: 127.0.1.1:6379...
+2026-07-09 18:57:57,187	INFO worker.py:2004 -- Connected to Ray cluster. View the dashboard at [1m[32mhttp://127.0.0.1:8265 [39m[22m
+/opt/venv/lib/python3.12/site-packages/ray/_private/worker.py:2052: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+2026-07-09 18:57:59.872 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=0.5, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:57:59.872 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:57:59.872 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:57:59.872 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:57:59.873 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:57:59.873 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:57:59.873 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:57:59.873 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:57:59.873 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:57:59.870 | INFO     | cosmos_xenna.pipelines.private.pipelines:run_pipeline:472 - PipelineSpec:
+  config: PipelineConfig(execution_mode=<ExecutionMode.STREAMING: 0>, num_setup_attempts_python=1, num_run_attempts_python=1, max_setup_failure_percentage=None, ignore_failures=False, reset_workers_on_failure=False, slots_per_actor=2, enable_work_stealing=False, max_tasks_to_poll_per_chunk=8, worker_max_lifetime_m=0, worker_restart_interval_m=1, logging_interval_s=60, failures_return_nones=False, return_last_stage_outputs=True, actor_pool_verbosity_level=<VerbosityLevel.INFO: 1>, monitoring_verbosity_level=<VerbosityLevel.INFO: 1>, mode_specific=StreamingSpecificSpec(autoscale_interval_s=180, autoscale_speed_estimation_window_duration_s=180.0, autoscale_speed_estimation_min_data_points=5, max_queued_multiplier=1.0, max_queued_lower_bound=8, autoscaler_verbosity_level=<VerbosityLevel.INFO: 1>, executor_verbosity_level=<VerbosityLevel.INFO: 1>), log_worker_allocation_layout=True, cpu_allocation_percentage=0.95, clear_cuda_visible_devices_on_cpu_actors=True)
+  job_info: None
+  serving_queues: None
+  Stage 0:
+   class_name: FilePartitioningStage
+   required_resources: Resources(cpus=0.5, gpus=0, is_spmd=false)
+      num_workers: None
+      num_workers_per_node: 1
+      num_setup_attempts_python: 1
+      num_run_attempts_python: 1
+      ignore_failures: False
+      reset_workers_on_failure: False
+      slots_per_actor: 2
+      worker_max_lifetime_m: 0
+      worker_restart_interval_m: 1
+      max_setup_failure_percentage: None
+      over_provision_factor: None
+  Stage 1:
+   class_name: JsonlReaderStage
+   required_resources: Resources(cpus=1, gpus=0, is_spmd=false)
+      num_workers: None
+      num_workers_per_node: None
+      num_setup_attempts_python: 1
+      num_run_attempts_python: 1
+      ignore_failures: False
+      reset_workers_on_failure: False
+      slots_per_actor: 2
+      worker_max_lifetime_m: 0
+      worker_restart_interval_m: 1
+      max_setup_failure_percentage: None
+      over_provision_factor: None
+  Stage 2:
+   class_name: ScoreFilter
+   required_resources: Resources(cpus=1, gpus=0, is_spmd=false)
+      num_workers: None
+      num_workers_per_node: None
+      num_setup_attempts_python: 1
+      num_run_attempts_python: 1
+      ignore_failures: False
+      reset_workers_on_failure: False
+      slots_per_actor: 2
+      worker_max_lifetime_m: 0
+      worker_restart_interval_m: 1
+      max_setup_failure_percentage: None
+      over_provision_factor: None
+  Stage 3:
+   class_name: DocumentSplitter
+   required_resources: Resources(cpus=1, gpus=0, is_spmd=false)
+      num_workers: None
+      num_workers_per_node: None
+      num_setup_attempts_python: 1
+      num_run_attempts_python: 1
+      ignore_failures: False
+      reset_workers_on_failure: False
+      slots_per_actor: 2
+      worker_max_lifetime_m: 0
+      worker_restart_interval_m: 1
+      max_setup_failure_percentage: None
+      over_provision_factor: None
+  Stage 4:
+   class_name: ScoreFilter
+   required_resources: Resources(cpus=1, gpus=0, is_spmd=false)
+      num_workers: None
+      num_workers_per_node: None
+      num_setup_attempts_python: 1
+      num_run_attempts_python: 1
+      ignore_failures: False
+      reset_workers_on_failure: False
+      slots_per_actor: 2
+      worker_max_lifetime_m: 0
+      worker_restart_interval_m: 1
+      max_setup_failure_percentage: None
+      over_provision_factor: None
+  Stage 5:
+   class_name: DocumentJoiner
+   required_resources: Resources(cpus=1, gpus=0, is_spmd=false)
+      num_workers: None
+      num_workers_per_node: None
+      num_setup_attempts_python: 1
+      num_run_attempts_python: 1
+      ignore_failures: False
+      reset_workers_on_failure: False
+      slots_per_actor: 2
+      worker_max_lifetime_m: 0
+      worker_restart_interval_m: 1
+      max_setup_failure_percentage: None
+      over_provision_factor: None
+  Stage 6:
+   class_name: Filter
+   required_resources: Resources(cpus=1, gpus=0, is_spmd=false)
+      num_workers: None
+      num_workers_per_node: None
+      num_setup_attempts_python: 1
+      num_run_attempts_python: 1
+      ignore_failures: False
+      reset_workers_on_failure: False
+      slots_per_actor: 2
+      worker_max_lifetime_m: 0
+      worker_restart_interval_m: 1
+      max_setup_failure_percentage: None
+      over_provision_factor: None
+  Stage 7:
+   class_name: DiverseQAStage
+   required_resources: Resources(cpus=1, gpus=0, is_spmd=false)
+      num_workers: None
+      num_workers_per_node: None
+      num_setup_attempts_python: 1
+      num_run_attempts_python: 1
+      ignore_failures: False
+      reset_workers_on_failure: False
+      slots_per_actor: 2
+      worker_max_lifetime_m: 0
+      worker_restart_interval_m: 1
+      max_setup_failure_percentage: None
+      over_provision_factor: None
+  Stage 8:
+   class_name: JsonlWriter
+   required_resources: Resources(cpus=1, gpus=0, is_spmd=false)
+      num_workers: None
+      num_workers_per_node: None
+      num_setup_attempts_python: 1
+      num_run_attempts_python: 1
+      ignore_failures: False
+      reset_workers_on_failure: False
+      slots_per_actor: 2
+      worker_max_lifetime_m: 0
+      worker_restart_interval_m: 1
+      max_setup_failure_percentage: None
+      over_provision_factor: None
+
+2026-07-09 18:57:59.873 | INFO     | cosmos_xenna.pipelines.private.pipelines:run_pipeline:474 - Initialized Ray cluster.
+2026-07-09 18:57:59,873	INFO worker.py:1669 -- Using address 127.0.1.1:6379 set in the environment variable RAY_ADDRESS
+2026-07-09 18:57:59,873	INFO worker.py:1810 -- Connecting to existing Ray cluster at address: 127.0.1.1:6379...
+2026-07-09 18:57:59,873	INFO worker.py:1831 -- Calling ray.init() again after it has already been called.
+2026-07-09 18:57:59.873 | INFO     | cosmos_xenna.ray_utils.cluster:init_or_connect_to_cluster:95 - Ray dashboard url: 127.0.0.1:8265
+2026-07-09 18:58:01.477 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=0.5, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | cosmos_xenna.pipelines.private.pipelines:run_pipeline:484 - Cluster resources: ClusterResources(nodes={'dc03b48a12882b64d6565a877ed17907b6c645faf1f00ccc3f66d6c2': NodeResources(used_cpus=0.0, total_cpus=30, gpus=[GpuResources(index=0, uuid_=UUID('c6854cfb-9355-b88b-441e-deb7a0598f3d'), used_fraction=0.0), GpuResources(index=1, uuid_=UUID('031cf14c-597d-2a7f-d599-2edabd72327c'), used_fraction=0.0)], name='dc03b48a12882b64d6565a877ed17907b6c645faf1f00ccc3f66d6c2')})
+2026-07-09 18:58:01.478 | INFO     | cosmos_xenna.pipelines.private.pipelines:run_pipeline:485 - Created/connected to cluster with resources: PoolOfResources(cpus=30, gpus=2)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=0.5, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=0.5, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=0.5, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.478 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=0.5, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:01.479 | INFO     | nemo_curator.backends.xenna.adapter:required_resources:71 - Resources: Resources(cpus=1.0, gpu_memory_gb=0.0, gpus=0.0)
+2026-07-09 18:58:03.174 | INFO     | cosmos_xenna.pipelines.private.monitoring:update:339 - Pipeline stats:
+Pipeline Stats:
+Pipeline duration: 0.0282210906346639 minutes
+Number of initial input samples: 1
+Number of input samples remaining: 1
+Streaming pipeline main loop rate: 0
+
+Cluster Resources:
+╒══════════════════════════╤═════════╤═════════════╕
+│ Resource                 │   Total │   Available │
+╞══════════════════════════╪═════════╪═════════════╡
+│ CPUs                     │   32    │       31    │
+├──────────────────────────┼─────────┼─────────────┤
+│ GPUs                     │    2    │        2    │
+├──────────────────────────┼─────────┼─────────────┤
+│ Memory (GB)              │  191.26 │      191.26 │
+├──────────────────────────┼─────────┼─────────────┤
+│ Object Store Memory (GB) │   10    │       10    │
+╘══════════════════════════╧═════════╧═════════════╛
+
+Resource Usage by Stage:
+╒══════════════════════════════════╤═════════╤═══════════════╤═══════════════╤════════════════════╤══════════════════════════╕
+│ Stage                            │   CPU % │   Memory (GB) │   Actor Count │   CPU % per worker │   Memory (GB) per worker │
+╞══════════════════════════════════╪═════════╪═══════════════╪═══════════════╪════════════════════╪══════════════════════════╡
+│ Stage 00 - FilePartitioningStage │       0 │             0 │             0 │                  0 │                        0 │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 01 - JsonlReaderStage      │       0 │             0 │             0 │                  0 │                        0 │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 02 - ScoreFilter           │       0 │             0 │             0 │                  0 │                        0 │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 03 - DocumentSplitter      │       0 │             0 │             0 │                  0 │                        0 │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 04 - ScoreFilter           │       0 │             0 │             0 │                  0 │                        0 │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 05 - DocumentJoiner        │       0 │             0 │             0 │                  0 │                        0 │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 06 - Filter                │       0 │             0 │             0 │                  0 │                        0 │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 07 - DiverseQAStage        │       0 │             0 │             0 │                  0 │                        0 │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 08 - JsonlWriter           │       0 │             0 │             0 │                  0 │                        0 │
+╘══════════════════════════════════╧═════════╧═══════════════╧═══════════════╧════════════════════╧══════════════════════════╛
+
+Stage state:
+╒══════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═════════════╤═════════════════╤══════════════╤═══════════════╤════════════╤═════════════╤═════════════════╕
+│ Stage                            │   Actors: │   Actors: │   Actors: │   Actors: │   Actors: │      Tasks: │          Tasks: │       Queue: │        Queue: │     Slots: │      Slots: │ Speed:          │
+│                                  │    Target │   Pending │     Ready │   Running │      Idle │   Completed │   Returned None │   Input Size │   Output Size │   Num Used │   Num Empty │ Tasks/actor/s   │
+╞══════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═════════════╪═════════════════╪══════════════╪═══════════════╪════════════╪═════════════╪═════════════════╡
+│ Stage 00 - FilePartitioningStage │         0 │         0 │         0 │         0 │         0 │           0 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 01 - JsonlReaderStage      │         0 │         0 │         0 │         0 │         0 │           0 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 02 - ScoreFilter           │         0 │         0 │         0 │         0 │         0 │           0 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 03 - DocumentSplitter      │         0 │         0 │         0 │         0 │         0 │           0 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 04 - ScoreFilter           │         0 │         0 │         0 │         0 │         0 │           0 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 05 - DocumentJoiner        │         0 │         0 │         0 │         0 │         0 │           0 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 06 - Filter                │         0 │         0 │         0 │         0 │         0 │           0 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 07 - DiverseQAStage        │         0 │         0 │         0 │         0 │         0 │           0 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 08 - JsonlWriter           │         0 │         0 │         0 │         0 │         0 │           0 │               0 │            0 │             0 │          0 │           0 │                 │
+╘══════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═════════════╧═════════════════╧══════════════╧═══════════════╧════════════╧═════════════╧═════════════════╛
+2026-07-09 18:58:03.175 | WARNING  | cosmos_xenna.pipelines.private.streaming:apply_autoscale_result_if_ready:380 - Applying autoscale results took 1.6902530193328857 seconds
+[36m(Stage 00 - FilePartitioningStage pid=3433)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(Stage 00 - FilePartitioningStage pid=3433)[0m 2026-07-09 18:58:06.151 | INFO     | nemo_curator.stages.file_partitioning:process:122 - Found 1 files
+[36m(Stage 00 - FilePartitioningStage pid=3433)[0m 2026-07-09 18:58:06.151 | INFO     | nemo_curator.stages.file_partitioning:process:134 - No partitions specified, defaulting to one file per partition
+[36m(Stage 00 - FilePartitioningStage pid=3433)[0m 2026-07-09 18:58:06.151 | INFO     | nemo_curator.stages.file_partitioning:process:192 - Created 1 file groups from 1 files
+2026-07-09 18:58:06.178 | INFO     | cosmos_xenna.pipelines.private.streaming:run_pipeline:811 - Stopping stages 0
+2026-07-09 18:58:06.248 | INFO     | cosmos_xenna.pipelines.private.streaming:run_pipeline:811 - Stopping stages 1
+2026-07-09 18:58:09.796 | INFO     | cosmos_xenna.pipelines.private.streaming:run_pipeline:811 - Stopping stages 2
+2026-07-09 18:58:09.856 | INFO     | cosmos_xenna.pipelines.private.streaming:run_pipeline:811 - Stopping stages 3
+2026-07-09 18:58:10.771 | INFO     | cosmos_xenna.pipelines.private.streaming:run_pipeline:811 - Stopping stages 4
+2026-07-09 18:58:10.841 | INFO     | cosmos_xenna.pipelines.private.streaming:run_pipeline:811 - Stopping stages 5
+2026-07-09 18:58:10.891 | INFO     | cosmos_xenna.pipelines.private.streaming:run_pipeline:811 - Stopping stages 6
+2026-07-09 18:59:03.186 | INFO     | cosmos_xenna.pipelines.private.monitoring:update:339 - Pipeline stats:
+Pipeline Stats:
+Pipeline duration: 1.0284088095029196 minutes
+Number of initial input samples: 1
+Number of input samples remaining: 0
+Streaming pipeline main loop rate: 95.09110226478285
+
+Cluster Resources:
+╒══════════════════════════╤═════════╤═════════════╕
+│ Resource                 │   Total │   Available │
+╞══════════════════════════╪═════════╪═════════════╡
+│ CPUs                     │   32    │       31    │
+├──────────────────────────┼─────────┼─────────────┤
+│ GPUs                     │    2    │        2    │
+├──────────────────────────┼─────────┼─────────────┤
+│ Memory (GB)              │  191.26 │      191.26 │
+├──────────────────────────┼─────────┼─────────────┤
+│ Object Store Memory (GB) │   10    │       10    │
+╘══════════════════════════╧═════════╧═════════════╛
+
+Resource Usage by Stage:
+╒══════════════════════════════════╤═════════╤═══════════════╤═══════════════╤════════════════════╤══════════════════════════╕
+│ Stage                            │   CPU % │   Memory (GB) │   Actor Count │   CPU % per worker │   Memory (GB) per worker │
+╞══════════════════════════════════╪═════════╪═══════════════╪═══════════════╪════════════════════╪══════════════════════════╡
+│ Stage 00 - FilePartitioningStage │       0 │          0    │             0 │               0    │                     0    │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 01 - JsonlReaderStage      │       0 │          0    │             0 │               0    │                     0    │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 02 - ScoreFilter           │       0 │          0    │             0 │               0    │                     0    │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 03 - DocumentSplitter      │       0 │          0    │             0 │               0    │                     0    │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 04 - ScoreFilter           │       0 │          0    │             0 │               0    │                     0    │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 05 - DocumentJoiner        │       0 │          0    │             0 │               0    │                     0    │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 06 - Filter                │       0 │          0    │             0 │               0    │                     0    │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 07 - DiverseQAStage        │       3 │          1.59 │             3 │               1    │                     0.53 │
+├──────────────────────────────────┼─────────┼───────────────┼───────────────┼────────────────────┼──────────────────────────┤
+│ Stage 08 - JsonlWriter           │       2 │          0.39 │             3 │               0.67 │                     0.13 │
+╘══════════════════════════════════╧═════════╧═══════════════╧═══════════════╧════════════════════╧══════════════════════════╛
+
+Stage state:
+╒══════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═════════════╤═════════════════╤══════════════╤═══════════════╤════════════╤═════════════╤═════════════════╕
+│ Stage                            │   Actors: │   Actors: │   Actors: │   Actors: │   Actors: │      Tasks: │          Tasks: │       Queue: │        Queue: │     Slots: │      Slots: │ Speed:          │
+│                                  │    Target │   Pending │     Ready │   Running │      Idle │   Completed │   Returned None │   Input Size │   Output Size │   Num Used │   Num Empty │ Tasks/actor/s   │
+╞══════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═════════════╪═════════════════╪══════════════╪═══════════════╪════════════╪═════════════╪═════════════════╡
+│ Stage 00 - FilePartitioningStage │         0 │         0 │         0 │         0 │         0 │           1 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 01 - JsonlReaderStage      │         0 │         0 │         0 │         0 │         0 │           1 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 02 - ScoreFilter           │         0 │         0 │         0 │         0 │         0 │           1 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 03 - DocumentSplitter      │         0 │         0 │         0 │         0 │         0 │           1 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 04 - ScoreFilter           │         0 │         0 │         0 │         0 │         0 │           1 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 05 - DocumentJoiner        │         0 │         0 │         0 │         0 │         0 │           1 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 06 - Filter                │         0 │         0 │         0 │         0 │         0 │           1 │               0 │            0 │             0 │          0 │           0 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 07 - DiverseQAStage        │         0 │         0 │         3 │         1 │         2 │           0 │               0 │            0 │             0 │          1 │           5 │                 │
+├──────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼─────────────┼─────────────────┼──────────────┼───────────────┼────────────┼─────────────┼─────────────────┤
+│ Stage 08 - JsonlWriter           │         0 │         0 │         3 │         0 │         3 │           0 │               0 │            0 │             0 │          0 │           6 │                 │
+╘══════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═════════════╧═════════════════╧══════════════╧═══════════════╧════════════╧═════════════╧═════════════════╛
+2026-07-09 18:59:03.186 | INFO     | cosmos_xenna.pipelines.private.streaming:run_pipeline:688 - StreamingExecutor Timing Summary:
+  Auto Scaling Apply : 0.000001 seconds
+  Pool Update        : 0.000111 seconds
+  Auto Scaling Submit: 0.000000 seconds
+  Monitor Update     : 0.000007 seconds
+  Add Tasks          : 0.000030 seconds
+  Sleep              : 0.009782 seconds
+  Total              : 0.009931 seconds
+2026-07-09 18:59:58.300 | INFO     | cosmos_xenna.pipelines.private.streaming:run_pipeline:811 - Stopping stages 7
+2026-07-09 18:59:58.351 | INFO     | cosmos_xenna.pipelines.private.streaming:run_pipeline:811 - Stopping stages 8
+2026-07-09 18:59:58.352 | INFO     | cosmos_xenna.pipelines.private.streaming:run_pipeline:818 - All stages are done. Finishing pipeline.
+[36m(Stage 08 - JsonlWriter pid=3492)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.[32m [repeated 8x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+2026-07-09 19:00:08.393 | INFO     | nemo_curator.backends.xenna.executor:execute:151 - Pipeline completed successfully with 1 output tasks
+2026-07-09 19:00:11.923 | INFO     | nemo_curator.core.client:stop:205 - NeMo Curator has stopped the Ray cluster it started by killing the Ray GCS process. It is advised to wait for a few seconds before running any Ray commands to ensure Ray can cleanup other processes.If you are seeing any Ray commands like `ray status` failing, please ensure /tmp/ray/ray_current_cluster has correct information.
+Pipeline: nim_curator_diverse_qa
+Description: Native Curator Nemotron-CC DiverseQA over NIM HTML URL documents
+Stages: 8
+
+Stage 1: jsonl_reader
+  Resources: 1.0 CPUs
+  Batch size: 1
+  Outputs:
+    Output attributes: data
+Stage 2: token_count
+  Resources: 1.0 CPUs
+  Batch size: 1
+  Inputs:
+    Required attributes: data
+    Required columns: text
+  Outputs:
+    Output attributes: data
+    Output columns: text, document_token_count
+Stage 3: document_splitter
+  Resources: 1.0 CPUs
+  Batch size: 1
+  Inputs:
+    Required attributes: data
+    Required columns: text
+  Outputs:
+    Output attributes: data
+    Output columns: text, segment_id
+Stage 4: token_count
+  Resources: 1.0 CPUs
+  Batch size: 1
+  Inputs:
+    Required attributes: data
+    Required columns: text
+  Outputs:
+    Output attributes: data
+    Output columns: text, segment_token_count
+Stage 5: document_joiner
+  Resources: 1.0 CPUs
+  Batch size: 1
+  Inputs:
+    Required attributes: data
+    Required columns: text, segment_id, id, segment_token_count
+  Outputs:
+    Output attributes: data
+    Output columns: text, id, segment_id, segment_token_count
+Stage 6: filter_fn
+  Resources: 1.0 CPUs
+  Batch size: 1
+  Inputs:
+    Required attributes: data
+    Required columns: segment_token_count
+  Outputs:
+    Output attributes: data
+    Output columns: segment_token_count
+Stage 7: NemotronCCBaseStage
+  Resources: 1.0 CPUs
+  Batch size: 1
+  Outputs:
+    Output attributes: data
+    Output columns: diverse_qa
+Stage 8: jsonl_writer
+  Resources: 1.0 CPUs
+  Batch size: 1
+  Inputs:
+    Required attributes: data
+  Outputs:
+    Output attributes: data
+
+{
+  "artifacts": [
+    {
+      "bytes": 168141,
+      "path": "raw/1bb643310e15.jsonl",
+      "rows": 35,
+      "sha256": "8154898f2d7a3d272de27ced3d0a1e84938196984f32a5d8156becb4290cc06f"
+    }
+  ],
+  "completed_at": "2026-07-09T19:00:11.924277Z",
+  "curator": {
+    "image": "nvcr.io/nvidia/nemo-curator:26.04",
+    "image_digest": "sha256:11635749967ea52fb82ccc2b82d326a4de3dfc50a51605c95a993a007e8219ac",
+    "pipeline": "Nemotron-CC DiverseQAStage",
+    "version": "1.2.0+f07fa0e1"
+  },
+  "elapsed_seconds": 144.509,
+  "generation": {
+    "base_delay": 2.0,
+    "max_concurrent_requests": 2,
+    "max_output_tokens": 600,
+    "max_retries": 5,
+    "seed": 42,
+    "temperature": 0.5,
+    "thinking": false,
+    "top_p": 0.9
+  },
+  "input": {
+    "bytes": 85157,
+    "path": "/workspace/curator_dataset/experiments/20260709-ultra-550b-smoke/inputs_micro/nemo_usvcs_curated.curator_input.jsonl",
+    "rows": 8,
+    "sha256": "c291f662f8dca9912780ed35bf512121ce117afb13e015d70f0c11d3a27f3c64"
+  },
+  "preprocessing": {
+    "max_input_tokens": 1000,
+    "min_document_tokens": 30,
+    "min_segment_tokens": 30,
+    "native_helper": "nemotron_cc_pipelines.add_preprocessing_pipeline"
+  },
+  "prompts": {
+    "diverse_qa_sha256": "a3fa9d87c45c55c9a3cf3ea0e9afd57250196c2f5f15d8013588ffabe6f19c2f",
+    "system_sha256": "042c0a111392840ad0f8af69c488c01f72b9fbfd2819fb85b4c1adb540b94112"
+  },
+  "provider": {
+    "api_key_source": "Kubernetes Secret reference; value not persisted",
+    "base_url": "https://inference-api.nvidia.com/v1",
+    "model": "nvidia/nvidia/nemotron-3-super-v3"
+  },
+  "result_task_count": 1,
+  "schema_version": "curator_dataset.diverse_qa_run.v1",
+  "started_at": "2026-07-09T18:57:47.415214Z",
+  "status": "completed",
+  "tokenizer": "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-FP8"
+}

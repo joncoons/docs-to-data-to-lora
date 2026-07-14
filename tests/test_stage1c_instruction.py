@@ -4,8 +4,8 @@ from unittest.mock import MagicMock
 
 from scripts.pipeline.models import Passage
 from scripts.pipeline.stage1c_instruction import (
-    density_score, select_top_density_passages,
-    parse_instruction_response, process_passage_1c,
+    density_score, select_stage1c_passages, select_top_density_passages,
+    parse_instruction_response, process_passage_1c, run_stage1c,
 )
 
 
@@ -31,12 +31,30 @@ def test_density_score_proportional_to_chunk_span():
 def test_select_top_25_pct_with_floor():
     passages = [_make_passage(token_count=100 + i) for i in range(200)]
     selected = select_top_density_passages(passages, top_percent=0.25, min_passages=100)
-    assert len(selected) == 50  # 25% of 200 (above floor)
+    assert len(selected) == 100
 
-    # Small corpus — floor kicks in
+    # Small corpus -- floor returns everything
     small = [_make_passage(token_count=100 + i) for i in range(50)]
     selected = select_top_density_passages(small, top_percent=0.25, min_passages=100)
     assert len(selected) == 50  # all of them
+
+
+def test_select_stage1c_stratified_is_default_and_spans_density_bands():
+    passages = [
+        _make_passage(token_count=100 + i, chunk_ids=[str(j) for j in range((i % 8) + 1)])
+        for i in range(200)
+    ]
+
+    selected = select_stage1c_passages(passages, top_percent=0.25, min_passages=100)
+    top_density = select_stage1c_passages(
+        passages, selection_mode="top_density", top_percent=0.25, min_passages=100
+    )
+
+    assert len(selected) == 100
+    assert selected != top_density
+    assert {p.passage_id for p in select_stage1c_passages(passages, selection_mode="all")} == {
+        p.passage_id for p in passages
+    }
 
 
 def test_parse_instruction_response_three_types():
@@ -51,7 +69,11 @@ def test_parse_instruction_response_three_types():
 
 
 def test_process_passage_1c_emits_rows():
-    passage = _make_passage(token_count=500)
+    passage = _make_passage(token_count=500).model_copy(update={
+        "source_systems": ["document_capture"],
+        "source_kinds": ["downloaded_asset"],
+        "modalities": ["document"],
+    })
     llm = MagicMock()
     llm.call.return_value = json.dumps({"pairs": [
         {"type": "summary",  "question": "S?", "answer": "Sa."},
@@ -60,4 +82,53 @@ def test_process_passage_1c_emits_rows():
     rows = process_passage_1c(passage, "NVIDIA NIM", llm)
     assert len(rows) == 2
     assert all(r.stage == "1c" for r in rows)
+    assert all(r.source_systems == ["document_capture"] for r in rows)
+    assert all(r.source_kinds == ["downloaded_asset"] for r in rows)
+    assert all(r.modalities == ["document"] for r in rows)
     assert {r.instr_type for r in rows} == {"summary", "listicle"}
+
+def test_run_stage1c_appends_status_and_resumes(tmp_path):
+    passages = [_make_passage(token_count=500 + i) for i in range(2)]
+    llm = MagicMock()
+    llm.call.side_effect = [
+        json.dumps({"pairs": [
+            {"type": "summary", "question": "S?", "answer": "Sa."},
+            {"type": "listicle", "question": "L?", "answer": "La."},
+        ]}),
+        json.dumps({"pairs": []}),
+    ]
+
+    rows = run_stage1c(
+        passages,
+        "NVIDIA NIM",
+        llm,
+        tmp_path,
+        selection_mode="all",
+        max_workers=1,
+        resume=True,
+    )
+
+    assert len(rows) == 2
+    assert sum(1 for _ in (tmp_path / "stage1c_instruction.jsonl").open()) == 2
+    statuses = [
+        json.loads(line)
+        for line in (tmp_path / "stage1c_passage_results.jsonl").read_text().splitlines()
+    ]
+    assert {row["passage_id"]: row["status"] for row in statuses} == {
+        passages[0].passage_id: "complete",
+        passages[1].passage_id: "no_pairs",
+    }
+
+    llm.call.side_effect = AssertionError("resume should not call the LLM")
+    resumed = run_stage1c(
+        passages,
+        "NVIDIA NIM",
+        llm,
+        tmp_path,
+        selection_mode="all",
+        max_workers=1,
+        resume=True,
+    )
+
+    assert len(resumed) == 2
+    assert sum(1 for _ in (tmp_path / "stage1c_instruction.jsonl").open()) == 2

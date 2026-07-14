@@ -1,0 +1,6 @@
+curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/stage1a_le.jsonl filter=lfs diff=lfs merge=lfs -text
+curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/stage1a_le_html.jsonl filter=lfs diff=lfs merge=lfs -text
+curator_dataset/experiments/20260709-le-uncapped-batch/runs/nim_curated/super-v3/stage2_eval.jsonl filter=lfs diff=lfs merge=lfs -text
+curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/stage1a_le.jsonl filter=lfs diff=lfs merge=lfs -text
+curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/stage1a_le_html.jsonl filter=lfs diff=lfs merge=lfs -text
+curator_dataset/experiments/20260709-le-uncapped-batch/runs/nemo_usvcs_curated/super-v3/stage2_eval.jsonl filter=lfs diff=lfs merge=lfs -text

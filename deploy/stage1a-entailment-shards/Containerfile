@@ -1,0 +1,16 @@
+# Lightweight image for sharded Stage 1A entailment extraction.
+#
+# Build example:
+#   docker build -f deploy/stage1a-entailment-shards/Containerfile -t docs-to-data-to-lora/stage1a-entailment-shards:latest .
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+RUN pip install --no-cache-dir openai pydantic tqdm
+
+WORKDIR /app
+COPY scripts/pipeline /app/scripts/pipeline
+
+ENTRYPOINT ["python", "scripts/pipeline/stage1a_le_kvp.py"]

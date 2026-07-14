@@ -1,0 +1,8 @@
+{"customizer_status": "running", "job_id": "cust-V9Kuqsr4BsrsAYWmus3HAK", "key": "nemo_usvcs_r16", "observed_at": "2026-06-29T22:43:19.485603Z", "worker_phase": "Pending"}
+{"customizer_status": "running", "job_id": "cust-74AFU3baYLiZHUoWQyCiH2", "key": "nemo_usvcs_r32", "observed_at": "2026-06-29T22:43:19.485603Z", "worker_phase": "Pending"}
+{"customizer_status": "running", "job_id": "cust-MEq4hwgw5EXYYGrGx5xVhb", "key": "nim_r16", "observed_at": "2026-06-29T22:43:19.485603Z", "worker_phase": "Running"}
+{"customizer_status": "running", "job_id": "cust-5vVCigA1cTCqtrmV6zJY9C", "key": "nim_r32", "observed_at": "2026-06-29T22:43:19.485603Z", "worker_phase": "Running"}
+{"customizer_status": "failed", "job_id": "cust-MEq4hwgw5EXYYGrGx5xVhb", "key": "nim_r16", "observed_at": "2026-06-29T22:47:27.666004Z", "worker_phase": "Running"}
+{"customizer_status": "failed", "job_id": "cust-5vVCigA1cTCqtrmV6zJY9C", "key": "nim_r32", "observed_at": "2026-06-29T22:47:27.666004Z", "worker_phase": "Running"}
+{"customizer_status": "cancelled", "job_id": "cust-V9Kuqsr4BsrsAYWmus3HAK", "key": "nemo_usvcs_r16", "observed_at": "2026-06-29T22:48:59.348156Z", "worker_phase": null}
+{"customizer_status": "cancelled", "job_id": "cust-74AFU3baYLiZHUoWQyCiH2", "key": "nemo_usvcs_r32", "observed_at": "2026-06-29T22:48:59.348156Z", "worker_phase": null}

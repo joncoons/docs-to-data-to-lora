@@ -1,0 +1,58 @@
+2026-07-09 14:34:39,642 INFO __main__ - Stage 1A: shard 0/1 selected 8 of 8 passages
+Stage 1A:   0%|          | 0/8 [00:00<?, ?it/s]2026-07-09 14:35:10,743 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:35:12,207 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:35:13,306 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:35:20,216 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:35:24,813 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:35:54,379 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:35:57,742 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:35:59,136 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:01,176 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:02,595 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:03,992 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:05,220 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:07,604 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:08,661 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:10,157 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:43,858 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1A:  12%|█▎        | 1/8 [02:04<14:29, 124.16s/it]2026-07-09 14:36:48,418 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:51,542 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:52,675 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:56,068 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:58,050 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:36:59,601 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:37:01,512 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:37:02,741 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:37:03,792 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:37:05,884 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:37:07,080 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:37:08,319 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:37:09,615 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:37:14,997 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:37:37,480 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1A:  25%|██▌       | 2/8 [02:57<08:16, 82.67s/it] 2026-07-09 14:37:45,435 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1A:  38%|███▊      | 3/8 [03:05<04:02, 48.55s/it]2026-07-09 14:37:56,300 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:01,678 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:03,213 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:07,386 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:12,281 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:13,825 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:15,334 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:17,807 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:20,003 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:39,037 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:44,636 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:45,936 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:47,544 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1A:  50%|█████     | 4/8 [04:07<03:35, 53.90s/it]2026-07-09 14:38:56,278 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:38:57,509 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:39:02,314 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1A:  62%|██████▎   | 5/8 [04:22<01:59, 39.79s/it]2026-07-09 14:39:03,747 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:39:06,903 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:39:17,936 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-09 14:39:22,478 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1A:  75%|███████▌  | 6/8 [04:42<01:06, 33.12s/it]2026-07-09 14:39:35,447 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1A:  88%|████████▊ | 7/8 [04:55<00:26, 26.53s/it]2026-07-09 14:39:56,151 INFO httpx - HTTP Request: POST https://inference-api.nvidia.com/v1/chat/completions "HTTP/1.1 200 OK"
+Stage 1A: 100%|██████████| 8/8 [05:16<00:00, 24.68s/it]Stage 1A: 100%|██████████| 8/8 [05:16<00:00, 39.56s/it]
+2026-07-09 14:39:56,154 INFO __main__ - Stage 1A: 46 KVPs -> curator_dataset/experiments/20260709-ultra-550b-smoke/runs/le_micro/nim_curated/super-v3/stage1a_le.jsonl
+2026-07-09 14:39:56,155 INFO __main__ - Stage 1A: written observability files under curator_dataset/experiments/20260709-ultra-550b-smoke/runs/le_micro/nim_curated/super-v3/observability

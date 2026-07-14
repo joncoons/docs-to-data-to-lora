@@ -1,0 +1,16 @@
+# Lightweight image for Stage 0 corpus reconstruction from Elasticsearch.
+#
+# Build example:
+#   docker build -f deploy/stage0-corpus-prep/Containerfile -t docs-to-data-to-lora/stage0-corpus-prep:latest .
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+RUN pip install --no-cache-dir elasticsearch pydantic tiktoken tqdm
+
+WORKDIR /app
+COPY scripts/pipeline /app/scripts/pipeline
+
+ENTRYPOINT ["python", "scripts/pipeline/stage0_corpus_prep.py"]

@@ -1,0 +1,19 @@
+{
+  "created_at": "2026-07-09T19:06:24.310237Z",
+  "generation_model": "nvidia/nvidia/nemotron-3-ultra",
+  "metrics": {
+    "exact_duplicate_pairs_dropped": 0,
+    "parse_failures": 0,
+    "parsed_segments": 31,
+    "qa_pairs": 248,
+    "raw_segments": 31
+  },
+  "output": {
+    "bytes": 757433,
+    "path": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/experiments/20260709-ultra-550b-smoke/runs/curator_micro/nim_curated/ultra-550b/normalized/sft.jsonl",
+    "rows": 248,
+    "sha256": "51477c81cb1f547b9a1dc6a199e474c12478faad7f379ac1949010430e812076"
+  },
+  "raw_dir": "/home/joncoons/claude/docs-to-data-to-lora/curator_dataset/experiments/20260709-ultra-550b-smoke/runs/curator_micro/nim_curated/ultra-550b/raw",
+  "schema_version": "curator_dataset.qa_dataset_manifest.v1"
+}

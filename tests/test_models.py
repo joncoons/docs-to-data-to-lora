@@ -45,6 +45,14 @@ def test_qa_key_value_pair_basic():
 def test_qa_evaluation_basic():
     ev = QAEvaluation(prompt="What is X?", completion="X is a thing.")
     assert ev.prompt == "What is X?"
+    assert ev.admit is True
+
+
+def test_qa_evaluation_can_reject_without_rewrite():
+    ev = QAEvaluation(admit=False, grounded=False, reason="unsupported")
+    assert ev.admit is False
+    assert ev.prompt == ""
+    assert ev.reason == "unsupported"
 
 
 def test_synthesis_pairs_two_types():

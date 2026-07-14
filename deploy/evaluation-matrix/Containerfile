@@ -1,0 +1,16 @@
+# Lightweight image for submitting and optionally polling Stage 3 Evaluator jobs.
+#
+# Build example:
+#   docker build -f deploy/evaluation-matrix/Containerfile -t docs-to-data-to-lora/evaluation-matrix:latest .
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+RUN pip install --no-cache-dir httpx
+
+WORKDIR /app
+COPY scripts/eval /app/scripts/eval
+
+ENTRYPOINT ["python", "scripts/eval/run_evaluation_matrix.py"]
