@@ -115,6 +115,10 @@ prefix list has exactly one entry:
 }
 ```
 
+`use_product_url_map: false` is a rag-crawler-specific legacy field name for
+binary routing. It is not a statement about product-scoped adaptation; it keeps
+all linked binaries grouped under the explicit `collection_name`.
+
 Resulting corpus: **~639 HTML URLs** from `/microservices/latest/`, plus
 whatever binaries and inline-text files those pages link out to (counted
 post-crawl from the binary manifest).

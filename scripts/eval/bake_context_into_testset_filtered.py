@@ -22,9 +22,9 @@ from typing import Any
 import requests
 
 
-EMBED_URL = os.getenv("EMBED_URL", "http://10.43.101.173:8000/v1/embeddings")
-RANK_URL = os.getenv("RANK_URL", "http://10.43.126.32:8000/v1/ranking")
-ES_URL = os.getenv("ES_URL", "https://10.43.233.46:9200")
+EMBED_URL = os.getenv("EMBED_URL", "http://localhost:8002/v1/embeddings")
+RANK_URL = os.getenv("RANK_URL", "http://localhost:8003/v1/ranking")
+ES_URL = os.getenv("ES_URL", "http://localhost:9200")
 
 EMBED_MODEL = "nvidia/llama-3.2-nv-embedqa-1b-v2"
 RANK_MODEL = "nvidia/llama-3.2-nv-rerankqa-1b-v2"
@@ -41,9 +41,9 @@ def get_es_password() -> str:
                 "kubectl",
                 "get",
                 "secret",
-                "rag-eck-elasticsearch-es-elastic-user",
+                os.getenv("ES_SECRET_NAME", "elasticsearch-es-elastic-user"),
                 "-n",
-                "runai-rag",
+                os.getenv("K8S_NAMESPACE", "default"),
                 "-o",
                 "jsonpath={.data.elastic}",
             ],

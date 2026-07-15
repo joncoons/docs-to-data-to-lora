@@ -11,7 +11,7 @@
 #       stage-2-pipeline.excalidraw stage-2-pipeline.png
 #
 # Option 3 (Excalidraw+ API, programmatic upload — verified at implementation time):
-#   K8s secret 'excalidraw-api-key' in runai-rag namespace.
+#   K8s secret 'excalidraw-api-key' in your chosen namespace.
 #   curl -X POST -H "Authorization: Bearer $(kubectl get secret ...)" ...
 
 set -euo pipefail

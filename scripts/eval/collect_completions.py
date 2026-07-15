@@ -20,7 +20,7 @@ from typing import Any, Iterable
 
 log = logging.getLogger(__name__)
 
-DEFAULT_TARGET_API_URL = os.getenv("TARGET_API_URL", "http://rag-oai-proxy.runai-rag:8080")
+DEFAULT_TARGET_API_URL = os.getenv("TARGET_API_URL", "http://localhost:8000")
 DEFAULT_TARGET_API_KEY_ENV = os.getenv("TARGET_API_KEY_ENV", "TARGET_API_KEY")
 DEFAULT_OUTPUT_ROOT = Path(
     os.getenv("COMPLETIONS_OUTPUT_ROOT", "<EVAL_ROOT>/completions")

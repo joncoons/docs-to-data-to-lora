@@ -39,10 +39,10 @@ from pathlib import Path
 import httpx
 
 
-# Service endpoints reachable from the k3s host (<BLACKWELL_NODE>). All ClusterIPs.
-EMBED_URL = os.getenv("EMBED_URL", "http://10.43.101.173:8000/v1/embeddings")
-RANK_URL  = os.getenv("RANK_URL",  "http://10.43.126.32:8000/v1/ranking")
-ES_URL    = os.getenv("ES_URL",    "https://10.43.233.46:9200")
+# Service endpoints. Override these for your deployment.
+EMBED_URL = os.getenv("EMBED_URL", "http://localhost:8002/v1/embeddings")
+RANK_URL  = os.getenv("RANK_URL",  "http://localhost:8003/v1/ranking")
+ES_URL    = os.getenv("ES_URL",    "http://localhost:9200")
 
 EMBED_MODEL = "nvidia/llama-3.2-nv-embedqa-1b-v2"
 RANK_MODEL  = "nvidia/llama-3.2-nv-rerankqa-1b-v2"
@@ -61,8 +61,7 @@ def _es_creds() -> tuple[str, str]:
     if not pw:
         sys.exit(
             "ES_PASSWORD must be set. Run:\n"
-            "  export ES_PASSWORD=$(kubectl get secret rag-eck-elasticsearch-es-elastic-user "
-            "-n runai-rag -o jsonpath='{.data.elastic}' | base64 -d)"
+            "  export ES_PASSWORD=<your-elasticsearch-password>"
         )
     return user, pw
 

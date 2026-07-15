@@ -27,10 +27,10 @@ from scripts.eval.evaluator_client import EvaluatorClient  # noqa: E402
 log = logging.getLogger(__name__)
 
 DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:7331")
-DEFAULT_TARGET_API_URL = os.getenv("TARGET_API_URL", "http://rag-oai-proxy.runai-rag:8080")
+DEFAULT_TARGET_API_URL = os.getenv("TARGET_API_URL", "http://localhost:8000")
 DEFAULT_JUDGE_API_URL = os.getenv(
     "JUDGE_API_URL",
-    "http://llm-judge.default.svc.cluster.local:8000/v1",
+    "http://localhost:8001/v1",
 )
 DEFAULT_MODEL_ID = os.getenv("EVALUATOR_SMOKE_MODEL", "llama-3.3-70b-instruct")
 DEFAULT_JUDGE_MODEL_ID = os.getenv("EVALUATOR_JUDGE_MODEL", "frontier-judge")

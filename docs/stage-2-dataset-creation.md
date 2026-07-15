@@ -203,8 +203,8 @@ with the Pydantic schemas `LogEntailment` and `QAKeyValuePair`.
 
 The production default uses Nemotron 3 Super 120B-equivalent generation for this
 stage. Super is strong enough to extract latent premises and preserve structured
-outputs across a full corpus, while still being practical for local NIM or
-hosted inference throughput. Ultra/frontier models remain available for targeted
+outputs across a full corpus, while still being practical for local, private, or managed endpoint
+throughput. Ultra/frontier models remain available for targeted
 audit or synthesis stages, but Super is the default extraction workhorse.
 
 The emitted records preserve the source passage, premise, conclusion, QA pair,
@@ -242,17 +242,18 @@ python scripts/build_v2_dataset.py \
 ### LLM details
 
 - Default endpoint: the configured Nemotron 3 Super endpoint list from
-  `PIPELINE_NIM_ENDPOINTS` / `Config.nim_endpoints`, usually the local
-  `nim-llm-super-120b-bw` service. Multiple endpoints are round-robined by the
-  shared LLM client.
-- Default model: `nvidia/nemotron-3-super-120b-a12b`. The hosted alias
-  `nvidia/nvidia/nemotron-3-super-v3` is the same model family for this work and
-  can be supplied with `--stage1a-model` when using OpenAI-compatible inference.
+  `PIPELINE_NIM_ENDPOINTS` / `Config.nim_endpoints`. Multiple endpoints
+  are round-robined by the shared LLM client, so a single local endpoint and a
+  multi-endpoint deployment use the same code path.
+- Default model: `nvidia/nemotron-3-super-120b-a12b`. The model ID
+  `nvidia/nemotron-3-super-v3` is treated as an exact-equivalent alias for the
+  documented runs and can be supplied with `--stage1a-model` when your endpoint
+  exposes that name.
 - Single-call temperature: 0.2. Batched mode defaults to 0.95 for higher-recall
   extraction, unless `--stage1a-temperature` overrides it.
 - Endpoint/model overrides: use `--stage1a-nim-endpoints`, `--stage1a-model`,
-  and `--stage1a-api-key` when an experiment needs hosted inference or a
-  local-plus-hosted endpoint mix. Ultra 550B is not the default Stage 1A
+  and `--stage1a-api-key` when an experiment needs a different model endpoint or a
+  multi-endpoint deployment. Ultra 550B is not the default Stage 1A
   extraction model; use it here only as an explicit experiment.
 - Batched KVP controls: `--stage1a-max-premises-per-batch`,
   `--stage1a-batch-parse-attempts`, `--stage1a-le-max-tokens`, and
@@ -350,11 +351,12 @@ Output JSON:
 Stage 1B is a synthesis step, not raw entailment extraction. Use a
 frontier-level instruction/reasoning model for this stage so cross-passage
 bridging and contrastive questions are not bottlenecked by a smaller local model.
-The current experiment uses `nvidia/nvidia/nemotron-3-ultra`, but the downstream
-runner is model-agnostic as long as the endpoint implements OpenAI-compatible
-chat completions. Use repeated `--target ENDPOINT=MODEL[@MAX_CONTEXT]` arguments
-to choose one or more endpoints; non-NVIDIA secured endpoints can use
-`--api-key`, and OpenAI-compatible inference reads the configured Kubernetes secret.
+The case study uses a Nemotron 3 Ultra 550B-class frontier model for this
+stage, but the downstream runner is model-agnostic as long as the endpoint
+implements OpenAI-compatible chat completions. Use repeated
+`--target ENDPOINT=MODEL[@MAX_CONTEXT]` arguments to choose one or more
+endpoints, and supply API keys through your deployment-specific secret or
+environment-variable mechanism.
 
 ### Coverage
 
@@ -604,7 +606,7 @@ TemplateError — the failure mode observed in May 2026 with NeMo Customizer job
 frontier endpoint, for example:
 
 ```bash
-curl -s -X POST http://nim-llm-super-120b-bw:8000/v1/chat/completions \
+curl -s -X POST http://localhost:8000/v1/chat/completions \
   -H 'Content-Type: application/json' \
   -d '{
     "model": "nvidia/nemotron-3-super-120b-a12b",

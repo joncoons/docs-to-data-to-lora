@@ -1,4 +1,4 @@
-# WIP MLflow Orchestrator Template
+# Future MLflow Orchestrator Template
 
 This is a template for a future script, not committed implementation code. The
 script should live under `scripts/integrations/` when implemented.

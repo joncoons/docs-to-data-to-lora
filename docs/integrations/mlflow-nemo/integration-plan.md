@@ -2,7 +2,7 @@
 
 ## Objective
 
-Document the current MLflow-supported surfaces and the WIP adapter-training
+Document the current MLflow-supported surfaces and the future adapter-training
 workflow where MLflow records lineage and promotion state while NeMo
 Microservices perform the actual work.
 
@@ -10,7 +10,7 @@ Microservices perform the actual work.
 - NeMo Entity Store registers datasets and model entities.
 - NeMo Customizer trains LoRA adapters.
 - NeMo Evaluator scores adapters, bases, and the 70B dense reference target.
-- WIP target: MLflow links every step with a stable run graph.
+- Future target: MLflow links every step with a stable run graph.
 
 ## Status
 
@@ -18,13 +18,13 @@ Microservices perform the actual work.
 |---|---|---|
 | Dataset registration observability | Deployable now | Dataset registration writes MLflow-ready run context, metrics, service refs, and artifact manifests. It does not open an MLflow run itself. |
 | Evaluation export | Deployable now | Evaluation scripts can log tags, params, metrics, and artifact directories to MLflow. |
-| Parent/child MLflow orchestrator | WIP extension | Captured as a wrapper design and skeleton, not shipped as a runnable command. |
-| Customizer MLflow payload block | WIP extension | Active Customizer training code does not add `integrations.mlflow`; the wrapper skeleton shows how to add it when supported. |
-| Promotion / registry automation | WIP extension | Captured as target behavior only. |
+| Parent/child MLflow orchestrator | Future extension | Captured as a wrapper design and skeleton, not shipped as a runnable command. |
+| Customizer MLflow payload block | Future extension | Active Customizer training code does not add `integrations.mlflow`; the wrapper skeleton shows how to add it when supported. |
+| Promotion / registry automation | Future extension | Captured as target behavior only. |
 
 The rest of this document describes the target control plane. Treat any step
 that opens MLflow child runs, injects Customizer `integrations.mlflow`, or runs
-promotion automation as WIP unless it is also listed as deployable above.
+promotion automation as future-extension guidance unless it is also listed as deployable above.
 
 ## Target Control Plane Boundary
 
@@ -57,7 +57,7 @@ Steps:
 5. Deployable now: write MLflow-ready observability files containing dataset
    checksums, row counts, source collection, Data Store URI, Entity Store
    dataset reference, provenance manifests, and dataset version ID.
-6. WIP extension: start or update an MLflow child run named
+6. Future extension: start or update an MLflow child run named
    `dataset-registration` and upload those observability artifacts.
 
 Recommended NeMo dataset names:

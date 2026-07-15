@@ -22,7 +22,7 @@ def _llm(response):
     llm = MagicMock()
     llm.call.return_value = response
     llm.model = "nvidia/nvidia/nemotron-3-ultra"
-    llm.endpoints = ["http://llm-judge.default.svc.cluster.local:8000/v1"]
+    llm.endpoints = ["http://localhost:8001/v1"]
     return llm
 
 

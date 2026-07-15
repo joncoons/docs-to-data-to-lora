@@ -7,18 +7,18 @@
 ### Excalidraw+ API key
 
 If you have an Excalidraw+ subscription and want to push directly to your workspace,
-store the API key as a k8s secret in the `runai-rag` namespace:
+store the API key as a Kubernetes secret in your chosen namespace:
 
 ```bash
 kubectl create secret generic excalidraw-api-key \
   --from-literal=api-key="<YOUR_KEY>" \
-  -n runai-rag
+  -n <namespace>
 ```
 
 The render script reads it via:
 
 ```bash
-kubectl get secret excalidraw-api-key -n runai-rag \
+kubectl get secret excalidraw-api-key -n <namespace> \
   -o jsonpath='{.data.api-key}' | base64 -d
 ```
 

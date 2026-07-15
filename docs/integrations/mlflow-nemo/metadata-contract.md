@@ -1,7 +1,7 @@
 # Metadata Contract
 
 This contract defines metadata used by deployable MLflow-ready exports and by
-the WIP integration wrapper. Deployable repo support covers dataset registration
+the future integration wrapper. Deployable repo support covers dataset registration
 observability and evaluation export. Parent/child run orchestration, Customizer
 child runs, and promotion metadata are target fields for the wrapper.
 
@@ -9,7 +9,7 @@ child runs, and promotion metadata are target fields for the wrapper.
 |---|---|
 | Dataset registration observability fields | Deployable now |
 | Evaluation export fields | Deployable now |
-| Parent run, Customizer child run, and promotion fields | WIP extension |
+| Parent run, Customizer child run, and promotion fields | Future extension |
 
 The purpose is to make any adapter answerable in both directions:
 

@@ -36,7 +36,7 @@ log = logging.getLogger(__name__)
 _BINARY_EXTENSIONS = (".pdf", ".docx", ".pptx", ".doc", ".ppt")
 DEFAULT_ES_HOST = os.getenv(
     "PIPELINE_ES_HOST",
-    "https://rag-eck-elasticsearch-es-http.runai-rag:9200",
+    "http://localhost:9200",
 )
 DEFAULT_ES_USER = os.getenv("PIPELINE_ES_USER", "elastic")
 DEFAULT_ES_PASSWORD = os.getenv("PIPELINE_ES_PASSWORD") or os.getenv("ES_PASSWORD")

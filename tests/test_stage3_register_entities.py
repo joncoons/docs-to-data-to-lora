@@ -1,7 +1,7 @@
 """Tests for Evaluator target/config payload builders.
 
 These tests intentionally cover the native NIM Proxy model-target path. The
-the rag-oai-proxy/RAG target path should not be the default showcase path.
+a RAG proxy target path should not be the default showcase path.
 """
 import sys
 

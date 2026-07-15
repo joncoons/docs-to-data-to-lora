@@ -31,7 +31,7 @@ log = logging.getLogger(__name__)
 DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:7331")
 DEFAULT_NIM_PROXY_URL = os.getenv(
     "NIM_PROXY_URL",
-    "http://rag-oai-proxy.runai-rag:8080",
+    "http://localhost:8000",
 )
 DEFAULT_TRAINING_SESSION_LOG = Path(
     os.getenv(
@@ -100,7 +100,6 @@ class AdapterRow:
 #   - LoRA adapters:  lora-{corpus}-{base_short}-r{rank}   (unchanged)
 #   - Base models:    bare base-model identifier, org/ stripped, e.g.
 #                       "llama-3.2-1b-instruct"
-#                       "llama-3.3-nemotron-super-70b-v1.5"
 #   - 70B is a dense reference target, not the judge. Corpus disambiguation
 #     lives in the dataset, not in duplicate target names.
 
@@ -296,7 +295,7 @@ def build_pairwise_config() -> dict:
                     "EVALUATOR_PAIRWISE_JUDGE_MODEL",
                     "frontier-judge",
                 ),
-                "judge_endpoint": "http://llm-judge.default.svc.cluster.local:8000/v1/chat/completions",
+                "judge_endpoint": "http://localhost:8001/v1/chat/completions",
                 "pairwise_prompt": _PAIRWISE_PROMPT,
                 "position_swap": True,
             },
@@ -412,9 +411,9 @@ def main() -> int:
     ap.add_argument("--update-existing", action="store_true",
                     help="Refresh existing targets/configs on HTTP 409. Uses PATCH when supported; falls back to delete/recreate on 501.")
     ap.add_argument("--adapter-targets", action="store_true",
-                    help="Register the 14 LoRA adapter targets (12 Llama + 2 Nano r=16)")
+                    help="Register LoRA adapter targets parsed from the training-session log")
     ap.add_argument("--base-targets", action="store_true",
-                    help="Register dense Llama plus Nano base reference targets")
+                    help="Register dense Llama base reference targets")
     ap.add_argument("--reference-target", "--70b-target", dest="reference_target", action="store_true",
                     help="Register the dense reference comparator target")
     ap.add_argument("--configs", action="store_true",
@@ -423,8 +422,7 @@ def main() -> int:
                     help="Register adapter targets, dense base targets, the reference comparator, and configs")
     ap.add_argument("--proxy-url", default=DEFAULT_NIM_PROXY_URL,
                     help="OpenAI-compatible model proxy base URL. Defaults to "
-                         "NIM_PROXY_URL or http://rag-oai-proxy.runai-rag:8080 "
-                         "for the current eval test cluster. Native NIM Proxy can "
+                         "NIM_PROXY_URL or http://localhost:8000. Native NIM Proxy can "
                          "be substituted when available.")
     args = ap.parse_args()
 

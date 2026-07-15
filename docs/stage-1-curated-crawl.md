@@ -76,9 +76,9 @@ Output: one prefix per scoped source area, where each prefix is everything
 up to and including the version segment when the site is versioned. Example:
 
 ```
-https://docs.example.com/foo/widget-a/latest
-https://docs.example.com/foo/widget-b/1.4.0   # no /latest/, pinned to highest
-https://docs.example.com/foo/widget-c/latest
+https://docs.example.com/enterprise/operations/latest
+https://docs.example.com/enterprise/compliance/1.4.0   # no /latest/, pinned to highest
+https://docs.example.com/enterprise/support/latest
 ```
 
 ### Step 4: Run the crawl with the curated prefix list
@@ -90,11 +90,10 @@ escape the allowlist regardless of depth.
 ```jsonc
 // example shape — fields depend on the crawler's API
 {
-  "start_url": "https://docs.example.com/foo/",
+  "start_url": "https://docs.example.com/enterprise/",
   "max_depth": null,
   "max_pages": null,
   "extract_linked_files": true,                           // capture linked binaries
-  "use_product_url_map": false,                           // crawler-specific binary routing override
   "allowed_url_prefixes": [ ... per-source-area /latest/ or pinned prefixes ... ],
   "unblock_url_patterns": ["github.com"],                 // override default block list
   "binary_host_allowlist": [                              // permit cross-host downloads from

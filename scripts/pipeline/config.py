@@ -10,22 +10,21 @@ from pathlib import Path
 from scripts.pipeline.stage3_tokenizer import default_stage3_tokenizer_name_or_path
 
 
-# Defaults assume in-cluster pod DNS. Override via env vars when running from
-# a host that can't resolve cluster service names (e.g., from <BLACKWELL_NODE>,
-# which CAN reach ClusterIPs via k3s iptables routing but cannot resolve names).
+# Public defaults are generic local endpoints. Override these via environment
+# variables for your Kubernetes, VM, or managed service deployment.
 DEFAULT_ES_HOST = os.environ.get(
     "PIPELINE_ES_HOST",
-    "https://rag-eck-elasticsearch-es-http.runai-rag:9200",
+    "http://localhost:9200",
 )
 DEFAULT_NIM_ENDPOINTS: tuple[str, ...] = tuple(
     os.environ.get(
         "PIPELINE_NIM_ENDPOINTS",
-        "http://nim-llm-super-120b-bw.runai-rag:8000/v1",
+        "http://localhost:8000/v1",
     ).split(",")
 )
 DEFAULT_EXTERNAL_JUDGE_BASE = os.environ.get(
     "PIPELINE_EXTERNAL_JUDGE_BASE",
-    "http://llm-judge.default.svc.cluster.local:8000/v1",
+    "http://localhost:8001/v1",
 )
 DEFAULT_EXTERNAL_JUDGE_MODEL = os.environ.get(
     "PIPELINE_EXTERNAL_JUDGE_MODEL",
@@ -44,7 +43,7 @@ DEFAULT_STAGE2_QA_ENDPOINTS: tuple[str, ...] = tuple(
 # operationally critical enough to justify the extra spend.
 DEFAULT_STAGE2_QA_MODEL = os.environ.get(
     "PIPELINE_STAGE2_QA_MODEL",
-    "nvidia/nvidia/nemotron-3-super-v3",
+    "nvidia/nemotron-3-super-v3",
 )
 
 
@@ -134,10 +133,16 @@ def get_k8s_secret(name: str, namespace: str, key: str) -> str:
 def get_es_password() -> str:
     """Get the ECK Elasticsearch elastic-user password."""
     return get_k8s_secret(
-        "rag-eck-elasticsearch-es-elastic-user", "runai-rag", "elastic"
+        os.getenv("PIPELINE_ES_SECRET_NAME", "elasticsearch-es-elastic-user"),
+        os.getenv("PIPELINE_K8S_NAMESPACE", "default"),
+        os.getenv("PIPELINE_ES_SECRET_KEY", "elastic")
     )
 
 
 def get_external_judge_api_key() -> str:
     """Get the API key used for external OpenAI-compatible judge calls."""
-    return get_k8s_secret("llm-api-key", "runai-rag", "api-key")
+    return get_k8s_secret(
+        os.getenv("PIPELINE_JUDGE_SECRET_NAME", "llm-api-key"),
+        os.getenv("PIPELINE_K8S_NAMESPACE", "default"),
+        os.getenv("PIPELINE_JUDGE_SECRET_KEY", "api-key"),
+    )

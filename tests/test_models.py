@@ -13,13 +13,13 @@ from scripts.pipeline.models import (
 
 def test_log_entailment_required_fields():
     le = LogEntailment(
-        conclusion="The widget supports FP8 quantization.",
+        conclusion="The runtime supports FP8 quantization.",
         premises=["FP8 is enabled via NIM_MODEL_PROFILE.", "Profile hashes start with 'fp8-'."],
         context="Widget docs section 3.",
-        entities="widget, NIM_MODEL_PROFILE, FP8",
+        entities="runtime, NIM_MODEL_PROFILE, FP8",
         recommendations="Set the profile hash before deploy.",
     )
-    assert le.conclusion.startswith("The widget")
+    assert le.conclusion.startswith("The runtime")
     assert len(le.premises) == 2
 
 

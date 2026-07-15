@@ -160,14 +160,15 @@ Sample `POST /crawl` body (rag-crawler-compatible shape):
 historical-version URLs, even when filtered through `allowed_url_prefixes`,
 and pollute the queue.
 
-`use_product_url_map: false` is also intentional. By default the crawler
-consults a URL-prefix → source-area collection map to route binaries (PDFs,
-DOCX) into per-source-area directories under `pdf-repo/`. For a curated SFT
-crawl, you want all binaries to land in *one* directory keyed to your
-explicit collection name — so that the binary manifest and the
-downloaded files stay grouped together and don't commingle with prior
-crawls of overlapping URL prefixes. Setting this to `false` forces all
-binaries to route to `collection_name`.
+`use_product_url_map: false` is a rag-crawler-specific legacy field name.
+It controls binary routing only; it does not mean the LoRA adapter is
+product-scoped. By default the crawler consults a URL-prefix → source-area
+collection map to route binaries (PDFs, DOCX) into per-source-area directories
+under `pdf-repo/`. For a curated SFT crawl, you want all binaries to land in
+one directory keyed to your explicit collection name so the manifest and
+downloaded files stay grouped together and do not commingle with prior crawls
+of overlapping URL prefixes. Setting this to `false` forces all binaries to
+route to `collection_name`.
 
 ## Step 6 — Phase 3 binary parse
 

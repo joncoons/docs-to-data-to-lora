@@ -35,13 +35,13 @@ from scripts.eval.run_live_ragas_smoke import (  # noqa: E402
 
 log = logging.getLogger(__name__)
 
-DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://10.43.143.110:7331")
-DEFAULT_JUDGE_API_URL = os.getenv("JUDGE_API_URL", "http://llm-judge.default.svc.cluster.local:8000/v1")
+DEFAULT_EVALUATOR_URL = os.getenv("EVALUATOR_URL", "http://nemo-evaluator:7331")
+DEFAULT_JUDGE_API_URL = os.getenv("JUDGE_API_URL", "http://localhost:8001/v1")
 DEFAULT_JUDGE_MODEL_ID = os.getenv("EVALUATOR_JUDGE_MODEL", "azure/anthropic/claude-sonnet-4-6")
 DEFAULT_JUDGE_API_KEY_ENV = os.getenv("JUDGE_API_KEY_ENV", "LLM_API_KEY")
 DEFAULT_JUDGE_EMBEDDING_API_URL = os.getenv(
     "JUDGE_EMBEDDING_API_URL",
-    "http://10.43.101.173:8000/v1/embeddings",
+    "http://localhost:8002/v1/embeddings",
 )
 DEFAULT_JUDGE_EMBEDDING_MODEL_ID = os.getenv(
     "JUDGE_EMBEDDING_MODEL_ID",
