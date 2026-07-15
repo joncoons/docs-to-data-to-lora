@@ -439,25 +439,56 @@ def heatmap_svg(data: dict[str, Any]) -> str:
     )
 
 
+def table_target_label(record: dict[str, Any]) -> str:
+    if record["target_key"] == "70b":
+        return "Llama 3.3 70B base"
+    base = record["base_model"].removeprefix("llama-").replace("-", " ").upper()
+    return f"Llama {base} + LE LoRA {record['rank']}"
+
+
+def table_corpus_label(record: dict[str, Any]) -> str:
+    if record["corpus_key"] == "nim":
+        return "Corpus A (NIM docs)"
+    if record["corpus_key"] == "nemo":
+        return "Corpus B (NeMo docs)"
+    return record["corpus"]
+
+
+def add_multiline_header(body: list[str], x: int, y: int, lines: tuple[str, str]) -> None:
+    body.append(f'<text class="label" x="{x}" y="{y}">{esc(lines[0])}</text>')
+    body.append(f'<text class="label" x="{x}" y="{y + 15}">{esc(lines[1])}</text>')
+
+
 def table_svg(data: dict[str, Any]) -> str:
-    width, height = 1160, 630
-    x0, y0 = 36, 104
+    width, height = 1320, 640
+    x0, y0 = 36, 124
     row_h = 42
-    cols = [170, 130, 126, 126, 108, 90, 90, 90, 90]
-    headers = ["Corpus", "Target", "No-RAG", "RAG", "Delta", "RAG Acc", "RAG Comp", "RAG Faith", "RAG Clear"]
+    cols = [190, 245, 118, 118, 105, 100, 124, 118, 96]
+    headers = [
+        ("Evaluation", "corpus"),
+        ("Model and", "adapter"),
+        ("No retrieval", "composite"),
+        ("Retrieval", "composite"),
+        ("Retrieval", "lift"),
+        ("Retrieval", "accuracy"),
+        ("Retrieval", "completeness"),
+        ("Retrieval", "faithfulness"),
+        ("Retrieval", "clarity"),
+    ]
     body: list[str] = []
     body.append(f'<rect class="panel" x="24" y="78" width="{width - 48}" height="{height - 116}"/>')
     x = x0
     for col_w, header in zip(cols, headers):
-        body.append(f'<text class="label" x="{x + 8}" y="{y0 - 14}">{esc(header)}</text>')
+        add_multiline_header(body, x + 8, y0 - 36, header)
         x += col_w
+    body.append(f'<line class="axis" x1="{x0}" y1="{y0 - 14}" x2="{x0 + sum(cols)}" y2="{y0 - 14}"/>')
     for idx, record in enumerate(data["records"]):
         y = y0 + idx * row_h
         fill = "#ffffff" if idx % 2 == 0 else "#f2f5f8"
         body.append(f'<rect x="{x0}" y="{y - 4}" width="{sum(cols)}" height="{row_h - 4}" fill="{fill}"/>')
         values = [
-            record["corpus"],
-            record["target"],
+            table_corpus_label(record),
+            table_target_label(record),
             f'{record["modes"]["norag"]["composite"]:.3f}',
             f'{record["modes"]["rag"]["composite"]:.3f}',
             f'{record["rag_minus_norag_composite"]:+.3f}',
@@ -472,13 +503,16 @@ def table_svg(data: dict[str, Any]) -> str:
             body.append(f'<text class="{klass}" x="{x + 8}" y="{y + 20}">{esc(value)}</text>')
             x += col_w
     body.append(
-        '<text class="tiny" x="36" y="588">Composite is the unweighted mean of accuracy, completeness, reference-grounded faithfulness, and clarity.</text>'
+        '<text class="tiny" x="36" y="602">Composite is the unweighted mean of accuracy, completeness, reference-grounded faithfulness, and clarity.</text>'
+    )
+    body.append(
+        '<text class="tiny" x="36" y="620">Retrieval lift is the retrieval composite minus the no-retrieval composite for the same corpus and target.</text>'
     )
     return svg_shell(
         width,
         height,
         "Golden Evaluation Score Table",
-        "Comparable reduced no-RAG and RAG scores; all values are Claude Sonnet 4.6 judge means on a 1-5 scale.",
+        "Reduced no-retrieval and retrieval-augmented scores; summary columns are followed by retrieval diagnostics.",
         body,
     )
 
