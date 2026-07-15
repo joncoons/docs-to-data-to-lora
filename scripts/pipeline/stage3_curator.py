@@ -67,8 +67,9 @@ def load_stage3_tokenizer(tokenizer_name_or_path: str | None = None):
         raise RuntimeError(
             "Stage 3 token filtering requires the production tokenizer. "
             f"Could not load {tokenizer_name_or_path!r} locally. "
-            "Set LOCAL_NIM_CACHE to the NIM cache root or set "
-            "PIPELINE_STAGE3_TOKENIZER to an explicit tokenizer directory."
+            "Set PIPELINE_STAGE3_TOKENIZER to an explicit tokenizer directory. "
+            "If needed, download tokenizer artifacts with "
+            "scripts/pipeline/download_stage3_tokenizer.py."
         ) from exc
 
 

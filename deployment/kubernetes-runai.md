@@ -6,6 +6,12 @@ Elasticsearch cluster and a NIM-compatible embedding endpoint will work.
 This guide is included as a reference for users whose existing setup is
 already RKE2 + Run.ai.
 
+Before adapting manifests, choose stable namespaces, service names, secrets,
+PVCs, and Run.ai project names using
+[`naming-conventions.md`](naming-conventions.md). The sample names in this
+directory are illustrative and should be replaced with environment-appropriate
+values before deployment.
+
 ## Cluster assumptions
 
 - RKE2 or k3s (any recent version) with the NIM Operator installed.

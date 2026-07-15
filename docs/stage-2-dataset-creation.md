@@ -780,13 +780,16 @@ to dataset sample lineage.
 The older pure-Python `scripts/pipeline/stage3_curator.py` path remains a local
 offline fallback for exact dedup, MinHash, token length filters, substring
 checks, and split writing. Its token length filter must use the production
-training/serving tokenizer, not a generic tokenizer. Set
-`PIPELINE_STAGE3_TOKENIZER` or `--stage3-tokenizer` to the tokenizer directory
-or model ID used by the target training/serving base model. When using a model
-cache with multiple snapshots, set `PIPELINE_STAGE3_TOKENIZER_SNAPSHOT` to the
-intended production snapshot. The default QA-shaped cutoffs are `question >= 12` and
-`answer >= 8` production-tokenizer tokens, because concise grounded technical
-answers are valid and should not be dropped merely for being short.
+training/serving tokenizer, not a generic tokenizer. If the tokenizer already
+exists locally, set `PIPELINE_STAGE3_TOKENIZER` or `--stage3-tokenizer` to that
+directory. Otherwise, request access to
+[`meta-llama/Llama-3.1-8B-Instruct`](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct),
+set `HF_TOKEN`, and run `scripts/pipeline/download_stage3_tokenizer.py` to fetch
+only tokenizer/config artifacts. When using a model cache with multiple
+snapshots, set `PIPELINE_STAGE3_TOKENIZER_SNAPSHOT` to the intended production
+snapshot. The default QA-shaped cutoffs are `question >= 12` and `answer >= 8`
+production-tokenizer tokens, because concise grounded technical answers are
+valid and should not be dropped merely for being short.
 
 The local fallback writes `stage3_curator_summary.json` and
 `stage3_curator_summary.md` so every run records exact dedup, MinHash, length

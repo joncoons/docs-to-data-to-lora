@@ -21,10 +21,19 @@ turn on the guarded execution flags.
 
 ```bash
 python -m pip install -e ".[dev]"
-python -m pytest tests/test_tutorial_notebooks.py
 ```
 
-The tutorial notebook smoke test executes the local Stage 3 tokenizer path. On a fresh machine, point `LOCAL_NIM_CACHE` to a local NIM model cache containing the Llama 3.1 8B tokenizer, or set `PIPELINE_STAGE3_TOKENIZER` directly to that tokenizer directory before running `tests/test_tutorial_notebooks.py`.
+The tutorial notebook smoke test executes the local Stage 3 tokenizer path. If you already have the Llama 3.1 8B tokenizer locally, set `PIPELINE_STAGE3_TOKENIZER` to that directory. If not, request access to [`meta-llama/Llama-3.1-8B-Instruct`](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct), set `HF_TOKEN`, and download only the tokenizer/config artifacts:
+
+```bash
+python scripts/pipeline/download_stage3_tokenizer.py \
+  --output-dir outputs/tokenizers/llama-3.1-8b-instruct
+export PIPELINE_STAGE3_TOKENIZER="$PWD/outputs/tokenizers/llama-3.1-8b-instruct"
+```
+
+```bash
+python -m pytest tests/test_tutorial_notebooks.py
+```
 
 Then open [`tutorial/`](tutorial/):
 
@@ -218,7 +227,8 @@ docs-to-data-to-lora/
 │   ├── eval/                              ← completion capture and evaluation
 │   └── sitemap_to_inventory.py            ← sitemap → CSV inventory tool
 └── deployment/
-    └── kubernetes-runai.md                ← one concrete deployment target
+    ├── kubernetes-runai.md                ← one concrete deployment target
+    └── naming-conventions.md              ← non-local K8s/Run.ai naming runbook
 ```
 
 ## Quick Start: Stage 1 Inventory
