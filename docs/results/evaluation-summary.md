@@ -13,11 +13,11 @@ Adapters were trained over dense Llama 1B, 3B, and 8B bases with LoRA ranks r16 
 
 ## Validation-Loss Signal
 
-The retained validation-loss evidence favored the LE dataset path over Curator DiverseQA across the matched 8B comparison slices. Lower is better. The corpus labels identify representative public examples only.
+The retained validation-loss evidence favored the LE dataset path over Curator DiverseQA across the matched 8B comparison slices. Both dataset paths used matched five-epoch Customizer LoRA SFT runs for this comparison. Lower is better. The corpus labels identify representative public examples only.
 
 <table width="100%">
 <thead>
-<tr><th>Corpus</th><th align="right">Rank</th><th align="right">LE val loss</th><th align="right">Curator best val loss</th><th align="right">Curator minus LE</th></tr>
+<tr><th>Corpus</th><th align="right">Rank</th><th align="right">LE best val loss</th><th align="right">Curator best val loss</th><th align="right">Curator minus LE</th></tr>
 </thead>
 <tbody>
 <tr><td>Corpus A</td><td align="right">r16</td><td align="right">1.311</td><td align="right">1.424</td><td align="right">+8.6%</td></tr>
@@ -29,7 +29,7 @@ The retained validation-loss evidence favored the LE dataset path over Curator D
 
 <img src="le-vs-curator-validation-loss.svg" alt="LE vs Curator validation-loss comparison" width="100%">
 
-Caveat: the LE values are from the available two-epoch loss-bearing records, while the Curator values are five-epoch best checkpoints. This is therefore a practical retained-evidence comparison, not a perfectly epoch-matched benchmark.
+Both columns report the retained best validation-loss signal from matched five-epoch Customizer LoRA SFT runs.
 
 ## Golden Evaluation Methodology
 

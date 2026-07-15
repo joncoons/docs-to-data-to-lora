@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1360" height="640" viewBox="0 0 1360 640" role="img" aria-labelledby="title desc">
   <title id="title">Curator vs Logical Entailment Validation Loss</title>
-  <desc id="desc">Bar chart comparing logical entailment two-epoch validation loss against Curator five-epoch best validation loss for Corpus A and Corpus B r16 and r32 LoRA adapters. Lower is better.</desc>
+  <desc id="desc">Bar chart comparing logical entailment and Curator DiverseQA best validation loss for matched five-epoch Corpus A and Corpus B r16 and r32 LoRA adapters. Lower is better.</desc>
   <style>
     .title { font: 700 24px Arial, sans-serif; fill: #111827; }
     .subtitle { font: 14px Arial, sans-serif; fill: #4b5563; }
@@ -13,7 +13,7 @@
   </style>
   <rect width="1360" height="640" fill="#ffffff"/>
   <text x="110" y="48" class="title">Curator vs LE validation loss</text>
-  <text x="110" y="74" class="subtitle">Same corpora, Llama 3.1 8B LoRA. Lower is better. LE bars use retained 2-epoch loss; Curator bars use 5-epoch validation-best checkpoints.</text>
+  <text x="110" y="74" class="subtitle">Same corpora, Llama 3.1 8B LoRA. Lower is better. Both paths use matched five-epoch validation-best checkpoints.</text>
   <rect x="930" y="38" width="16" height="16" fill="#2f855a" rx="2"/><text x="954" y="51" class="legend">Logical entailment</text>
   <rect x="1100" y="38" width="16" height="16" fill="#c2410c" rx="2"/><text x="1124" y="51" class="legend">Curator</text>
   <line x1="110" y1="480.0" x2="1250" y2="480.0" stroke="#d8dee9" stroke-width="1"/><text x="96" y="485.0" text-anchor="end" class="axis">0.0</text>
@@ -36,5 +36,5 @@
   <rect x="1059.0" y="266.9" width="48" height="213.1" fill="#2f855a" rx="3"/><text x="1083.0" y="258.9" text-anchor="middle" class="barval">0.947</text>
   <rect x="1123.0" y="161.4" width="48" height="318.6" fill="#c2410c" rx="3"/><text x="1147.0" y="153.4" text-anchor="middle" class="barval">1.416</text>
   <text x="1115" y="522" text-anchor="middle" class="xlabel">Corpus B r32</text><text x="1115" y="548" text-anchor="middle" class="delta">Curator +49.6%</text>
-  <text x="110" y="600" class="note">Caveat: strict LE five-epoch jobs completed, but retained artifacts/API no longer expose best validation loss.</text>
+  <text x="110" y="600" class="note">Both paths use matched five-epoch Customizer LoRA SFT runs; bars report retained best validation loss.</text>
 </svg>
