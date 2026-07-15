@@ -24,6 +24,8 @@ python -m pip install -e ".[dev]"
 python -m pytest tests/test_tutorial_notebooks.py
 ```
 
+The tutorial notebook smoke test executes the local Stage 3 tokenizer path. On a fresh machine, point `LOCAL_NIM_CACHE` to a local NIM model cache containing the Llama 3.1 8B tokenizer, or set `PIPELINE_STAGE3_TOKENIZER` directly to that tokenizer directory before running `tests/test_tutorial_notebooks.py`.
+
 Then open [`tutorial/`](tutorial/):
 
 | Notebook | Focus | Live systems needed |

@@ -36,4 +36,6 @@ Install the project dependencies before running the local cells:
 python -m pip install -e ".[dev]"
 ```
 
+The notebook smoke test uses the production-tokenizer path exercised by Stage 3. Set `LOCAL_NIM_CACHE` to a local NIM cache containing the Llama 3.1 8B tokenizer, or set `PIPELINE_STAGE3_TOKENIZER` directly to that tokenizer directory before running `python -m pytest tests/test_tutorial_notebooks.py`.
+
 Live stages need access to the services configured in [execution-modes.md](execution-modes.md), including Elasticsearch, a generation NIM endpoint, NeMo Data Store, NeMo Entity Store, NeMo Customizer, NeMo Evaluator, and any external judge API used for release gates.

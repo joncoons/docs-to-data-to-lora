@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "docs-to-data-to-lora"
 version = "0.2.0"
@@ -9,6 +13,7 @@ dependencies = [
     "openai>=1.30",
     "pydantic>=2.5",
     "tiktoken>=0.7",
+    "transformers>=4.43,<5",
     "tqdm>=4.66",
     # TODO: install separately, not on PyPI as 'nemo-curator'
     # "nemo-curator>=0.5.0",
@@ -23,6 +28,11 @@ dev = [
     "pytest-asyncio>=0.23",
     "ruff>=0.5",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scripts*"]
+namespaces = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
