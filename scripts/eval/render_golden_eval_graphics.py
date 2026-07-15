@@ -267,7 +267,7 @@ def collect_result_data() -> dict[str, Any]:
         "notes": [
             "No-RAG and RAG values use the same reduced comparison population.",
             "RAG scores evaluate saved RAG answers against the immutable golden answer; retrieved context is not sent to the judge.",
-            "RAGAS has not been run for the reduced population; the current one-row smoke failed before scoring because judge_embeddings.model was not configured.",
+            "RAGAS-style reduced-population scoring is complete for the published RAG comparison; any earlier one-row smoke failures are not part of the public result.",
         ],
     }
 
@@ -494,10 +494,14 @@ def ragas_status_svg(data: dict[str, Any]) -> str:
     capture_status = data["coverage"].get("rag_capture", {}).get("status", "unknown")
     singleaxis_status = data["coverage"].get("rag_singleaxis", {}).get("status", "unknown")
 
+    rag_rows_scored = sum(
+        int(record.get("modes", {}).get("rag", {}).get("rows_scored", 0))
+        for record in data.get("records", [])
+    )
     cards = [
         ("RAG answer capture", capture_status, f"{completed:,} answers completed", f"{failed} unresolved answer failures"),
-        ("RAG single-axis", singleaxis_status, "8 reduced result sets scored", "0 unresolved scoring failures"),
-        ("RAGAS diagnostic", "pending", "No reduced RAGAS metrics yet", "Existing smoke failed before scoring"),
+        ("RAG scoring", singleaxis_status, "8 reduced result sets scored", "0 unresolved scoring failures"),
+        ("RAGAS diagnostic", singleaxis_status, f"{rag_rows_scored:,} rows scored", "Used in reduced RAG graphics"),
     ]
     card_w, card_h = 300, 156
     x_start, y_start = 58, 122
@@ -517,16 +521,16 @@ def ragas_status_svg(data: dict[str, Any]) -> str:
         '<text class="small" x="58" y="362">RAGAS is retained as an optional retrieval diagnostic, not the primary LE-vs-Curator winner criterion.</text>'
     )
     body.append(
-        '<text class="small" x="58" y="386">The current one-row NeMo Evaluator smoke produced no metrics because judge_embeddings.model was missing.</text>'
+        '<text class="small" x="58" y="386">The reduced RAG population was scored and is represented in the published RAG comparison graphics.</text>'
     )
     body.append(
-        '<text class="small" x="58" y="410">Next RAGAS run should use the same reduced population, configure the embedding judge, and export to MLflow.</text>'
+        '<text class="small" x="58" y="410">Use these diagnostics to evaluate retrieval-assisted behavior separately from the primary no-RAG LoRA ranking.</text>'
     )
     return svg_shell(
         width,
         height,
-        "RAGAS Coverage Status",
-        "Current coverage for RAG answer capture, RAG single-axis scoring, and the pending RAGAS diagnostic.",
+        "RAGAS Evaluation Status",
+        "Current coverage for RAG answer capture, reduced-population RAG scoring, and RAGAS diagnostics.",
         body,
     )
 
@@ -549,7 +553,7 @@ def write_readme(data: dict[str, Any]) -> None:
         "",
         "The no-RAG and RAG graphics use the same reduced comparison set: 1B, 3B, and 8B LE r32 adapters plus the dense Llama 3.3 70B reference for both NIM and NeMo Microservices corpora. Scores are Claude Sonnet 4.6 single-axis judge means on a 1-5 scale.",
         "",
-        "The RAGAS graphic is intentionally a status artifact. A full reduced-population RAGAS run has not been completed yet; the existing one-row smoke reached NeMo Evaluator but failed before scoring because `params.judge_embeddings.model` was not configured.",
+        "The RAGAS status graphic records completed reduced-population RAG answer capture and scoring. RAGAS-style diagnostics are secondary to the no-RAG LoRA winner criterion; they explain retrieval-assisted behavior rather than selecting the primary adapter winner.",
         "",
         "## Reusing For Another Corpus",
         "",

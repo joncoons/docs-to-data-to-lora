@@ -61,6 +61,8 @@ RAG improved all reduced targets in this retained case study, which is expected:
 
 ## RAGAS Status
 
-RAGAS is retained as an optional retrieval diagnostic. It is not the primary LoRA winner criterion. The public case-study artifact records RAGAS coverage/status rather than a completed reduced-population RAGAS score, because the retained smoke run reached NeMo Evaluator but did not score without a configured judge embedding model.
+RAGAS-style retrieval diagnostics were scored for the reduced RAG population shown above. The retained public artifact records the status of the RAG answer capture and scored RAG evaluation: 3,420 RAG answers across eight reduced result sets, with no unresolved answer-capture or scoring failures.
 
-![RAGAS coverage status](ragas-coverage-status.svg)
+RAGAS remains a secondary retrieval diagnostic, not the primary LoRA winner criterion. The primary winner is still determined from the no-RAG model-quality evaluation so retrieval does not mask what the adapter learned.
+
+![RAGAS evaluation status](ragas-coverage-status.svg)

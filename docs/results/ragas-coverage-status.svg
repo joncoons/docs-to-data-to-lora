@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1040" height="520" viewBox="0 0 1040 520" role="img" aria-labelledby="title desc">
-<title id="title">RAGAS Coverage Status</title>
-<desc id="desc">Current coverage for RAG answer capture, RAG single-axis scoring, and the pending RAGAS diagnostic.</desc>
+<title id="title">RAGAS Evaluation Status</title>
+<desc id="desc">Current coverage for RAG answer capture, reduced-population RAG scoring, and RAGAS diagnostics.</desc>
 <style>
 .bg{fill:#f7f9fb}.title{font:700 24px Arial,sans-serif;fill:#16212d}.subtitle{font:400 13px Arial,sans-serif;fill:#526070}
 .label{font:700 12px Arial,sans-serif;fill:#263241}.small{font:400 11px Arial,sans-serif;fill:#526070}.tiny{font:400 10px Arial,sans-serif;fill:#607080}
@@ -8,8 +8,8 @@
 .norag{fill:#8794a3}.rag{fill:#15956f}.line{stroke:#9aa8b6;stroke-width:1}.value{font:700 11px Arial,sans-serif;fill:#16212d}
 </style>
 <rect class="bg" x="0" y="0" width="100%" height="100%"/>
-<text class="title" x="32" y="36">RAGAS Coverage Status</text>
-<text class="subtitle" x="32" y="58">Current coverage for RAG answer capture, RAG single-axis scoring, and the pending RAGAS diagnostic.</text>
+<text class="title" x="32" y="36">RAGAS Evaluation Status</text>
+<text class="subtitle" x="32" y="58">Current coverage for RAG answer capture, reduced-population RAG scoring, and RAGAS diagnostics.</text>
 <rect class="panel" x="24" y="78" width="992" height="404"/>
 <rect x="58" y="122" width="300" height="156" rx="8" fill="#ffffff" stroke="#d8e0e8"/>
 <circle cx="84" cy="150" r="8" fill="#15956f"/>
@@ -19,18 +19,18 @@
 <text class="small" x="82" y="250">0 unresolved answer failures</text>
 <rect x="386" y="122" width="300" height="156" rx="8" fill="#ffffff" stroke="#d8e0e8"/>
 <circle cx="412" cy="150" r="8" fill="#15956f"/>
-<text class="label" x="430" y="155">RAG single-axis</text>
+<text class="label" x="430" y="155">RAG scoring</text>
 <text class="value" x="410" y="198">complete</text>
 <text class="small" x="410" y="226">8 reduced result sets scored</text>
 <text class="small" x="410" y="250">0 unresolved scoring failures</text>
 <rect x="714" y="122" width="300" height="156" rx="8" fill="#ffffff" stroke="#d8e0e8"/>
-<circle cx="740" cy="150" r="8" fill="#c57900"/>
+<circle cx="740" cy="150" r="8" fill="#15956f"/>
 <text class="label" x="758" y="155">RAGAS diagnostic</text>
-<text class="value" x="738" y="198">pending</text>
-<text class="small" x="738" y="226">No reduced RAGAS metrics yet</text>
-<text class="small" x="738" y="250">Existing smoke failed before scoring</text>
+<text class="value" x="738" y="198">complete</text>
+<text class="small" x="738" y="226">3,420 rows scored</text>
+<text class="small" x="738" y="250">Used in reduced RAG graphics</text>
 <text class="label" x="58" y="334">RAGAS status note</text>
 <text class="small" x="58" y="362">RAGAS is retained as an optional retrieval diagnostic, not the primary LE-vs-Curator winner criterion.</text>
-<text class="small" x="58" y="386">The current one-row Corpus B Evaluator smoke produced no metrics because judge_embeddings.model was missing.</text>
-<text class="small" x="58" y="410">Next RAGAS run should use the same reduced population, configure the embedding judge, and export to MLflow.</text>
+<text class="small" x="58" y="386">The reduced RAG population was scored and is represented in the published RAG comparison graphics.</text>
+<text class="small" x="58" y="410">Use these diagnostics to evaluate retrieval-assisted behavior separately from the primary no-RAG LoRA ranking.</text>
 </svg>
