@@ -128,13 +128,8 @@ docs-to-data-to-lora/
 │   ├── stage-3-peft-training.md           ← Customizer LoRA SFT + evaluation workflow
 │   ├── methodology-rationale.md           ← why LE, Curator, model sizing, RL
 │   ├── results/                            ← curated case-study results + SVGs
-│   ├── integration-templates/              ← MLflow/NeMo orchestration plans
-│   └── integrations/                       ← optional Stage 1 enhancements
-│       ├── README.md                      (decision table — when to use which)
-│       ├── 01-semantic-chunking.md        (element-aware chunker for HTML/MD/PDF)
-│       ├── 02-cross-page-text-stitching.md (sentence stitching across PDF pages)
-│       ├── 03-visual-stitching-and-routing.md (table/figure reassembly via Nemotron-Parse 1.2)
-│       └── 04-durable-document-extraction.md (external durable PDF/document ingestion path)
+│   └── integrations/                       ← MLflow/NeMo orchestration plans
+│       └── mlflow-nemo/
 ├── examples/
 │   ├── nim.md                             ← NVIDIA Inference Microservices walkthrough
 │   └── nemo-microservices.md              ← NVIDIA NeMo Microservices walkthrough
@@ -151,7 +146,7 @@ docs-to-data-to-lora/
 
 | Stage | Status | What's done |
 |---|---|---|
-| 1 — Corpus Ingestion | ready to use | Curated crawl methodology, inventory tool, two worked examples, Kubernetes deployment reference, optional durable document extraction path |
+| 1 — Corpus Ingestion | ready to use | Curated crawl methodology, inventory tool, two worked examples, Kubernetes deployment reference, companion durable extraction reference |
 | 2 — Dataset Creation | ready to adapt | Resumable LE pipeline, optional Data Designer gap-fill, Curator handoff/finalization, provenance sidecars, validation gate |
 | 3 — PEFT Training | ready to adapt | Customizer LoRA SFT helpers for dense Llama bases, evaluator registration, completion capture, MLflow export, golden-test workflow |
 
@@ -281,11 +276,11 @@ Generation strategies:
 - **Stage 4 — External judge**: an independent judge model spot-checks 100
   pairs per collection; 90% grounding pass threshold.
 
-## Integration templates
+## Integrations
 
 For teams that want MLflow to orchestrate and audit the NVIDIA AI Enterprise
 / NeMo Microservices lifecycle, see
-[`docs/integration-templates/mlflow-nemo`](docs/integration-templates/mlflow-nemo/).
+[`docs/integrations/mlflow-nemo`](docs/integrations/mlflow-nemo/).
 The template keeps NeMo Data Store, Entity Store, Customizer, and Evaluator as
 the execution plane while MLflow records lineage, IDs, metrics, and promotion
 state.

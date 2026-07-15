@@ -2,7 +2,7 @@
 
 > **Status**: implemented reference methodology. Stage 2 finalized datasets are
 > the input; `scripts/stage3/`, `scripts/eval/`, and
-> `docs/integration-templates/` provide the Customizer, completion-capture,
+> `docs/integrations/` provide the Customizer, completion-capture,
 > evaluation, and MLflow-oriented handoff surfaces.
 
 ## What this stage produces

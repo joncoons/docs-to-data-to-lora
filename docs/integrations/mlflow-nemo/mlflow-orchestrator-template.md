@@ -13,7 +13,7 @@ scripts/integrations/mlflow_nemo_orchestrator.py
 
 ```bash
 python scripts/integrations/mlflow_nemo_orchestrator.py \
-  --config docs/integration-templates/mlflow-nemo/config.example.yaml \
+  --config docs/integrations/mlflow-nemo/config.example.yaml \
   --collection nim_curated \
   --base-model meta/llama-3.2-1b-instruct \
   --rank 16 \

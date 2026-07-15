@@ -331,28 +331,18 @@ The two case studies in `examples/` apply this methodology end-to-end:
 - [`examples/nemo-microservices.md`](../examples/nemo-microservices.md) —
   narrowing a broad documentation umbrella to a single coherent scope.
 
-## Optional integrations
+## Raw Document Ingestion
 
-Three drop-in modules that improve corpus quality for documentation-heavy
-PDFs and long technical guides. None are required for the methodology
-above to work; they're enhancements for cases where naive chunking and
-per-page parsing fall short.
+This repo's Stage 1 reference path is a curated web crawl. For PDF-heavy,
+offline, or file-based corpora, run a durable extraction pipeline first and
+start this workflow from the resulting provenance-preserving chunks and vector
+collection.
 
-- [`integrations/01-semantic-chunking.md`](integrations/01-semantic-chunking.md) —
-  Element-aware chunker for HTML, Markdown, RST, plain text, and
-  PDF-parser output. Conditional overlap only when single elements
-  exceed `max_tokens`; tables and formulas stay atomic.
-- [`integrations/02-cross-page-text-stitching.md`](integrations/02-cross-page-text-stitching.md) —
-  Detects sentences that span PDF page boundaries and stitches them back
-  together before chunking. ~50 lines, parser-agnostic.
-- [`integrations/03-visual-stitching-and-routing.md`](integrations/03-visual-stitching-and-routing.md) —
-  Detects tables/figures split across PDF pages, re-rasterizes both
-  pages as one image, re-submits to Nemotron-Parse v1.2 to reassemble
-  the structure. Includes a routing decision: skip the expensive parser
-  entirely for documents with no complex elements.
-
-See the [integrations README](integrations/README.md) for a decision
-table on when to use which module.
+The companion
+[`nv-ingest-265-durable-orchestration`](https://github.com/joncoons/nv-ingest-265-durable-orchestration)
+repo is the preferred reference for reliable PDF/raw-document extraction,
+retry, checkpointing, and provenance capture. Keep that concern outside this
+repo unless you are explicitly extending the ingestion layer.
 
 ## Next stage
 
