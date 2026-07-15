@@ -315,13 +315,11 @@ def svg_shell(width: int, height: int, title: str, subtitle: str, body: list[str
 
 
 def bar_chart_svg(data: dict[str, Any]) -> str:
-    width, height = 1220, 760
+    width, height = 1360, 800
     left, top = 78, 112
-    chart_w, chart_h = 1080, 500
+    chart_w, chart_h = 1200, 500
     max_score = 5.0
-    group_gap = 34
-    subgroup_gap = 16
-    bar_w = 11
+    group_gap = 92
     body: list[str] = []
 
     body.append(f'<rect class="panel" x="24" y="78" width="{width - 48}" height="{height - 116}"/>')
@@ -336,11 +334,19 @@ def bar_chart_svg(data: dict[str, Any]) -> str:
     by_corpus: dict[str, list[dict[str, Any]]] = {"NIM": [], "NeMo Microservices": []}
     for record in data["records"]:
         by_corpus[record["corpus"]].append(record)
-    x = left + 12
-    for corpus, records in by_corpus.items():
-        corpus_start = x
-        body.append(f'<text class="label" x="{x}" y="{top + chart_h + 46}">{esc(corpus)}</text>')
-        for record in records:
+
+    corpus_count = max(1, len(by_corpus))
+    group_w = (chart_w - group_gap * (corpus_count - 1)) / corpus_count
+    pair_gap = 8
+    for group_index, (corpus, records) in enumerate(by_corpus.items()):
+        corpus_start = left + group_index * (group_w + group_gap)
+        slot_w = group_w / max(1, len(records))
+        bar_w = max(20, min(44, int(slot_w * 0.28)))
+        pair_w = bar_w * 2 + pair_gap
+        body.append(f'<text class="label" x="{corpus_start:.1f}" y="{top + chart_h + 46}">{esc(corpus)}</text>')
+        for record_index, record in enumerate(records):
+            slot_start = corpus_start + record_index * slot_w
+            x = slot_start + (slot_w - pair_w) / 2
             norag = record["modes"]["norag"].get("composite")
             rag = record["modes"]["rag"].get("composite")
             if norag is None or rag is None:
@@ -349,32 +355,27 @@ def bar_chart_svg(data: dict[str, Any]) -> str:
             h_r = (rag / max_score) * chart_h
             y_n = top + chart_h - h_n
             y_r = top + chart_h - h_r
-            body.append(f'<rect class="norag" x="{x}" y="{y_n:.1f}" width="{bar_w}" height="{h_n:.1f}" rx="2"/>')
-            body.append(f'<rect class="rag" x="{x + bar_w + 4}" y="{y_r:.1f}" width="{bar_w}" height="{h_r:.1f}" rx="2"/>')
+            body.append(f'<rect class="norag" x="{x:.1f}" y="{y_n:.1f}" width="{bar_w}" height="{h_n:.1f}" rx="2"/>')
+            body.append(f'<rect class="rag" x="{x + bar_w + pair_gap:.1f}" y="{y_r:.1f}" width="{bar_w}" height="{h_r:.1f}" rx="2"/>')
             delta = record["rag_minus_norag_composite"]
-            body.append(
-                f'<text class="tiny" x="{x - 2}" y="{min(y_n, y_r) - 8:.1f}">+{delta:.2f}</text>'
-                if delta is not None and delta >= 0
-                else f'<text class="tiny" x="{x - 2}" y="{min(y_n, y_r) - 8:.1f}">{delta:.2f}</text>'
-            )
+            delta_text = f"+{delta:.2f}" if delta is not None and delta >= 0 else f"{delta:.2f}"
+            body.append(f'<text class="tiny" text-anchor="middle" x="{x + pair_w / 2:.1f}" y="{min(y_n, y_r) - 8:.1f}">{delta_text}</text>')
             label_y = top + chart_h + 22
             body.append(
-                f'<text class="tiny" transform="translate({x + 12},{label_y}) rotate(40)">{esc(record["target"])}</text>'
+                f'<text class="tiny" text-anchor="middle" x="{x + pair_w / 2:.1f}" y="{label_y}">{esc(record["target"])}</text>'
             )
-            x += (bar_w * 2) + subgroup_gap
-        corpus_end = x - subgroup_gap + bar_w
+        corpus_end = corpus_start + group_w
         body.append(
-            f'<line class="line" x1="{corpus_start}" y1="{top + chart_h + 32}" x2="{corpus_end}" y2="{top + chart_h + 32}"/>'
+            f'<line class="line" x1="{corpus_start:.1f}" y1="{top + chart_h + 32}" x2="{corpus_end:.1f}" y2="{top + chart_h + 32}"/>'
         )
-        x += group_gap
 
-    legend_x = left + chart_w - 235
+    legend_x = left + chart_w - 250
     body.append(f'<rect class="norag" x="{legend_x}" y="92" width="14" height="14" rx="2"/>')
     body.append(f'<text class="small" x="{legend_x + 22}" y="104">No-RAG question-only</text>')
     body.append(f'<rect class="rag" x="{legend_x}" y="116" width="14" height="14" rx="2"/>')
     body.append(f'<text class="small" x="{legend_x + 22}" y="128">RAG answer mode</text>')
     body.append(
-        '<text class="tiny" x="32" y="710">RAG answers are evaluated against the same immutable golden answers; retrieved context is used for generation only.</text>'
+        '<text class="tiny" x="32" y="750">RAG answers are evaluated against the same immutable golden answers; retrieved context is used for generation only.</text>'
     )
     return svg_shell(
         width,

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1220" height="760" viewBox="0 0 1220 760" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="800" viewBox="0 0 1360 800" role="img" aria-labelledby="title desc">
 <title id="title">Golden Evaluation: RAG Lift Over No-RAG</title>
 <desc id="desc">Reduced Claude Sonnet 4.6 single-axis scores for LE r32 adapters and the 70B dense reference.</desc>
 <style>
@@ -10,59 +10,59 @@
 <rect class="bg" x="0" y="0" width="100%" height="100%"/>
 <text class="title" x="32" y="36">Golden Evaluation: RAG Lift Over No-RAG</text>
 <text class="subtitle" x="32" y="58">Reduced Claude Sonnet 4.6 single-axis scores for LE r32 adapters and the 70B dense reference.</text>
-<rect class="panel" x="24" y="78" width="1172" height="644"/>
-<line class="grid" x1="78" y1="512.0" x2="1158" y2="512.0"/>
+<rect class="panel" x="24" y="78" width="1312" height="684"/>
+<line class="grid" x1="78" y1="512.0" x2="1278" y2="512.0"/>
 <text class="tiny" x="50" y="516.0">1</text>
-<line class="grid" x1="78" y1="412.0" x2="1158" y2="412.0"/>
+<line class="grid" x1="78" y1="412.0" x2="1278" y2="412.0"/>
 <text class="tiny" x="50" y="416.0">2</text>
-<line class="grid" x1="78" y1="312.0" x2="1158" y2="312.0"/>
+<line class="grid" x1="78" y1="312.0" x2="1278" y2="312.0"/>
 <text class="tiny" x="50" y="316.0">3</text>
-<line class="grid" x1="78" y1="212.0" x2="1158" y2="212.0"/>
+<line class="grid" x1="78" y1="212.0" x2="1278" y2="212.0"/>
 <text class="tiny" x="50" y="216.0">4</text>
-<line class="grid" x1="78" y1="112.0" x2="1158" y2="112.0"/>
+<line class="grid" x1="78" y1="112.0" x2="1278" y2="112.0"/>
 <text class="tiny" x="50" y="116.0">5</text>
 <line class="axis" x1="78" y1="112" x2="78" y2="612"/>
-<line class="axis" x1="78" y1="612" x2="1158" y2="612"/>
+<line class="axis" x1="78" y1="612" x2="1278" y2="612"/>
 <text class="small" x="78" y="96">Composite mean, 1-5 score scale</text>
-<text class="label" x="90" y="658">Corpus A</text>
-<rect class="norag" x="90" y="365.9" width="11" height="246.1" rx="2"/>
-<rect class="rag" x="105" y="296.5" width="11" height="315.5" rx="2"/>
-<text class="tiny" x="88" y="288.5">+0.69</text>
-<text class="tiny" transform="translate(102,634) rotate(40)">1B LE r32</text>
-<rect class="norag" x="128" y="335.2" width="11" height="276.8" rx="2"/>
-<rect class="rag" x="143" y="232.9" width="11" height="379.1" rx="2"/>
-<text class="tiny" x="126" y="224.9">+1.02</text>
-<text class="tiny" transform="translate(140,634) rotate(40)">3B LE r32</text>
-<rect class="norag" x="166" y="317.2" width="11" height="294.8" rx="2"/>
-<rect class="rag" x="181" y="217.0" width="11" height="395.0" rx="2"/>
-<text class="tiny" x="164" y="209.0">+1.00</text>
-<text class="tiny" transform="translate(178,634) rotate(40)">8B LE r32</text>
-<rect class="norag" x="204" y="397.0" width="11" height="215.0" rx="2"/>
-<rect class="rag" x="219" y="225.4" width="11" height="386.6" rx="2"/>
-<text class="tiny" x="202" y="217.4">+1.72</text>
-<text class="tiny" transform="translate(216,634) rotate(40)">70B base</text>
-<line class="line" x1="90" y1="644" x2="237" y2="644"/>
-<text class="label" x="276" y="658">Corpus B</text>
-<rect class="norag" x="276" y="309.6" width="11" height="302.4" rx="2"/>
-<rect class="rag" x="291" y="282.5" width="11" height="329.5" rx="2"/>
-<text class="tiny" x="274" y="274.5">+0.27</text>
-<text class="tiny" transform="translate(288,634) rotate(40)">1B LE r32</text>
-<rect class="norag" x="314" y="292.3" width="11" height="319.7" rx="2"/>
-<rect class="rag" x="329" y="232.5" width="11" height="379.5" rx="2"/>
-<text class="tiny" x="312" y="224.5">+0.60</text>
-<text class="tiny" transform="translate(326,634) rotate(40)">3B LE r32</text>
-<rect class="norag" x="352" y="273.8" width="11" height="338.2" rx="2"/>
-<rect class="rag" x="367" y="218.9" width="11" height="393.1" rx="2"/>
-<text class="tiny" x="350" y="210.9">+0.55</text>
-<text class="tiny" transform="translate(364,634) rotate(40)">8B LE r32</text>
-<rect class="norag" x="390" y="404.3" width="11" height="207.7" rx="2"/>
-<rect class="rag" x="405" y="226.6" width="11" height="385.4" rx="2"/>
-<text class="tiny" x="388" y="218.6">+1.78</text>
-<text class="tiny" transform="translate(402,634) rotate(40)">70B base</text>
-<line class="line" x1="276" y1="644" x2="423" y2="644"/>
-<rect class="norag" x="923" y="92" width="14" height="14" rx="2"/>
-<text class="small" x="945" y="104">No-RAG question-only</text>
-<rect class="rag" x="923" y="116" width="14" height="14" rx="2"/>
-<text class="small" x="945" y="128">RAG answer mode</text>
-<text class="tiny" x="32" y="710">RAG answers are evaluated against the same immutable golden answers; retrieved context is used for generation only.</text>
+<text class="label" x="78.0" y="658">NIM</text>
+<rect class="norag" x="105.2" y="365.9" width="38" height="246.1" rx="2"/>
+<rect class="rag" x="151.2" y="296.5" width="38" height="315.5" rx="2"/>
+<text class="tiny" text-anchor="middle" x="147.2" y="288.5">+0.69</text>
+<text class="tiny" text-anchor="middle" x="147.2" y="634">1B LE r32</text>
+<rect class="norag" x="243.8" y="335.2" width="38" height="276.8" rx="2"/>
+<rect class="rag" x="289.8" y="232.9" width="38" height="379.1" rx="2"/>
+<text class="tiny" text-anchor="middle" x="285.8" y="224.9">+1.02</text>
+<text class="tiny" text-anchor="middle" x="285.8" y="634">3B LE r32</text>
+<rect class="norag" x="382.2" y="317.2" width="38" height="294.8" rx="2"/>
+<rect class="rag" x="428.2" y="217.0" width="38" height="395.0" rx="2"/>
+<text class="tiny" text-anchor="middle" x="424.2" y="209.0">+1.00</text>
+<text class="tiny" text-anchor="middle" x="424.2" y="634">8B LE r32</text>
+<rect class="norag" x="520.8" y="397.0" width="38" height="215.0" rx="2"/>
+<rect class="rag" x="566.8" y="225.4" width="38" height="386.6" rx="2"/>
+<text class="tiny" text-anchor="middle" x="562.8" y="217.4">+1.72</text>
+<text class="tiny" text-anchor="middle" x="562.8" y="634">70B base</text>
+<line class="line" x1="78.0" y1="644" x2="632.0" y2="644"/>
+<text class="label" x="724.0" y="658">NeMo Microservices</text>
+<rect class="norag" x="751.2" y="309.6" width="38" height="302.4" rx="2"/>
+<rect class="rag" x="797.2" y="282.5" width="38" height="329.5" rx="2"/>
+<text class="tiny" text-anchor="middle" x="793.2" y="274.5">+0.27</text>
+<text class="tiny" text-anchor="middle" x="793.2" y="634">1B LE r32</text>
+<rect class="norag" x="889.8" y="292.3" width="38" height="319.7" rx="2"/>
+<rect class="rag" x="935.8" y="232.5" width="38" height="379.5" rx="2"/>
+<text class="tiny" text-anchor="middle" x="931.8" y="224.5">+0.60</text>
+<text class="tiny" text-anchor="middle" x="931.8" y="634">3B LE r32</text>
+<rect class="norag" x="1028.2" y="273.8" width="38" height="338.2" rx="2"/>
+<rect class="rag" x="1074.2" y="218.9" width="38" height="393.1" rx="2"/>
+<text class="tiny" text-anchor="middle" x="1070.2" y="210.9">+0.55</text>
+<text class="tiny" text-anchor="middle" x="1070.2" y="634">8B LE r32</text>
+<rect class="norag" x="1166.8" y="404.3" width="38" height="207.7" rx="2"/>
+<rect class="rag" x="1212.8" y="226.6" width="38" height="385.4" rx="2"/>
+<text class="tiny" text-anchor="middle" x="1208.8" y="218.6">+1.78</text>
+<text class="tiny" text-anchor="middle" x="1208.8" y="634">70B base</text>
+<line class="line" x1="724.0" y1="644" x2="1278.0" y2="644"/>
+<rect class="norag" x="1028" y="92" width="14" height="14" rx="2"/>
+<text class="small" x="1050" y="104">No-RAG question-only</text>
+<rect class="rag" x="1028" y="116" width="14" height="14" rx="2"/>
+<text class="small" x="1050" y="128">RAG answer mode</text>
+<text class="tiny" x="32" y="750">RAG answers are evaluated against the same immutable golden answers; retrieved context is used for generation only.</text>
 </svg>
