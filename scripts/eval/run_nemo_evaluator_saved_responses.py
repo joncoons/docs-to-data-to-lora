@@ -58,7 +58,7 @@ DEFAULT_OUTPUT_ROOT = Path(
     os.getenv("NEMO_EVALUATOR_OUTPUT_ROOT", "<EVAL_ROOT>/nemo-evaluator-llm")
 )
 DEFAULT_REPO_SUMMARY_DIR = Path(os.getenv("NEMO_EVALUATOR_REPO_SUMMARY_DIR", "artifacts/evaluation/nemo-evaluator-summaries"))
-DEFAULT_MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://10.43.102.80:5000")
+DEFAULT_MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow:5000")
 DEFAULT_MLFLOW_EXPERIMENT = os.getenv("MLFLOW_EXPERIMENT_NAME", "docs-to-data-to-lora-golden-eval")
 DEFAULT_MLFLOW_ARTIFACT_LOCATION = os.getenv(
     "MLFLOW_ARTIFACT_LOCATION",

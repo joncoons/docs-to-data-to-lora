@@ -1,4 +1,4 @@
-# Example configuration for the MLflow + NeMo orchestration template.
+# Example configuration for the WIP MLflow + NeMo orchestration wrapper.
 # Copy values into your deployment-specific config; do not commit secrets.
 
 mlflow:
@@ -69,6 +69,7 @@ evaluation:
   config_singleaxis: "default/stage3-singleaxis-rubric"
   config_pairwise: "default/stage3-pairwise-tournament"
 
+# WIP extension settings. Not consumed by deployable repo scripts today.
 promotion:
   enabled: false
   min_accuracy_mean: 4.0

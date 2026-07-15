@@ -1,87 +1,44 @@
-# MLflow + NeMo Orchestration Template
+# MLflow + NeMo Integration Notes
 
-This template plans the integration discussed in the MLflow/NeMo notes:
-MLflow acts as the orchestration and audit layer, while NeMo Microservices
-remain the execution plane for dataset registration, LoRA customization,
-evaluation, and adapter artifact storage.
+This section documents the MLflow surfaces that exist in this repo today and a
+WIP extension path for teams that want MLflow to become the parent control-plane
+record for NeMo Data Store, Entity Store, Customizer, and Evaluator activity.
 
-The intent is not to make MLflow pretend to own NeMo resources. Instead, each
-MLflow run records durable cross-references to the NeMo objects that did the
-work.
+The current implementation does not ship a single MLflow orchestrator command.
+Deployable repo support is limited to MLflow-ready observability files for
+dataset registration and MLflow export helpers for evaluation artifacts and
+metrics. The orchestration plan and skeleton are WIP implementation guidance,
+not completed runtime code.
 
-## Fit With This Repository
+## Deployable Now
 
-The current repository already has most of the NeMo-side operations:
-
-| Repository area | Existing role | Integration use |
+| Area | Deployable repo support | Evidence |
 |---|---|---|
-| `scripts/build_v2_dataset.py` | Builds Stage 2 `training.jsonl` and `validation.jsonl` | Input step for a tracked MLflow run |
-| `scripts/stage3/train_adapter.py` | Builds and submits NeMo Customizer LoRA jobs | Called by the MLflow orchestrator |
-| `scripts/eval/upload_test_datasets.py` | Registers training/test datasets in NeMo Data Store and Entity Store, with observability JSON | Reused for dataset lineage and later MLflow export |
-| `scripts/eval/register_evaluator_entities.py` | Builds Evaluator target/config payloads and dataset payload shape | Source of canonical Evaluator and dataset metadata |
-| `scripts/eval/run_evaluation_matrix.py` | Submits Evaluator jobs for adapter/base/70B-reference comparisons | Called after Customizer jobs complete |
+| Dataset registration | `scripts/eval/upload_test_datasets.py` registers datasets in NeMo Data Store / Entity Store and emits MLflow-ready observability JSON with tracking URI, experiment name, and parent run ID. It does not log directly to MLflow. | `tests/test_dataset_registration.py` covers MLflow parent-run metadata and observability output. |
+| Evaluation export | `scripts/eval/mlflow_export.py` logs evaluation tags, params, metrics, and artifact directories to MLflow. Direct single-axis and pairwise evaluators call this helper; `scripts/eval/run_nemo_evaluator_saved_responses.py` has equivalent batch export support. | `tests/test_mlflow_export.py` covers the helper behavior; direct evaluator tests cover scoring outputs that feed export. |
+| Stage observability | Stage outputs include run context, metrics, service refs, and artifact manifests that can be uploaded to MLflow by a later export step. | Stage 0 and Stage 1A provenance tests assert MLflow-ready run context fields. |
 
-## Directory Contents
+## WIP Extension Path
+
+The WIP target architecture is a parent MLflow run per adapter build with
+child records for dataset registration, Customizer training, Evaluator scoring,
+and optional promotion. NeMo remains authoritative for dataset bytes, Customizer job
+execution, Evaluator job execution, and adapter artifacts; MLflow records the
+cross-service lineage.
+
+The active training script, `scripts/stage3/train_adapter.py`, builds and
+submits Customizer jobs today, but it does not currently add an
+`integrations.mlflow` block to the Customizer payload. The
+[`mlflow-orchestrator-template.md`](mlflow-orchestrator-template.md) skeleton
+shows how a wrapper could add that block when the deployed Customizer version
+supports it, log the Customizer job ID, and reconcile NeMo-native and
+repo-native observability.
+
+## Contents
 
 | File | Use |
 |---|---|
-| [integration-plan.md](integration-plan.md) | End-to-end architecture, phases, and ownership boundaries |
-| [metadata-contract.md](metadata-contract.md) | Required MLflow params, tags, artifacts, and NeMo IDs |
-| [mlflow-orchestrator-template.md](mlflow-orchestrator-template.md) | Python orchestration skeleton and run layout |
-| [config.example.yaml](config.example.yaml) | Environment-specific config skeleton |
-
-## High-Level Flow
-
-```text
-Stage 1 ES corpus
-    |
-    v
-Stage 2 dataset build
-    |
-    v
-NeMo Data Store repo + NeMo Entity Store dataset
-    |
-    v
-MLflow parent run
-    |
-    +-- child run: dataset registration
-    +-- child run: NeMo Customizer LoRA job
-    +-- child run: NeMo Evaluator job matrix
-    +-- optional child run: promotion/deployment
-```
-
-MLflow should record:
-
-- the dataset files, provenance manifests, version IDs, and checksums produced by Stage 2,
-- the NeMo Data Store `hf://datasets/...` URI,
-- the NeMo Entity Store `namespace/name` dataset reference,
-- the Customizer job ID and output model entity,
-- the Evaluator job IDs, exported MLflow run IDs when available, and normalized metrics,
-- the adapter artifact location or promotion target.
-
-NeMo should remain authoritative for:
-
-- dataset file storage,
-- dataset entity registration,
-- Customizer job lifecycle,
-- Evaluator target/config/job lifecycle,
-- LoRA adapter artifacts.
-
-## First Implementation Target
-
-Start with a single dense LoRA path:
-
-```text
-collection: nim_curated
-base_model: meta/llama-3.2-1b-instruct
-rank: 16
-dataset_entity: default/stage3-nim-curated
-output_model_entity: default/lora-nim-llama-3.2-1b-r16
-```
-
-After that path is reliable, extend to:
-
-- additional corpora,
-- rank 32 variants,
-- additional dense base-model sizes,
-- registry or webhook-driven promotion.
+| [integration-plan.md](integration-plan.md) | Current/WIP architecture, phases, and ownership boundaries |
+| [metadata-contract.md](metadata-contract.md) | Current and target metadata fields for MLflow and NeMo cross-references |
+| [mlflow-orchestrator-template.md](mlflow-orchestrator-template.md) | WIP Python orchestration skeleton and run layout |
+| [config.example.yaml](config.example.yaml) | Example config shape for the WIP wrapper |

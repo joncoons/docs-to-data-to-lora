@@ -2,16 +2,31 @@
 
 ## Objective
 
-Create a repeatable adapter-training workflow where MLflow records lineage and
-promotion state, and NeMo Microservices perform the actual work:
+Document the current MLflow-supported surfaces and the WIP adapter-training
+workflow where MLflow records lineage and promotion state while NeMo
+Microservices perform the actual work.
 
 - NeMo Data Store stores dataset files.
 - NeMo Entity Store registers datasets and model entities.
 - NeMo Customizer trains LoRA adapters.
 - NeMo Evaluator scores adapters, bases, and the 70B dense reference target.
-- MLflow links every step with a stable run graph.
+- WIP target: MLflow links every step with a stable run graph.
 
-## Control Plane Boundary
+## Status
+
+| Area | Status | Repo behavior |
+|---|---|---|
+| Dataset registration observability | Deployable now | Dataset registration writes MLflow-ready run context, metrics, service refs, and artifact manifests. It does not open an MLflow run itself. |
+| Evaluation export | Deployable now | Evaluation scripts can log tags, params, metrics, and artifact directories to MLflow. |
+| Parent/child MLflow orchestrator | WIP extension | Captured as a wrapper design and skeleton, not shipped as a runnable command. |
+| Customizer MLflow payload block | WIP extension | Active Customizer training code does not add `integrations.mlflow`; the wrapper skeleton shows how to add it when supported. |
+| Promotion / registry automation | WIP extension | Captured as target behavior only. |
+
+The rest of this document describes the target control plane. Treat any step
+that opens MLflow child runs, injects Customizer `integrations.mlflow`, or runs
+promotion automation as WIP unless it is also listed as deployable above.
+
+## Target Control Plane Boundary
 
 | Concern | Owner | Notes |
 |---|---|---|
@@ -39,9 +54,11 @@ Steps:
 2. Create or update the NeMo Data Store dataset repo.
 3. Push `training.jsonl` and `validation.jsonl`.
 4. Register or patch the NeMo Entity Store dataset.
-5. Start or update an MLflow child run named `dataset-registration`.
-6. Log dataset checksums, row counts, source collection, Data Store URI, and
-   Entity Store dataset reference, provenance manifests, and dataset version ID.
+5. Deployable now: write MLflow-ready observability files containing dataset
+   checksums, row counts, source collection, Data Store URI, Entity Store
+   dataset reference, provenance manifests, and dataset version ID.
+6. WIP extension: start or update an MLflow child run named
+   `dataset-registration` and upload those observability artifacts.
 
 Recommended NeMo dataset names:
 
@@ -50,7 +67,7 @@ Recommended NeMo dataset names:
 | `domain_a_curated` | `default/stage3-domain-a-curated` | `default/stage3-domain-a-curated-test` |
 | `domain_b_curated` | `default/stage3-domain-b-curated` | `default/stage3-domain-b-curated-test` |
 
-## Phase 2: Customizer Training
+## Phase 2: Customizer Training Extension
 
 Input:
 
@@ -133,7 +150,7 @@ Minimum metrics to normalize:
 | `eval.win_rate_vs_base` | Pairwise win rate over no-LoRA base |
 | `eval.win_rate_vs_reference` | Pairwise win rate over the 70B dense reference |
 
-## Phase 4: Promotion
+## Phase 4: Promotion Extension
 
 Promotion is optional in the first pass. When added, keep it explicit:
 
@@ -149,7 +166,7 @@ Promotion is optional in the first pass. When added, keep it explicit:
 5. If using NeMo/NIM deployment directly, log the deployment manifest and
    `NIM_PEFT_SOURCE` path as MLflow artifacts.
 
-## Phase 5: Event-Driven Automation
+## Phase 5: Event-Driven Automation Extension
 
 After the basic script is reliable, MLflow webhooks can trigger external
 automation on registry events. Recommended webhook use:

@@ -128,7 +128,7 @@ docs-to-data-to-lora/
 │   ├── stage-3-peft-training.md           ← Customizer LoRA SFT + evaluation workflow
 │   ├── methodology-rationale.md           ← why LE, Curator, model sizing, RL
 │   ├── results/                            ← curated case-study results + SVGs
-│   └── integrations/                       ← MLflow/NeMo orchestration plans
+│   └── integrations/                       ← MLflow export + WIP NeMo orchestration notes
 │       └── mlflow-nemo/
 ├── examples/
 │   ├── nim.md                             ← NVIDIA Inference Microservices walkthrough
@@ -278,12 +278,12 @@ Generation strategies:
 
 ## Integrations
 
-For teams that want MLflow to orchestrate and audit the NVIDIA AI Enterprise
-/ NeMo Microservices lifecycle, see
+For teams that want MLflow lineage around the NVIDIA AI Enterprise / NeMo
+Microservices lifecycle, see
 [`docs/integrations/mlflow-nemo`](docs/integrations/mlflow-nemo/).
-The template keeps NeMo Data Store, Entity Store, Customizer, and Evaluator as
-the execution plane while MLflow records lineage, IDs, metrics, and promotion
-state.
+Deployable now: MLflow-ready dataset registration observability plus
+evaluation artifact/metric export. WIP: a fuller MLflow parent/child run graph
+across Data Store, Entity Store, Customizer, Evaluator, and promotion.
 
 ## Contributing
 

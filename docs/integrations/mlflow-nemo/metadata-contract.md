@@ -1,8 +1,17 @@
 # Metadata Contract
 
-This contract defines the minimum metadata that the integration wrapper should
-write to MLflow and to NeMo resources. The purpose is to make any adapter
-answerable in both directions:
+This contract defines metadata used by deployable MLflow-ready exports and by
+the WIP integration wrapper. Deployable repo support covers dataset registration
+observability and evaluation export. Parent/child run orchestration, Customizer
+child runs, and promotion metadata are target fields for the wrapper.
+
+| Metadata area | Status |
+|---|---|
+| Dataset registration observability fields | Deployable now |
+| Evaluation export fields | Deployable now |
+| Parent run, Customizer child run, and promotion fields | WIP extension |
+
+The purpose is to make any adapter answerable in both directions:
 
 - From an MLflow run, find every NeMo object used to build and evaluate it.
 - From a NeMo dataset, job, or model entity, find the MLflow run that recorded
@@ -21,7 +30,7 @@ Use names already established by the repository.
 | Entity Store output model | `default/<adapter-name>` | `default/lora-domain-a-llama-3.2-1b-r16` |
 | Data Store dataset URI | `hf://datasets/default/<dataset-name>` | `hf://datasets/default/stage3-domain-a-curated` |
 
-## MLflow Parent Run Tags
+## Target MLflow Parent Run Tags
 
 | Tag | Required | Example |
 |---|---|---|
@@ -37,7 +46,7 @@ Use names already established by the repository.
 | `nemo_workspace` | no | `default` |
 | `project` | no | `docs-to-data-to-lora` |
 
-## MLflow Parent Run Params
+## Target MLflow Parent Run Params
 
 | Param | Example |
 |---|---|
@@ -50,7 +59,7 @@ Use names already established by the repository.
 | `customizer.config_template` | `meta/llama-3.2-1b-instruct@v1.0.0+80GB` |
 | `customizer.sequence_packing_enabled` | `false` |
 
-## Dataset Child Run
+## Dataset Registration Metadata
 
 Run name: `dataset-registration`
 
@@ -100,7 +109,7 @@ Artifacts:
 If using MLflow dataset tracking, log the NeMo dataset URI as the dataset
 source and attach context `training`, `validation`, or `evaluation`.
 
-## Customizer Child Run
+## Target Customizer Child Run
 
 Run name: `customizer-training`
 
@@ -130,7 +139,7 @@ Artifacts:
 | `customizer/job_payload.json` | Exact request submitted to Customizer |
 | `customizer/job_final.json` | Final job detail response |
 
-## Evaluator Child Run
+## Evaluation Export Metadata
 
 Run name: `evaluator-matrix`
 

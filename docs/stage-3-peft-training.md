@@ -1,9 +1,9 @@
 # Stage 3: PEFT Adapter Training
 
 > **Status**: implemented reference methodology. Stage 2 finalized datasets are
-> the input; `scripts/stage3/`, `scripts/eval/`, and
-> `docs/integrations/` provide the Customizer, completion-capture,
-> evaluation, and MLflow-oriented handoff surfaces.
+> the input; `scripts/stage3/` and `scripts/eval/` provide the Customizer,
+> completion-capture, and evaluation surfaces. `docs/integrations/` documents
+> deployable MLflow export/observability support plus WIP orchestration notes.
 
 ## What this stage produces
 
@@ -79,7 +79,7 @@ Adapter artifact / model entity
         │
         ├── no-RAG completion capture on immutable golden QA
         ├── optional RAG completion capture on the reduced comparison set
-        └── MLflow metadata/export for publishable lineage
+        └── MLflow-ready metadata and evaluation export for publishable lineage
         │
         ▼
 Evaluation
@@ -136,5 +136,5 @@ For a new domain corpus:
   when adapter capacity is part of the experiment.
 - Keep no-RAG evaluation separate from optional RAG evaluation so model
   adaptation and retrieval quality are measured independently.
-- Capture model, dataset, adapter, evaluation, and MLflow metadata together so
-  the selected adapter can be reproduced or rolled back.
+- Capture dataset, adapter job IDs, evaluation outputs, and MLflow-ready
+  metadata together so the selected adapter can be reproduced or rolled back.
