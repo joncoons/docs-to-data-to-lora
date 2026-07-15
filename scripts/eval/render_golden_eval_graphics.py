@@ -29,6 +29,8 @@ AXES = [
     ("clarity", "Clarity"),
 ]
 
+RESULT_GRAPHIC_WIDTH = 1360
+
 
 @dataclass(frozen=True)
 class Target:
@@ -315,7 +317,7 @@ def svg_shell(width: int, height: int, title: str, subtitle: str, body: list[str
 
 
 def bar_chart_svg(data: dict[str, Any]) -> str:
-    width, height = 1360, 800
+    width, height = RESULT_GRAPHIC_WIDTH, 800
     left, top = 78, 112
     chart_w, chart_h = 1200, 500
     max_score = 5.0
@@ -387,9 +389,9 @@ def bar_chart_svg(data: dict[str, Any]) -> str:
 
 
 def heatmap_svg(data: dict[str, Any]) -> str:
-    width, height = 1180, 820
-    left, top = 300, 112
-    cell_w, cell_h = 88, 31
+    width, height = RESULT_GRAPHIC_WIDTH, 820
+    left, top = 420, 112
+    cell_w, cell_h = 170, 31
     gap_y = 4
     body: list[str] = []
     rows: list[tuple[dict[str, Any], str]] = []
@@ -400,8 +402,8 @@ def heatmap_svg(data: dict[str, Any]) -> str:
     body.append(f'<rect class="panel" x="24" y="78" width="{width - 48}" height="{height - 116}"/>')
     for idx, (_, label) in enumerate(AXES):
         x = left + idx * cell_w
-        body.append(f'<text class="label" x="{x + 10}" y="{top - 16}">{esc(label)}</text>')
-    body.append(f'<text class="label" x="{left + len(AXES) * cell_w + 28}" y="{top - 16}">Composite</text>')
+        body.append(f'<text class="label" x="{x + 16}" y="{top - 16}">{esc(label)}</text>')
+    body.append(f'<text class="label" x="{left + len(AXES) * cell_w + 16}" y="{top - 16}">Composite</text>')
 
     y = top
     last_corpus = None
@@ -417,11 +419,12 @@ def heatmap_svg(data: dict[str, Any]) -> str:
             value = float(scores.get(axis, 0.0))
             x = left + idx * cell_w
             color = score_color(value) if value else "#eef2f6"
-            body.append(f'<rect x="{x}" y="{y}" width="{cell_w - 6}" height="{cell_h}" rx="4" fill="{color}"/>')
-            body.append(f'<text class="value" x="{x + 28}" y="{y + 21}">{value:.2f}</text>')
+            body.append(f'<rect x="{x}" y="{y}" width="{cell_w - 10}" height="{cell_h}" rx="4" fill="{color}"/>')
+            body.append(f'<text class="value" text-anchor="middle" x="{x + (cell_w - 10) / 2:.1f}" y="{y + 21}">{value:.2f}</text>')
         composite = record["modes"][mode].get("composite")
-        x_comp = left + len(AXES) * cell_w + 32
-        body.append(f'<text class="value" x="{x_comp}" y="{y + 21}">{composite:.2f}</text>')
+        x_comp = left + len(AXES) * cell_w
+        body.append(f'<rect x="{x_comp}" y="{y}" width="{cell_w - 10}" height="{cell_h}" rx="4" fill="#f8fafc" stroke="#dbe2ea"/>')
+        body.append(f'<text class="value" text-anchor="middle" x="{x_comp + (cell_w - 10) / 2:.1f}" y="{y + 21}">{composite:.2f}</text>')
         y += cell_h + gap_y
 
     legend_y = height - 70
@@ -461,10 +464,10 @@ def add_multiline_header(body: list[str], x: int, y: int, lines: tuple[str, str]
 
 
 def table_svg(data: dict[str, Any]) -> str:
-    width, height = 1320, 640
+    width, height = RESULT_GRAPHIC_WIDTH, 640
     x0, y0 = 36, 124
     row_h = 42
-    cols = [190, 245, 118, 118, 105, 100, 124, 118, 96]
+    cols = [200, 270, 120, 120, 110, 108, 132, 122, 106]
     headers = [
         ("Evaluation", "corpus"),
         ("Model and", "adapter"),
@@ -519,7 +522,7 @@ def table_svg(data: dict[str, Any]) -> str:
 
 
 def ragas_status_svg(data: dict[str, Any]) -> str:
-    width, height = 1040, 520
+    width, height = RESULT_GRAPHIC_WIDTH, 520
     body: list[str] = []
     body.append(f'<rect class="panel" x="24" y="78" width="{width - 48}" height="{height - 116}"/>')
 
@@ -538,11 +541,11 @@ def ragas_status_svg(data: dict[str, Any]) -> str:
         ("RAG scoring", singleaxis_status, "8 reduced result sets scored", "0 unresolved scoring failures"),
         ("RAGAS diagnostic", singleaxis_status, f"{rag_rows_scored:,} rows scored", "Used in reduced RAG graphics"),
     ]
-    card_w, card_h = 300, 156
+    card_w, card_h = 388, 156
     x_start, y_start = 58, 122
     colors = {"complete": "#15956f", "pending": "#c57900", "unknown": "#8794a3"}
     for idx, (title, status, line1, line2) in enumerate(cards):
-        x = x_start + idx * (card_w + 28)
+        x = x_start + idx * (card_w + 32)
         color = colors.get(status, "#8794a3")
         body.append(f'<rect x="{x}" y="{y_start}" width="{card_w}" height="{card_h}" rx="8" fill="#ffffff" stroke="#d8e0e8"/>')
         body.append(f'<circle cx="{x + 26}" cy="{y_start + 28}" r="8" fill="{color}"/>')

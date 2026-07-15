@@ -15,14 +15,19 @@ Adapters were trained over dense Llama 1B, 3B, and 8B bases with LoRA ranks r16 
 
 The retained validation-loss evidence favored the LE dataset path over Curator DiverseQA across the matched 8B comparison slices. Lower is better. The corpus labels identify representative public examples only.
 
-| Corpus | Rank | LE val loss | Curator best val loss | Curator minus LE |
-|---|---:|---:|---:|---:|
-| Corpus A | r16 | 1.311 | 1.424 | +8.6% |
-| Corpus A | r32 | 1.269 | 1.422 | +12.1% |
-| Corpus B | r16 | 0.991 | 1.457 | +47.0% |
-| Corpus B | r32 | 0.947 | 1.416 | +49.6% |
+<table width="100%">
+<thead>
+<tr><th>Corpus</th><th align="right">Rank</th><th align="right">LE val loss</th><th align="right">Curator best val loss</th><th align="right">Curator minus LE</th></tr>
+</thead>
+<tbody>
+<tr><td>Corpus A</td><td align="right">r16</td><td align="right">1.311</td><td align="right">1.424</td><td align="right">+8.6%</td></tr>
+<tr><td>Corpus A</td><td align="right">r32</td><td align="right">1.269</td><td align="right">1.422</td><td align="right">+12.1%</td></tr>
+<tr><td>Corpus B</td><td align="right">r16</td><td align="right">0.991</td><td align="right">1.457</td><td align="right">+47.0%</td></tr>
+<tr><td>Corpus B</td><td align="right">r32</td><td align="right">0.947</td><td align="right">1.416</td><td align="right">+49.6%</td></tr>
+</tbody>
+</table>
 
-![LE vs Curator validation-loss comparison](le-vs-curator-validation-loss.svg)
+<img src="le-vs-curator-validation-loss.svg" alt="LE vs Curator validation-loss comparison" width="100%">
 
 Caveat: the LE values are from the available two-epoch loss-bearing records, while the Curator values are five-epoch best checkpoints. This is therefore a practical retained-evidence comparison, not a perfectly epoch-matched benchmark.
 
@@ -36,22 +41,27 @@ The no-RAG single-axis evaluation used four 1-5 axes: accuracy, completeness, re
 
 The completed single-axis pass selected the LE r32 adapters for the reduced follow-up population across the 1B, 3B, and 8B dense bases. The table below shows composite means on the 1-5 scale for the reduced no-RAG and RAG evaluations.
 
-| Corpus | Target | No-RAG composite | RAG composite | Rows |
-|---|---|---:|---:|---:|
-| Corpus A | 1B LE r32 | 2.461 | 3.155 | 424 |
-| Corpus A | 3B LE r32 | 2.768 | 3.791 | 424 |
-| Corpus A | 8B LE r32 | 2.948 | 3.950 | 424 |
-| Corpus A | Llama 3.3 70B base | 2.150 | 3.866 | 424 |
-| Corpus B | 1B LE r32 | 3.024 | 3.295 | 431 |
-| Corpus B | 3B LE r32 | 3.197 | 3.795 | 431 |
-| Corpus B | 8B LE r32 | 3.382 | 3.931 | 431 |
-| Corpus B | Llama 3.3 70B base | 2.077 | 3.854 | 431 |
+<table width="100%">
+<thead>
+<tr><th>Corpus</th><th>Target</th><th align="right">No-RAG composite</th><th align="right">RAG composite</th><th align="right">Rows</th></tr>
+</thead>
+<tbody>
+<tr><td>Corpus A</td><td>1B LE r32</td><td align="right">2.461</td><td align="right">3.155</td><td align="right">424</td></tr>
+<tr><td>Corpus A</td><td>3B LE r32</td><td align="right">2.768</td><td align="right">3.791</td><td align="right">424</td></tr>
+<tr><td>Corpus A</td><td>8B LE r32</td><td align="right">2.948</td><td align="right">3.950</td><td align="right">424</td></tr>
+<tr><td>Corpus A</td><td>Llama 3.3 70B base</td><td align="right">2.150</td><td align="right">3.866</td><td align="right">424</td></tr>
+<tr><td>Corpus B</td><td>1B LE r32</td><td align="right">3.024</td><td align="right">3.295</td><td align="right">431</td></tr>
+<tr><td>Corpus B</td><td>3B LE r32</td><td align="right">3.197</td><td align="right">3.795</td><td align="right">431</td></tr>
+<tr><td>Corpus B</td><td>8B LE r32</td><td align="right">3.382</td><td align="right">3.931</td><td align="right">431</td></tr>
+<tr><td>Corpus B</td><td>Llama 3.3 70B base</td><td align="right">2.077</td><td align="right">3.854</td><td align="right">431</td></tr>
+</tbody>
+</table>
 
-![Reduced no-RAG versus RAG composite scores](rag-vs-norag-composite.svg)
+<img src="rag-vs-norag-composite.svg" alt="Reduced no-RAG versus RAG composite scores" width="100%">
 
-![Reduced no-RAG versus RAG axis heatmap](rag-vs-norag-axis-heatmap.svg)
+<img src="rag-vs-norag-axis-heatmap.svg" alt="Reduced no-RAG versus RAG axis heatmap" width="100%">
 
-![Golden evaluation score table](golden-eval-score-table.svg)
+<img src="golden-eval-score-table.svg" alt="Golden evaluation score table" width="100%">
 
 ## Interpretation
 
@@ -65,4 +75,4 @@ RAGAS-style retrieval diagnostics were scored for the reduced RAG population sho
 
 RAGAS remains a secondary retrieval diagnostic, not the primary LoRA winner criterion. The primary winner is still determined from the no-RAG model-quality evaluation so retrieval does not mask what the adapter learned.
 
-![RAGAS evaluation status](ragas-coverage-status.svg)
+<img src="ragas-coverage-status.svg" alt="RAGAS evaluation status" width="100%">

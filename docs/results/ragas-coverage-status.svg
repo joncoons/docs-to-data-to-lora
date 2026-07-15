@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="520" viewBox="0 0 1040 520" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="520" viewBox="0 0 1360 520" role="img" aria-labelledby="title desc">
 <title id="title">RAGAS Evaluation Status</title>
 <desc id="desc">Current coverage for RAG answer capture, reduced-population RAG scoring, and RAGAS diagnostics.</desc>
 <style>
@@ -10,25 +10,25 @@
 <rect class="bg" x="0" y="0" width="100%" height="100%"/>
 <text class="title" x="32" y="36">RAGAS Evaluation Status</text>
 <text class="subtitle" x="32" y="58">Current coverage for RAG answer capture, reduced-population RAG scoring, and RAGAS diagnostics.</text>
-<rect class="panel" x="24" y="78" width="992" height="404"/>
-<rect x="58" y="122" width="300" height="156" rx="8" fill="#ffffff" stroke="#d8e0e8"/>
+<rect class="panel" x="24" y="78" width="1312" height="404"/>
+<rect x="58" y="122" width="388" height="156" rx="8" fill="#ffffff" stroke="#d8e0e8"/>
 <circle cx="84" cy="150" r="8" fill="#15956f"/>
 <text class="label" x="102" y="155">RAG answer capture</text>
 <text class="value" x="82" y="198">complete</text>
 <text class="small" x="82" y="226">3,420 answers completed</text>
 <text class="small" x="82" y="250">0 unresolved answer failures</text>
-<rect x="386" y="122" width="300" height="156" rx="8" fill="#ffffff" stroke="#d8e0e8"/>
-<circle cx="412" cy="150" r="8" fill="#15956f"/>
-<text class="label" x="430" y="155">RAG scoring</text>
-<text class="value" x="410" y="198">complete</text>
-<text class="small" x="410" y="226">8 reduced result sets scored</text>
-<text class="small" x="410" y="250">0 unresolved scoring failures</text>
-<rect x="714" y="122" width="300" height="156" rx="8" fill="#ffffff" stroke="#d8e0e8"/>
-<circle cx="740" cy="150" r="8" fill="#15956f"/>
-<text class="label" x="758" y="155">RAGAS diagnostic</text>
-<text class="value" x="738" y="198">complete</text>
-<text class="small" x="738" y="226">3,420 rows scored</text>
-<text class="small" x="738" y="250">Used in reduced RAG graphics</text>
+<rect x="478" y="122" width="388" height="156" rx="8" fill="#ffffff" stroke="#d8e0e8"/>
+<circle cx="504" cy="150" r="8" fill="#15956f"/>
+<text class="label" x="522" y="155">RAG scoring</text>
+<text class="value" x="502" y="198">complete</text>
+<text class="small" x="502" y="226">8 reduced result sets scored</text>
+<text class="small" x="502" y="250">0 unresolved scoring failures</text>
+<rect x="898" y="122" width="388" height="156" rx="8" fill="#ffffff" stroke="#d8e0e8"/>
+<circle cx="924" cy="150" r="8" fill="#15956f"/>
+<text class="label" x="942" y="155">RAGAS diagnostic</text>
+<text class="value" x="922" y="198">complete</text>
+<text class="small" x="922" y="226">3,420 rows scored</text>
+<text class="small" x="922" y="250">Used in reduced RAG graphics</text>
 <text class="label" x="58" y="334">RAGAS status note</text>
 <text class="small" x="58" y="362">RAGAS is retained as an optional retrieval diagnostic, not the primary LE-vs-Curator winner criterion.</text>
 <text class="small" x="58" y="386">The reduced RAG population was scored and is represented in the published RAG comparison graphics.</text>
